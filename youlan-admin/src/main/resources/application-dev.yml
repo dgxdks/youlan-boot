@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    druid:
+      # 主库数据源
+      url: jdbc:mysql://120.27.240.148:13308/lizh?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true
+      username: basic
+      password: Lechou@123
