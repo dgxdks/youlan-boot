@@ -46,7 +46,7 @@ public class GeneratorUtil {
         String dbType = columnType.split("\\(")[0];
         //字符类型
         if (ArrayUtil.contains(GeneratorConstant.COLUMN_TYPE_STR, dbType)) {
-            String between = StrUtil.subBetween(columnType, "(" , ")");
+            String between = StrUtil.subBetween(columnType, "(", ")");
             int columnLength = Integer.parseInt(between);
             //大于500使用textarea
             if (columnLength > 500) {
@@ -65,7 +65,7 @@ public class GeneratorUtil {
         //数字类型
         if (ArrayUtil.contains(GeneratorConstant.COLUMN_TYPE_NUMBER, dbType)) {
             System.out.println(columnType);
-            String between = StrUtil.subBetween(columnType, "(" , ")");
+            String between = StrUtil.subBetween(columnType, "(", ")");
             String[] split = between.split(",");
             if (split.length == 2) {
                 column.setJavaType(GeneratorConstant.JAVA_TYPE_BIG_DECIMAL);
@@ -110,7 +110,7 @@ public class GeneratorUtil {
     }
 
     public static String packageName2Path(String packageName) {
-        return formatPackageName(packageName).replace("." , File.separator);
+        return formatPackageName(packageName).replace(".", File.separator);
     }
 
     /**
@@ -152,5 +152,106 @@ public class GeneratorUtil {
             log.error(e.getMessage(), e);
             return tableComment;
         }
+    }
+
+    /**
+     * 获取状态字段校验注解
+     */
+    public static String getStatusValidatorAnno() {
+        return "@Status";
+    }
+
+    /**
+     * 获取@NotBlank校验注解
+     */
+    public static String getNotBlankValidatorAnno(String columnComment) {
+        return StrUtil.format("@NotBlank(message=\"{}\")", columnComment + "不能为空");
+    }
+
+    /**
+     * 获取@NotNull校验注解
+     */
+    public static String getNotNullValidatorAnno(String columnComment) {
+        return StrUtil.format("@NotNull(message=\"{}\")", columnComment + "不能为空");
+    }
+
+    /**
+     * 获取@TableFile注解
+     */
+    public static String getTableFieldUpdateAnno() {
+        return "@TableField(fill = FieldFill.UPDATE)";
+    }
+
+    /**
+     * 获取@TableFile注解
+     */
+    public static String getTableFieldInsertAnno() {
+        return "@TableField(fill = FieldFill.INSERT)";
+    }
+
+    /**
+     * 获取@TableLogic注解
+     */
+    public static String getTableLogicAnno() {
+        return "@TableLogic(value = DBConstant.VAL_STS_NO, delval = DBConstant.VAL_STS_YES)";
+    }
+
+    /**
+     * 获取@TableFile注解
+     */
+    public static String getTableFieldNotExistAnno() {
+        return "@TableField(exist = false)";
+    }
+
+    /**
+     * 获取@TableId注解
+     */
+    public static String getTableIdAnno() {
+        return "@TableId";
+    }
+
+    /**
+     * 获取@TableId注解
+     */
+    public static String getTableIdAutoAnno() {
+        return "@TableId(type = IdType.AUTO)";
+    }
+
+    /**
+     * 获取@ExcelDictProperty注解
+     */
+    public static String getExcelDictProperty(String desc, String typeKey) {
+        //第二行添加四个空格缩进
+        return String.format("@ExcelProperty(value = \"%s\", converter = DictConverter.class)", desc)
+                + "\n"
+                + String.format("    @ExcelDictProperty(\"%s\")", typeKey);
+    }
+
+    /**
+     * 获取@ExcelProperty注解
+     */
+    public static String getExcelProperty(String desc) {
+        return String.format("@ExcelProperty(value = \"%s\")", desc);
+    }
+
+    /**
+     * 获取@Schema注解
+     */
+    public static String getSchemaAnnoFromDBConstant(String constantName) {
+        return String.format("@Schema(title = DBConstant.%s)", constantName);
+    }
+
+    /**
+     * 获取@Schema注解
+     */
+    public static String getSchemaAnno(String title) {
+        return String.format("@Schema(title = \"%s\")", title);
+    }
+
+    /**
+     * 获取@QueryType注解
+     */
+    public static String getQueryTypeAnno(String queryType) {
+        return String.format("@Query(type = QueryType.%s)", queryType);
     }
 }

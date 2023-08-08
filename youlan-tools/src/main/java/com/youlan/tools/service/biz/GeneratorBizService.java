@@ -1,6 +1,5 @@
 package com.youlan.tools.service.biz;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.text.NamingCase;
@@ -36,8 +35,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -123,7 +120,6 @@ public class GeneratorBizService {
                             .setIsPk(DBConstant.boolean2YesNo(GeneratorUtil.columnIsPk(columnKey)))
                             .setIsIncrement(DBConstant.boolean2YesNo(GeneratorUtil.columnIsIncrement(extra)))
                             .setIsRequired(DBConstant.boolean2YesNo(GeneratorUtil.columnIsRequired(isNullable)))
-                            .setIsInsert(DBConstant.VAL_YES)
                             .setIsEdit(DBConstant.VAL_YES)
                             .setIsTable(DBConstant.VAL_YES)
                             .setIsQuery(DBConstant.VAL_YES)
@@ -358,176 +354,156 @@ public class GeneratorBizService {
         velocityContext.put("needVo", yesNo2Boolean(generatorTable.getEntityVo()));
         //判断是否需要分页DTO
         velocityContext.put("needPageDto", yesNo2Boolean(generatorTable.getEntityPageDto()));
-        //预处理列中注解,设置顺序不能乱
-        generatorColumnList.forEach(column -> {
-            setTableFieldAnno(column);
-            setApiModelPropertyAnno(column);
-            setValidatorAnno(generatorTable, column);
-            setQueryAnno(generatorTable, column);
-            setExcelAnno(generatorTable, column);
-            setExclude(column);
-        });
+        //设置实体类里面要生成的列
+        velocityContext.put("entityColumns", generatorEntityColumnList(generatorTable, generatorColumnList));
+        //设置DTO里面要生成的列
+        velocityContext.put("dtoColumns", generatorDtoColumnList(generatorTable, generatorColumnList));
+        //设置PageDTO里面要生成的列
+        velocityContext.put("pageDtoColumns", generatorPageDtoColumnList(generatorTable, generatorColumnList));
+        //设置VO里面要生成的列
+        velocityContext.put("voColumns", generatorVoColumnList(generatorTable, generatorColumnList));
         return velocityContext;
     }
 
     /**
-     * 标记要排除的列
+     * 生成VO列
      */
-    public void setExclude(GeneratorColumn generatorColumn) {
-        String columnName = generatorColumn.getColumnName();
-        if (generatorProperties.inEditColumnExclude(columnName)) {
-            generatorColumn.setIsDtoExclude(VAL_YES);
+    public List<GeneratorColumn> generatorVoColumnList(GeneratorTable generatorTable, List<GeneratorColumn> allColumn) {
+        List<GeneratorColumn> voColumnList = new ArrayList<>();
+        for (GeneratorColumn generatorColumn : allColumn) {
+            GeneratorColumn voColumn = generatorColumn.copy();
+            //如果是要排除的列或者不是表格中的字段则不处理
+            if (generatorProperties.inViewColumnExclude(voColumn.getColumnName()) || !yesNo2Boolean(voColumn.getIsTable())) {
+                continue;
+            }
+            //设置swagger注解
+            setApiModelPropertyAnno(voColumn);
+            //设置excel注解
+            setExcelAnno(voColumn);
+            voColumnList.add(voColumn);
         }
-        if (generatorProperties.inViewColumnExclude(columnName)) {
-            generatorColumn.setIsVoExclude(VAL_YES);
+        return voColumnList;
+    }
+
+    /**
+     * 生成PageDTO列
+     */
+    public List<GeneratorColumn> generatorPageDtoColumnList(GeneratorTable generatorTable, List<GeneratorColumn> allColumn) {
+        List<GeneratorColumn> pageDtoColumnList = new ArrayList<>();
+        for (GeneratorColumn generatorColumn : allColumn) {
+            GeneratorColumn pageDtoColumn = generatorColumn.copy();
+            //如果是要排除的列或者不是查询字段则不处理
+            if (generatorProperties.inQueryColumnExclude(pageDtoColumn.getColumnName()) || !DBConstant.yesNo2Boolean(generatorColumn.getIsQuery())) {
+                continue;
+            }
+            //设置swagger注解
+            setApiModelPropertyAnno(pageDtoColumn);
+            //设置查询注解,可能会生成衍生列
+            setQueryAnno(pageDtoColumn, pageDtoColumnList);
+            pageDtoColumnList.add(pageDtoColumn);
         }
+        return pageDtoColumnList;
+    }
+
+    /**
+     * 生成DTO列
+     */
+    public List<GeneratorColumn> generatorDtoColumnList(GeneratorTable generatorTable, List<GeneratorColumn> allColumn) {
+        List<GeneratorColumn> dtoColumnList = new ArrayList<>();
+        for (GeneratorColumn generatorColumn : allColumn) {
+            GeneratorColumn dtoColumn = generatorColumn.copy();
+            //如果是要排除的列或者不是编辑字段则不生成
+            if (generatorProperties.inEditColumnExclude(dtoColumn.getColumnName()) || !DBConstant.yesNo2Boolean(generatorColumn.getIsEdit())) {
+                continue;
+            }
+            //设置swagger注解
+            setApiModelPropertyAnno(dtoColumn);
+            //设置验证注解
+            setValidatorAnno(dtoColumn);
+            dtoColumnList.add(dtoColumn);
+        }
+        return dtoColumnList;
+    }
+
+    /**
+     * 生成Entity列
+     */
+    public List<GeneratorColumn> generatorEntityColumnList(GeneratorTable generatorTable, List<GeneratorColumn> allColumn) {
+        List<GeneratorColumn> entityColumnList = new ArrayList<>();
+        for (GeneratorColumn generatorColumn : allColumn) {
+            GeneratorColumn entityColumn = generatorColumn.copy();
+            //数据库实体设置@TableField
+            setTableFieldAnno(entityColumn);
+            //设置swagger注解
+            setApiModelPropertyAnno(entityColumn);
+            //如果不需要DTO则数据库实体需要承担编辑责任
+            if (!yesNo2Boolean(generatorTable.getEntityDto())) {
+                setValidatorAnno(entityColumn);
+            }
+            //如果不需要PageDTO则数据库实体需要承担查询责任
+            if (!yesNo2Boolean(generatorTable.getEntityPageDto())) {
+                //查询方法可能会衍生出新的列所以将待返回列也附带进去
+                setQueryAnno(entityColumn, entityColumnList);
+            }
+            //如果不需要VO则数据库实体需要承担页面数据返回责任
+            if (!yesNo2Boolean(generatorTable.getEntityVo())) {
+                setExcelAnno(entityColumn);
+            }
+            entityColumnList.add(entityColumn);
+        }
+        return entityColumnList;
     }
 
     /**
      * 生成查询注解
      */
-    public void setQueryAnno(GeneratorTable generatorTable, GeneratorColumn generatorColumn) {
-        String isQuery = generatorColumn.getIsQuery();
-        //不是查询字段则不处理
-        if (!yesNo2Boolean(isQuery)) {
-            return;
-        }
+    public void setQueryAnno(GeneratorColumn generatorColumn, List<GeneratorColumn> extendColumnList) {
         QueryType queryType = QueryType.valueOf(generatorColumn.getQueryType());
-        List<GeneratorColumn> extendColumnList = new ArrayList<>();
         switch (queryType) {
-            //当查询类型是between时强制生成自定义列来接收范围值
+            //当查询类型是between in not_in时强制生成自定义列来接收范围值
             case BETWEEN:
-                GeneratorColumn extendColumn = BeanUtil.copyProperties(generatorColumn, GeneratorColumn.class);
-                extendColumn
-                        .setJavaField(extendColumn.getJavaField() + TP_FIELD_SUFFIX_RANGE)
-                        .setEntityValidatorAnnoList(null)
-                        .setDtoValidatorAnnoList(null)
-                        .setIsCollection(VAL_YES)
-                        .setTableFieldAnno(TPL_TABLE_FIELD_ANNO_EXIST_FALSE);
-                //判断注解生成在哪个实体上
-                if (DBConstant.yesNo2Boolean(generatorTable.getEntityPageDto())) {
-                    extendColumn.setPageDtoQueryAnno(StrUtil.format(TPL_QUERY_ANNO, QueryType.BETWEEN.name()));
-                } else {
-                    extendColumn.setEntityQueryAnno(StrUtil.format(TPL_QUERY_ANNO, QueryType.BETWEEN.name()));
-                }
-                setValidatorAnno(generatorTable, extendColumn);
-                extendColumnList.add(extendColumn);
-                break;
-            //当查询类型是in或者not_in时强制生成自定义列来接收范围值
             case IN:
             case NOT_IN:
-                extendColumn = BeanUtil.copyProperties(generatorColumn, GeneratorColumn.class);
+                GeneratorColumn extendColumn = generatorColumn.copy();
                 extendColumn
-                        .setJavaField(extendColumn.getJavaField() + TP_FIELD_SUFFIX_RANGE)
-                        .setEntityValidatorAnnoList(null)
-                        .setDtoValidatorAnnoList(null)
+                        .setJavaField(extendColumn.getJavaField() + "Range")
+                        .setValidatorAnnoList(null)
                         .setIsCollection(VAL_YES)
-                        .setTableFieldAnno(TPL_TABLE_FIELD_ANNO_EXIST_FALSE);
-                //判断注解生成在哪个实体上
-                if (DBConstant.yesNo2Boolean(generatorTable.getEntityPageDto())) {
-                    extendColumn.setPageDtoQueryAnno(StrUtil.format(TPL_QUERY_ANNO, queryType.name()));
-                } else {
-                    extendColumn.setEntityQueryAnno(StrUtil.format(TPL_QUERY_ANNO, queryType.name()));
-                }
-                setValidatorAnno(generatorTable, extendColumn);
+                        .setTableFieldAnno(GeneratorUtil.getTableFieldNotExistAnno());
+                extendColumn.setQueryAnno(GeneratorUtil.getQueryTypeAnno(queryType.name()));
+                setValidatorAnno(extendColumn);
                 extendColumnList.add(extendColumn);
+                //将原列的验证注解设为空
+                generatorColumn.setQueryAnno(null);
                 break;
             default:
-                //判断注解生成在哪个实体上
-                if (DBConstant.yesNo2Boolean(generatorTable.getEntityPageDto())) {
-                    generatorColumn.setPageDtoQueryAnno(StrUtil.format(TPL_QUERY_ANNO, queryType.name()));
-                } else {
-                    generatorColumn.setEntityQueryAnno(StrUtil.format(TPL_QUERY_ANNO, queryType.name()));
-                }
+                generatorColumn.setQueryAnno(GeneratorUtil.getQueryTypeAnno(queryType.name()));
                 break;
-        }
-        generatorColumn.setExtendColumnList(extendColumnList);
-        //判断是否需要排除此列
-        String columnName = generatorColumn.getColumnName();
-        if (generatorProperties.inQueryColumnExclude(columnName)) {
-            generatorColumn
-                    .setExtendColumnList(null)
-                    .setPageDtoQueryAnno(null)
-                    .setEntityQueryAnno(null);
         }
     }
 
     /**
      * 生成excel住家
      */
-    public void setExcelAnno(GeneratorTable generatorTable, GeneratorColumn generatorColumn) {
-        String columnName = generatorColumn.getColumnName();
+    public void setExcelAnno(GeneratorColumn generatorColumn) {
         String columnComment = generatorColumn.getColumnComment();
         String typeKey = generatorColumn.getTypeKey();
         List<String> excelAnno = new ArrayList<>();
         boolean isDictType = StrUtil.isNotBlank(typeKey);
-        AtomicBoolean isMapping = new AtomicBoolean(false);
-        Consumer<String> processExcelProperty = (desc) -> {
-            String finalDesc = StrUtil.isBlank(desc) ? columnComment : desc;
-            if (isDictType) {
-                excelAnno.add(StrUtil.format(TPL_EXCEL_PROPERTY_DICT_ANNO, finalDesc));
-                excelAnno.add(StrUtil.format(TPL_EXCEL_PROPERTY_PLUS_DICT_ANNO, typeKey));
-            } else if (isMapping.get()) {
-                excelAnno.add(StrUtil.format(TPL_EXCEL_PROPERTY_MAPPING_ANNO, finalDesc));
-            } else {
-                excelAnno.add(StrUtil.format(TPL_EXCEL_PROPERTY_ANNO, finalDesc));
-            }
-        };
-
-        switch (columnName) {
-            //状态列默认生成未MAPPING类型
-            case COL_STATUS:
-                isMapping.set(true);
-                processExcelProperty.accept(DESC_STATUS);
-                excelAnno.add(TPL_EXCEL_PROPERTY_PLUS_MAPPING_STATUS_ANNO);
-                break;
-            case COL_CREATE_ID:
-                processExcelProperty.accept(DESC_CREATE_ID);
-                break;
-            case COL_CREATE_BY:
-                processExcelProperty.accept(DESC_CREATE_BY);
-                break;
-            case COL_CREATE_TIME:
-                processExcelProperty.accept(DESC_CREATE_TIME);
-                break;
-            case COL_UPDATE_ID:
-                processExcelProperty.accept(DESC_UPDATE_ID);
-                break;
-            case COL_UPDATE_BY:
-                processExcelProperty.accept(DESC_UPDATE_BY);
-                break;
-            case COL_UPDATE_TIME:
-                processExcelProperty.accept(DESC_UPDATE_TIME);
-                break;
-            case COL_SORT:
-                processExcelProperty.accept(DESC_SORT);
-                break;
-            case COL_ID:
-                processExcelProperty.accept(DESC_ID);
-                break;
-            case COL_REMARK:
-                processExcelProperty.accept(DESC_REMARK);
-                break;
-            //逻辑删除不展示
-            case COL_STS:
-                break;
-            default:
-                processExcelProperty.accept(null);
-                break;
+        if (isDictType) {
+            excelAnno.add(GeneratorUtil.getExcelDictProperty(columnComment, typeKey));
+        } else {
+            excelAnno.add(GeneratorUtil.getExcelProperty(columnComment));
         }
         if (CollectionUtil.isNotEmpty(excelAnno)) {
-            if (DBConstant.yesNo2Boolean(generatorTable.getEntityVo())) {
-                generatorColumn.setVoExcelAnnoList(excelAnno);
-            } else {
-                generatorColumn.setEntityExcelAnnoList(excelAnno);
-            }
+            generatorColumn.setExcelAnnoList(excelAnno);
         }
     }
 
     /**
      * 生成验证注解
      */
-    public void setValidatorAnno(GeneratorTable generatorTable, GeneratorColumn generatorColumn) {
+    public void setValidatorAnno(GeneratorColumn generatorColumn) {
         List<String> validatorAnnoList = new ArrayList<>();
         String columnName = generatorColumn.getColumnName();
         String columnComment = generatorColumn.getColumnComment();
@@ -535,16 +511,17 @@ public class GeneratorBizService {
         if (DBConstant.yesNo2Boolean(generatorColumn.getIsPk())) {
             return;
         }
+        //判断基本类型
         if (DBConstant.yesNo2Boolean(generatorColumn.getIsRequired())) {
             if (GeneratorConstant.JAVA_TYPE_STRING.equals(generatorColumn.getJavaType())) {
-                validatorAnnoList.add(StrUtil.format(TPL_VALIDATOR_NOT_BLANK, columnComment + TP_VALIDATOR_SUFFIX_NOT_NULL));
+                validatorAnnoList.add(GeneratorUtil.getNotBlankValidatorAnno(columnComment));
             } else {
-                validatorAnnoList.add(StrUtil.format(TPL_VALIDATOR_NOT_NULL, columnComment + TP_VALIDATOR_SUFFIX_NOT_NULL));
+                validatorAnnoList.add(GeneratorUtil.getNotNullValidatorAnno(columnComment));
             }
         }
         switch (columnName) {
             case COL_STATUS:
-                validatorAnnoList.add(StrUtil.format(TPL_VALIDATOR_STATUS));
+                validatorAnnoList.add(GeneratorUtil.getStatusValidatorAnno());
                 break;
             case COL_CREATE_BY:
             case COL_CREATE_ID:
@@ -557,16 +534,7 @@ public class GeneratorBizService {
         }
         //只有不为空时才能设置值，否则会影响显示
         if (CollectionUtil.isNotEmpty(validatorAnnoList)) {
-            if (DBConstant.yesNo2Boolean(generatorTable.getEntityDto())) {
-                generatorColumn.setDtoValidatorAnnoList(validatorAnnoList);
-            } else {
-                generatorColumn.setEntityValidatorAnnoList(validatorAnnoList);
-            }
-        }
-        //判断是否需要排除此列
-        if (generatorProperties.inEditColumnExclude(columnName)) {
-            generatorColumn
-                    .setEntityValidatorAnnoList(null);
+            generatorColumn.setValidatorAnnoList(validatorAnnoList);
         }
     }
 
@@ -581,23 +549,23 @@ public class GeneratorBizService {
             case COL_CREATE_BY:
             case COL_CREATE_ID:
             case COL_CREATE_TIME:
-                generatorColumn.setTableFieldAnno(TPL_TABLE_FIELD_ANNO_INSERT);
+                generatorColumn.setTableFieldAnno(GeneratorUtil.getTableFieldInsertAnno());
                 break;
             case COL_UPDATE_ID:
             case COL_UPDATE_BY:
             case COL_UPDATE_TIME:
-                generatorColumn.setTableFieldAnno(TPL_TABLE_FIELD_ANNO_UPDATE);
+                generatorColumn.setTableFieldAnno(GeneratorUtil.getTableFieldUpdateAnno());
                 break;
             case COL_STS:
-                generatorColumn.setTableFieldAnno(TPL_TABLE_LOGIC_ANNO);
+                generatorColumn.setTableFieldAnno(GeneratorUtil.getTableLogicAnno());
             default:
                 break;
         }
         if (yesNo2Boolean(isPk)) {
             if (yesNo2Boolean(generatorColumn.getIsIncrement())) {
-                generatorColumn.setTableFieldAnno(TPL_TABLE_ID_ANNO_TYPE_AUTO);
+                generatorColumn.setTableFieldAnno(GeneratorUtil.getTableIdAutoAnno());
             } else {
-                generatorColumn.setTableFieldAnno(TPL_TABLE_ID_ANNO_TYPE_DEFAULT);
+                generatorColumn.setTableFieldAnno(GeneratorUtil.getTableIdAnno());
             }
         }
     }
@@ -607,45 +575,11 @@ public class GeneratorBizService {
      */
     public void setApiModelPropertyAnno(GeneratorColumn generatorColumn) {
         String columnName = generatorColumn.getColumnName();
-        String apiModelPropertyAnno;
-        switch (columnName) {
-            case COL_ID:
-                apiModelPropertyAnno = StrUtil.format(TPL_SCHEMA_ANNO_CONSTANT, "DESC_ID");
-                break;
-            case COL_STATUS:
-                apiModelPropertyAnno = StrUtil.format(TPL_SCHEMA_ANNO_CONSTANT, "DESC_STATUS");
-                break;
-            case COL_CREATE_BY:
-                apiModelPropertyAnno = StrUtil.format(TPL_SCHEMA_ANNO_CONSTANT, "DESC_CREATE_BY");
-                break;
-            case COL_CREATE_ID:
-                apiModelPropertyAnno = StrUtil.format(TPL_SCHEMA_ANNO_CONSTANT, "DESC_CREATE_ID");
-                break;
-            case COL_UPDATE_ID:
-                apiModelPropertyAnno = StrUtil.format(TPL_SCHEMA_ANNO_CONSTANT, "DESC_UPDATE_ID");
-                break;
-            case COL_UPDATE_BY:
-                apiModelPropertyAnno = StrUtil.format(TPL_SCHEMA_ANNO_CONSTANT, "DESC_UPDATE_BY");
-                break;
-            case COL_CREATE_TIME:
-                apiModelPropertyAnno = StrUtil.format(TPL_SCHEMA_ANNO_CONSTANT, "DESC_CREATE_TIME");
-                break;
-            case COL_UPDATE_TIME:
-                apiModelPropertyAnno = StrUtil.format(TPL_SCHEMA_ANNO_CONSTANT, "DESC_UPDATE_TIME");
-                break;
-            case COL_STS:
-                apiModelPropertyAnno = StrUtil.format(TPL_SCHEMA_ANNO_CONSTANT, "DESC_STS");
-                break;
-            case COL_SORT:
-                apiModelPropertyAnno = StrUtil.format(TPL_SCHEMA_ANNO_CONSTANT, "DESC_SORT");
-                break;
-            case COL_REMARK:
-                apiModelPropertyAnno = StrUtil.format(TPL_SCHEMA_ANNO_CONSTANT, "DESC_REMARK");
-                break;
-            default:
-                apiModelPropertyAnno = StrUtil.format(TPL_SCHEMA_ANNO_NORMAL, generatorColumn.getColumnComment());
-                break;
+        if (COL_DESC_FIELD_NAME_MAPPING.containsKey(columnName)) {
+            String constantName = COL_DESC_FIELD_NAME_MAPPING.get(columnName);
+            generatorColumn.setApiModelPropertyAnno(GeneratorUtil.getSchemaAnnoFromDBConstant(constantName));
+        } else {
+            generatorColumn.setApiModelPropertyAnno(GeneratorUtil.getSchemaAnno(generatorColumn.getColumnComment()));
         }
-        generatorColumn.setApiModelPropertyAnno(apiModelPropertyAnno);
     }
 }

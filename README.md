@@ -16,7 +16,6 @@
 - 机构名称缺少唯一性校验
 - 用户在登录后用户信息会保存在session中，用户所有的编辑操作都需要考虑对token的处理
 - 待实现注解脱敏
-- 待实现requestbody responsebody加解密
 - 待实现加签验签逻辑
 - 文档中需要阐明AES秘钥如何生成
 - 限流功能没有做
@@ -26,7 +25,7 @@
 - 代码生成的excel注解需要适配
 - 需要评估是否替换druid
 - 评估是否需要替换tomcat使用undertow
-- redis考虑使用redision
+- redis考虑使用redission
 - 如果用户被禁用，则接口将不能被访问
 - 项目还没有支持国际化
 - ApiResultCode尽量支持国际化

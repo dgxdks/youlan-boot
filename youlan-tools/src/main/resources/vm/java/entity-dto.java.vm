@@ -1,22 +1,24 @@
 package ${packageName}.entity.dto;
 
+import com.youlan.common.core.db.constant.DBConstant;
+import com.youlan.common.validator.anno.*;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+
+import javax.validation.constraints.*;
+import java.util.Date;
 
 @Data
 public class ${EntityName}DTO {
 
-#foreach($column in ${columns})
-    #if($column.isDtoExclude != "1")
-    #if(${column.dtoValidatorAnnoList})
-    #foreach($validatorAnno in ${column.dtoValidatorAnnoList})
+#foreach($column in ${dtoColumns})
+    #foreach($validatorAnno in ${column.validatorAnnoList})
     $validatorAnno
-    #end
     #end
     #if(${column.apiModelPropertyAnno})
     ${column.apiModelPropertyAnno}
     #end
     private $column.javaType $column.javaField;
 
-    #end
 #end
 }

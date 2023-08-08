@@ -1,5 +1,6 @@
 package com.youlan.tools.entity;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.annotation.*;
 import com.youlan.common.core.db.constant.DBConstant;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -44,9 +45,6 @@ public class GeneratorColumn {
 
     @Schema(title = "是否必填" + DBConstant.DESC_YES_NO)
     private String isRequired;
-
-    @Schema(title = "插入时字段" + DBConstant.DESC_YES_NO)
-    private String isInsert;
 
     @Schema(title = "编辑时字段" + DBConstant.DESC_YES_NO)
     private String isEdit;
@@ -94,35 +92,24 @@ public class GeneratorColumn {
     private String apiModelPropertyAnno;
 
     @TableField(exist = false)
-    private List<String> entityValidatorAnnoList;
+    private List<String> validatorAnnoList;
 
     @TableField(exist = false)
-    private List<String> dtoValidatorAnnoList;
-
-    @TableField(exist = false)
-    private List<String> voExcelAnnoList;
-
-    @TableField(exist = false)
-    private List<String> entityExcelAnnoList;
+    private List<String> excelAnnoList;
 
     @TableField(exist = false)
     private String tableFieldAnno;
 
     @TableField(exist = false)
-    private String entityQueryAnno;
-
-    @TableField(exist = false)
-    private String pageDtoQueryAnno;
-
-    @TableField(exist = false)
-    private List<GeneratorColumn> extendColumnList;
+    private String queryAnno;
 
     @TableField(exist = false)
     private String isCollection;
 
     @TableField(exist = false)
-    private String isDtoExclude;
-
-    @TableField(exist = false)
     private String isVoExclude;
+
+    public GeneratorColumn copy() {
+        return BeanUtil.copyProperties(this, GeneratorColumn.class);
+    }
 }

@@ -3,18 +3,27 @@ package ${packageName}.entity;
 #if(!${needVo})
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
-import com.youlan.common.excel.anno.ExcelPropertyPlus;
-import com.youlan.common.excel.anno.MappingProperty;
-import com.youlan.common.excel.converter.MappingConverter;
-import com.youlan.common.excel.enums.ExcelPropertyType;
+import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
+import com.youlan.system.excel.anno.ExcelDictProperty;
+import com.youlan.system.excel.converter.DictConverter;
 #end
-import com.baomidou.mybatisplus.annotation.*;
-import lombok.Data;
 #if(!${needPageDto})
+import com.youlan.common.db.entity.dto.PageDTO;
+import com.youlan.common.db.anno.Query;
+import com.youlan.common.db.enums.QueryType;
 import lombok.EqualsAndHashCode;
 #end
 #if(!${needDto})
+import com.youlan.common.validator.anno.*;
 #end
+import com.youlan.common.core.db.constant.DBConstant;
+import io.swagger.v3.oas.annotations.media.Schema;
+import com.baomidou.mybatisplus.annotation.*;
+import lombok.Data;
+
+import javax.validation.constraints.*;
+import java.util.Date;
 
 @Data
 @TableName("${tableName}")
@@ -28,17 +37,17 @@ public class ${EntityName} {
 public class ${EntityName} extends PageDTO {
 #end
 
-#foreach($column in ${columns})
-    #if(${column.entityExcelAnnoList})
-    #foreach($excelAnno in ${column.entityExcelAnnoList})
+#foreach($column in ${entityColumns})
+    #if(${column.excelAnnoList})
+    #foreach($excelAnno in ${column.excelAnnoList})
     $excelAnno
     #end
     #end
-    #if(${column.entityQueryAnno})
-    ${column.entityQueryAnno}
+    #if(${column.queryAnno})
+    ${column.queryAnno}
     #end
-    #if(${column.entityValidatorAnnoList})
-    #foreach($validatorAnno in ${column.entityValidatorAnnoList})
+    #if(${column.validatorAnnoList})
+    #foreach($validatorAnno in ${column.validatorAnnoList})
     $validatorAnno
     #end
     #end
@@ -48,31 +57,11 @@ public class ${EntityName} extends PageDTO {
     #if(${column.tableFieldAnno})
     ${column.tableFieldAnno}
     #end
-    private $column.javaType $column.javaField;
-
-    #foreach($extend in ${column.extendColumnList})
-    #if(!${needPageDto})##只有不需要dto的时候才会出现此情况
-    #if(${extend.entityQueryAnno})
-    ${extend.entityQueryAnno}
-    #end
-    #if(${extend.entityValidatorAnnoList})
-    #foreach($validatorAnno in ${column.entityValidatorAnnoList})
-    $validatorAnno
-    #end
-    #end
-    #if(${extend.apiModelPropertyAnno})
-    ${extend.apiModelPropertyAnno}
-    #end
-    #if(${extend.tableFieldAnno})
-    ${extend.tableFieldAnno}
-    #end
-    #if(${extend.isCollection} == "1")
-    private List<$extend.javaType> $extend.javaField;
+    #if(${column.isCollection} == "1")
+    private List<$column.javaType> $column.javaField;
     #else
-    private $extend.javaType $extend.javaField;
-    #end
+    private $column.javaType $column.javaField;
     #end
 
-    #end
 #end
 }

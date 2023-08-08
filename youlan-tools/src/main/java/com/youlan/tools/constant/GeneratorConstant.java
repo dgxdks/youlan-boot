@@ -1,5 +1,8 @@
 package com.youlan.tools.constant;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static com.youlan.common.core.db.constant.DBConstant.*;
 
 public class GeneratorConstant {
@@ -84,20 +87,6 @@ public class GeneratorConstant {
      */
     public static final String[] COLUMN_TYPE_NUMBER = {"tinyint", "smallint", "mediumint", "int", "number", "integer", "bit", "bigint", "float", "double", "decimal"};
 
-    // ******************** 不参与生成的数据库字段 ********************
-    /**
-     * 不参与编辑的字段
-     */
-    public static final String[] COLUMN_EXCLUDE_EDIT = {COL_ID, COL_CREATE_ID, COL_CREATE_BY, COL_UPDATE_ID, COL_UPDATE_BY, COL_CREATE_TIME, COL_UPDATE_TIME, COL_STS};
-    /**
-     * 不参与查询的字段
-     */
-    public static final String[] COLUMN_EXCLUDE_SEARCH = {COL_ID, COL_CREATE_ID, COL_CREATE_BY, COL_UPDATE_ID, COL_UPDATE_BY, COL_CREATE_TIME, COL_UPDATE_TIME, COL_STS, COL_REMARK};
-    /**
-     * 不参与表格的字段
-     */
-    public static final String[] COLUMN_EXCLUDE_TABLE = {COL_STS};
-
     // ******************** 模版文件类路径 ********************
     public static final String TPL_JAVA_CONTROLLER = "vm/java/controller.java.vm";
     public static final String TPL_JAVA_ENTITY = "vm/java/entity.java.vm";
@@ -110,29 +99,6 @@ public class GeneratorConstant {
     public static final String TPL_VUE_INDEX = "vm/vue/index.vue.vm";
     public static final String TPL_XML_MAPPER = "vm/xml/mapper.xml.vm";
 
-    // ******************** 模版内容 ********************
-    public static final String TPL_SCHEMA_ANNO_NORMAL = "@Schema(title = \"{}\")";
-    public static final String TPL_SCHEMA_ANNO_CONSTANT = "@Schema(title = DBConstant.{})";
-    public static final String TPL_TABLE_FIELD_ANNO_INSERT = "@TableField(fill = FieldFill.INSERT)";
-    public static final String TPL_TABLE_FIELD_ANNO_UPDATE = "@TableField(fill = FieldFill.UPDATE)";
-    public static final String TPL_TABLE_LOGIC_ANNO = "@TableLogic(value = DBConstant.VAL_STS_NO, delval = DBConstant.VAL_STS_YES)";
-    public static final String TPL_TABLE_FIELD_ANNO_EXIST_FALSE = "@TableField(exist = false)";
-    public static final String TPL_TABLE_ID_ANNO_TYPE_AUTO = "@TableId(type = IdType.AUTO)";
-    public static final String TPL_TABLE_ID_ANNO_TYPE_DEFAULT = "@TableId";
-    public static final String TPL_VALIDATOR_NOT_BLANK = "@NotBlank(message=\"{}\")";
-    public static final String TPL_VALIDATOR_NOT_NULL = "@NotNull(message=\"{}\")";
-    public static final String TPL_VALIDATOR_STATUS = "@Status";
-    public static final String TP_VALIDATOR_SUFFIX_NOT_NULL = "不能为空";
-    public static final String TPL_QUERY_ANNO = "@Query(type = QueryType.{})";
-    public static final String TP_FIELD_SUFFIX_RANGE = "Range";
-    public static final String TPL_EXCEL_PROPERTY_ANNO = "@ExcelProperty(value = \"{}\")";
-    public static final String TPL_EXCEL_PROPERTY_DICT_ANNO = "@ExcelProperty(value = \"{}\", converter = DictConverter.class)";
-    public static final String TPL_EXCEL_PROPERTY_MAPPING_ANNO = "@ExcelProperty(value = \"{}\", converter = MappingConverter.class)";
-    public static final String TPL_EXCEL_PROPERTY_PLUS_DICT_ANNO = "@ExcelPropertyPlus(dataType = ExcelPropertyType.DICT, typeKey = \"{}\")";
-    public static final String TPL_EXCEL_PROPERTY_PLUS_MAPPING_STATUS_ANNO = "@ExcelPropertyPlus(dataType = ExcelPropertyType.MAPPING, mapping = {\n" +
-            "            @PropertyMapping(name = \"正常\", value = DBConstant.VAL_STATUS_ENABLED),\n" +
-            "            @PropertyMapping(name = \"停用\", value = DBConstant.VAL_STATUS_DISABLED)\n" +
-            "    })";
 
     // ******************** 文件名称 ********************
     public static final String FILE_NAME_SUFFIX_CONTROLLER = "Controller.java";
@@ -154,8 +120,21 @@ public class GeneratorConstant {
     public static final String PACKAGE_NAME_SUFFIX_ENTITY_DTO = PACKAGE_NAME_SUFFIX_ENTITY + ".dto";
     public static final String PACKAGE_NAME_SUFFIX_ENTITY_VO = PACKAGE_NAME_SUFFIX_ENTITY + ".vo";
 
-    // ******************** 生成类型 ********************
-    public static final String GENERATOR_TYPE_ZIP = "1";
-    public static final String GENERATOR_TYPE_PATH = "2";
+    /**
+     * 列与描述的映射
+     */
+    public static final Map<String, String> COL_DESC_FIELD_NAME_MAPPING = new HashMap<>() {{
+        put(COL_ID, "DESC_ID");
+        put(COL_STATUS, "DESC_STATUS");
+        put(COL_CREATE_BY, "DESC_CREATE_BY");
+        put(COL_CREATE_ID, "DESC_CREATE_ID");
+        put(COL_UPDATE_ID, "DESC_UPDATE_ID");
+        put(COL_UPDATE_BY, "DESC_UPDATE_BY");
+        put(COL_CREATE_TIME, "DESC_CREATE_TIME");
+        put(COL_UPDATE_TIME, "DESC_UPDATE_TIME");
+        put(COL_STS, "DESC_STS");
+        put(COL_SORT, "DESC_SORT");
+        put(COL_REMARK, "DESC_REMARK");
+    }};
 
 }

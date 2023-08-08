@@ -1,5 +1,8 @@
 package com.youlan.common.core.db.constant;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 数据库常量
  */

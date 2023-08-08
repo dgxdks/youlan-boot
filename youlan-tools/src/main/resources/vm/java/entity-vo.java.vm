@@ -1,29 +1,27 @@
 package ${packageName}.entity.vo;
 
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.youlan.common.excel.anno.ExcelPropertyPlus;
-import com.youlan.common.excel.anno.MappingProperty;
-import com.youlan.common.excel.converter.MappingConverter;
-import com.youlan.common.excel.enums.ExcelPropertyType;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
+import com.youlan.system.excel.anno.ExcelDictProperty;
+import com.youlan.system.excel.converter.DictConverter;
+import com.youlan.common.core.db.constant.DBConstant;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+
+import java.util.Date;
 
 @Data
 @ExcelIgnoreUnannotated
 public class ${EntityName}VO {
 
-#foreach($column in ${columns})
-    #if(${column.isVoExclude} != "1")
-    #if(${column.voExcelAnnoList})
-    #foreach($excelAnno in ${column.voExcelAnnoList})
+#foreach($column in ${voColumns})
+    #foreach($excelAnno in ${column.excelAnnoList})
     $excelAnno
-    #end
     #end
     #if(${column.apiModelPropertyAnno})
     ${column.apiModelPropertyAnno}
     #end
     private $column.javaType $column.javaField;
 
-    #end
 #end
 }
