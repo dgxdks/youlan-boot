@@ -39,6 +39,7 @@ nbdist/
 ######################################################################
 # Others
 *.log
+logs
 *.xml.versionsBackup
 *.swp
 uploadPath

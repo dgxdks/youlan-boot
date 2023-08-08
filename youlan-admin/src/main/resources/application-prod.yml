@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    druid:
+      # 主库数据源
+      url: jdbc:mysql://120.27.240.148:13308/youlan-boot?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true
+      username: basic
+      password: Lechou@123
+  redis:
+    host: 121.40.113.151
+    port: 32379
+    database: 80
+    password: Lechou@123
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

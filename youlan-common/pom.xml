@@ -10,33 +10,21 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>youlan-common</artifactId>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>youlan-common-core</module>
+        <module>youlan-common-db</module>
+        <module>youlan-common-redis</module>
+        <module>youlan-common-validator</module>
+        <module>youlan-common-excel</module>
+        <module>youlan-common-httpclient</module>
+        <module>youlan-common-captcha</module>
+        <module>youlan-common-crypto</module>
+    </modules>
 
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context-support</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-    </dependencies>
 </project>

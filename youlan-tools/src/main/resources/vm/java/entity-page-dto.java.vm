@@ -1,0 +1,36 @@
+package ${packageName}.entity.dto;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.util.List;
+
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class ${EntityName}PageDTO extends PageDTO {
+
+#foreach($column in ${columns})
+    #if(${column.pageDtoQueryAnno})
+    ${column.pageDtoQueryAnno}
+    #if(${column.apiModelPropertyAnno})
+    ${column.apiModelPropertyAnno}
+    private $column.javaType $column.javaField;
+    #end
+
+    #end
+    #foreach($extend in ${column.extendColumnList})
+    #if(${extend.pageDtoQueryAnno})
+    ${extend.pageDtoQueryAnno}
+    #if(${extend.apiModelPropertyAnno})
+    ${extend.apiModelPropertyAnno}
+    #if(${extend.isCollection} == "1")
+    private List<$extend.javaType> $extend.javaField;
+    #else
+    private $extend.javaType $extend.javaField;
+    #end
+    #end
+    #end
+
+    #end
+#end
+}

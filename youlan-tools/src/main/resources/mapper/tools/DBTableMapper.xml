@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.youlan.tools.mapper.DBTableMapper">
+
+    <select id="getList" parameterType="com.youlan.tools.entity.DBTable"
+            resultType="com.youlan.tools.entity.DBTable">
+        select table_name, table_comment, create_time, update_time
+        from information_schema.tables
+        where table_schema = (select database())
+        <if test="tableName != null and tableName != ''">
+            and lower(table_name) like lower(concat('%', #{tableName}, '%'))
+        </if>
+        <if test="tableComment != null and tableComment != ''">
+            and lower(table_comment) like lower(concat('%', #{tableComment}, '%'))
+        </if>
+        <if test="createTime != null">
+            and create_time &gt;= #{createTime}
+        </if>
+        <if test="updateTime != null">
+            and update_time &lt;= #{updateTime}
+        </if>
+        <if test="tableNames != null">
+            and table_name in
+            <foreach collection="tableNames" item="name" open="(" close=")" separator=",">
+                #{name}
+            </foreach>
+        </if>
+    </select>
+</mapper>

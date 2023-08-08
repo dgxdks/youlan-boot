@@ -1,0 +1,22 @@
+package ${packageName}.entity.dto;
+
+import lombok.Data;
+
+@Data
+public class ${EntityName}DTO {
+
+#foreach($column in ${columns})
+    #if($column.isDtoExclude != "1")
+    #if(${column.dtoValidatorAnnoList})
+    #foreach($validatorAnno in ${column.dtoValidatorAnnoList})
+    $validatorAnno
+    #end
+    #end
+    #if(${column.apiModelPropertyAnno})
+    ${column.apiModelPropertyAnno}
+    #end
+    private $column.javaType $column.javaField;
+
+    #end
+#end
+}

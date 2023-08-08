@@ -17,7 +17,8 @@ server:
 
 spring:
   profiles:
-    active: dev
+    active: "dev"
+    include: "tools"
   servlet:
     # 文件上传
     multipart:
@@ -25,6 +26,13 @@ spring:
       max-file-size: 10MB
       # 设置总上传的文件大小
       max-request-size: 20MB
+  messages:
+    encoding: UTF-8
+    basename: i18n/messages
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    default-property-inclusion: non_null
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -68,10 +76,23 @@ spring:
         wall:
           config:
             multi-statement-allow: true
+  redis:
+    # 链接超时时间
+    timeout: 10s
+    lettuce:
+      pool:
+        # 连接池中最小空闲连接
+        min-idle: 0
+        # 连接池中最大空闲连接
+        max-idle: 8
+        # 连接池中最大连接数
+        max-active: 8
+        # 连接池最大阻塞等待时间(使用负值表示没有限制)
+        max-wait: -1ms
 
 mybatis-plus:
   type-aliases-package: com.youlan.**.entity
-  mapper-locations: classpath*:/mapper/*.xml
+  mapper-locations: classpath*:/mapper/**/*.xml
   configuration:
     cache-enabled: true
     use-generated-keys: true
@@ -79,6 +100,98 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
   global-config:
     db-config:
-      logic-delete-field: delete
-      logic-not-delete-value: 1
-      logic-delete-value: 0
+      logic-delete-field: sts
+      logic-not-delete-value: '1'
+      logic-delete-value: '2'
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: '后台管理系统文档'
+      paths-to-match: '/**'
+      packages-to-scan: 'com.youlan'
+
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+    swagger-model-name: "实体类列表"
+
+sa-token:
+  # token 名称
+  token-name: token
+  # token 有效期(s)
+  timeout: 259200
+  # token 最低活跃频率(s)
+  active-timeout: -1
+  # 是否允许统一账号多地同时登录
+  is-concurrent: true
+  # 在多人登录同一账号时, 是否公共一个token
+  is-share: true
+  # token 风格
+  token-style: uuid
+  # 是否输出操作日志
+  is-log: true
+
+youlan:
+  # 框架模块
+  framework:
+    # 操作日志
+    system-log:
+      # 是否开启操作日志
+      enabled: true
+      # 是否开启位置查询
+      region-enabled: true
+      # 是否异步处理
+      async-enabled: true
+      # 异常信息保存长度上限
+      error-length-limit: 200
+    # sa-token配置
+    sa-token:
+      exclude-path-patterns:
+        # 静态资源相关
+        - /*.html
+        - /**/*.html
+        - /*.css
+        - /**/*.css
+        - /*.js
+        - /**/*.js
+        # swagger相关
+        - /*/api-docs
+        - /*/api-docs/**
+  # 公共模块
+  common:
+    # 验证码
+    captcha:
+      # 验证码类型(LINE-线条干扰 CIRCLE-圆圈干扰 SHEAR-扭曲干扰)
+      captcha-type: LINE
+      # 验证码内容类型(CHAR-字符类型 NUMBER-数字类型 CHAR_NUMBER-字符+数字类型 MATH-四则运算类型)
+      captcha-code-type: MATH
+      # 验证码长度
+      captcha-code-len: 5
+    # 加密
+    crypto:
+      # AES秘钥(支持明文秘钥/系统路径文件[需指定绝对路径]/类路径文件[需添加classpath:前缀])
+      aes-key: 85SylH6RnDL9H9a/yoqXew==
+      # RSA公钥(支持明文秘钥/系统路径文件[需指定绝对路径]/类路径文件[需添加classpath:前缀])
+      rsa-public-key: classpath:crypto/rsa-public.key
+      # RSA秘钥(支持明文秘钥/系统路径文件[需指定绝对路径]/类路径文件[需添加classpath:前缀])
+      rsa-private-key: classpath:crypto/rsa-private.key
+      # SM2公钥(支持明文秘钥/系统路径文件[需指定绝对路径]/类路径文件[需添加classpath:前缀])
+      sm2-public-key: classpath:crypto/sm2-public.key
+      # SM2私钥(支持明文秘钥/系统路径文件[需指定绝对路径]/类路径文件[需添加classpath:前缀])
+      sm2-private-key: classpath:crypto/sm2-private.key
+      # SM2秘钥(支持明文秘钥/系统路径文件[需指定绝对路径]/类路径文件[需添加classpath:前缀])
+      sm4-key: XZAzFuMtViu55dngoUVivQ==
+  # 插件模块
+  plugin:
+    region:
+      # ip2region 查询模式(FILE-基于文件 INDEX-基于索引 MEMORY-基于内存 NETWORK-基于网络)
+      searcher-model: MEMORY
+      # ip2region.xdb文件路径,类路径文件需添加classpath:前缀，如classpath:ip2region/ip2region.xdb
+      xdb-path: classpath:ip2region/ip2region.xdb

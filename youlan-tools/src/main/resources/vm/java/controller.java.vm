@@ -1,0 +1,152 @@
+package ${packageName}.controller;
+
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.collection.CollectionUtil;
+import com.youlan.common.core.restful.ApiResult;
+import com.youlan.common.core.restful.enums.ApiResultCode;
+import com.youlan.common.db.utils.QueryWrapperUtil;
+import com.youlan.framework.controller.BaseController;
+import com.youlan.framework.constant.SystemLogType;
+import com.youlan.framework.anno.SystemLog;
+import ${packageName}.entity.${EntityName};
+import ${packageName}.service.${EntityName}Service;
+#if(${needDto})
+import cn.hutool.core.bean.BeanUtil;
+import ${packageName}.entity.dto.${EntityName}DTO;
+#end
+#if(${needPageDto})
+import ${packageName}.entity.dto.${EntityName}PageDTO;
+#else
+import ${packageName}.entity.${EntityName};
+#end
+#if(${needVo})
+import ${packageName}.entity.vo.${EntityName}VO;
+#end
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AllArgsConstructor;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+
+@Tag(name = "${featureName}")
+@RestController
+@RequestMapping("/${moduleName}/${bizName}")
+@AllArgsConstructor
+public class ${EntityName}Controller extends BaseController {
+    private final ${EntityName}Service ${entityName}Service;
+
+    @Operation(summary = "${featureName}新增")
+    @PostMapping("/add${BizName}")
+    @SystemLog(name = "${featureName}", type = SystemLogType.OPERATION_LOG_TYPE_ADD)
+    #if(${needDto})
+    public ApiResult add${BizName}(@Validated @RequestBody ${EntityName}DTO dto) {
+    #else
+    public ApiResult add${BizName}(@Validated @RequestBody ${EntityName} ${entityName}) {
+    #end
+        #if(${needDto})
+        return toSuccess(${entityName}Service.save(BeanUtil.copyProperties(dto, ${EntityName}.class)));
+        #else
+        return toSuccess(${entityName}Service.save(${entityName}));
+        #end
+    }
+
+    @Operation(summary = "${featureName}修改")
+    @PostMapping("/update${BizName}")
+    @SystemLog(name = "${featureName}", type = SystemLogType.OPERATION_LOG_TYPE_UPDATE)
+    #if(${needDto})
+    public ApiResult update${BizName}(@Validated @RequestBody ${EntityName}DTO dto) {
+    #else
+    public ApiResult update${BizName}(@Validated @RequestBody ${EntityName} ${entityName}) {
+    #end
+        #if(${needDto})
+        if (ObjectUtil.isNull(dto.get${pkJavaField}())) {
+            return toError(ApiResultCode.C0001);
+        }
+        return toSuccess(${entityName}Service.updateById(BeanUtil.copyProperties(dto, ${EntityName}.class)));
+        #else
+        if (ObjectUtil.isNull(${entityName}.get${pkJavaField}())) {
+            return toError(ApiResultCode.C0001);
+        }
+        return toSuccess(${entityName}Service.updateById(${entityName}));
+        #end
+    }
+
+    @Operation(summary = "${featureName}删除")
+    @PostMapping("/remove${BizName}")
+    @SystemLog(name = "${featureName}", type = SystemLogType.OPERATION_LOG_TYPE_REMOVE)
+    public ApiResult remove${BizName}(@Validated @RequestBody ListDTO<${pkColumn.javaType}> dto) {
+        if (CollectionUtil.isEmpty(dto.getList())) {
+            return toSuccess();
+        }
+        return toSuccess(${entityName}Service.removeBatchByIds(dto.getList()));
+    }
+
+    @Operation(summary = "${featureName}详情")
+    @PostMapping("/load${BizName}")
+    public ApiResult load${BizName}(@RequestParam ${pkColumn.javaType} ${pkColumn.javaField}) {
+        #if(${needVo})
+        return toSuccess(${entityName}Service.loadOne(${pkColumn.javaField}, ${EntityName}VO.class));
+        #else
+        return toSuccess(${entityName}Service.loadOne(${pkColumn.javaField}));
+        #end
+    }
+
+    @Operation(summary = "${featureName}分页")
+    @PostMapping("/get${BizName}PageList")
+    @SystemLog(name = "${featureName}", type = SystemLogType.OPERATION_LOG_TYPE_PAGE_LIST)
+    #if(${needPageDto})
+    public ApiResult get${BizName}PageList(@RequestBody ${EntityName}PageDTO dto) {
+    #else
+    public ApiResult get${BizName}PageList(@RequestBody ${EntityName} ${entityName}) {
+    #end
+        #if(${needPageDto})
+        return toSuccess(${entityName}Service.loadPage(dto, QueryWrapperUtil.getQueryWrapper(dto)));
+        #else
+        return toSuccess(${entityName}Service.loadPage(${entityName}, QueryWrapperUtil.getQueryWrapper(${entityName})));
+        #end
+    }
+
+    @Operation(summary = "${featureName}列表")
+    @PostMapping("/get${BizName}List")
+    @SystemLog(name = "${featureName}", type = SystemLogType.OPERATION_LOG_TYPE_LIST)
+    #if(${needPageDto})
+    public ApiResult get${BizName}List(@RequestBody ${EntityName}PageDTO dto) {
+    #else
+    public ApiResult get${BizName}List(@RequestBody ${EntityName} ${entityName}) {
+    #end
+        #if(${needPageDto})
+            return toSuccess(${entityName}Service.loadMore(QueryWrapperUtil.getQueryWrapper(dto)));
+        #else
+            return toSuccess(${entityName}Service.loadMore(QueryWrapperUtil.getQueryWrapper(${entityName})));
+        #end
+    }
+
+    @Operation(summary = "${featureName}导出")
+    @PostMapping("/export${BizName}List")
+    @SystemLog(name = "${featureName}", type = SystemLogType.OPERATION_LOG_TYPE_EXPORT)
+    #if(${needPageDto})
+    public void export${BizName}List(@RequestBody ${EntityName}PageDTO dto, HttpServletResponse response) throws IOException {
+        #if(${needVo})
+        List<${EntityName}VO> ${entityName}List = ${entityName}Service.loadMore(QueryWrapperUtil.getQueryWrapper(dto), ${EntityName}VO.class);
+        toExcel("${featureName}.xlsx", ${EntityName}VO.class, ${entityName}List, response);
+        #else
+        List<${EntityName}> ${entityName}List = ${entityName}Service.loadMore(QueryWrapperUtil.getQueryWrapper(dto));
+        toExcel("${featureName}.xlsx", ${EntityName}.class, ${entityName}List, response);
+        #end
+    }
+    #else
+    public void export${BizName}List(@RequestBody ${EntityName} ${entityName}, HttpServletResponse response) throws IOException {
+        #if(${needVo})
+            List<${EntityName}VO> ${entityName}List = ${entityName}Service.loadMore(QueryWrapperUtil.getQueryWrapper(${entityName}), ${EntityName}VO.class);
+            toExcel("${featureName}.xlsx", "${featureName}", ${EntityName}VO.class, ${entityName}List, response);
+        #else
+            List<${EntityName}> ${entityName}List = ${entityName}Service.loadMore(QueryWrapperUtil.getQueryWrapper(${entityName}));
+            toExcel("${featureName}.xlsx", "${featureName}", ${EntityName}.class, ${entityName}List, response);
+        #end
+    }
+    #end
+
+}

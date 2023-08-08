@@ -1,0 +1,46 @@
+youlan:
+  tools:
+    generator:
+      # 包路径
+      package-name: com.youlan.system
+      # 默认是否生成DTO
+      need-entity-dto: true
+      # 默认是否生成PageDTO
+      need-entity-page-dto: true
+      # 默认是否生成VO
+      need-entity-vo: true
+      # 表描述转功能名称替换正则
+      table-feature-regex: "(表)"
+      # 是否去除表前缀
+      table-remove-prefix: true
+      # 表前缀匹配项
+      table-match-prefix:
+        - t_
+      # 排除参与代码生成的数据库表
+      table-exclude:
+        - t_common_dict_type
+        - t_common_dict_data
+        - t_tools_generator_column
+        - t_tools_generator_table
+      #编辑时要排除的列字段
+      editColumnExclude:
+        - sts
+        - create_time
+        - create_by
+        - create_id
+        - update_time
+        - update_by
+        - update_id
+      #查询时要排除的列字段
+      queryColumnExclude:
+        - id
+        - sts
+        - remark
+        - sort
+        - create_by
+        - create_id
+        - update_by
+        - update_id
+      #显示时要排除的列字段
+      viewColumnExclude:
+        - sts

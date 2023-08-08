@@ -10,17 +10,52 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>youlan-admin</artifactId>
+    <packaging>jar</packaging>
 
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>com.youlan</groupId>
-            <artifactId>youlan-system</artifactId>
+            <artifactId>youlan-framework</artifactId>
+            <!-- 不需要sa-token时可放开此注解
+            <exclusions>
+                <exclusion>
+                    <groupId>cn.dev33</groupId>
+                    <artifactId>sa-token-spring-boot-autoconfig</artifactId>
+                </exclusion>
+            </exclusions>
+            -->
+        </dependency>
+        <dependency>
+            <groupId>com.youlan</groupId>
+            <artifactId>youlan-tools</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.youlan</groupId>
+            <artifactId>youlan-common-excel</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.youlan</groupId>
+            <artifactId>youlan-common-captcha</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.youlan</groupId>
+            <artifactId>youlan-common-crypto</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-openapi3-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
     </dependencies>
 </project>

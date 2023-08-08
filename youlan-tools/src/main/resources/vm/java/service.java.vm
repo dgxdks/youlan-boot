@@ -1,0 +1,15 @@
+package ${packageName}.service;
+
+import com.youlan.common.db.service.BaseServiceImpl;
+import ${packageName}.entity.${EntityName};
+import ${packageName}.mapper.${EntityName}Mapper;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+@Slf4j
+@Service
+@AllArgsConstructor
+public class ${EntityName}Service extends BaseServiceImpl<${EntityName}Mapper, ${EntityName}> {
+
+}

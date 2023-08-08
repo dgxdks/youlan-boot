@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.youlan.system.mapper.OrgMapper">
+    <update id="removeByOrgModelTableId">
+        update t_sys_org as yo left join ${tableName} as ye on ye.org_id = yo.org_id
+        set yo.org_sts = '2'
+        where ye.id in
+        <foreach collection="idList" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </update>
+</mapper>

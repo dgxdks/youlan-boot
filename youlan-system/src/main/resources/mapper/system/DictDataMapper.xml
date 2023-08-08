@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.youlan.system.mapper.DictDataMapper">
+    <select id="getCacheList" resultType="com.youlan.system.entity.DictData">
+        select data.*
+        from t_sys_dict_data as data
+                 left join t_sys_dict_type as type on type.type_key = data.type_key
+        where data.status = '1'
+          and type.status = '1'
+          and type.sts = '1'
+    </select>
+</mapper>

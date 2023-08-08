@@ -1,0 +1,78 @@
+package ${packageName}.entity;
+
+#if(!${needVo})
+import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
+import com.youlan.common.excel.anno.ExcelPropertyPlus;
+import com.youlan.common.excel.anno.MappingProperty;
+import com.youlan.common.excel.converter.MappingConverter;
+import com.youlan.common.excel.enums.ExcelPropertyType;
+#end
+import com.baomidou.mybatisplus.annotation.*;
+import lombok.Data;
+#if(!${needPageDto})
+import lombok.EqualsAndHashCode;
+#end
+#if(!${needDto})
+#end
+
+@Data
+@TableName("${tableName}")
+#if(${needPageDto})
+public class ${EntityName} {
+#else
+#if(!${needVo})
+@ExcelIgnoreUnannotated
+#end
+@EqualsAndHashCode(callSuper = true)
+public class ${EntityName} extends PageDTO {
+#end
+
+#foreach($column in ${columns})
+    #if(${column.entityExcelAnnoList})
+    #foreach($excelAnno in ${column.entityExcelAnnoList})
+    $excelAnno
+    #end
+    #end
+    #if(${column.entityQueryAnno})
+    ${column.entityQueryAnno}
+    #end
+    #if(${column.entityValidatorAnnoList})
+    #foreach($validatorAnno in ${column.entityValidatorAnnoList})
+    $validatorAnno
+    #end
+    #end
+    #if(${column.apiModelPropertyAnno})
+    ${column.apiModelPropertyAnno}
+    #end
+    #if(${column.tableFieldAnno})
+    ${column.tableFieldAnno}
+    #end
+    private $column.javaType $column.javaField;
+
+    #foreach($extend in ${column.extendColumnList})
+    #if(!${needPageDto})##只有不需要dto的时候才会出现此情况
+    #if(${extend.entityQueryAnno})
+    ${extend.entityQueryAnno}
+    #end
+    #if(${extend.entityValidatorAnnoList})
+    #foreach($validatorAnno in ${column.entityValidatorAnnoList})
+    $validatorAnno
+    #end
+    #end
+    #if(${extend.apiModelPropertyAnno})
+    ${extend.apiModelPropertyAnno}
+    #end
+    #if(${extend.tableFieldAnno})
+    ${extend.tableFieldAnno}
+    #end
+    #if(${extend.isCollection} == "1")
+    private List<$extend.javaType> $extend.javaField;
+    #else
+    private $extend.javaType $extend.javaField;
+    #end
+    #end
+
+    #end
+#end
+}

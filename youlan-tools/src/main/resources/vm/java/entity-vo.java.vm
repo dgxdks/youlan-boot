@@ -1,0 +1,29 @@
+package ${packageName}.entity.vo;
+
+import com.alibaba.excel.annotation.ExcelProperty;
+import com.youlan.common.excel.anno.ExcelPropertyPlus;
+import com.youlan.common.excel.anno.MappingProperty;
+import com.youlan.common.excel.converter.MappingConverter;
+import com.youlan.common.excel.enums.ExcelPropertyType;
+import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
+import lombok.Data;
+
+@Data
+@ExcelIgnoreUnannotated
+public class ${EntityName}VO {
+
+#foreach($column in ${columns})
+    #if(${column.isVoExclude} != "1")
+    #if(${column.voExcelAnnoList})
+    #foreach($excelAnno in ${column.voExcelAnnoList})
+    $excelAnno
+    #end
+    #end
+    #if(${column.apiModelPropertyAnno})
+    ${column.apiModelPropertyAnno}
+    #end
+    private $column.javaType $column.javaField;
+
+    #end
+#end
+}
