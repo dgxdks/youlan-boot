@@ -11,6 +11,7 @@ import com.youlan.framework.anno.SystemLog;
 import com.youlan.framework.constant.SystemLogType;
 import com.youlan.framework.controller.BaseController;
 import com.youlan.system.entity.Config;
+import com.youlan.system.entity.LoginLog;
 import com.youlan.system.service.ConfigService;
 import com.youlan.system.service.biz.ConfigBizService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,6 +19,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
 
 @Tag(name = "系统配置")
 @RestController
@@ -27,7 +32,7 @@ public class ConfigController extends BaseController {
     private final ConfigService configService;
     private final ConfigBizService configBizService;
 
-    @SaCheckPermission("system:config:addConfig")
+    @SaCheckPermission("system:config:add")
     @Operation(summary = "系统配置新增")
     @SystemLog(name = "系统配置", type = SystemLogType.OPERATION_LOG_TYPE_ADD)
     @PostMapping("/addConfig")
@@ -35,7 +40,7 @@ public class ConfigController extends BaseController {
         return toSuccess(configBizService.addConfig(config));
     }
 
-    @SaCheckPermission("system:config:updateConfig")
+    @SaCheckPermission("system:config:update")
     @Operation(summary = "系统配置修改")
     @PostMapping("/updateConfig")
     @SystemLog(name = "系统配置", type = SystemLogType.OPERATION_LOG_TYPE_UPDATE)
@@ -46,7 +51,7 @@ public class ConfigController extends BaseController {
         return toSuccess(configBizService.updateConfig(config));
     }
 
-    @SaCheckPermission("system:config:updateConfig")
+    @SaCheckPermission("system:config:remove")
     @Operation(summary = "系统配置删除")
     @PostMapping("/removeConfig")
     @SystemLog(name = "系统配置", type = SystemLogType.OPERATION_LOG_TYPE_REMOVE)
@@ -57,18 +62,27 @@ public class ConfigController extends BaseController {
         return toSuccess(configBizService.removeConfig(dto.getList()));
     }
 
-    @SaCheckPermission("system:config:loadConfig")
+    @SaCheckPermission("system:config:load")
     @Operation(summary = "系统配置详情")
     @PostMapping("/loadConfig")
     public ApiResult loadConfig(@RequestParam Long id) {
         return toSuccess(configService.loadOne(id));
     }
 
-    @SaCheckPermission("system:config:getConfigPageList")
+    @SaCheckPermission("system:config:pageList")
     @Operation(summary = "系统配置分页")
     @PostMapping("/getConfigPageList")
     @SystemLog(name = "系统配置", type = SystemLogType.OPERATION_LOG_TYPE_PAGE_LIST)
     public ApiResult getConfigPageList(@RequestBody Config config) {
         return toSuccess(configService.loadPage(config, QueryWrapperUtil.getQueryWrapper(config)));
+    }
+
+    @SaCheckPermission("system:config:export")
+    @Operation(summary = "系统配置导出")
+    @PostMapping("/exportConfigList")
+    @SystemLog(name = "系统配置", type = SystemLogType.OPERATION_LOG_TYPE_EXPORT)
+    public void exportConfigList(@RequestBody Config config, HttpServletResponse response) throws IOException {
+        List<Config> loginLogList = configService.loadMore(QueryWrapperUtil.getQueryWrapper(config));
+        toExcel("系统配置.xlsx", "系统配置", LoginLog.class, loginLogList, response);
     }
 }

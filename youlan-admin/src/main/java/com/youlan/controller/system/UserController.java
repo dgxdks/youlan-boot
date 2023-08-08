@@ -31,7 +31,7 @@ import java.util.List;
 public class UserController extends BaseController {
     private final UserBizService userBizService;
 
-    @SaCheckPermission("system:user:addUser")
+    @SaCheckPermission("system:user:add")
     @Operation(summary = "用户新增")
     @PostMapping("/addUser")
     @SystemLog(name = "用户", type = SystemLogType.OPERATION_LOG_TYPE_ADD)
@@ -39,7 +39,7 @@ public class UserController extends BaseController {
         return toSuccess(userBizService.addUser(dto));
     }
 
-    @SaCheckPermission("system:user:updateUser")
+    @SaCheckPermission("system:user:update")
     @Operation(summary = "用户修改")
     @PostMapping("/updateUser")
     @SystemLog(name = "用户", type = SystemLogType.OPERATION_LOG_TYPE_UPDATE)
@@ -50,7 +50,7 @@ public class UserController extends BaseController {
         return toSuccess(userBizService.updateUser(dto));
     }
 
-    @SaCheckPermission("system:user:removeUser")
+    @SaCheckPermission("system:user:remove")
     @Operation(summary = "用户删除")
     @PostMapping("/removeUser")
     @SystemLog(name = "用户", type = SystemLogType.OPERATION_LOG_TYPE_REMOVE)
@@ -61,14 +61,14 @@ public class UserController extends BaseController {
         return toSuccess(userBizService.removeUser(dto.getList()));
     }
 
-    @SaCheckPermission("system:user:loadUser")
+    @SaCheckPermission("system:user:load")
     @Operation(summary = "用户详情")
     @PostMapping("/loadUser")
     public ApiResult loadUser(@RequestParam Long id) {
         return toSuccess(userBizService.loadUser(id));
     }
 
-    @SaCheckPermission("system:user:getUserPageList")
+    @SaCheckPermission("system:user:pageList")
     @Operation(summary = "用户分页")
     @PostMapping("/getUserPageList")
     @SystemLog(name = "用户", type = SystemLogType.OPERATION_LOG_TYPE_PAGE_LIST)
@@ -76,7 +76,7 @@ public class UserController extends BaseController {
         return toSuccess(userBizService.getUserPageList(dto));
     }
 
-    @SaCheckPermission("system:user:exportUserList")
+    @SaCheckPermission("system:user:export")
     @Operation(summary = "用户导出")
     @PostMapping("/exportUserList")
     @SystemLog(name = "用户", type = SystemLogType.OPERATION_LOG_TYPE_EXPORT)
@@ -85,7 +85,7 @@ public class UserController extends BaseController {
         toExcel("用户.xlsx", "用户", UserVO.class, userList, response);
     }
 
-    @SaCheckPermission("system:user:importUserList")
+    @SaCheckPermission("system:user:import")
     @Operation(summary = "用户导入")
     @PostMapping("/importUserList")
     @SystemLog(name = "用户", type = SystemLogType.OPERATION_LOG_TYPE_IMPORT)
@@ -93,7 +93,7 @@ public class UserController extends BaseController {
 
     }
 
-    @SaCheckPermission("system:user:updateUserPasswd")
+    @SaCheckPermission("system:user:updatePasswd")
     @Operation(summary = "用户密码修改")
     @PostMapping("/updateUserPasswd")
     @SystemLog(name = "用户", type = SystemLogType.OPERATION_LOG_TYPE_UPDATE)

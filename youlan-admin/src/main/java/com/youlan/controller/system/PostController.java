@@ -29,7 +29,7 @@ import java.util.List;
 public class PostController extends BaseController {
     private final PostService postService;
 
-    @SaCheckPermission("system:post:addPost")
+    @SaCheckPermission("system:post:add")
     @Operation(summary = "岗位新增")
     @PostMapping("/addPost")
     @SystemLog(name = "岗位", type = SystemLogType.OPERATION_LOG_TYPE_ADD)
@@ -37,7 +37,7 @@ public class PostController extends BaseController {
         return toSuccess(postService.save(post));
     }
 
-    @SaCheckPermission("system:post:updatePost")
+    @SaCheckPermission("system:post:update")
     @Operation(summary = "岗位修改")
     @PostMapping("/updatePost")
     @SystemLog(name = "岗位", type = SystemLogType.OPERATION_LOG_TYPE_UPDATE)
@@ -48,7 +48,7 @@ public class PostController extends BaseController {
         return toSuccess(postService.updateById(post));
     }
 
-    @SaCheckPermission("system:post:removePost")
+    @SaCheckPermission("system:post:remove")
     @Operation(summary = "岗位删除")
     @PostMapping("/removePost")
     @SystemLog(name = "岗位", type = SystemLogType.OPERATION_LOG_TYPE_REMOVE)
@@ -59,14 +59,14 @@ public class PostController extends BaseController {
         return toSuccess(postService.removeBatchByIds(dto.getList()));
     }
 
-    @SaCheckPermission("system:post:loadPost")
+    @SaCheckPermission("system:post:load")
     @Operation(summary = "岗位详情")
     @PostMapping("/loadPost")
     public ApiResult loadPost(@RequestParam Long id) {
         return toSuccess(postService.loadOne(id));
     }
 
-    @SaCheckPermission("system:post:getPostPageList")
+    @SaCheckPermission("system:post:pageList")
     @Operation(summary = "岗位分页")
     @PostMapping("/getPostPageList")
     @SystemLog(name = "岗位", type = SystemLogType.OPERATION_LOG_TYPE_PAGE_LIST)
@@ -74,7 +74,7 @@ public class PostController extends BaseController {
         return toSuccess(postService.loadPage(post, QueryWrapperUtil.getQueryWrapper(post)));
     }
 
-    @SaCheckPermission("system:post:exportPostList")
+    @SaCheckPermission("system:post:export")
     @Operation(summary = "岗位导出")
     @PostMapping("/exportPostList")
     @SystemLog(name = "岗位", type = SystemLogType.OPERATION_LOG_TYPE_EXPORT)

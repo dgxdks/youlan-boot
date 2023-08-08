@@ -19,6 +19,7 @@ public class StpInterfaceSystemPermissionImpl implements StpInterface {
         return roleIdList.stream()
                 .map(roleId -> roleBizService().getMenuPermsListCache(Long.valueOf(roleId)))
                 .flatMap(Collection::stream)
+                .distinct()
                 .collect(Collectors.toList());
 
     }

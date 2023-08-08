@@ -28,7 +28,7 @@ public class RoleController extends BaseController {
     private final RoleService roleService;
     private final RoleBizService roleBizService;
 
-    @SaCheckPermission("system:role:addRole")
+    @SaCheckPermission("system:role:add")
     @Operation(summary = "角色新增")
     @PostMapping("/addRole")
     @SystemLog(name = "角色", type = SystemLogType.OPERATION_LOG_TYPE_ADD)
@@ -36,7 +36,7 @@ public class RoleController extends BaseController {
         return toSuccess(roleService.addRole(role));
     }
 
-    @SaCheckPermission("system:role:updateRole")
+    @SaCheckPermission("system:role:update")
     @Operation(summary = "角色修改")
     @PostMapping("/updateRole")
     @SystemLog(name = "角色", type = SystemLogType.OPERATION_LOG_TYPE_UPDATE)
@@ -47,7 +47,7 @@ public class RoleController extends BaseController {
         return toSuccess(roleService.updateRole(role));
     }
 
-    @SaCheckPermission("system:role:removeRole")
+    @SaCheckPermission("system:role:remove")
     @Operation(summary = "角色删除")
     @PostMapping("/removeRole")
     @SystemLog(name = "角色", type = SystemLogType.OPERATION_LOG_TYPE_REMOVE)
@@ -58,14 +58,14 @@ public class RoleController extends BaseController {
         return toSuccess(roleService.removeBatchByIds(dto.getList()));
     }
 
-    @SaCheckPermission("system:role:loadRole")
+    @SaCheckPermission("system:role:load")
     @Operation(summary = "角色详情")
     @PostMapping("/loadRole")
     public ApiResult loadRole(@RequestParam Long id) {
         return toSuccess(roleService.loadOne(id));
     }
 
-    @SaCheckPermission("system:role:getRolePageList")
+    @SaCheckPermission("system:role:pageList")
     @Operation(summary = "角色分页")
     @PostMapping("/getRolePageList")
     @SystemLog(name = "角色", type = SystemLogType.OPERATION_LOG_TYPE_PAGE_LIST)
@@ -73,7 +73,7 @@ public class RoleController extends BaseController {
         return toSuccess(roleService.loadPage(role, QueryWrapperUtil.getQueryWrapper(role)));
     }
 
-    @SaCheckPermission("system:role:updateRole")
+    @SaCheckPermission("system:role:update")
     @Operation(summary = "角色数据权限修改")
     @PostMapping("/updateRoleScope")
     @SystemLog(name = "角色", type = SystemLogType.OPERATION_LOG_TYPE_UPDATE)

@@ -28,14 +28,14 @@ public class DictDataController extends BaseController {
     private final DictDataService dictDataService;
     private final DictBizService dictBizService;
 
-    @SaCheckPermission("system:dictData:addDictData")
+    @SaCheckPermission("system:dict:add")
     @Operation(summary = "字典值新增")
     @PostMapping("/addDictData")
     public ApiResult addDictData(@Validated @RequestBody DictData dictData) {
         return toSuccess(dictBizService.addDictData(dictData));
     }
 
-    @SaCheckPermission("system:dictData:updateDictData")
+    @SaCheckPermission("system:dict:update")
     @Operation(summary = "字典值修改")
     @PostMapping("/updateDictData")
     public ApiResult updateDictData(@Validated @RequestBody DictData dictData) {
@@ -45,14 +45,14 @@ public class DictDataController extends BaseController {
         return toSuccess(dictBizService.updateDictData(dictData));
     }
 
-    @SaCheckPermission("system:dictData:removeDictData")
+    @SaCheckPermission("system:dict:remove")
     @Operation(summary = "字典值删除")
     @PostMapping("/removeDictData")
     public ApiResult removeDictData(@RequestBody ListDTO<Long> ids) {
         return toSuccess(dictBizService.removeDictData(ids.getList()));
     }
 
-    @SaCheckPermission("system:dictData:getDictDataPageList")
+    @SaCheckPermission("system:dict:pageList")
     @Operation(summary = "字典值分页")
     @PostMapping("/getDictDataPageList")
     public ApiResult getDictDataPageList(@RequestBody DictData dictData) {

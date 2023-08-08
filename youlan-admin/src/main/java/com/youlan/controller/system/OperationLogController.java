@@ -27,7 +27,7 @@ import java.util.List;
 public class OperationLogController extends BaseController {
     private final OperationLogService operationLogService;
 
-    @SaCheckPermission("system:operationLog:removeOperationLog")
+    @SaCheckPermission("system:operationLog:remove")
     @Operation(summary = "操作日志删除")
     @PostMapping("/removeOperationLog")
     public ApiResult removeOperationLog(@Validated @RequestBody ListDTO<Long> dto) {
@@ -37,21 +37,21 @@ public class OperationLogController extends BaseController {
         return toSuccess(operationLogService.removeBatchByIds(dto.getList()));
     }
 
-    @SaCheckPermission("system:operationLog:loadOperationLog")
+    @SaCheckPermission("system:operationLog:load")
     @Operation(summary = "操作日志详情")
     @PostMapping("/loadOperationLog")
     public ApiResult loadOperationLog(@RequestParam Long id) {
         return toSuccess(operationLogService.loadOne(id));
     }
 
-    @SaCheckPermission("system:operationLog:getOperationLogPageList")
+    @SaCheckPermission("system:operationLog:pageList")
     @Operation(summary = "操作日志分页")
     @PostMapping("/getOperationLogPageList")
     public ApiResult getOperationLogPageList(@RequestBody OperationLogPageDTO dto) {
         return toSuccess(operationLogService.loadPage(dto, QueryWrapperUtil.getQueryWrapper(dto)));
     }
 
-    @SaCheckPermission("system:operationLog:exportOperationLog")
+    @SaCheckPermission("system:operationLog:export")
     @Operation(summary = "操作日志导出")
     @PostMapping("/exportOperationLog")
     public void exportOperationLog(@RequestBody OperationLogPageDTO dto, HttpServletResponse response) throws IOException {

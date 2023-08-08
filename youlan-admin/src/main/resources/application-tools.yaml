@@ -32,7 +32,7 @@ youlan:
         - t_sys_user_post
         - t_sys_user_role
         - t_sys_role_org
-#        - t_sys_menu
+        - t_sys_menu
         - t_sys_role_menu
       #编辑时要排除的列字段
       editColumnExclude:

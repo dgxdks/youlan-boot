@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.*;
 public class DeptController extends BaseController {
     private final DeptService deptService;
 
-    @SaCheckPermission("system:dept:addDept")
+    @SaCheckPermission("system:dept:add")
     @Operation(summary = "部门新增")
     @PostMapping("/addDept")
     @SystemLog(name = "部门管理", type = SystemLogType.OPERATION_LOG_TYPE_ADD)
@@ -38,7 +38,7 @@ public class DeptController extends BaseController {
         return toSuccess(deptService.save(BeanUtil.copyProperties(dto, Dept.class)));
     }
 
-    @SaCheckPermission("system:dept:updateDept")
+    @SaCheckPermission("system:dept:update")
     @Operation(summary = "部门修改")
     @PostMapping("/updateDept")
     @SystemLog(name = "部门管理", type = SystemLogType.OPERATION_LOG_TYPE_UPDATE)
@@ -49,7 +49,7 @@ public class DeptController extends BaseController {
         return toSuccess(deptService.updateById(BeanUtil.copyProperties(dto, Dept.class)));
     }
 
-    @SaCheckPermission("system:dept:removeDept")
+    @SaCheckPermission("system:dept:remove")
     @Operation(summary = "部门删除")
     @PostMapping("/removeDept")
     @SystemLog(name = "部门管理", type = SystemLogType.OPERATION_LOG_TYPE_REMOVE)
@@ -60,14 +60,14 @@ public class DeptController extends BaseController {
         return toSuccess(deptService.removeBatchByIds(dto.getList()));
     }
 
-    @SaCheckPermission("system:dept:loadDept")
+    @SaCheckPermission("system:dept:load")
     @Operation(summary = "部门详情")
     @PostMapping("/loadDept")
     public ApiResult loadDept(@RequestParam Long id) {
         return toSuccess(deptService.loadOne(id, OrgVO.class));
     }
 
-    @SaCheckPermission("system:dept:getDeptPageList")
+    @SaCheckPermission("system:dept:pageList")
     @Operation(summary = "部门分页")
     @PostMapping("/getDeptPageList")
     @SystemLog(name = "部门管理", type = SystemLogType.OPERATION_LOG_TYPE_PAGE_LIST)
