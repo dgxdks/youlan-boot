@@ -73,7 +73,7 @@ public class RoleController extends BaseController {
         return toSuccess(roleService.loadPage(role, QueryWrapperUtil.getQueryWrapper(role)));
     }
 
-    @SaCheckPermission("system:role:updateRoleScope")
+    @SaCheckPermission("system:role:updateRole")
     @Operation(summary = "角色数据权限修改")
     @PostMapping("/updateRoleScope")
     @SystemLog(name = "角色", type = SystemLogType.OPERATION_LOG_TYPE_UPDATE)

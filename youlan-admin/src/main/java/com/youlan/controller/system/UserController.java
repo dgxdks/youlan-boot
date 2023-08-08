@@ -50,14 +50,6 @@ public class UserController extends BaseController {
         return toSuccess(userBizService.updateUser(dto));
     }
 
-    @SaCheckPermission("system:user:updateUserPasswd")
-    @Operation(summary = "用户密码修改")
-    @PostMapping("/updateUserPasswd")
-    @SystemLog(name = "用户", type = SystemLogType.OPERATION_LOG_TYPE_UPDATE)
-    public ApiResult updateUserPasswd(@Validated @RequestBody UserPasswdDTO dto) {
-        return toSuccess(userBizService.updateUserPasswd(dto));
-    }
-
     @SaCheckPermission("system:user:removeUser")
     @Operation(summary = "用户删除")
     @PostMapping("/removeUser")
@@ -93,4 +85,19 @@ public class UserController extends BaseController {
         toExcel("用户.xlsx", "用户", UserVO.class, userList, response);
     }
 
+    @SaCheckPermission("system:user:importUserList")
+    @Operation(summary = "用户导入")
+    @PostMapping("/importUserList")
+    @SystemLog(name = "用户", type = SystemLogType.OPERATION_LOG_TYPE_IMPORT)
+    public void importUserList() {
+
+    }
+
+    @SaCheckPermission("system:user:updateUserPasswd")
+    @Operation(summary = "用户密码修改")
+    @PostMapping("/updateUserPasswd")
+    @SystemLog(name = "用户", type = SystemLogType.OPERATION_LOG_TYPE_UPDATE)
+    public ApiResult updateUserPasswd(@Validated @RequestBody UserPasswdDTO dto) {
+        return toSuccess(userBizService.updateUserPasswd(dto));
+    }
 }

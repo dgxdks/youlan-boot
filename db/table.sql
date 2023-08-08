@@ -213,46 +213,97 @@ create table t_sys_menu
     update_time    datetime comment '修改时间',
     primary key (id)
 ) auto_increment = 100 comment '菜单表';
--- 一级菜单
+-- 一级菜单(预留100个ID)
 insert into t_sys_menu
 values (100, '系统管理', '1', 'system', 0, 'system', '', '', '1', '', '2', 0, '1', '1', '', 100, 'admin', 0, '',
         sysdate(), null),
-       (200, '系统监控', '1', 'monitor', 0, 'monitor', '', '', '1', '', '2', 0, '1', '1', '', 100, 'admin', 0, '',
+       (101, '系统监控', '1', 'monitor', 0, 'monitor', '', '', '1', '', '2', 0, '1', '1', '', 100, 'admin', 0, '',
         sysdate(), null),
-       (300, '系统工具', '1', 'tools', 0, 'tool', '', '', '1', '', '2', 0, '1', '1', '', 100, 'admin', 0, '', sysdate(),
+       (102, '系统工具', '1', 'tools', 0, 'tool', '', '', '1', '', '2', 0, '1', '1', '', 100, 'admin', 0, '', sysdate(),
         null);
--- 二级菜单
+-- 二级菜单(预留300个ID)
 insert into t_sys_menu
-values (101, '用户管理', '2', 'user', 100, 'user', 'system/user' 'system/user/index', '', '1', '', '2', 0, '1', '1', '',
-        100, 'admin', 0, '', sysdate(), null),
-       (102, '角色管理', '2', 'role', 100, 'peoples', 'system/role' 'system/role/index', '', '1', '', '2', 0, '1', '1',
-        '', 100, 'admin', 0, '', sysdate(), null),
-       (103, '菜单管理', '2', 'menu', 100, 'tree-table', 'system/menu' 'system/menu/index', '', '1', '', '2', 0, '1',
+values (201, '用户管理', '2', 'system:user', 100, 'user', 'system/user' 'system/user/index', '', '1', '', '2', 0, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (104, '部门管理', '2', 'dept', 100, 'tree', 'system/dept' 'system/dept/index', '', '1', '', '2', 0, '1',
+       (202, '角色管理', '2', 'system:role', 100, 'peoples', 'system/role' 'system/role/index', '', '1', '', '2', 0,
+        '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (203, '菜单管理', '2', 'system:menu', 100, 'tree-table', 'system/menu' 'system/menu/index', '', '1', '', '2', 0,
+        '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (204, '部门管理', '2', 'system:dept', 100, 'tree', 'system/dept' 'system/dept/index', '', '1', '', '2', 0, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (105, '岗位管理', '2', 'post', 100, 'post', 'system/post' 'system/post/index', '', '1', '', '2', 0, '1',
+       (205, '岗位管理', '2', 'system:post', 100, 'post', 'system/post' 'system/post/index', '', '1', '', '2', 0, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (106, '字典管理', '2', 'dict', 100, 'dict', 'system/dict' 'system/dict/index', '', '1', '', '2', 0, '1',
+       (206, '字典管理', '2', 'system:dict', 100, 'dict', 'system/dict' 'system/dict/index', '', '1', '', '2', 0, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (107, '系统参数', '2', 'config', 100, 'edit', 'system/config' 'system/config/index', '', '1', '', '2', 0, '1',
-        '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (108, '通知公告', '2', 'notice', 100, 'message', 'system/notice' 'system/notice/index', '', '1', '', '2', 0, '1',
-        '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (109, '日志管理', '1', 'log', 100, 'log', '' '', '', '1', '', '2', 0, '1', '1', '', 100, 'admin', 0, '',
+       (207, '系统参数', '2', 'system:config', 100, 'edit', 'system/config' 'system/config/index', '', '1', '', '2', 0,
+        '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (208, '通知公告', '2', 'system:notice', 100, 'message', 'system/notice' 'system/notice/index', '', '1', '', '2',
+        0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (209, '日志管理', '1', 'system:log', 100, 'log', '' '', '', '1', '', '2', 0, '1', '1', '', 100, 'admin', 0, '',
         sysdate(), null),
-       (201, '在线用户', '2', 'onlineUser', 100, 'online', 'monitor/onlineUser' 'monitor/onlineUser/index', '', '1', '',
-        '2', 0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (202, '缓存监控', '2', 'cacheMonitor', 100, 'redis', 'monitor/cacheMonitor' 'monitor/cacheMonitor/index', '',
-        '1', '', '2', 0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null);
+       (210, '在线用户', '2', 'monitor:onlineUser', 101, 'online', 'monitor/onlineUser' 'monitor/onlineUser/index', '',
+        '1', '', '2', 0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (211, '缓存监控', '2', 'monitor:cacheMonitor', 101, 'redis', 'monitor/cacheMonitor' 'monitor/cacheMonitor/index',
+        '', '1', '', '2', 0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null);
 
--- 三级菜单
-insert
-into t_sys_menu
-values (110, '操作日志', '2', 'operationLog', 100, 'log', 'system/operationLog' 'system/operationLog/index', '', '1',
-        '', '2', 0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (111, '登录日志', '2', 'loginLog', 100, 'log', 'system/loginLog' 'system/loginLog/index', '', '1', '', '2', 0,
-        '1', '1', '', 100, 'admin', 0, '', sysdate(), null);
+-- 三级菜单(预留500个ID)
+insert into t_sys_menu
+values (500, '操作日志', '2', 'monitor:log:operationLog', 209, 'log', 'system/operationLog' 'system/operationLog/index',
+        '', '1', '', '2', 0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (502, '登录日志', '2', 'monitor:log:loginLog', 209, 'log', 'system/loginLog' 'system/loginLog/index', '', '1',
+        '', '2', 0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null);
+-- 按钮菜单(预留500个ID)
+-- 用户管理按钮(预留20)
+insert into t_sys_menu
+values (1000, '用户新增', '3', 'system:user:addUser', 201, '', '', '', '1', '', '2', 1, '1', '1', '', 100, 'admin', 0,
+        '', sysdate(), null),
+       (1001, '用户修改', '3', 'system:user:updateUser', 201, '', '', '', '1', '', '2', 2, '1', '1', '', 100, 'admin',
+        0, '', sysdate(), null),
+       (1002, '用户删除', '3', 'system:user:removeUser', 201, '', '', '', '1', '', '2', 3, '1', '1', '', 100, 'admin',
+        0, '', sysdate(), null),
+       (1003, '用户详情', '3', 'system:user:loadUser', 201, '', '', '', '1', '', '2', 4, '1', '1', '', 100, 'admin',
+        0, '', sysdate(), null),
+       (1004, '用户分页', '3', 'system:user:getUserPageList', 201, '', '', '', '1', '', '2', 5, '1', '1', '', 100,
+        'admin', 0, '', sysdate(), null),
+       (1005, '用户导出', '3', 'system:user:exportUserList', 201, '', '', '', '1', '', '2', 6, '1', '1', '', 100,
+        'admin', 0, '', sysdate(), null),
+       (1006, '用户导入', '3', 'system:user:importUserList', 201, '', '', '', '1', '', '2', 7, '1', '1', '', 100,
+        'admin', 0, '', sysdate(), null),
+       (1007, '密码修改', '3', 'system:user:updatePasswd', 201, '', '', '', '1', '', '2', 8, '1', '1', '', 100,
+        'admin', 0, '', sysdate(), null);
+-- 角色管理按钮(预留20)
+insert into t_sys_menu
+values (1020, '角色新增', '3', 'system:role:addRole', 202, '', '', '', '1', '', '2', 1, '1', '1', '', 100, 'admin', 0,
+        '', sysdate(), null),
+       (1021, '角色修改', '3', 'system:role:updateRole', 202, '', '', '', '1', '', '2', 2, '1', '1', '', 100, 'admin',
+        0, '', sysdate(), null),
+       (1022, '角色删除', '3', 'system:role:removeRole', 202, '', '', '', '1', '', '2', 3, '1', '1', '', 100, 'admin',
+        0, '', sysdate(), null),
+       (1023, '角色详情', '3', 'system:role:loadRole', 202, '', '', '', '1', '', '2', 4, '1', '1', '', 100, 'admin',
+        0, '', sysdate(), null),
+       (1024, '角色分页', '3', 'system:role:getRolePageList', 202, '', '', '', '1', '', '2', 5, '1', '1', '', 100,
+        'admin', 0, '', sysdate(), null),
+       (1025, '用户导出', '3', 'system:role:exportRoleList', 202, '', '', '', '1', '', '2', 6, '1', '1', '', 100,
+        'admin', 0, '', sysdate(), null),
+       (1026, '用户导入', '3', 'system:role:importRoleList', 202, '', '', '', '1', '', '2', 7, '1', '1', '', 100,
+        'admin', 0, '', sysdate(), null);
+-- 菜单管理按钮(预留20)
+insert into t_sys_menu
+values (1040, '菜单新增', '3', 'system:menu:addUser', 203, '', '', '', '1', '', '2', 1, '1', '1', '', 100, 'admin', 0,
+        '', sysdate(), null),
+       (1041, '菜单修改', '3', 'system:menu:updateUser', 203, '', '', '', '1', '', '2', 2, '1', '1', '', 100, 'admin',
+        0, '', sysdate(), null),
+       (1042, '菜单删除', '3', 'system:menu:removeUser', 201, '', '', '', '1', '', '2', 3, '1', '1', '', 100, 'admin',
+        0, '', sysdate(), null),
+       (1043, '菜单详情', '3', 'system:menu:loadUser', 203, '', '', '', '1', '', '2', 4, '1', '1', '', 100, 'admin',
+        0, '', sysdate(), null),
+       (1044, '菜单分页', '3', 'system:menu:getUserPageList', 203, '', '', '', '1', '', '2', 5, '1', '1', '', 100,
+        'admin', 0, '', sysdate(), null),
+       (1045, '菜单导出', '3', 'system:menu:exportUserList', 203, '', '', '', '1', '', '2', 6, '1', '1', '', 100,
+        'admin', 0, '', sysdate(), null),
+       (1046, '菜单导入', '3', 'system:menu:importUserList', 203, '', '', '', '1', '', '2', 7, '1', '1', '', 100,
+        'admin', 0, '', sysdate(), null);
+
 
 -- ----------------------------
 -- 角色关联菜单表(一对多)
