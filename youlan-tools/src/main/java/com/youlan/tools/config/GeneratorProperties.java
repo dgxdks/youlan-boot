@@ -4,14 +4,12 @@ import cn.hutool.core.collection.CollectionUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.experimental.Accessors;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.List;
 import java.util.Set;
 
 @Data
 @Accessors(chain = true)
-@ConfigurationProperties(prefix = "youlan.tools.generator")
 public class GeneratorProperties {
 
     @Schema(title = "包路径")

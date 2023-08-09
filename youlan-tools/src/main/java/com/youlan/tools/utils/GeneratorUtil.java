@@ -6,7 +6,7 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
-import com.youlan.common.core.db.constant.DBConstant;
+import com.youlan.common.db.constant.DBConstant;
 import com.youlan.tools.constant.GeneratorConstant;
 import com.youlan.tools.entity.GeneratorColumn;
 import lombok.extern.slf4j.Slf4j;
@@ -152,13 +152,6 @@ public class GeneratorUtil {
             log.error(e.getMessage(), e);
             return tableComment;
         }
-    }
-
-    /**
-     * 获取状态字段校验注解
-     */
-    public static String getStatusValidatorAnno() {
-        return "@Status";
     }
 
     /**

@@ -2,7 +2,7 @@ package com.youlan.tools.entity;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.annotation.*;
-import com.youlan.common.core.db.constant.DBConstant;
+import com.youlan.common.db.constant.DBConstant;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.experimental.Accessors;

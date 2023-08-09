@@ -1,7 +1,6 @@
 package com.youlan.system.entity.dto;
 
-import com.youlan.common.core.db.constant.DBConstant;
-import com.youlan.common.validator.anno.Status;
+import com.youlan.common.db.constant.DBConstant;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -33,7 +32,6 @@ public class OrgDTO {
     @Schema(title = "机构备注")
     private String orgRemark;
 
-    @Status
     @Schema(title = "机构状态(1-正常 2-禁用)")
     private String orgStatus;
 }

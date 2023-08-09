@@ -4,11 +4,10 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.youlan.common.core.db.constant.DBConstant;
+import com.youlan.common.db.constant.DBConstant;
 import com.youlan.common.db.anno.Query;
 import com.youlan.common.db.entity.dto.PageDTO;
 import com.youlan.common.db.enums.QueryType;
-import com.youlan.common.validator.anno.Status;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -36,7 +35,6 @@ public class DictType extends PageDTO {
     @Schema(title = "字典类型键名")
     private String typeKey;
 
-    @Status
     @Query(type = QueryType.EQUAL)
     @NotBlank(message = DBConstant.DESC_STATUS_REQUIRED)
     @Schema(title = DBConstant.DESC_STATUS)

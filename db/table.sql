@@ -92,6 +92,8 @@ create table t_sys_user
 insert into t_sys_user(id, org_id, user_name, user_password, user_mobile, nick_name, email, sex, create_id,
                        create_by, create_time)
 values (100, 100, 'admin', '$2a$10$a.PsU/F7gk0OMVj8NJsg3.aPBFrwtxc25T9t9lgMMnuRg00ev7nGK', '1888888888', '超级管理员',
+        'yl@youlan.com', '1', 100, 'admin', sysdate()),
+       (101, 100, 'youlan', '$2a$10$a.PsU/F7gk0OMVj8NJsg3.aPBFrwtxc25T9t9lgMMnuRg00ev7nGK', '1888888888', '后台用户',
         'yl@youlan.com', '1', 100, 'admin', sysdate());
 
 -- ----------------------------

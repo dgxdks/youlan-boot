@@ -5,7 +5,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.youlan.common.core.db.constant.DBConstant;
+import com.youlan.common.db.constant.DBConstant;
 import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.redis.helper.RedisHelper;
 import com.youlan.system.constant.SystemConstant;

@@ -2,8 +2,8 @@ package com.youlan.system.entity.vo;
 
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.youlan.common.core.db.constant.DBConstant;
-import com.youlan.common.core.db.enums.DBStatus;
+import com.youlan.common.db.constant.DBConstant;
+import com.youlan.common.db.enums.DBStatus;
 import com.youlan.common.excel.anno.ExcelEnumProperty;
 import com.youlan.common.excel.converter.EnumConverter;
 import com.youlan.system.entity.UserPost;

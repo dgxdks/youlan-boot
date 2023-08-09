@@ -14,10 +14,10 @@ public class StpInterfaceSystemPermissionImpl implements StpInterface {
 
     @Override
     public List<String> getPermissionList(Object loginId, String loginType) {
-        List<String> roleIdList = getRoleList(loginId, loginType);
+        List<String> roleStrList = getRoleList(loginId, loginType);
         //如果当前角色ID无缓存权限信息则从通过角色ID与权限的缓存方法进行查询
-        return roleIdList.stream()
-                .map(roleId -> roleBizService().getMenuPermsListCache(Long.valueOf(roleId)))
+        return roleStrList.stream()
+                .map(roleStr -> roleBizService().getMenuPermsListCache(roleStr))
                 .flatMap(Collection::stream)
                 .distinct()
                 .collect(Collectors.toList());

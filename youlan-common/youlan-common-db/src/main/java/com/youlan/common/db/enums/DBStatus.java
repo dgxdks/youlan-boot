@@ -1,9 +1,10 @@
-package com.youlan.common.core.db.enums;
+package com.youlan.common.db.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import static com.youlan.common.core.db.constant.DBConstant.*;
+import static com.youlan.common.db.constant.DBConstant.*;
+
 
 @Getter
 @AllArgsConstructor

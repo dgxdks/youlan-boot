@@ -3,10 +3,11 @@ package com.youlan.controller.system;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
-import com.youlan.common.core.entity.dto.ListDTO;
+import com.youlan.common.core.helper.ListHelper;
 import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.core.restful.enums.ApiResultCode;
-import com.youlan.common.db.utils.QueryWrapperUtil;
+import com.youlan.common.db.entity.dto.ListDTO;
+import com.youlan.common.db.helper.DBHelper;
 import com.youlan.framework.anno.SystemLog;
 import com.youlan.framework.constant.SystemLogType;
 import com.youlan.framework.controller.BaseController;
@@ -18,7 +19,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "菜单")
+import java.util.List;
+
+@Tag(name = "菜单管理")
 @RestController
 @RequestMapping("/system/menu")
 @AllArgsConstructor
@@ -67,7 +70,15 @@ public class MenuController extends BaseController {
     @PostMapping("/getMenuPageList")
     @SystemLog(name = "菜单", type = SystemLogType.OPERATION_LOG_TYPE_PAGE_LIST)
     public ApiResult getMenuPageList(@RequestBody Menu menu) {
-        return toSuccess(menuService.loadPage(menu, QueryWrapperUtil.getQueryWrapper(menu)));
+        return toSuccess(menuService.loadPage(menu, DBHelper.getQueryWrapper(menu)));
     }
 
+    @SaCheckPermission("system.menu:treeList")
+    @Operation(summary = "菜单树列表")
+    @PostMapping("/getMenuTreeList")
+    public ApiResult getMenuTreeList(@RequestBody Menu menu) {
+        List<Menu> menus = menuService.loadMore(DBHelper.getQueryWrapper(menu));
+        List<Menu> treeList = ListHelper.getTreeList(menus, Menu::getChildren, Menu::getId, Menu::getParentId, Menu::getSort);
+        return toSuccess(treeList);
+    }
 }

@@ -29,7 +29,6 @@
 - 如果用户被禁用，则接口将不能被访问
 - 项目还没有支持国际化
 - ApiResultCode尽量支持国际化
-- application-tools.yml还是得考虑放在tools模块中
 
 # 规范
 

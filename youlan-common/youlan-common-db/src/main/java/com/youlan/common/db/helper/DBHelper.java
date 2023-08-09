@@ -1,4 +1,4 @@
-package com.youlan.common.db.utils;
+package com.youlan.common.db.helper;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ArrayUtil;
@@ -6,20 +6,42 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.youlan.common.db.anno.Query;
+import com.youlan.common.db.constant.MybatisConstant;
 import com.youlan.common.db.entity.dto.PageDTO;
 import com.youlan.common.db.enums.QueryType;
 import com.youlan.common.db.exception.QueryException;
-import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-@Slf4j
-public class QueryWrapperUtil {
+public class DBHelper {
     private static final ConcurrentHashMap<Class<?>, Map<Field, Query>> CACHE_FIELD = new ConcurrentHashMap<>();
+
+    public static <T> IPage<T> getIPage(PageDTO pageDTO) {
+        boolean needTotal = ObjectUtil.isNotNull(pageDTO.getNeedTotal()) ? pageDTO.getNeedTotal() : true;
+        return getIPage(pageDTO.getPageNum(), pageDTO.getPageSize(), needTotal);
+    }
+
+    public static <T> IPage<T> getIPage(Long pageNum, Long pageSize) {
+        return getIPage(pageNum, pageSize, true);
+    }
+
+    public static <T> IPage<T> getIPage(Long pageNum, Long pageSize, boolean needTotal) {
+        //如果页码小于1则指定为1
+        if (pageNum == null || pageNum < 1) {
+            pageNum = 1L;
+        }
+        //如果页数小于1则指定为默认分页数
+        if (pageSize == null || pageSize < 1) {
+            pageSize = MybatisConstant.DEFAULT_PAGE_SIZE;
+        }
+        return new Page<>(pageNum, pageSize, needTotal);
+    }
 
     public static <T> QueryWrapper<T> getQueryWrapper(PageDTO query) {
         QueryWrapper<T> queryWrapper = getQueryWrapper((Object) query);

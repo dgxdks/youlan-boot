@@ -2,25 +2,19 @@ package com.youlan.common.db.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.youlan.common.core.entity.vo.TreeVO;
 import com.youlan.common.db.entity.dto.PageDTO;
-import com.youlan.common.db.utils.IPageUtil;
-import com.youlan.common.db.utils.QueryWrapperUtil;
+import com.youlan.common.db.helper.DBHelper;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class BaseServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M, T> {
 
@@ -100,11 +94,11 @@ public class BaseServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M, 
     }
 
     public IPage<T> loadPage(PageDTO dto, QueryWrapper<T> queryWrapper) {
-        return loadPage(IPageUtil.getIPage(dto), queryWrapper);
+        return loadPage(DBHelper.getIPage(dto), queryWrapper);
     }
 
     public IPage<T> loadPage(PageDTO dto, Object queryObj) {
-        return loadPage(IPageUtil.getIPage(dto), QueryWrapperUtil.getQueryWrapper(queryObj));
+        return loadPage(DBHelper.getIPage(dto), DBHelper.getQueryWrapper(queryObj));
     }
 
     public <VO> IPage<VO> loadPage(PageDTO dto, QueryWrapper<T> queryWrapper, Class<VO> clz) {
@@ -125,22 +119,5 @@ public class BaseServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M, 
 
     public <VO> IPage<VO> loadPage(IPage<T> page, Class<VO> clz) {
         return this.loadPage(page, null, clz);
-    }
-
-    public <VO extends TreeVO<VO>> List<VO> toTreeList(List<VO> itemList, Function<VO, ?> idFuc, Function<VO, ?> pIdFuc, Function<VO, Integer> sortFuc) {
-        List<VO> treeList = new ArrayList<>();
-        Map<?, VO> idGroupMap = itemList.stream().collect(Collectors.toMap(idFuc, item -> item));
-        itemList.forEach(item -> {
-            Object pId = pIdFuc.apply(item);
-            VO pItem = idGroupMap.get(pId);
-            //通过父ID未找到元素时说明是顶级元素，找到则添加至父级元素的子集中
-            if (ObjectUtil.isNull(pItem)) {
-                treeList.add(item);
-            } else {
-                pItem.getChildren().add(item);
-                pItem.sortChildren(sortFuc);
-            }
-        });
-        return treeList;
     }
 }

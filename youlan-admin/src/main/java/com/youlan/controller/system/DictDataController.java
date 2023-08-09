@@ -3,10 +3,10 @@ package com.youlan.controller.system;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.youlan.common.core.entity.dto.ListDTO;
+import com.youlan.common.db.entity.dto.ListDTO;
 import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.core.restful.enums.ApiResultCode;
-import com.youlan.common.db.utils.QueryWrapperUtil;
+import com.youlan.common.db.helper.DBHelper;
 import com.youlan.framework.controller.BaseController;
 import com.youlan.system.entity.DictData;
 import com.youlan.system.service.DictDataService;
@@ -56,7 +56,7 @@ public class DictDataController extends BaseController {
     @Operation(summary = "字典值分页")
     @PostMapping("/getDictDataPageList")
     public ApiResult getDictDataPageList(@RequestBody DictData dictData) {
-        IPage<DictData> pageRes = dictDataService.loadPage(dictData, QueryWrapperUtil.getQueryWrapper(dictData));
+        IPage<DictData> pageRes = dictDataService.loadPage(dictData, DBHelper.getQueryWrapper(dictData));
         return toSuccess(pageRes);
     }
 }

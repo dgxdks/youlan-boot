@@ -5,7 +5,7 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.youlan.common.core.db.constant.DBConstant;
+import com.youlan.common.db.constant.DBConstant;
 import com.youlan.common.excel.anno.ExcelMappingProperty;
 import com.youlan.common.excel.anno.MappingProperty;
 import com.youlan.common.excel.converter.MappingConverter;

@@ -2,9 +2,9 @@ package com.youlan.controller.system;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.collection.CollectionUtil;
-import com.youlan.common.core.entity.dto.ListDTO;
+import com.youlan.common.db.entity.dto.ListDTO;
 import com.youlan.common.core.restful.ApiResult;
-import com.youlan.common.db.utils.QueryWrapperUtil;
+import com.youlan.common.db.helper.DBHelper;
 import com.youlan.framework.controller.BaseController;
 import com.youlan.system.entity.OperationLog;
 import com.youlan.system.entity.dto.OperationLogPageDTO;
@@ -48,14 +48,14 @@ public class OperationLogController extends BaseController {
     @Operation(summary = "操作日志分页")
     @PostMapping("/getOperationLogPageList")
     public ApiResult getOperationLogPageList(@RequestBody OperationLogPageDTO dto) {
-        return toSuccess(operationLogService.loadPage(dto, QueryWrapperUtil.getQueryWrapper(dto)));
+        return toSuccess(operationLogService.loadPage(dto, DBHelper.getQueryWrapper(dto)));
     }
 
     @SaCheckPermission("system:operationLog:export")
     @Operation(summary = "操作日志导出")
     @PostMapping("/exportOperationLog")
     public void exportOperationLog(@RequestBody OperationLogPageDTO dto, HttpServletResponse response) throws IOException {
-        List<OperationLog> operationLogList = operationLogService.loadMore(QueryWrapperUtil.getQueryWrapper(dto));
+        List<OperationLog> operationLogList = operationLogService.loadMore(DBHelper.getQueryWrapper(dto));
         toExcel("操作日志.xlsx", "操作日志", OperationLog.class, operationLogList, response);
     }
 }

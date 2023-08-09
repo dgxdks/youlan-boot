@@ -1,7 +1,7 @@
 package com.youlan.system.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.youlan.common.core.db.constant.DBConstant;
+import com.youlan.common.db.constant.DBConstant;
 import com.youlan.common.db.anno.Query;
 import com.youlan.common.db.entity.dto.PageDTO;
 import com.youlan.common.db.enums.QueryType;

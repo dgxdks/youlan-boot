@@ -1,7 +1,7 @@
 package com.youlan.system.entity.dto;
 
 import com.youlan.common.validator.anno.*;
-import com.youlan.common.core.db.constant.DBConstant;
+import com.youlan.common.db.constant.DBConstant;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.*;
@@ -50,7 +50,6 @@ public class UserDTO {
     @Schema(title = "用户角色列表")
     private List<Long> roleIdList;
 
-    @Status
     @Schema(title = DBConstant.DESC_STATUS)
     private String status;
 

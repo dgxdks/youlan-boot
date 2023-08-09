@@ -1,12 +1,10 @@
 package ${packageName}.entity.dto;
 
-import com.youlan.common.core.db.constant.DBConstant;
-import com.youlan.common.validator.anno.*;
+import com.youlan.common.db.constant.DBConstant;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import javax.validation.constraints.*;
-import java.util.Date;
 
 @Data
 public class ${EntityName}DTO {

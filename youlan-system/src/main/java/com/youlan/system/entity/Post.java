@@ -3,14 +3,13 @@ package com.youlan.system.entity;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.*;
-import com.youlan.common.core.db.constant.DBConstant;
-import com.youlan.common.core.db.enums.DBStatus;
+import com.youlan.common.db.constant.DBConstant;
+import com.youlan.common.db.enums.DBStatus;
 import com.youlan.common.db.anno.Query;
 import com.youlan.common.db.entity.dto.PageDTO;
 import com.youlan.common.db.enums.QueryType;
 import com.youlan.common.excel.anno.ExcelEnumProperty;
 import com.youlan.common.excel.converter.EnumConverter;
-import com.youlan.common.validator.anno.Status;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -47,7 +46,6 @@ public class Post extends PageDTO {
     @Schema(title = DBConstant.DESC_SORT)
     private Integer sort;
 
-    @Status
     @ExcelProperty(value = "状态(1-正常 2-停用)", converter = EnumConverter.class)
     @ExcelEnumProperty(value = DBStatus.class)
     @Query(type = QueryType.EQUAL)

@@ -4,10 +4,10 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
-import com.youlan.common.core.entity.dto.ListDTO;
+import com.youlan.common.db.entity.dto.ListDTO;
 import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.core.restful.enums.ApiResultCode;
-import com.youlan.common.db.utils.QueryWrapperUtil;
+import com.youlan.common.db.helper.DBHelper;
 import com.youlan.framework.anno.SystemLog;
 import com.youlan.framework.constant.SystemLogType;
 import com.youlan.framework.controller.BaseController;
@@ -72,7 +72,7 @@ public class DeptController extends BaseController {
     @PostMapping("/getDeptPageList")
     @SystemLog(name = "部门管理", type = SystemLogType.OPERATION_LOG_TYPE_PAGE_LIST)
     public ApiResult getDeptPageList(@RequestBody OrgPageDTO dto) {
-        return toSuccess(deptService.loadPage(dto, QueryWrapperUtil.getQueryWrapper(dto), DeptVO.class));
+        return toSuccess(deptService.loadPage(dto, DBHelper.getQueryWrapper(dto), DeptVO.class));
     }
 
     @SaCheckPermission("system:dept:getDeptTreeList")

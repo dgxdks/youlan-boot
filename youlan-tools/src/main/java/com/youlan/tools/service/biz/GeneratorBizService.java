@@ -8,10 +8,11 @@ import cn.hutool.core.util.ZipUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.youlan.common.core.db.constant.DBConstant;
 import com.youlan.common.core.exception.BizRuntimeException;
+import com.youlan.common.db.constant.DBConstant;
 import com.youlan.common.db.enums.QueryType;
 import com.youlan.tools.config.GeneratorProperties;
+import com.youlan.tools.config.ToolsProperties;
 import com.youlan.tools.constant.GeneratorConstant;
 import com.youlan.tools.entity.DBTable;
 import com.youlan.tools.entity.DBTableColumn;
@@ -38,7 +39,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.youlan.common.core.db.constant.DBConstant.*;
+import static com.youlan.common.db.constant.DBConstant.*;
 import static com.youlan.tools.constant.GeneratorConstant.*;
 
 @Service
@@ -47,7 +48,7 @@ public class GeneratorBizService {
     private final GeneratorTableService generatorTableService;
     private final DBTableService dbTableService;
     private final DBTableColumnService dbTableColumnService;
-    private final GeneratorProperties generatorProperties;
+    private final ToolsProperties toolsProperties;
     private final GeneratorColumnService generatorColumnService;
 
     /**
@@ -68,7 +69,7 @@ public class GeneratorBizService {
     public List<DBTable> getDbTableList(DBTable dbTable) {
         List<DBTable> dbTableList = generatorTableService.getBaseMapper().getDbTableList(dbTable);
         return dbTableList.stream()
-                .filter(table -> !generatorProperties.getTableExclude().contains(table.getTableName()))
+                .filter(table -> !generatorProperties().getTableExclude().contains(table.getTableName()))
                 .collect(Collectors.toList());
     }
 
@@ -178,11 +179,11 @@ public class GeneratorBizService {
      */
     public GeneratorTable toGeneratorTable(DBTable dbTable) {
         String tableName = dbTable.getTableName();
-        List<String> tableMatchPrefix = generatorProperties.getTableMatchPrefix();
+        List<String> tableMatchPrefix = generatorProperties().getTableMatchPrefix();
         String entityName = NamingCase.toPascalCase(GeneratorUtil.tableNameRemovePrefix(tableName, tableMatchPrefix));
         String bizName = NamingCase.toCamelCase(GeneratorUtil.tableNameRemovePrefix(tableName, tableMatchPrefix));
-        String moduleName = GeneratorUtil.packageName2ModuleName(generatorProperties.getPackageName());
-        String featureName = GeneratorUtil.tableComment2FeatureName(dbTable.getTableComment(), generatorProperties.getTableFeatureRegex());
+        String moduleName = GeneratorUtil.packageName2ModuleName(generatorProperties().getPackageName());
+        String featureName = GeneratorUtil.tableComment2FeatureName(dbTable.getTableComment(), generatorProperties().getTableFeatureRegex());
         return new GeneratorTable()
                 .setTableName(tableName)
                 .setTableComment(dbTable.getTableComment())
@@ -190,10 +191,10 @@ public class GeneratorBizService {
                 .setModuleName(moduleName)
                 .setBizName(bizName)
                 .setEntityName(entityName)
-                .setEntityDto(DBConstant.boolean2YesNo(generatorProperties.isNeedEntityDto()))
-                .setEntityPageDto(DBConstant.boolean2YesNo(generatorProperties.isNeedEntityPageDto()))
-                .setEntityVo(DBConstant.boolean2YesNo(generatorProperties.isNeedEntityVo()))
-                .setPackageName(generatorProperties.getPackageName());
+                .setEntityDto(DBConstant.boolean2YesNo(generatorProperties().isNeedEntityDto()))
+                .setEntityPageDto(DBConstant.boolean2YesNo(generatorProperties().isNeedEntityPageDto()))
+                .setEntityVo(DBConstant.boolean2YesNo(generatorProperties().isNeedEntityVo()))
+                .setPackageName(generatorProperties().getPackageName());
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -373,7 +374,7 @@ public class GeneratorBizService {
         for (GeneratorColumn generatorColumn : allColumn) {
             GeneratorColumn voColumn = generatorColumn.copy();
             //如果是要排除的列或者不是表格中的字段则不处理
-            if (generatorProperties.inViewColumnExclude(voColumn.getColumnName()) || !yesNo2Boolean(voColumn.getIsTable())) {
+            if (generatorProperties().inViewColumnExclude(voColumn.getColumnName()) || !yesNo2Boolean(voColumn.getIsTable())) {
                 continue;
             }
             //设置swagger注解
@@ -393,7 +394,7 @@ public class GeneratorBizService {
         for (GeneratorColumn generatorColumn : allColumn) {
             GeneratorColumn pageDtoColumn = generatorColumn.copy();
             //如果是要排除的列或者不是查询字段则不处理
-            if (generatorProperties.inQueryColumnExclude(pageDtoColumn.getColumnName()) || !DBConstant.yesNo2Boolean(generatorColumn.getIsQuery())) {
+            if (generatorProperties().inQueryColumnExclude(pageDtoColumn.getColumnName()) || !DBConstant.yesNo2Boolean(generatorColumn.getIsQuery())) {
                 continue;
             }
             //设置swagger注解
@@ -413,7 +414,7 @@ public class GeneratorBizService {
         for (GeneratorColumn generatorColumn : allColumn) {
             GeneratorColumn dtoColumn = generatorColumn.copy();
             //如果是要排除的列或者不是编辑字段则不生成
-            if (generatorProperties.inEditColumnExclude(dtoColumn.getColumnName()) || !DBConstant.yesNo2Boolean(generatorColumn.getIsEdit())) {
+            if (generatorProperties().inEditColumnExclude(dtoColumn.getColumnName()) || !DBConstant.yesNo2Boolean(generatorColumn.getIsEdit())) {
                 continue;
             }
             //设置swagger注解
@@ -505,7 +506,6 @@ public class GeneratorBizService {
      */
     public void setValidatorAnno(GeneratorColumn generatorColumn) {
         List<String> validatorAnnoList = new ArrayList<>();
-        String columnName = generatorColumn.getColumnName();
         String columnComment = generatorColumn.getColumnComment();
         //此处要判断当前列是否为主键，如果是主键的话放开校验
         if (DBConstant.yesNo2Boolean(generatorColumn.getIsPk())) {
@@ -518,19 +518,6 @@ public class GeneratorBizService {
             } else {
                 validatorAnnoList.add(GeneratorUtil.getNotNullValidatorAnno(columnComment));
             }
-        }
-        switch (columnName) {
-            case COL_STATUS:
-                validatorAnnoList.add(GeneratorUtil.getStatusValidatorAnno());
-                break;
-            case COL_CREATE_BY:
-            case COL_CREATE_ID:
-            case COL_CREATE_TIME:
-            case COL_UPDATE_ID:
-            case COL_UPDATE_BY:
-            case COL_UPDATE_TIME:
-            default:
-                break;
         }
         //只有不为空时才能设置值，否则会影响显示
         if (CollectionUtil.isNotEmpty(validatorAnnoList)) {
@@ -581,5 +568,9 @@ public class GeneratorBizService {
         } else {
             generatorColumn.setApiModelPropertyAnno(GeneratorUtil.getSchemaAnno(generatorColumn.getColumnComment()));
         }
+    }
+
+    public GeneratorProperties generatorProperties() {
+        return toolsProperties.getGenerator();
     }
 }

@@ -3,7 +3,7 @@ package com.youlan.controller.system;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
-import com.youlan.common.core.entity.dto.ListDTO;
+import com.youlan.common.db.entity.dto.ListDTO;
 import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.framework.anno.SystemLog;

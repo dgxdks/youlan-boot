@@ -3,27 +3,18 @@ package ${packageName}.entity;
 #if(!${needVo})
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
-import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
+import com.youlan.common.db.constant.DBConstant;
 import com.youlan.system.excel.anno.ExcelDictProperty;
 import com.youlan.system.excel.converter.DictConverter;
 #end
 #if(!${needPageDto})
-import com.youlan.common.db.entity.dto.PageDTO;
-import com.youlan.common.db.anno.Query;
-import com.youlan.common.db.enums.QueryType;
 import lombok.EqualsAndHashCode;
 #end
 #if(!${needDto})
-import com.youlan.common.validator.anno.*;
 #end
-import com.youlan.common.core.db.constant.DBConstant;
-import io.swagger.v3.oas.annotations.media.Schema;
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
-
-import javax.validation.constraints.*;
-import java.util.Date;
+import org.springframework.validation.annotation.Validated;
 
 @Data
 @TableName("${tableName}")

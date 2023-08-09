@@ -15,8 +15,9 @@ import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.youlan.common.core.exception.BizRuntimeException;
+import com.youlan.common.core.helper.ListHelper;
+import com.youlan.common.db.helper.DBHelper;
 import com.youlan.common.db.service.BaseServiceImpl;
-import com.youlan.common.db.utils.QueryWrapperUtil;
 import com.youlan.system.entity.Org;
 import com.youlan.system.entity.dto.OrgPageDTO;
 import com.youlan.system.entity.vo.OrgVO;
@@ -48,10 +49,10 @@ public abstract class AbstractOrgModelService<M extends BaseMapper<T>, T extends
      * 查询机构树列表
      */
     public <DTO extends OrgPageDTO, VO extends OrgVO<VO>> List<VO> getOrgTreeList(DTO dto, Class<VO> clz) {
-        QueryWrapper<T> queryWrapper = QueryWrapperUtil.getQueryWrapper(dto);
+        QueryWrapper<T> queryWrapper = DBHelper.getQueryWrapper(dto);
         queryWrapper.in(COL_ORG_TYPE, ORG_TYPE_PLATFORM, getOrgType());
         List<VO> voList = loadMore(queryWrapper, clz);
-        return toTreeList(voList, VO::getOrgId, VO::getParentOrgId, VO::getOrgSort);
+        return ListHelper.getTreeList(voList, VO::getChildren, VO::getOrgId, VO::getParentOrgId, VO::getOrgSort);
     }
 
     @Override

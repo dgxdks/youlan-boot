@@ -2,12 +2,10 @@ package com.youlan.system.entity;
 
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.baomidou.mybatisplus.annotation.*;
-import com.youlan.common.core.db.constant.DBConstant;
+import com.youlan.common.db.constant.DBConstant;
 import com.youlan.common.db.anno.Query;
 import com.youlan.common.db.entity.dto.PageDTO;
 import com.youlan.common.db.enums.QueryType;
-import com.youlan.common.validator.anno.Status;
-import com.youlan.common.validator.anno.YesNo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -47,7 +45,6 @@ public class DictData extends PageDTO {
     @Schema(title = "CSS样式")
     private String cssClass;
 
-    @YesNo
     @NotBlank(message = "是否默认不能为空")
     @Schema(title = "是否默认" + DBConstant.DESC_YES_NO)
     private String isDefault;
@@ -56,7 +53,6 @@ public class DictData extends PageDTO {
     @Schema(title = DBConstant.DESC_SORT)
     private Long sort;
 
-    @Status
     @Query(type = QueryType.EQUAL)
     @NotBlank(message = DBConstant.DESC_STATUS_REQUIRED)
     @Schema(title = DBConstant.DESC_STATUS)

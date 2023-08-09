@@ -2,7 +2,7 @@ package com.youlan.system.service;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.crypto.digest.BCrypt;
-import com.youlan.common.core.db.constant.DBConstant;
+import com.youlan.common.db.constant.DBConstant;
 import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.core.servlet.helper.ServletHelper;
 import com.youlan.common.db.service.BaseServiceImpl;

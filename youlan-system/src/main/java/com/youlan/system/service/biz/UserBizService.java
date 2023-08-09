@@ -5,8 +5,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.youlan.common.core.exception.BizRuntimeException;
-import com.youlan.common.db.utils.IPageUtil;
-import com.youlan.common.db.utils.QueryWrapperUtil;
+import com.youlan.common.db.helper.DBHelper;
 import com.youlan.system.entity.Org;
 import com.youlan.system.entity.User;
 import com.youlan.system.entity.UserPost;
@@ -146,14 +145,14 @@ public class UserBizService {
      * 用户分页
      */
     public IPage<UserVO> getUserPageList(UserPageDTO dto) {
-        return orgService.loadPage(IPageUtil.getIPage(dto), QueryWrapperUtil.getQueryWrapper(dto), UserVO.class);
+        return orgService.loadPage(DBHelper.getIPage(dto), DBHelper.getQueryWrapper(dto), UserVO.class);
     }
 
     /**
      * 用户导出
      */
     public List<UserVO> exportUserList(UserPageDTO dto) {
-        List<UserVO> userList = orgService.loadMore(QueryWrapperUtil.getQueryWrapper(dto), UserVO.class);
+        List<UserVO> userList = orgService.loadMore(DBHelper.getQueryWrapper(dto), UserVO.class);
         List<Long> orgIdSet = userList.stream().map(UserVO::getOrgId).collect(Collectors.toList());
         Map<Long, String> orgIdOrgNameMapping = orgService.getOrgIdOrgNameMap(orgIdSet);
         userList.forEach(user -> user.setOrgName(orgIdOrgNameMapping.get(user.getId())));

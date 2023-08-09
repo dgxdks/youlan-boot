@@ -2,10 +2,10 @@ package com.youlan.controller.system;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.util.ObjectUtil;
-import com.youlan.common.core.entity.dto.ListDTO;
+import com.youlan.common.db.entity.dto.ListDTO;
 import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.core.restful.enums.ApiResultCode;
-import com.youlan.common.db.utils.QueryWrapperUtil;
+import com.youlan.common.db.helper.DBHelper;
 import com.youlan.framework.controller.BaseController;
 import com.youlan.system.entity.DictType;
 import com.youlan.system.entity.LoginLog;
@@ -60,14 +60,14 @@ public class DictTypeController extends BaseController {
     @Operation(summary = "字典类型分页")
     @PostMapping("/getDictTypePageList")
     public ApiResult getDictTypePageList(@RequestBody DictType dictType) {
-        return toSuccess(dictTypeService.loadPage(dictType, QueryWrapperUtil.getQueryWrapper(dictType)));
+        return toSuccess(dictTypeService.loadPage(dictType, DBHelper.getQueryWrapper(dictType)));
     }
 
     @SaCheckPermission("system:dict:export")
     @Operation(summary = "系统配置导出")
     @PostMapping("/exportDictList")
     public void exportConfigList(@RequestBody DictType dictType, HttpServletResponse response) throws IOException {
-        List<DictType> loginLogList = dictTypeService.loadMore(QueryWrapperUtil.getQueryWrapper(dictType));
+        List<DictType> loginLogList = dictTypeService.loadMore(DBHelper.getQueryWrapper(dictType));
         toExcel("字典类型.xlsx", "字典类型", LoginLog.class, loginLogList, response);
     }
 }

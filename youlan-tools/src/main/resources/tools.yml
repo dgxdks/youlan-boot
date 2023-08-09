@@ -34,6 +34,7 @@ youlan:
         - t_sys_role_org
         - t_sys_menu
         - t_sys_role_menu
+        - t_sys_login_log
       #编辑时要排除的列字段
       editColumnExclude:
         - sts

@@ -2,9 +2,9 @@ package com.youlan.controller.system;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.collection.CollectionUtil;
-import com.youlan.common.core.entity.dto.ListDTO;
+import com.youlan.common.db.entity.dto.ListDTO;
 import com.youlan.common.core.restful.ApiResult;
-import com.youlan.common.db.utils.QueryWrapperUtil;
+import com.youlan.common.db.helper.DBHelper;
 import com.youlan.framework.anno.SystemLog;
 import com.youlan.framework.constant.SystemLogType;
 import com.youlan.framework.controller.BaseController;
@@ -50,7 +50,7 @@ public class LoginLogController extends BaseController {
     @PostMapping("/getLoginLogPageList")
     @SystemLog(name = "登录日志", type = SystemLogType.OPERATION_LOG_TYPE_PAGE_LIST)
     public ApiResult getLoginLogPageList(@RequestBody LoginLog loginLog) {
-        return toSuccess(loginLogService.loadPage(loginLog, QueryWrapperUtil.getQueryWrapper(loginLog)));
+        return toSuccess(loginLogService.loadPage(loginLog, DBHelper.getQueryWrapper(loginLog)));
     }
 
     @SaCheckPermission("system:loginLog:export")
@@ -58,7 +58,7 @@ public class LoginLogController extends BaseController {
     @PostMapping("/exportLoginLogList")
     @SystemLog(name = "登录日志", type = SystemLogType.OPERATION_LOG_TYPE_EXPORT)
     public void exportLoginLogList(@RequestBody LoginLog loginLog, HttpServletResponse response) throws IOException {
-        List<LoginLog> loginLogList = loginLogService.loadMore(QueryWrapperUtil.getQueryWrapper(loginLog));
+        List<LoginLog> loginLogList = loginLogService.loadMore(DBHelper.getQueryWrapper(loginLog));
         toExcel("登录日志.xlsx", "登录日志", LoginLog.class, loginLogList, response);
     }
 

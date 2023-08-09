@@ -32,8 +32,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.baomidou.mybatisplus.core.toolkit.StringPool.SINGLE_QUOTE;
-import static com.youlan.common.core.db.constant.DBConstant.VAL_STS_NO;
-import static com.youlan.common.core.db.constant.DBConstant.VAL_STS_YES;
+import static com.youlan.common.db.constant.DBConstant.VAL_STS_NO;
+import static com.youlan.common.db.constant.DBConstant.VAL_STS_YES;
 import static com.youlan.system.constant.SystemConstant.*;
 
 @Slf4j

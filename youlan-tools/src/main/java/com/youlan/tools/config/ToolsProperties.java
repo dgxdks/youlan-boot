@@ -1,12 +1,12 @@
 package com.youlan.tools.config;
 
-import lombok.AllArgsConstructor;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import lombok.Data;
+import lombok.experimental.Accessors;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@Configuration
-@EnableConfigurationProperties({GeneratorProperties.class})
-@AllArgsConstructor
+@Data
+@Accessors(chain = true)
+@ConfigurationProperties(prefix = "youlan.tools")
 public class ToolsProperties {
-    private final GeneratorProperties generatorProperties;
+    private GeneratorProperties generator;
 }

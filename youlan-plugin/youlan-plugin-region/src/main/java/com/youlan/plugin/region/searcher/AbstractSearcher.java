@@ -25,7 +25,7 @@ public abstract class AbstractSearcher {
         try {
             return getSearcher().search(ip);
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
+            log.error(e.getMessage());
             return StrUtil.EMPTY;
         }
     }

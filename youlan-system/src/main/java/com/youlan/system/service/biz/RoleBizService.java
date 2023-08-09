@@ -66,13 +66,14 @@ public class RoleBizService {
     /**
      * 获取菜单权限缓存(如果是超级管理员则返回匹配所有的权限字符)
      */
-    public List<String> getMenuPermsListCache(Long roleId) {
-        if (SystemAuthUtil.isAdmin()) {
-            return Collections.singletonList("*");
-        }
-        SaSession session = SaSessionCustomUtil.getSessionById(ROLE_ID_PREFIX + roleId);
-        return session.get(SaSession.PERMISSION_LIST,
-                () -> new ArrayList<>(roleMenuService.getBaseMapper().getMenuPermsListByRoleId(roleId)));
+    public List<String> getMenuPermsListCache(String roleStr) {
+        SaSession session = SaSessionCustomUtil.getSessionById(ROLE_ID_PREFIX + roleStr);
+        return session.get(SaSession.PERMISSION_LIST, () -> {
+            if (SystemAuthUtil.isAdmin()) {
+                return Collections.singletonList("*");
+            }
+            return new ArrayList<>(roleMenuService.getBaseMapper().getMenuPermsListByRoleStr(roleStr));
+        });
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.youlan.common.core.entity.dto;
+package com.youlan.common.db.entity.dto;
 
 import cn.hutool.core.collection.CollectionUtil;
 import io.swagger.v3.oas.annotations.media.Schema;

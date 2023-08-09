@@ -5,8 +5,9 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.youlan.common.core.exception.BizRuntimeException;
+import com.youlan.common.core.helper.ListHelper;
+import com.youlan.common.db.helper.DBHelper;
 import com.youlan.common.db.service.BaseServiceImpl;
-import com.youlan.common.db.utils.QueryWrapperUtil;
 import com.youlan.system.entity.Org;
 import com.youlan.system.entity.dto.OrgPageDTO;
 import com.youlan.system.entity.vo.OrgVO;
@@ -18,8 +19,8 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.youlan.common.core.db.constant.DBConstant.VAL_STATUS_DISABLED;
-import static com.youlan.common.core.db.constant.DBConstant.VAL_STATUS_ENABLED;
+import static com.youlan.common.db.constant.DBConstant.VAL_STATUS_DISABLED;
+import static com.youlan.common.db.constant.DBConstant.VAL_STATUS_ENABLED;
 
 @Slf4j
 @Service
@@ -88,10 +89,13 @@ public class OrgService extends BaseServiceImpl<OrgMapper, Org> {
         org.setOrgLevel(orgLevel);
     }
 
+    /**
+     * 获取机构树列表
+     */
     @SuppressWarnings("all")
     public List<OrgVO> getOrgTreeList(OrgPageDTO dto) {
-        QueryWrapper<Org> queryWrapper = QueryWrapperUtil.getQueryWrapper(dto);
+        QueryWrapper<Org> queryWrapper = DBHelper.getQueryWrapper(dto);
         List<OrgVO> orgList = this.loadMore(queryWrapper, OrgVO.class);
-        return toTreeList(orgList, OrgVO::getOrgId, OrgVO::getParentOrgId, OrgVO::getOrgSort);
+        return ListHelper.getTreeList(orgList, OrgVO::getChildren, OrgVO::getOrgId, OrgVO::getParentOrgId, OrgVO::getOrgSort);
     }
 }

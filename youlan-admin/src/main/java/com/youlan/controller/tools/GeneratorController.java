@@ -1,8 +1,8 @@
 package com.youlan.controller.tools;
 
-import com.youlan.common.core.entity.dto.ListDTO;
+import com.youlan.common.db.entity.dto.ListDTO;
 import com.youlan.common.core.restful.ApiResult;
-import com.youlan.common.db.utils.QueryWrapperUtil;
+import com.youlan.common.db.helper.DBHelper;
 import com.youlan.framework.controller.BaseController;
 import com.youlan.tools.constant.GeneratorConstant;
 import com.youlan.tools.entity.DBTable;
@@ -89,6 +89,6 @@ public class GeneratorController extends BaseController {
     @Operation(summary = "生成表分页")
     @PostMapping("/getTablePageList")
     public ApiResult getTablePageList(@RequestBody GeneratorPageDTO dto) {
-        return toSuccess(generatorTableService.loadPage(dto, QueryWrapperUtil.getQueryWrapper(dto)));
+        return toSuccess(generatorTableService.loadPage(dto, DBHelper.getQueryWrapper(dto)));
     }
 }

@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "验证码管理")
 @RestController
-@RequestMapping("/common/captcha")
+@RequestMapping("/captcha")
 @AllArgsConstructor
 public class CaptchaController extends BaseController {
     private CaptchaProperties captchaProperties;

@@ -1,13 +1,13 @@
 package com.youlan.system.entity.vo;
 
-import com.youlan.common.core.entity.vo.TreeVO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
-public class OrgVO<T> extends TreeVO<T> {
+public class OrgVO<T> {
 
     @Schema(title = "机构ID")
     private Long orgId;
@@ -29,4 +29,7 @@ public class OrgVO<T> extends TreeVO<T> {
 
     @Schema(title = "机构状态")
     private String orgStatus;
+
+    @Schema(title = "下级机构")
+    private List<T> children = new ArrayList<>();
 }

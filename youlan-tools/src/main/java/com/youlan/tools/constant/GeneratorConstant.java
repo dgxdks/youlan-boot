@@ -3,7 +3,7 @@ package com.youlan.tools.constant;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.youlan.common.core.db.constant.DBConstant.*;
+import static com.youlan.common.db.constant.DBConstant.*;
 
 public class GeneratorConstant {
     // ******************** 组件类型 ********************

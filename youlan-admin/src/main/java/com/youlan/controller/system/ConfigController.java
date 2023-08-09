@@ -3,10 +3,10 @@ package com.youlan.controller.system;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
-import com.youlan.common.core.entity.dto.ListDTO;
+import com.youlan.common.db.entity.dto.ListDTO;
 import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.core.restful.enums.ApiResultCode;
-import com.youlan.common.db.utils.QueryWrapperUtil;
+import com.youlan.common.db.helper.DBHelper;
 import com.youlan.framework.anno.SystemLog;
 import com.youlan.framework.constant.SystemLogType;
 import com.youlan.framework.controller.BaseController;
@@ -74,7 +74,7 @@ public class ConfigController extends BaseController {
     @PostMapping("/getConfigPageList")
     @SystemLog(name = "系统配置", type = SystemLogType.OPERATION_LOG_TYPE_PAGE_LIST)
     public ApiResult getConfigPageList(@RequestBody Config config) {
-        return toSuccess(configService.loadPage(config, QueryWrapperUtil.getQueryWrapper(config)));
+        return toSuccess(configService.loadPage(config, DBHelper.getQueryWrapper(config)));
     }
 
     @SaCheckPermission("system:config:export")
@@ -82,7 +82,7 @@ public class ConfigController extends BaseController {
     @PostMapping("/exportConfigList")
     @SystemLog(name = "系统配置", type = SystemLogType.OPERATION_LOG_TYPE_EXPORT)
     public void exportConfigList(@RequestBody Config config, HttpServletResponse response) throws IOException {
-        List<Config> loginLogList = configService.loadMore(QueryWrapperUtil.getQueryWrapper(config));
+        List<Config> loginLogList = configService.loadMore(DBHelper.getQueryWrapper(config));
         toExcel("系统配置.xlsx", "系统配置", LoginLog.class, loginLogList, response);
     }
 }

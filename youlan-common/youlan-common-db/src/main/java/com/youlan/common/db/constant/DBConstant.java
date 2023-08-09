@@ -1,7 +1,4 @@
-package com.youlan.common.core.db.constant;
-
-import java.util.HashMap;
-import java.util.Map;
+package com.youlan.common.db.constant;
 
 /**
  * 数据库常量

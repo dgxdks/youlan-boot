@@ -18,7 +18,6 @@ server:
 spring:
   profiles:
     active: "dev"
-    include: "tools"
   servlet:
     # 文件上传
     multipart:
