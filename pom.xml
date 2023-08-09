@@ -15,6 +15,7 @@
         <module>youlan-plugin</module>
         <module>youlan-framework</module>
         <module>youlan-tools</module>
+        <module>youlan-web</module>
     </modules>
 
     <properties>
