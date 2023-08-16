@@ -67,7 +67,7 @@ public class DeptController extends BaseController {
         return toSuccess(deptService.loadOne(id, OrgVO.class));
     }
 
-    @SaCheckPermission("system:dept:pageList")
+    @SaCheckPermission("system:dept:list")
     @Operation(summary = "部门分页")
     @PostMapping("/getDeptPageList")
     @SystemLog(name = "部门管理", type = SystemLogType.OPERATION_LOG_TYPE_PAGE_LIST)
@@ -75,7 +75,7 @@ public class DeptController extends BaseController {
         return toSuccess(deptService.loadPage(dto, DBHelper.getQueryWrapper(dto), DeptVO.class));
     }
 
-    @SaCheckPermission("system:dept:getDeptTreeList")
+    @SaCheckPermission("system:dept:list")
     @Operation(summary = "部门树列表")
     @PostMapping("/getDeptTreeList")
     public ApiResult getDeptTreeList(@RequestBody OrgPageDTO dto) {

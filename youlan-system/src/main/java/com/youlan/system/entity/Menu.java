@@ -1,5 +1,6 @@
 package com.youlan.system.entity;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.baomidou.mybatisplus.annotation.*;
 import com.youlan.common.db.anno.Query;
@@ -14,6 +15,7 @@ import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @TableName("t_sys_menu")
@@ -98,4 +100,21 @@ public class Menu extends PageDTO {
 
     @TableField(exist = false)
     private List<Menu> children = new ArrayList<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (ObjectUtil.isNull(o)) {
+            return false;
+        }
+        if (!(o instanceof Menu)) {
+            return false;
+        }
+        return getId().equals(((Menu) o).getId());
+
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
+    }
 }

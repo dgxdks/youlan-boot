@@ -6,8 +6,6 @@ import com.youlan.common.db.constant.DBConstant;
 import com.youlan.common.db.enums.DBStatus;
 import com.youlan.common.excel.anno.ExcelEnumProperty;
 import com.youlan.common.excel.converter.EnumConverter;
-import com.youlan.system.entity.UserPost;
-import com.youlan.system.entity.UserRole;
 import com.youlan.system.excel.converter.DictConverter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -94,10 +92,10 @@ public class UserVO {
     @Schema(title = DBConstant.DESC_UPDATE_TIME)
     private Date updateTime;
 
-    @Schema(title = "用户关联角色列表")
-    private List<UserRole> userRoleList;
+    @Schema(title = "用户角色ID列表")
+    private List<Long> roleIdList;
 
     @Schema(title = "用户关联岗位列表")
-    private List<UserPost> userPostList;
+    private List<Long> postIdList;
 
 }

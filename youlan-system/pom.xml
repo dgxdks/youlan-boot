@@ -33,6 +33,10 @@
             <artifactId>youlan-common-redis</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.youlan</groupId>
+            <artifactId>youlan-common-storage</artifactId>
+        </dependency>
+        <dependency>
             <groupId>cn.dev33</groupId>
             <artifactId>sa-token-spring-boot-starter</artifactId>
         </dependency>

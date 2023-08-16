@@ -1,44 +1,58 @@
-import { login, logout, getInfo } from '@/api/login'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { accountLogin, getLoginInfo, logout } from '@/api/system/login'
+import { ArrayUtil, CookieUtil, StrUtil } from '@/utils/tools'
+import { tokenValuePrefix } from '@/settings'
+
+function getTokenHeaders() {
+  return {
+    [CookieUtil.getTokenName()]: tokenValuePrefix + CookieUtil.getTokenValue()
+  }
+}
 
 const user = {
   state: {
-    token: getToken(),
-    name: '',
+    tokenName: CookieUtil.getTokenName(),
+    tokenValue: CookieUtil.getTokenValue(),
+    tokenHeaders: getTokenHeaders(),
+    userName: '',
     avatar: '',
-    roles: [],
-    permissions: []
+    roleList: [],
+    permissionList: []
   },
 
   mutations: {
     SET_TOKEN: (state, token) => {
-      state.token = token
+      state.tokenName = token.tokenName
+      state.tokenValue = token.tokenValue
+      state.tokenHeaders = getTokenHeaders()
+      CookieUtil.setTokenName(token.tokenName)
+      CookieUtil.setTokenValue(token.tokenValue)
     },
-    SET_NAME: (state, name) => {
-      state.name = name
+    SET_USER_NAME: (state, userName) => {
+      state.userName = userName
     },
     SET_AVATAR: (state, avatar) => {
       state.avatar = avatar
     },
-    SET_ROLES: (state, roles) => {
-      state.roles = roles
+    SET_ROLE_LIST: (state, roleList) => {
+      state.roleList = roleList
     },
-    SET_PERMISSIONS: (state, permissions) => {
-      state.permissions = permissions
+    SET_PERMISSION_LIST: (state, permissionList) => {
+      state.permissionList = permissionList
     }
   },
 
   actions: {
     // 登录
-    Login({ commit }, userInfo) {
-      const username = userInfo.username.trim()
-      const password = userInfo.password
-      const code = userInfo.code
-      const uuid = userInfo.uuid
+    AccountLogin({ commit }, loginForm) {
+      const data = {
+        userName: loginForm.userName.trim(),
+        userPassword: loginForm.userPassword,
+        captchaCode: loginForm.captchaCode,
+        captchaId: loginForm.captchaId
+      }
       return new Promise((resolve, reject) => {
-        login(username, password, code, uuid).then(res => {
-          setToken(res.token)
-          commit('SET_TOKEN', res.token)
+        accountLogin(data).then(res => {
+          commit('SET_TOKEN', res)
           resolve()
         }).catch(error => {
           reject(error)
@@ -46,20 +60,21 @@ const user = {
       })
     },
 
-    // 获取用户信息
-    GetInfo({ commit, state }) {
+    // 获取用户登录信息
+    GetLoginInfo({ commit, state }) {
       return new Promise((resolve, reject) => {
-        getInfo().then(res => {
+        getLoginInfo().then(res => {
           const user = res.user
-          const avatar = (user.avatar == "" || user.avatar == null) ? require("@/assets/images/profile.jpg") : process.env.VUE_APP_BASE_API + user.avatar;
-          if (res.roles && res.roles.length > 0) { // 验证返回的roles是否是一个非空数组
-            commit('SET_ROLES', res.roles)
-            commit('SET_PERMISSIONS', res.permissions)
-          } else {
-            commit('SET_ROLES', ['ROLE_DEFAULT'])
-          }
-          commit('SET_NAME', user.userName)
+          // 设置用户名
+          commit('SET_USER_NAME', user.userName)
+          // 设置用户头像
+          const avatar = StrUtil.isBlank(user.avatar) ? require('@/assets/images/profile.jpg') : user.avatar
           commit('SET_AVATAR', avatar)
+          // 设置用户角色信息
+          if (ArrayUtil.isNotEmpty(res.roleList)) {
+            commit('SET_ROLE_LIST', res.roleList)
+            commit('SET_PERMISSION_LIST', res.permissionList)
+          }
           resolve(res)
         }).catch(error => {
           reject(error)
@@ -68,26 +83,17 @@ const user = {
     },
 
     // 退出系统
-    LogOut({ commit, state }) {
+    Logout({ commit, state }) {
       return new Promise((resolve, reject) => {
         logout(state.token).then(() => {
           commit('SET_TOKEN', '')
           commit('SET_ROLES', [])
           commit('SET_PERMISSIONS', [])
-          removeToken()
+          CookieUtil.removeTokenValue()
           resolve()
         }).catch(error => {
           reject(error)
         })
-      })
-    },
-
-    // 前端 登出
-    FedLogOut({ commit }) {
-      return new Promise(resolve => {
-        commit('SET_TOKEN', '')
-        removeToken()
-        resolve()
       })
     }
   }

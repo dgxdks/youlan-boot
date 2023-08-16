@@ -45,7 +45,7 @@ public class LoginLogController extends BaseController {
         return toSuccess(loginLogService.loadOne(id));
     }
 
-    @SaCheckPermission("system:loginLog:pageList")
+    @SaCheckPermission("system:loginLog:list")
     @Operation(summary = "登录日志分页")
     @PostMapping("/getLoginLogPageList")
     @SystemLog(name = "登录日志", type = SystemLogType.OPERATION_LOG_TYPE_PAGE_LIST)

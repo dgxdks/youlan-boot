@@ -4,21 +4,22 @@ import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.session.SaSessionCustomUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import com.youlan.common.core.exception.BizRuntimeException;
+import com.youlan.common.core.helper.ListHelper;
+import com.youlan.common.db.enums.DBStatus;
+import com.youlan.system.entity.Menu;
 import com.youlan.system.entity.Org;
 import com.youlan.system.entity.Role;
 import com.youlan.system.entity.RoleOrg;
 import com.youlan.system.entity.dto.RoleOrgDTO;
+import com.youlan.system.enums.MenuType;
+import com.youlan.system.helper.SystemAuthHelper;
 import com.youlan.system.service.*;
-import com.youlan.system.utils.SystemAuthUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.youlan.system.constant.SystemConstant.ROLE_SCOPE_CUSTOM;
@@ -33,12 +34,44 @@ public class RoleBizService {
     private final RoleOrgService roleOrgService;
     private final RoleMenuService roleMenuService;
     private final UserRoleService userRoleService;
+    private final MenuService menuService;
+
+    /**
+     * 获取用户对应的菜单树列表
+     */
+    public List<Menu> getMenuTreeList(Long userId) {
+        List<Menu> menuList;
+        List<String> menuTypeList = Arrays.asList(MenuType.DIRECTORY.getCode(), MenuType.MENU.getCode());
+        if (SystemAuthHelper.isAdmin()) {
+            menuList = menuService.lambdaQuery()
+                    .eq(Menu::getStatus, DBStatus.ENABLED.getCode())
+                    .in(Menu::getMenuType, menuTypeList)
+                    .list();
+        } else {
+            menuList = roleMenuService.getBaseMapper().getMenuListByUserId(userId, menuTypeList)
+                    .stream()
+                    .distinct()
+                    .collect(Collectors.toList());
+        }
+        return ListHelper.getTreeList(menuList, Menu::getChildren, Menu::getId, Menu::getParentId, Menu::getSort);
+    }
+
+    /**
+     * 获取菜单权限缓存(如果是超级管理员则返回匹配所有的权限字符)
+     */
+    public List<String> getMenuPermsList(Long userId) {
+        if (SystemAuthHelper.isAdmin()) {
+            return Collections.singletonList("*");
+        }
+        Set<String> menPermsList = roleMenuService.getBaseMapper().getMenuPermsListByUserId(userId);
+        return new ArrayList<>(menPermsList);
+    }
 
     /**
      * 根据用户ID获取用户对应角色的权限字符缓存
      */
     public List<String> getRoleStrListCache(Long userId) {
-        SaSession session = SystemAuthUtil.getTokenSession();
+        SaSession session = SystemAuthHelper.getTokenSession();
         return session.get(SaSession.ROLE_LIST, () -> {
             List<Long> roleIdList = userRoleService.getRoleIdListByUserId(userId);
             if (CollectionUtil.isEmpty(roleIdList)) {
@@ -59,7 +92,7 @@ public class RoleBizService {
      * 根据用户ID删除用户对应角色的缓存字符信息
      */
     public void removeRoleStrListCache(Long userId) {
-        SaSession session = SystemAuthUtil.getTokenSession();
+        SaSession session = SystemAuthHelper.getTokenSession();
         session.delete(SaSession.ROLE_LIST);
     }
 
@@ -69,7 +102,7 @@ public class RoleBizService {
     public List<String> getMenuPermsListCache(String roleStr) {
         SaSession session = SaSessionCustomUtil.getSessionById(ROLE_ID_PREFIX + roleStr);
         return session.get(SaSession.PERMISSION_LIST, () -> {
-            if (SystemAuthUtil.isAdmin()) {
+            if (SystemAuthHelper.isAdmin()) {
                 return Collections.singletonList("*");
             }
             return new ArrayList<>(roleMenuService.getBaseMapper().getMenuPermsListByRoleStr(roleStr));

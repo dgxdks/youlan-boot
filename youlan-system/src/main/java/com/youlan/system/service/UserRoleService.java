@@ -24,6 +24,7 @@ public class UserRoleService extends BaseServiceImpl<UserRoleMapper, UserRole> {
     /**
      * 新增用户关联角色信息
      */
+    @Transactional(rollbackFor = Exception.class)
     public boolean addUserRoleBatch(Long userId, List<Long> roleIdList) {
         List<UserRole> userRoleList = toUserRoleList(userId, roleIdList);
         return this.saveBatch(userRoleList);
@@ -32,6 +33,7 @@ public class UserRoleService extends BaseServiceImpl<UserRoleMapper, UserRole> {
     /**
      * 修改用户关联角色信息
      */
+    @Transactional(rollbackFor = Exception.class)
     public boolean updateUserRoleBatch(Long userId, List<Long> roleIdList) {
         List<UserRole> userRoleList = toUserRoleList(userId, roleIdList);
         boolean remove = this.removeByUserId(userId);

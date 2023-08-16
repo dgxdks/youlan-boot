@@ -6,26 +6,22 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.db.helper.DBHelper;
-import com.youlan.system.entity.Org;
 import com.youlan.system.entity.User;
-import com.youlan.system.entity.UserPost;
-import com.youlan.system.entity.UserRole;
 import com.youlan.system.entity.dto.UserDTO;
 import com.youlan.system.entity.dto.UserPageDTO;
 import com.youlan.system.entity.dto.UserPasswdDTO;
 import com.youlan.system.entity.vo.UserVO;
+import com.youlan.system.helper.SystemAuthHelper;
 import com.youlan.system.service.OrgService;
 import com.youlan.system.service.UserPostService;
 import com.youlan.system.service.UserRoleService;
 import com.youlan.system.service.UserService;
-import com.youlan.system.utils.SystemAuthUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,7 +31,6 @@ public class UserBizService {
     private final OrgService orgService;
     private final UserPostService userPostService;
     private final UserRoleService userRoleService;
-    private final ConfigBizService configBizService;
 
     /**
      * 新增用户
@@ -90,7 +85,7 @@ public class UserBizService {
      */
     public User createAddOrUpdateUser(UserDTO dto) {
         Long orgId = dto.getOrgId();
-        Org org = orgService.loadOrgIfEnabled(dto.getOrgId());
+        orgService.loadOrgIfEnabled(dto.getOrgId());
         User user = new User()
                 .setId(dto.getId())
                 .setOrgId(orgId)
@@ -129,15 +124,12 @@ public class UserBizService {
      * 用户详情
      */
     public UserVO loadUser(Long id) {
-        Optional<User> userOpt = userService.loadOneOpt(id);
-        if (userOpt.isEmpty()) {
-            throw new BizRuntimeException("用户信息不存在");
-        }
-        UserVO userVO = BeanUtil.copyProperties(userOpt.get(), UserVO.class);
-        List<UserRole> userRoleList = userRoleService.getListByUserId(id);
-        List<UserPost> userPostList = userPostService.getListByUserId(id);
-        userVO.setUserRoleList(userRoleList);
-        userVO.setUserPostList(userPostList);
+        User user = userService.loadUserIfExist(id);
+        UserVO userVO = BeanUtil.copyProperties(user, UserVO.class);
+        List<Long> roleIdList = userRoleService.getRoleIdListByUserId(id);
+        List<Long> postIdList = userPostService.getPostIdListByUserId(id);
+        userVO.setRoleIdList(roleIdList);
+        userVO.setPostIdList(postIdList);
         return userVO;
     }
 
@@ -145,7 +137,16 @@ public class UserBizService {
      * 用户分页
      */
     public IPage<UserVO> getUserPageList(UserPageDTO dto) {
-        return orgService.loadPage(DBHelper.getIPage(dto), DBHelper.getQueryWrapper(dto), UserVO.class);
+        IPage<UserVO> userPageList = userService.loadPage(DBHelper.getIPage(dto), DBHelper.getQueryWrapper(dto), UserVO.class);
+        //增加机构名称
+        List<Long> orgIdList = userPageList.getRecords().stream().map(UserVO::getOrgId).collect(Collectors.toList());
+        Map<Long, String> orgIdOrgNameMap = orgService.getOrgIdOrgNameMap(orgIdList);
+        userPageList.getRecords().forEach(user -> {
+            if (orgIdOrgNameMap.containsKey(user.getOrgId())) {
+                user.setOrgName(orgIdOrgNameMap.get(user.getOrgId()));
+            }
+        });
+        return userPageList;
     }
 
     /**
@@ -176,7 +177,7 @@ public class UserBizService {
         if (!StrUtil.equals(newPasswd, confirmPasswd)) {
             throw new BizRuntimeException("新密码与确认密码不一致");
         }
-        Long userId = SystemAuthUtil.getUserId();
+        Long userId = SystemAuthHelper.getUserId();
         User user = userService.loadUserIfExist(userId);
         boolean validUserPassword = userService.validUserPassword(oldPasswd, user.getUserPassword());
         if (!validUserPassword) {

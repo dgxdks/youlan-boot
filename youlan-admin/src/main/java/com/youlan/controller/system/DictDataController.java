@@ -15,10 +15,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "数据字典")
 @RestController
@@ -52,11 +49,18 @@ public class DictDataController extends BaseController {
         return toSuccess(dictBizService.removeDictData(ids.getList()));
     }
 
-    @SaCheckPermission("system:dict:pageList")
+    @SaCheckPermission("system:dict:list")
     @Operation(summary = "字典值分页")
     @PostMapping("/getDictDataPageList")
     public ApiResult getDictDataPageList(@RequestBody DictData dictData) {
         IPage<DictData> pageRes = dictDataService.loadPage(dictData, DBHelper.getQueryWrapper(dictData));
         return toSuccess(pageRes);
+    }
+
+    @SaCheckPermission("system:dict:list")
+    @Operation(summary = "字典值列表(typeKey)")
+    @PostMapping("/getDictDataListByTypeKey")
+    public ApiResult getDictDataListByTypeKey(@RequestParam String typeKey) {
+        return toSuccess(dictBizService.getDictDataList(typeKey));
     }
 }

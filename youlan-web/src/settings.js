@@ -1,5 +1,25 @@
 module.exports = {
   /**
+   * 登录页标题内容
+   */
+  loginTitle: '幽兰后台管理系统',
+  /**
+   * 登录页底部内容
+   */
+  loginFooter: 'Copyright © 2022-2023 <a href="https://youlan.online" target="_blank">youlan.online</a> All Rights Reserved.',
+  /**
+   * token值前缀
+   */
+  tokenValuePrefix: '',
+  /**
+   * 允许重复提交的最小间隔时间(ms)
+   */
+  canRepeatSubmitMinInterval: 1000,
+  /**
+   * 是否允许重复提交
+   */
+  canRepeatSubmit: false,
+  /**
    * 侧边栏主题 深色主题theme-dark，浅色主题theme-light
    */
   sideTheme: 'theme-dark',

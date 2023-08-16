@@ -3,15 +3,17 @@ package com.youlan.controller.system;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
-import com.youlan.common.db.entity.dto.ListDTO;
+import com.youlan.common.core.helper.ListHelper;
 import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.core.restful.enums.ApiResultCode;
+import com.youlan.common.db.entity.dto.ListDTO;
 import com.youlan.common.db.helper.DBHelper;
 import com.youlan.framework.anno.SystemLog;
 import com.youlan.framework.constant.SystemLogType;
 import com.youlan.framework.controller.BaseController;
 import com.youlan.system.entity.Role;
 import com.youlan.system.entity.dto.RoleOrgDTO;
+import com.youlan.system.helper.SystemAuthHelper;
 import com.youlan.system.service.RoleService;
 import com.youlan.system.service.biz.RoleBizService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,6 +21,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "角色管理")
 @RestController
@@ -65,7 +69,20 @@ public class RoleController extends BaseController {
         return toSuccess(roleService.loadOne(id));
     }
 
-    @SaCheckPermission("system:role:pageList")
+    @SaCheckPermission("system:role:list")
+    @Operation(summary = "角色列表")
+    @PostMapping("/getRoleList")
+    @SystemLog(name = "角色", type = SystemLogType.OPERATION_LOG_TYPE_LIST)
+    public ApiResult getRoleList(@RequestBody Role role) {
+        List<Role> roleList = roleService.loadMore(DBHelper.getQueryWrapper(role));
+        //非管理员用户不显示超级管理员角色信息
+        if (!SystemAuthHelper.isAdmin()) {
+            roleList = ListHelper.filterList(roleList, r -> !SystemAuthHelper.isAdminRole(r.getRoleStr()));
+        }
+        return toSuccess(roleList);
+    }
+
+    @SaCheckPermission("system:role:list")
     @Operation(summary = "角色分页")
     @PostMapping("/getRolePageList")
     @SystemLog(name = "角色", type = SystemLogType.OPERATION_LOG_TYPE_PAGE_LIST)

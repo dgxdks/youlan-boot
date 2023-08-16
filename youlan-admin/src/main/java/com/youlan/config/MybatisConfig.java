@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.inner.BlockAttackInnerIntercep
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.youlan.common.db.constant.DBConstant;
-import com.youlan.system.utils.SystemAuthUtil;
+import com.youlan.system.helper.SystemAuthHelper;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -47,16 +47,16 @@ public class MybatisConfig {
         return new MetaObjectHandler() {
             @Override
             public void insertFill(MetaObject metaObject) {
-                this.setFieldValByName(DBConstant.COL_CREATE_ID_CAMEL, SystemAuthUtil.getUserId(), metaObject);
-                this.setFieldValByName(DBConstant.COL_CREATE_BY_CAMEL, SystemAuthUtil.getUserName(), metaObject);
+                this.setFieldValByName(DBConstant.COL_CREATE_ID_CAMEL, SystemAuthHelper.getUserId(), metaObject);
+                this.setFieldValByName(DBConstant.COL_CREATE_BY_CAMEL, SystemAuthHelper.getUserName(), metaObject);
                 this.setFieldValByName(DBConstant.COL_CREATE_TIME_CAMEL, new Date(), metaObject);
                 this.setFieldValByName(DBConstant.COL_STATUS, DBConstant.VAL_STATUS_ENABLED, metaObject);
             }
 
             @Override
             public void updateFill(MetaObject metaObject) {
-                this.setFieldValByName(DBConstant.COL_UPDATE_ID_CAMEL, SystemAuthUtil.getUserId(), metaObject);
-                this.setFieldValByName(DBConstant.COL_UPDATE_BY_CAMEL, SystemAuthUtil.getUserName(), metaObject);
+                this.setFieldValByName(DBConstant.COL_UPDATE_ID_CAMEL, SystemAuthHelper.getUserId(), metaObject);
+                this.setFieldValByName(DBConstant.COL_UPDATE_BY_CAMEL, SystemAuthHelper.getUserName(), metaObject);
                 this.setFieldValByName(DBConstant.COL_UPDATE_TIME_CAMEL, new Date(), metaObject);
             }
         };

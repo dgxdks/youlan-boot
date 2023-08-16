@@ -20,4 +20,7 @@ public class ImageCaptcha {
 
     @Schema(title = "验证码超时时间")
     private Long codeTimeout;
+
+    @Schema(title = "是否开启验证码")
+    private Boolean captchaEnabled;
 }

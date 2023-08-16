@@ -1,10 +1,12 @@
 package com.youlan.common.core.helper;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.youlan.common.core.exception.BizRuntimeException;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class ListHelper {
@@ -93,5 +95,37 @@ public class ListHelper {
             }
         });
         return treeList;
+    }
+
+    /**
+     * 过滤集合返回符合条件的新集合
+     *
+     * @param itemList  元素列表
+     * @param predicate 符合条件
+     * @return 符合条件的新集合
+     */
+    public static <T> List<T> filterList(Collection<T> itemList, Predicate<T> predicate) {
+        if (CollectionUtil.isEmpty(itemList)) {
+            return new ArrayList<>();
+        }
+        return itemList.stream()
+                .filter(predicate)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 映射集合返回新的集合
+     *
+     * @param itemList 元素列表
+     * @param function 映射喊出
+     * @return 新的映射集合
+     */
+    public static <T, V> List<V> mapList(Collection<T> itemList, Function<T, V> function) {
+        if (CollectionUtil.isEmpty(itemList)) {
+            return new ArrayList<>();
+        }
+        return itemList.stream()
+                .map(function)
+                .collect(Collectors.toList());
     }
 }

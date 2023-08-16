@@ -1,42 +1,38 @@
+import { ArrayUtil, StrUtil } from '@/utils/tools'
+
 const state = {
-  dict: new Array()
+  dict: {
+
+  }
 }
 const mutations = {
-  SET_DICT: (state, { key, value }) => {
-    if (key !== null && key !== "") {
-      state.dict.push({
-        key: key,
-        value: value
-      })
+  SET_DICT: (state, { type, values }) => {
+    if (StrUtil.isNotBlank(type) && ArrayUtil.isNotEmpty(values)) {
+      state.dict = {
+        ...state.dict,
+        [type]: values
+      }
     }
   },
-  REMOVE_DICT: (state, key) => {
-    try {
-      for (let i = 0; i < state.dict.length; i++) {
-        if (state.dict[i].key == key) {
-          state.dict.splice(i, i)
-          return true
-        }
-      }
-    } catch (e) {
-    }
+  REMOVE_DICT: (state, type) => {
+    state.dict[type] = []
   },
   CLEAN_DICT: (state) => {
-    state.dict = new Array()
+    state.dict = {}
   }
 }
 
 const actions = {
   // 设置字典
-  setDict({ commit }, data) {
+  SetDict({ commit }, data) {
     commit('SET_DICT', data)
   },
   // 删除字典
-  removeDict({ commit }, key) {
+  RemoveDict({ commit }, key) {
     commit('REMOVE_DICT', key)
   },
   // 清空字典
-  cleanDict({ commit }) {
+  CleanDict({ commit }) {
     commit('CLEAN_DICT')
   }
 }

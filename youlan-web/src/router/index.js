@@ -1,10 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import Layout from '@/layout'
 
 Vue.use(Router)
-
-/* Layout */
-import Layout from '@/layout'
 
 /**
  * Note: 路由配置项
@@ -78,7 +76,7 @@ export const constantRoutes = [
     path: '/user',
     component: Layout,
     hidden: true,
-    redirect: 'noredirect',
+    redirect: 'noRedirect',
     children: [
       {
         path: 'profile',
@@ -96,7 +94,7 @@ export const dynamicRoutes = [
     path: '/system/user-auth',
     component: Layout,
     hidden: true,
-    permissions: ['system:user:edit'],
+    permissions: ['system:user:update'],
     children: [
       {
         path: 'role/:userId(\\d+)',
@@ -110,7 +108,7 @@ export const dynamicRoutes = [
     path: '/system/role-auth',
     component: Layout,
     hidden: true,
-    permissions: ['system:role:edit'],
+    permissions: ['system:role:update'],
     children: [
       {
         path: 'user/:roleId(\\d+)',
@@ -124,7 +122,7 @@ export const dynamicRoutes = [
     path: '/system/dict-data',
     component: Layout,
     hidden: true,
-    permissions: ['system:dict:list'],
+    permissions: ['system:dict:pageList'],
     children: [
       {
         path: 'index/:dictId(\\d+)',
@@ -138,7 +136,7 @@ export const dynamicRoutes = [
     path: '/monitor/job-log',
     component: Layout,
     hidden: true,
-    permissions: ['monitor:job:list'],
+    permissions: ['monitor:job:pageList'],
     children: [
       {
         path: 'index/:jobId(\\d+)',
@@ -149,24 +147,24 @@ export const dynamicRoutes = [
     ]
   },
   {
-    path: '/tool/gen-edit',
+    path: '/tools/generator-edit',
     component: Layout,
     hidden: true,
-    permissions: ['tool:gen:edit'],
+    permissions: ['tools:generator:update'],
     children: [
       {
         path: 'index/:tableId(\\d+)',
-        component: () => import('@/views/tool/gen/editTable'),
-        name: 'GenEdit',
-        meta: { title: '修改生成配置', activeMenu: '/tool/gen' }
+        component: () => import('@/views/tools/generator/editTable'),
+        name: 'GeneratorEdit',
+        meta: { title: '修改生成配置', activeMenu: '/tools/generator' }
       }
     ]
   }
 ]
 
 // 防止连续点击多次路由报错
-let routerPush = Router.prototype.push;
-let routerReplace = Router.prototype.replace;
+const routerPush = Router.prototype.push
+const routerReplace = Router.prototype.replace
 // push
 Router.prototype.push = function push(location) {
   return routerPush.call(this, location).catch(err => err)
@@ -177,7 +175,7 @@ Router.prototype.replace = function push(location) {
 }
 
 export default new Router({
-  mode: 'history', // 去掉url中的#
+  mode: 'hash', // 去掉url中的#
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes
 })

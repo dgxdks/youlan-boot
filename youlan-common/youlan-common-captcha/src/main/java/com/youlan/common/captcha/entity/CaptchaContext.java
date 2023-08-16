@@ -3,6 +3,8 @@ package com.youlan.common.captcha.entity;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.awt.*;
+
 /**
  * 复杂配置时使用验证码配置上下文进行全局配置
  */
@@ -13,12 +15,22 @@ public class CaptchaContext {
     /**
      * 验证码图片宽度(仅图片验证码有效)
      */
-    private int width = 200;
+    private int width = 160;
 
     /**
      * 验证码图片高度(仅图片验证码有效)
      */
-    private int height = 100;
+    private int height = 60;
+
+    /**
+     * 验证码图片背景颜色
+     */
+    private Color color = Color.PINK;
+
+    /**
+     * 验证码字体
+     */
+    private Font font = new Font("Arial", Font.BOLD, 58);
 
     /**
      * 验证码内容长度
@@ -38,7 +50,7 @@ public class CaptchaContext {
     /**
      * 验证码干扰圆圈数(仅生成干扰圆圈验证码时生效)
      */
-    private int circleNumber = 5;
+    private int circleNumber = 10;
 
     /**
      * 四则运算验证码参与计算的数字位数(仅四则运算验证码时生效)

@@ -36,6 +36,7 @@
         <swagger.version>3.0.0</swagger.version>
         <knife4j.version>4.1.0</knife4j.version>
         <satoken.version>1.35.0.RC</satoken.version>
+        <spring.file.storage.version>1.0.2</spring.file.storage.version>
         <httpclient.version>4.5.14</httpclient.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -122,6 +123,11 @@
                 <version>${easyexcel.version}</version>
             </dependency>
             <dependency>
+                <groupId>cn.xuyanwu</groupId>
+                <artifactId>spring-file-storage</artifactId>
+                <version>${spring.file.storage.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
                 <version>${httpclient.version}</version>
@@ -179,6 +185,11 @@
             <dependency>
                 <groupId>com.youlan</groupId>
                 <artifactId>youlan-common-crypto</artifactId>
+                <version>${youlan.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.youlan</groupId>
+                <artifactId>youlan-common-storage</artifactId>
                 <version>${youlan.version}</version>
             </dependency>
             <dependency>

@@ -66,7 +66,7 @@ public class PostController extends BaseController {
         return toSuccess(postService.loadOne(id));
     }
 
-    @SaCheckPermission("system:post:pageList")
+    @SaCheckPermission("system:post:list")
     @Operation(summary = "岗位分页")
     @PostMapping("/getPostPageList")
     @SystemLog(name = "岗位", type = SystemLogType.OPERATION_LOG_TYPE_PAGE_LIST)

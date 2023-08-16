@@ -9,8 +9,13 @@ import org.springframework.stereotype.Component;
 @Import(SpringUtil.class)
 @Component
 public class CaptchaHelperHolder {
+    private static final CircleCaptchaHelper circleCaptchaHelper = new CircleCaptchaHelper();
+    private static final LineCaptchaHelper lineCaptchaHelper = new LineCaptchaHelper();
+    private static final ShearCaptchaHelper shearCaptchaHelper = new ShearCaptchaHelper();
+    private static final SmsCaptchaHelper smsCaptchaHelper = new SmsCaptchaHelper();
+    private static final CaptchaHelper captchaHelper = new CaptchaHelper();
 
-    public static ImageCaptchaHelper imageCaptchaHelper(CaptchaType captchaType) {
+    public static AbstractImageCaptchaHelper imageCaptchaHelper(CaptchaType captchaType) {
         switch (captchaType) {
             case CIRCLE:
                 return circleCaptchaHelper();
@@ -24,26 +29,22 @@ public class CaptchaHelperHolder {
     }
 
     public static CaptchaHelper captchaHelper() {
-        return SpringUtil.getBean(CaptchaHelper.class);
+        return new CaptchaHelper();
     }
 
     public static CircleCaptchaHelper circleCaptchaHelper() {
-        return SpringUtil.getBean(CircleCaptchaHelper.class);
+        return circleCaptchaHelper;
     }
 
     public static LineCaptchaHelper lineCaptchaHelper() {
-        return SpringUtil.getBean(LineCaptchaHelper.class);
+        return lineCaptchaHelper;
     }
 
     public static ShearCaptchaHelper shearCaptchaHelper() {
-        return SpringUtil.getBean(ShearCaptchaHelper.class);
-    }
-
-    public static ImageCaptchaHelper imageCaptchaHelper() {
-        return SpringUtil.getBean(ImageCaptchaHelper.class);
+        return shearCaptchaHelper;
     }
 
     public static SmsCaptchaHelper smsCaptchaHelper() {
-        return SpringUtil.getBean(SmsCaptchaHelper.class);
+        return smsCaptchaHelper;
     }
 }

@@ -8,5 +8,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Accessors(chain = true)
 @ConfigurationProperties(prefix = "youlan.system")
 public class SystemProperties {
-
+    /**
+     * 验证码配置
+     */
+    private CaptchaProperties captcha;
 }

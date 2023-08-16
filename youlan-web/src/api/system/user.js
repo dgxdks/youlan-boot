@@ -1,20 +1,23 @@
 import request from '@/utils/request'
-import { parseStrEmpty } from "@/utils/ruoyi";
+import { parseStrEmpty } from '@/utils/ruoyi'
 
 // 查询用户列表
-export function listUser(query) {
+export function getUserPageList(data) {
   return request({
-    url: '/system/user/list',
-    method: 'get',
-    params: query
+    url: '/system/user/getUserPageList',
+    method: 'post',
+    data
   })
 }
 
 // 查询用户详细
-export function getUser(userId) {
+export function loadUser(id) {
   return request({
-    url: '/system/user/' + parseStrEmpty(userId),
-    method: 'get'
+    url: '/system/loadUser/',
+    method: 'post',
+    params: {
+      id
+    }
   })
 }
 

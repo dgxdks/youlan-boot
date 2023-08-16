@@ -1,169 +1,170 @@
 <template>
   <div class="login">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form">
-      <h3 class="title">若依后台管理系统</h3>
-      <el-form-item prop="username">
+      <h3 class="title">{{ $store.state.settings.loginTitle }}</h3>
+      <el-form-item prop="userName">
         <el-input
-          v-model="loginForm.username"
-          type="text"
+          v-model="loginForm.userName"
           auto-complete="off"
           placeholder="账号"
+          type="text"
         >
-          <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
+          <svg-icon slot="prefix" class="el-input__icon input-icon" icon-class="user"/>
         </el-input>
       </el-form-item>
-      <el-form-item prop="password">
+      <el-form-item prop="userPassword">
         <el-input
-          v-model="loginForm.password"
-          type="password"
+          v-model="loginForm.userPassword"
           auto-complete="off"
           placeholder="密码"
+          type="password"
           @keyup.enter.native="handleLogin"
         >
-          <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
+          <svg-icon slot="prefix" class="el-input__icon input-icon" icon-class="password"/>
         </el-input>
       </el-form-item>
-      <el-form-item prop="code" v-if="captchaEnabled">
+      <el-form-item v-if="captchaEnabled" prop="captchaCode">
         <el-input
-          v-model="loginForm.code"
+          v-model="loginForm.captchaCode"
           auto-complete="off"
           placeholder="验证码"
           style="width: 63%"
           @keyup.enter.native="handleLogin"
         >
-          <svg-icon slot="prefix" icon-class="validCode" class="el-input__icon input-icon" />
+          <svg-icon slot="prefix" class="el-input__icon input-icon" icon-class="validCode"/>
         </el-input>
         <div class="login-code">
-          <img :src="codeUrl" @click="getCode" class="login-code-img"/>
+          <img :src="captchaImg" alt="" class="login-code-img" @click="getCode"/>
         </div>
       </el-form-item>
-      <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">记住密码</el-checkbox>
+      <el-checkbox v-model="loginForm.rememberMe" style="margin:0 0 25px 0;">记住密码</el-checkbox>
       <el-form-item style="width:100%;">
         <el-button
           :loading="loading"
           size="medium"
-          type="primary"
           style="width:100%;"
+          type="primary"
           @click.native.prevent="handleLogin"
         >
           <span v-if="!loading">登 录</span>
           <span v-else>登 录 中...</span>
         </el-button>
-        <div style="float: right;" v-if="register">
-          <router-link class="link-type" :to="'/register'">立即注册</router-link>
+        <div v-if="register" style="float: right;">
+          <router-link :to="'/register'" class="link-type">立即注册</router-link>
         </div>
       </el-form-item>
     </el-form>
     <!--  底部  -->
     <div class="el-login-footer">
-      <span>Copyright © 2018-2023 ruoyi.vip All Rights Reserved.</span>
+      <span v-html="$store.state.settings.loginFooter"></span>
     </div>
   </div>
 </template>
 
 <script>
-import { getCodeImg } from "@/api/login";
-import Cookies from "js-cookie";
-import { encrypt, decrypt } from '@/utils/jsencrypt'
+
+import { getImageCaptcha } from '@/api/common/captcha'
 
 export default {
-  name: "Login",
+  name: 'Login',
   data() {
     return {
-      codeUrl: "",
+      captchaImg: null,
       loginForm: {
-        username: "admin",
-        password: "admin123",
+        userName: null,
+        userPassword: null,
         rememberMe: false,
-        code: "",
-        uuid: ""
+        captchaCode: null,
+        captchaId: null
       },
       loginRules: {
-        username: [
-          { required: true, trigger: "blur", message: "请输入您的账号" }
+        userName: [
+          { required: true, trigger: 'blur', message: '请输入您的账号' }
         ],
-        password: [
-          { required: true, trigger: "blur", message: "请输入您的密码" }
+        userPassword: [
+          { required: true, trigger: 'blur', message: '请输入您的密码' }
         ],
-        code: [{ required: true, trigger: "change", message: "请输入验证码" }]
+        captchaCode: [{ required: true, trigger: 'change', message: '请输入验证码' }]
       },
       loading: false,
       // 验证码开关
       captchaEnabled: true,
       // 注册开关
-      register: false,
+      register: true,
       redirect: undefined
-    };
+    }
   },
   watch: {
     $route: {
       handler: function(route) {
-        this.redirect = route.query && route.query.redirect;
+        this.redirect = route.query && route.query.redirect
       },
       immediate: true
     }
   },
   created() {
-    this.getCode();
-    this.getCookie();
+    this.getCode()
+    this.getCookie()
   },
   methods: {
     getCode() {
-      getCodeImg().then(res => {
-        this.captchaEnabled = res.captchaEnabled === undefined ? true : res.captchaEnabled;
+      getImageCaptcha().then(res => {
+        this.captchaEnabled = res.captchaEnabled
         if (this.captchaEnabled) {
-          this.codeUrl = "data:image/gif;base64," + res.img;
-          this.loginForm.uuid = res.uuid;
+          this.captchaImg = 'data:image/gif;base64,' + res.captchaImg
+          this.loginForm.captchaId = res.captchaId
         }
-      });
+      })
     },
     getCookie() {
-      const username = Cookies.get("username");
-      const password = Cookies.get("password");
-      const rememberMe = Cookies.get('rememberMe')
+      const userPassword = this.$cookie.getUserPassword()
       this.loginForm = {
-        username: username === undefined ? this.loginForm.username : username,
-        password: password === undefined ? this.loginForm.password : decrypt(password),
-        rememberMe: rememberMe === undefined ? false : Boolean(rememberMe)
-      };
+        userName: this.$cookie.getUserName(),
+        userPassword: this.$str.isNotBlank(userPassword) ? this.$crypto.aesDecrypt(userPassword) : null,
+        rememberMe: this.$cookie.getRememberMe()
+      }
     },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          this.loading = true;
+          this.loading = true
           if (this.loginForm.rememberMe) {
-            Cookies.set("username", this.loginForm.username, { expires: 30 });
-            Cookies.set("password", encrypt(this.loginForm.password), { expires: 30 });
-            Cookies.set('rememberMe', this.loginForm.rememberMe, { expires: 30 });
+            this.$cookie.setUserName(this.loginForm.userName)
+            this.$cookie.setUserPassword(this.loginForm.userPassword)
+            this.$cookie.setRememberMe(this.loginForm.rememberMe)
           } else {
-            Cookies.remove("username");
-            Cookies.remove("password");
-            Cookies.remove('rememberMe');
+            this.$cookie.removeUserName()
+            this.$cookie.removeUserPassword()
+            this.$cookie.removeRememberMe()
           }
-          this.$store.dispatch("Login", this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || "/" }).catch(()=>{});
-          }).catch(() => {
-            this.loading = false;
+          this.$store.dispatch('AccountLogin', this.loginForm).then(() => {
+            this.$router.push({ path: this.redirect || '/' }).catch(error => {
+              console.log(error)
+            })
+          }).catch(error => {
+            console.log(error)
+            this.loading = false
             if (this.captchaEnabled) {
-              this.getCode();
+              this.getCode()
             }
-          });
+          })
         }
-      });
+      })
     }
   }
-};
+}
 </script>
 
-<style rel="stylesheet/scss" lang="scss">
+<style lang="scss" rel="stylesheet/scss">
 .login {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100%;
-  background-image: url("../assets/images/login-background.jpg");
+  background-image: url("../assets/images/login-background3.jpeg");
   background-size: cover;
 }
+
 .title {
   margin: 0px auto 30px auto;
   text-align: center;
@@ -175,32 +176,39 @@ export default {
   background: #ffffff;
   width: 400px;
   padding: 25px 25px 5px 25px;
+
   .el-input {
     height: 38px;
+
     input {
       height: 38px;
     }
   }
+
   .input-icon {
     height: 39px;
     width: 14px;
     margin-left: 2px;
   }
 }
+
 .login-tip {
   font-size: 13px;
   text-align: center;
   color: #bfbfbf;
 }
+
 .login-code {
   width: 33%;
   height: 38px;
   float: right;
+
   img {
     cursor: pointer;
     vertical-align: middle;
   }
 }
+
 .el-login-footer {
   height: 40px;
   line-height: 40px;
@@ -213,6 +221,7 @@ export default {
   font-size: 12px;
   letter-spacing: 1px;
 }
+
 .login-code-img {
   height: 38px;
 }

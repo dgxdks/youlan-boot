@@ -1,5 +1,5 @@
 import hasRole from './permission/hasRole'
-import hasPermi from './permission/hasPermi'
+import hasPerm from './permission/hasPerm'
 import dialogDrag from './dialog/drag'
 import dialogDragWidth from './dialog/dragWidth'
 import dialogDragHeight from './dialog/dragHeight'
@@ -7,7 +7,7 @@ import clipboard from './module/clipboard'
 
 const install = function(Vue) {
   Vue.directive('hasRole', hasRole)
-  Vue.directive('hasPermi', hasPermi)
+  Vue.directive('hasPerm', hasPerm)
   Vue.directive('clipboard', clipboard)
   Vue.directive('dialogDrag', dialogDrag)
   Vue.directive('dialogDragWidth', dialogDragWidth)
@@ -16,8 +16,8 @@ const install = function(Vue) {
 
 if (window.Vue) {
   window['hasRole'] = hasRole
-  window['hasPermi'] = hasPermi
-  Vue.use(install); // eslint-disable-line
+  window['hasPerm'] = hasPerm
+  Vue.use(install) // eslint-disable-line
 }
 
 export default install

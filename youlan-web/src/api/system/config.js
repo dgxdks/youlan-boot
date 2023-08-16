@@ -1,60 +1,64 @@
 import request from '@/utils/request'
 
-// 查询参数列表
-export function listConfig(query) {
-  return request({
-    url: '/system/config/list',
-    method: 'get',
-    params: query
-  })
-}
-
-// 查询参数详细
-export function getConfig(configId) {
-  return request({
-    url: '/system/config/' + configId,
-    method: 'get'
-  })
-}
-
-// 根据参数键名查询参数值
-export function getConfigKey(configKey) {
-  return request({
-    url: '/system/config/configKey/' + configKey,
-    method: 'get'
-  })
-}
-
-// 新增参数配置
+//系统配置新增
 export function addConfig(data) {
   return request({
-    url: '/system/config',
+    url: '/system/config/addConfig',
     method: 'post',
-    data: data
+    data
   })
 }
 
-// 修改参数配置
+//系统配置修改
 export function updateConfig(data) {
   return request({
-    url: '/system/config',
-    method: 'put',
-    data: data
+    url: '/system/config/updateConfig',
+    method: 'post',
+    data
   })
 }
 
-// 删除参数配置
-export function delConfig(configId) {
+//系统配置删除
+export function removeConfig(data) {
   return request({
-    url: '/system/config/' + configId,
-    method: 'delete'
+    url: '/system/config/removeConfig',
+    method: 'post',
+    data
   })
 }
 
-// 刷新参数缓存
-export function refreshCache() {
+//系统配置详情
+export function loadConfig(data) {
   return request({
-    url: '/system/config/refreshCache',
-    method: 'delete'
+    url: '/system/config/loadConfig',
+    method: 'post',
+    data
+  })
+}
+
+//系统配置详情
+export function loadConfigByConfigKey(params) {
+  return request({
+    url: '/system/config/loadConfigByConfigKey',
+    method: 'post',
+    params
+  })
+}
+
+//系统配置分页
+export function getConfigPageList(data) {
+  return request({
+    url: '/system/config/getConfigPageList',
+    method: 'post',
+    data
+  })
+}
+
+//系统配置导出
+export function exportConfigList(data) {
+  return request({
+    url: '/system/config/getConfigPageList',
+    method: 'post',
+    data
   })
 }

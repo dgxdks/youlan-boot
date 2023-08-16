@@ -12,16 +12,19 @@ import com.youlan.common.redis.helper.RedisHelper;
 import com.youlan.system.entity.Org;
 import com.youlan.system.entity.User;
 import com.youlan.system.entity.auth.SystemAuthInfo;
-import com.youlan.system.entity.dto.UserLoginDTO;
+import com.youlan.system.entity.dto.AccountLoginDTO;
+import com.youlan.system.entity.vo.LoginInfoVO;
+import com.youlan.system.entity.vo.UserVO;
 import com.youlan.system.enums.LoginStatus;
 import com.youlan.system.service.LoginLogService;
 import com.youlan.system.service.OrgService;
 import com.youlan.system.service.UserService;
-import com.youlan.system.utils.SystemAuthUtil;
-import com.youlan.system.utils.SystemConfigUtil;
+import com.youlan.system.helper.SystemAuthHelper;
+import com.youlan.system.helper.SystemConfigHelper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
@@ -36,13 +39,14 @@ public class LoginBizService {
     private final OrgService orgService;
     private final LoginLogService loginLogService;
     private final RedisHelper redisHelper;
+    private final RoleBizService roleBizService;
 
     /**
      * 用户登录
      */
-    public SaTokenInfo login(UserLoginDTO dto) {
+    public SaTokenInfo login(AccountLoginDTO dto) {
         //优先处理验证码逻辑,前提是系统开启的验证码功能
-        boolean captchaEnabled = SystemConfigUtil.captchaImageEnabled();
+        boolean captchaEnabled = SystemConfigHelper.captchaImageEnabled();
         if (captchaEnabled) {
             doImageCaptchaCheck(dto.getCaptchaId(), dto.getCaptchaCode());
         }
@@ -58,9 +62,9 @@ public class LoginBizService {
         doLoginCheck(user, passwordMatch);
         //发起用户登录并返回Token信息
         SystemAuthInfo systemAuthInfo = createSystemAuthInfo(user);
-        SystemAuthUtil.login(user.getId());
-        SystemAuthUtil.setSystemAuthInfo(systemAuthInfo);
-        return SystemAuthUtil.getTokenInfo();
+        SystemAuthHelper.login(user.getId());
+        SystemAuthHelper.setSystemAuthInfo(systemAuthInfo);
+        return SystemAuthHelper.getTokenInfo();
     }
 
     /**
@@ -81,7 +85,7 @@ public class LoginBizService {
      */
     public void doLoginCheck(User user, Supplier<Boolean> passwordMatch) {
         //校验登录重试次数,小于等于0则不判断登录重试次数
-        int loginMaxRetryTimes = SystemConfigUtil.loginMaxRetryTimes();
+        int loginMaxRetryTimes = SystemConfigHelper.loginMaxRetryTimes();
         if (loginMaxRetryTimes <= 0) {
             //不处理重试逻辑但是要处理密码是否匹配逻辑
             if (passwordMatch.get()) {
@@ -91,7 +95,7 @@ public class LoginBizService {
             throw new BizRuntimeException(A0002);
         }
         //根据登录重试策略生成redisKey
-        String loginRetryStrategy = SystemConfigUtil.loginRetryStrategy();
+        String loginRetryStrategy = SystemConfigHelper.loginRetryStrategy();
         String loginRetryKey = REDIS_PREFIX_LOGIN_RETRY + user.getUserName();
         if (CONFIG_VALUE_LOGIN_RETRY_STRATEGY_USERNAME_IP.equals(loginRetryStrategy)) {
             loginRetryKey = loginRetryKey + StrPool.COLON + ServletHelper.getClientIp();
@@ -104,7 +108,7 @@ public class LoginBizService {
         }
         if (!passwordMatch.get()) {
             retryCount++;
-            int loginLockTime = SystemConfigUtil.loginLockTime();
+            int loginLockTime = SystemConfigHelper.loginLockTime();
             redisHelper.set(loginRetryKey, retryCount, loginLockTime, TimeUnit.SECONDS);
             //密码匹配失败重试次数+1后需在判断一次是否超过重试次数
             if (retryCount > loginMaxRetryTimes) {
@@ -134,7 +138,19 @@ public class LoginBizService {
      * 用户注销
      */
     public void logout() {
-        SystemAuthUtil.logout();
+        SystemAuthHelper.logout();
     }
 
+    /**
+     * 用户登录信息
+     */
+    public LoginInfoVO getLoginInfo() {
+        Long userId = SystemAuthHelper.getUserId();
+        UserVO user = userService.loadOne(userId, UserVO.class);
+        List<String> roleList = roleBizService.getRoleStrListCache(userId);
+        List<String> permissionList = roleBizService.getMenuPermsList(userId);
+        return new LoginInfoVO().setUser(user)
+                .setRoleList(roleList)
+                .setPermissionList(permissionList);
+    }
 }

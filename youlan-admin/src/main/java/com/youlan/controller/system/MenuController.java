@@ -65,7 +65,7 @@ public class MenuController extends BaseController {
         return toSuccess(menuService.loadOne(id));
     }
 
-    @SaCheckPermission("system:menu:pageList")
+    @SaCheckPermission("system:menu:list")
     @Operation(summary = "菜单分页")
     @PostMapping("/getMenuPageList")
     @SystemLog(name = "菜单", type = SystemLogType.OPERATION_LOG_TYPE_PAGE_LIST)
@@ -73,7 +73,7 @@ public class MenuController extends BaseController {
         return toSuccess(menuService.loadPage(menu, DBHelper.getQueryWrapper(menu)));
     }
 
-    @SaCheckPermission("system.menu:treeList")
+    @SaCheckPermission("system.menu:list")
     @Operation(summary = "菜单树列表")
     @PostMapping("/getMenuTreeList")
     public ApiResult getMenuTreeList(@RequestBody Menu menu) {

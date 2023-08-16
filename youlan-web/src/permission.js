@@ -3,8 +3,7 @@ import store from './store'
 import { Message } from 'element-ui'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
-import { getToken } from '@/utils/auth'
-import { isRelogin } from '@/utils/request'
+import { ArrayUtil, CookieUtil } from '@/utils/tools'
 
 NProgress.configure({ showSpinner: false })
 
@@ -12,29 +11,29 @@ const whiteList = ['/login', '/register']
 
 router.beforeEach((to, from, next) => {
   NProgress.start()
-  if (getToken()) {
+  const tokenValue = CookieUtil.getTokenValue()
+  if (tokenValue) {
     to.meta.title && store.dispatch('settings/setTitle', to.meta.title)
     /* has token*/
     if (to.path === '/login') {
       next({ path: '/' })
       NProgress.done()
     } else {
-      if (store.getters.roles.length === 0) {
-        isRelogin.show = true
+      if (ArrayUtil.isEmpty(store.getters.roleList)) {
         // 判断当前用户是否已拉取完user_info信息
-        store.dispatch('GetInfo').then(() => {
-          isRelogin.show = false
+        store.dispatch('GetLoginInfo').then(() => {
           store.dispatch('GenerateRoutes').then(accessRoutes => {
             // 根据roles权限生成可访问的路由表
             router.addRoutes(accessRoutes) // 动态添加可访问路由表
             next({ ...to, replace: true }) // hack方法 确保addRoutes已完成
           })
         }).catch(err => {
-            store.dispatch('LogOut').then(() => {
-              Message.error(err)
-              next({ path: '/' })
-            })
+          console.log(err)
+          store.dispatch('Logout').then(() => {
+            Message.error(err)
+            next({ path: '/' })
           })
+        })
       } else {
         next()
       }

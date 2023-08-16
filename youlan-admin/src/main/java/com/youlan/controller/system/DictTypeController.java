@@ -56,7 +56,7 @@ public class DictTypeController extends BaseController {
         return toSuccess(dictBizService.removeDictType(ids.getList()));
     }
 
-    @SaCheckPermission("system:dict:pageList")
+    @SaCheckPermission("system:dict:list")
     @Operation(summary = "字典类型分页")
     @PostMapping("/getDictTypePageList")
     public ApiResult getDictTypePageList(@RequestBody DictType dictType) {

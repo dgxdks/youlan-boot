@@ -138,6 +138,16 @@ sa-token:
   is-log: true
 
 youlan:
+  # 系统模块
+  system:
+    # 验证码
+    captcha:
+      # 验证码类型(LINE-线条干扰 CIRCLE-圆圈干扰 SHEAR-扭曲干扰)
+      captcha-type: CIRCLE
+      # 验证码内容类型(CHAR-字符类型 NUMBER-数字类型 CHAR_NUMBER-字符+数字类型 MATH-四则运算类型)
+      captcha-code-type: MATH
+      # 验证码长度
+      captcha-code-len: 5
   # 框架模块
   framework:
     # 操作日志
@@ -165,14 +175,6 @@ youlan:
         - /*/api-docs/**
   # 公共模块
   common:
-    # 验证码
-    captcha:
-      # 验证码类型(LINE-线条干扰 CIRCLE-圆圈干扰 SHEAR-扭曲干扰)
-      captcha-type: LINE
-      # 验证码内容类型(CHAR-字符类型 NUMBER-数字类型 CHAR_NUMBER-字符+数字类型 MATH-四则运算类型)
-      captcha-code-type: MATH
-      # 验证码长度
-      captcha-code-len: 5
     # 加密
     crypto:
       # AES秘钥(支持明文秘钥/系统路径文件[需指定绝对路径]/类路径文件[需添加classpath:前缀])

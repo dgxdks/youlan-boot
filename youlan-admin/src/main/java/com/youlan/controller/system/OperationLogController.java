@@ -44,7 +44,7 @@ public class OperationLogController extends BaseController {
         return toSuccess(operationLogService.loadOne(id));
     }
 
-    @SaCheckPermission("system:operationLog:pageList")
+    @SaCheckPermission("system:operationLog:list")
     @Operation(summary = "操作日志分页")
     @PostMapping("/getOperationLogPageList")
     public ApiResult getOperationLogPageList(@RequestBody OperationLogPageDTO dto) {

@@ -59,6 +59,16 @@ public class UserPostService extends BaseServiceImpl<UserPostMapper, UserPost> {
     }
 
     /**
+     * 根据用户ID查询岗位ID列表
+     */
+    public List<Long> getPostIdListByUserId(Long userId) {
+        return getListByUserId(userId)
+                .stream()
+                .map(UserPost::getPostId)
+                .collect(Collectors.toList());
+    }
+
+    /**
      * 根据用户ID和岗位列表转为用户关联职位对象列表
      */
     public List<UserPost> toUserPostList(Long userId, List<Long> postIdList) {

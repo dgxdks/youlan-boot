@@ -69,7 +69,7 @@ public class ConfigController extends BaseController {
         return toSuccess(configService.loadOne(id));
     }
 
-    @SaCheckPermission("system:config:pageList")
+    @SaCheckPermission("system:config:list")
     @Operation(summary = "系统配置分页")
     @PostMapping("/getConfigPageList")
     @SystemLog(name = "系统配置", type = SystemLogType.OPERATION_LOG_TYPE_PAGE_LIST)
@@ -84,5 +84,12 @@ public class ConfigController extends BaseController {
     public void exportConfigList(@RequestBody Config config, HttpServletResponse response) throws IOException {
         List<Config> loginLogList = configService.loadMore(DBHelper.getQueryWrapper(config));
         toExcel("系统配置.xlsx", "系统配置", LoginLog.class, loginLogList, response);
+    }
+
+    @SaCheckPermission("system:config:load")
+    @Operation(summary = "系统配置详情")
+    @PostMapping("/loadConfigByConfigKey")
+    public ApiResult loadConfigByConfigKey(@RequestParam String configKey) {
+        return toSuccess(configService.loadOne(Config::getConfigKey, configKey));
     }
 }

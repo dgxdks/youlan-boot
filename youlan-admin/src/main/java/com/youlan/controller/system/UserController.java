@@ -64,11 +64,12 @@ public class UserController extends BaseController {
     @SaCheckPermission("system:user:load")
     @Operation(summary = "用户详情")
     @PostMapping("/loadUser")
-    public ApiResult loadUser(@RequestParam Long id) {
+    public ApiResult loadUser(@RequestParam(required = false) Long id) {
+        // TODO: 2023/8/15 数据权限
         return toSuccess(userBizService.loadUser(id));
     }
 
-    @SaCheckPermission("system:user:pageList")
+    @SaCheckPermission("system:user:list")
     @Operation(summary = "用户分页")
     @PostMapping("/getUserPageList")
     @SystemLog(name = "用户", type = SystemLogType.OPERATION_LOG_TYPE_PAGE_LIST)

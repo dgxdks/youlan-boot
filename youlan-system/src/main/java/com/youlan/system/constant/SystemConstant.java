@@ -18,6 +18,11 @@ public class SystemConstant {
      * 系统用户登录重试缓存前缀
      */
     public static final String REDIS_PREFIX_LOGIN_RETRY = "system_login_retry:";
+    /**
+     * 存储配置缓存前缀
+     */
+    public static final String REDIS_PREFIX_STORAGE_CONFIG = "system_storage_config:";
+
 
     // ******************** 机构常量 ********************
     public static final String ORG_TABLE = "t_sys_org";
@@ -121,4 +126,9 @@ public class SystemConstant {
      * 超级管理员用户ID
      */
     public static final Long ADMIN_USER_ID = 100L;
+
+    /**
+     * 超级管理员角色字符
+     */
+    public static final String ADMIN_ROLE_STR = "admin";
 }

@@ -6,9 +6,7 @@ import cn.hutool.core.util.RandomUtil;
 import com.youlan.common.captcha.entity.CaptchaContext;
 import com.youlan.common.captcha.entity.CaptchaInfo;
 import com.youlan.common.captcha.entity.SmsCaptcha;
-import org.springframework.stereotype.Component;
 
-@Component
 public class SmsCaptchaHelper extends CaptchaHelper {
     public static final int SMS_CAPTCHA_CODE_LIMIT_DEFAULT = 1;
 
