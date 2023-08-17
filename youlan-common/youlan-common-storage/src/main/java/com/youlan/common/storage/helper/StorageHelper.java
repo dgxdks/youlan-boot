@@ -35,7 +35,7 @@ public class StorageHelper {
      * 创建上传预处理器
      */
     public static UploadPretreatment of(String platform, Supplier<StorageContext> supplier) {
-        getOrAddFileStorage(platform, supplier);
+        addFileStorageIfNotExist(platform, supplier);
         return of().setPlatform(platform);
     }
 
@@ -50,7 +50,7 @@ public class StorageHelper {
      * 创建上传预处理器
      */
     public static UploadPretreatment of(Object source, String platform, Supplier<StorageContext> supplier) {
-        getOrAddFileStorage(platform, supplier);
+        addFileStorageIfNotExist(platform, supplier);
         return of(source).setPlatform(platform);
     }
 
@@ -65,7 +65,7 @@ public class StorageHelper {
      * 创建上传预处理器
      */
     public static UploadPretreatment of(Object source, String name, String platform, Supplier<StorageContext> supplier) {
-        getOrAddFileStorage(platform, supplier);
+        addFileStorageIfNotExist(platform, supplier);
         return of(source, name).setPlatform(platform);
     }
 
@@ -80,7 +80,7 @@ public class StorageHelper {
      * 创建上传预处理器
      */
     public static UploadPretreatment of(Object source, String name, String contentType, String platform, Supplier<StorageContext> supplier) {
-        getOrAddFileStorage(platform, supplier);
+        addFileStorageIfNotExist(platform, supplier);
         return of(source, name, contentType).setPlatform(platform);
     }
 
@@ -95,7 +95,7 @@ public class StorageHelper {
      * 创建上传预处理器
      */
     public static UploadPretreatment of(Object source, String name, String contentType, Long size, String platform, Supplier<StorageContext> supplier) {
-        getOrAddFileStorage(platform, supplier);
+        addFileStorageIfNotExist(platform, supplier);
         return getFileStorageService().of(source, name, contentType, size).setPlatform(platform);
     }
 
@@ -144,17 +144,16 @@ public class StorageHelper {
     /**
      * 获取或创建文件存储
      */
-    public static FileStorage getOrAddFileStorage(String platform, Supplier<StorageContext> supplier) {
+    public static void addFileStorageIfNotExist(String platform, Supplier<StorageContext> supplier) {
         //多线程下避免重复创建
         try {
             LOCK.lock();
             FileStorage fileStorage = getFileStorage(platform);
             if (ObjectUtil.isNotNull(fileStorage)) {
-                return fileStorage;
+                return;
             }
             fileStorage = createFileStorage(supplier.get());
             addFileStorage(fileStorage);
-            return fileStorage;
         } finally {
             LOCK.unlock();
         }
@@ -169,10 +168,10 @@ public class StorageHelper {
         Assert.notBlank(context.getPlatform(), () -> new BizRuntimeException("platform必须指定且唯一"));
         //基础存储路径必填
         Assert.notBlank(context.getBasePath(), () -> new BizRuntimeException("basePath必须指定"));
-        //存储路径需要格式化校验,没有添加/后缀则需要补齐
-        if (StrUtil.isNotBlank(context.getStoragePath()) && !context.getStoragePath().endsWith("/")) {
-            context.setStoragePath(context.getStoragePath() + "/");
-        }
+        //格式化字符
+        context.setDomain(formatDomain(context.getDomain()));
+        context.setStoragePath(formatStoragePath(context.getStoragePath()));
+        context.setBasePath(formatBasePath(context.getBasePath()));
         //如果domain不是空的则需要判断他是否是合法domain
         if (StrUtil.isNotBlank(context.getDomain())) {
             Assert.isTrue(ResourceUtils.isUrl(context.getDomain()), () -> new BizRuntimeException("domain不符合规则"));
@@ -231,6 +230,53 @@ public class StorageHelper {
         }
 
         throw new BizRuntimeException("存储平台类型不支持");
+    }
+
+    /**
+     * 格式化基础路径
+     */
+    public static String formatBasePath(String basePath) {
+        //去除前面前缀/,补齐后面尾缀/
+        if (StrUtil.isBlank(basePath)) {
+            return StrUtil.EMPTY;
+        }
+        if (basePath.startsWith(StrUtil.SLASH)) {
+            basePath = basePath.substring(1);
+        }
+        if (!basePath.endsWith(StrUtil.SLASH)) {
+            basePath = basePath + StrUtil.SLASH;
+        }
+        return basePath;
+    }
+
+    /**
+     * 格式化domain
+     */
+    public static String formatDomain(String domain) {
+        if (StrUtil.isBlank(domain)) {
+            return domain;
+        }
+        if (!domain.endsWith(StrUtil.SLASH)) {
+            return domain + StrUtil.SLASH;
+        }
+        return domain;
+    }
+
+    /**
+     * 格式化存储路径
+     */
+    public static String formatStoragePath(String storagePath) {
+        if (StrUtil.isBlank(storagePath)) {
+            return StrUtil.SLASH;
+        }
+        //相对目录默认去除.符号
+        if (storagePath.startsWith("./")) {
+            storagePath = storagePath.substring(2);
+        }
+        if (!storagePath.endsWith("/")) {
+            storagePath = storagePath + "/";
+        }
+        return storagePath;
     }
 
     public static FileStorageService getFileStorageService() {

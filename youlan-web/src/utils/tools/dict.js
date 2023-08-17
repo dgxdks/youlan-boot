@@ -1,6 +1,7 @@
 import store from '@/store'
 import { ArrayUtil, StrUtil } from '@/utils/tools/index'
 import { getDictDataListByTypeKey } from '@/api/system/dict/data'
+
 const fieldMapping = {
   // 字典类型映射字段
   typeField: 'typeKey',
@@ -13,12 +14,14 @@ const fieldMapping = {
   // 组件class字段名称已映射
   classField: 'classField'
 }
-const staticDict = {
-  web_common_status: [
-    { type: 'web_common_status', value: '1', name: '正常' },
-    { type: 'web_common_status', value: '2', name: '停用' }
-  ]
-}
+/**
+ * 静态数据库字典配置样例
+ * web_common_status: [
+ *   { type: 'web_common_status', value: '1', name: '正常' },
+ *   { type: 'web_common_status', value: '2', name: '停用' }
+ * ]
+ */
+const staticDict = {}
 export default {
 
   // 根据字典类型获取字典

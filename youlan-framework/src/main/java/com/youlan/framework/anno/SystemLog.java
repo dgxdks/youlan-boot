@@ -19,6 +19,11 @@ public @interface SystemLog {
     String type() default SystemLogType.OPERATION_LOG_TYPE_OTHER;
 
     /**
+     * 是否开启
+     */
+    boolean enabled() default true;
+
+    /**
      * 是否保存查询参数
      */
     boolean saveQuery() default true;

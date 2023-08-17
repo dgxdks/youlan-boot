@@ -1,10 +1,12 @@
 package com.youlan.system.service.biz;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.youlan.common.core.exception.BizRuntimeException;
+import com.youlan.common.core.helper.ListHelper;
 import com.youlan.common.redis.helper.RedisHelper;
-import com.youlan.common.storage.enums.StorageType;
+import com.youlan.common.storage.helper.StorageHelper;
 import com.youlan.system.entity.StorageConfig;
 import com.youlan.system.service.StorageConfigService;
 import com.youlan.system.utils.SystemUtil;
@@ -30,14 +32,10 @@ public class StorageConfigBizService {
      */
     @Transactional(rollbackFor = Exception.class)
     public boolean addStorageConfig(StorageConfig storageConfig) {
-        //校验存储类型
-        String type = storageConfig.getType();
-        StorageType storageType = StorageType.getStorageType(type);
-        if (ObjectUtil.isNull(storageType)) {
-            throw new BizRuntimeException("存储类型不存在");
-        }
+        //格式化
+        this.formatStorageConfig(storageConfig);
         //生成platform
-        storageConfig.setPlatform(SystemUtil.getStoragePlatform(storageType));
+        storageConfig.setPlatform(SystemUtil.getStoragePlatform(storageConfig.getType()));
         String isDefault = storageConfig.getIsDefault();
         //如果当前配置是默认存储配置则需要先重置库中默认存储配置然后再保存
         if (VAL_YES.equals(isDefault)) {
@@ -52,14 +50,13 @@ public class StorageConfigBizService {
         return true;
     }
 
-    // TODO: 2023/8/16 增加的时候要判断有没有指定为默认
-    // TODO: 2023/8/16 删除时要判断是否是默认的存储配置
-
     /**
      * 修改存储配置
      */
     @Transactional(rollbackFor = Exception.class)
     public boolean updateStorageConfig(StorageConfig storageConfig) {
+        //格式化
+        this.formatStorageConfig(storageConfig);
         //拷贝一份执行更新操作的存储配置并不允许修改平台名称和存储类型
         StorageConfig updateStorageConfig = BeanUtil.copyProperties(storageConfig, StorageConfig.class);
         updateStorageConfig.setPlatform(null);
@@ -75,6 +72,8 @@ public class StorageConfigBizService {
         }
         //只有更新成功才能设置缓存中的默认存储配置
         redisHelper.set(SystemUtil.getDefaultStorageConfigRedisKey(), storageConfig);
+        //删除已经生成的FileStorage
+        StorageHelper.removeFileStorage(storageConfig.getPlatform());
         return true;
     }
 
@@ -138,5 +137,33 @@ public class StorageConfigBizService {
         } catch (TooManyResultsException e) {
             throw new BizRuntimeException("存储配置中存在多个相同存储平台配置");
         }
+    }
+
+    /**
+     * 删除存储配置
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public boolean removeStorageConfigs(List<Long> ids) {
+        List<StorageConfig> storageConfigs = storageConfigService.listByIds(ids);
+        //如果包含默认存储配置则不允许删除
+        List<StorageConfig> defaultStorageConfigs = ListHelper.filterList(storageConfigs, storageConfig -> VAL_YES.equals(storageConfig.getIsDefault()));
+        if (CollectionUtil.isNotEmpty(defaultStorageConfigs)) {
+            throw new BizRuntimeException("不允许删除默认存储配置");
+        }
+        boolean remove = storageConfigService.removeByIds(ids);
+        if (!remove) {
+            throw new BizRuntimeException("删除存储配置失败");
+        }
+        //清空缓存
+        storageConfigs.forEach(storageConfig -> {
+            redisHelper.delete(SystemUtil.getStorageConfigRedisKey(storageConfig.getPlatform()));
+        });
+
+        return true;
+    }
+
+    public void formatStorageConfig(StorageConfig storageConfig) {
+        storageConfig.setDomain(StorageHelper.formatDomain(storageConfig.getDomain()));
+        storageConfig.setBasePath(StorageHelper.formatBasePath(storageConfig.getBasePath()));
     }
 }

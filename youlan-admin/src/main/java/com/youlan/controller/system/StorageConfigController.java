@@ -10,9 +10,9 @@ import com.youlan.common.db.helper.DBHelper;
 import com.youlan.framework.anno.SystemLog;
 import com.youlan.framework.constant.SystemLogType;
 import com.youlan.framework.controller.BaseController;
-import com.youlan.system.entity.Config;
 import com.youlan.system.entity.StorageConfig;
 import com.youlan.system.service.StorageConfigService;
+import com.youlan.system.service.biz.StorageConfigBizService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -24,49 +24,50 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/system/storageConfig")
 @AllArgsConstructor
 public class StorageConfigController extends BaseController {
+    private final StorageConfigBizService storageConfigBizService;
     private final StorageConfigService storageConfigService;
 
     @SaCheckPermission("system:storageConfig:add")
-    @Operation(summary = "系统配置新增")
-    @SystemLog(name = "系统配置", type = SystemLogType.OPERATION_LOG_TYPE_ADD)
+    @Operation(summary = "存储配置新增")
+    @SystemLog(name = "存储配置", type = SystemLogType.OPERATION_LOG_TYPE_ADD)
     @PostMapping("/addStorageConfig")
     public ApiResult addConfig(@Validated @RequestBody StorageConfig storageConfig) {
-        return toSuccess(storageConfigService.addStorageConfig(storageConfig));
+        return toSuccess(storageConfigBizService.addStorageConfig(storageConfig));
     }
 
     @SaCheckPermission("system:storageConfig:update")
-    @Operation(summary = "系统配置修改")
+    @Operation(summary = "存储配置修改")
     @PostMapping("/updateStorageConfig")
-    @SystemLog(name = "系统配置", type = SystemLogType.OPERATION_LOG_TYPE_UPDATE)
+    @SystemLog(name = "存储配置", type = SystemLogType.OPERATION_LOG_TYPE_UPDATE)
     public ApiResult updateConfig(@Validated @RequestBody StorageConfig storageConfig) {
         if (ObjectUtil.isNull(storageConfig.getId())) {
             return toError(ApiResultCode.C0001);
         }
-        return toSuccess(storageConfigService.updateStorageConfig(storageConfig));
+        return toSuccess(storageConfigBizService.updateStorageConfig(storageConfig));
     }
 
     @SaCheckPermission("system:storageConfig:remove")
-    @Operation(summary = "系统配置删除")
+    @Operation(summary = "存储配置删除")
     @PostMapping("/removeStorageConfig")
-    @SystemLog(name = "系统配置", type = SystemLogType.OPERATION_LOG_TYPE_REMOVE)
+    @SystemLog(name = "存储配置", type = SystemLogType.OPERATION_LOG_TYPE_REMOVE)
     public ApiResult removeConfig(@Validated @RequestBody ListDTO<Long> dto) {
         if (CollectionUtil.isEmpty(dto.getList())) {
             return toSuccess();
         }
-        return toSuccess(storageConfigService.removeByIds(dto.getList()));
+        return toSuccess(storageConfigBizService.removeStorageConfigs(dto.getList()));
     }
 
     @SaCheckPermission("system:storageConfig:load")
-    @Operation(summary = "系统配置详情")
+    @Operation(summary = "存储配置详情")
     @PostMapping("/loadStorageConfig")
     public ApiResult loadConfig(@RequestParam Long id) {
         return toSuccess(storageConfigService.loadOne(id));
     }
 
     @SaCheckPermission("system:storageConfig:list")
-    @Operation(summary = "系统配置分页")
+    @Operation(summary = "存储配置分页")
     @PostMapping("/getStorageConfigPageList")
-    @SystemLog(name = "系统配置", type = SystemLogType.OPERATION_LOG_TYPE_PAGE_LIST)
+    @SystemLog(name = "存储配置", type = SystemLogType.OPERATION_LOG_TYPE_PAGE_LIST)
     public ApiResult getConfigPageList(@RequestBody StorageConfig storageConfig) {
         return toSuccess(storageConfigService.loadPage(storageConfig, DBHelper.getQueryWrapper(storageConfig)));
     }

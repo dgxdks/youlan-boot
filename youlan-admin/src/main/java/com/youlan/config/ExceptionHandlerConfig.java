@@ -18,6 +18,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
@@ -25,6 +26,7 @@ import javax.validation.ConstraintViolationException;
 import java.util.stream.Collectors;
 
 import static cn.dev33.satoken.exception.NotLoginException.*;
+import static com.youlan.common.core.restful.enums.ApiResultCode.*;
 
 @Slf4j
 @AllArgsConstructor
@@ -53,12 +55,17 @@ public class ExceptionHandlerConfig {
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ApiResult handleMissingServletRequestParameterException(MissingServletRequestParameterException exception, HttpServletRequest request) {
-        return toApiResult(null, "缺少必填参数", exception, request);
+        return toApiResult(C0003.getStatus(), C0003.getErrorMsg(), exception, request);
+    }
+
+    @ExceptionHandler(MissingServletRequestPartException.class)
+    public ApiResult handleMissingServletRequestPartException(MissingServletRequestPartException exception, HttpServletRequest request) {
+        return toApiResult(C0004.getStatus(), C0004.getErrorMsg(), exception, request);
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ApiResult handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException exception, HttpServletRequest request) {
-        return toApiResult(null, "HTTP方法不支持", exception, request);
+        return toApiResult(B0006.getStatus(), B0006.getErrorMsg(), exception, request);
     }
 
     @ExceptionHandler(BindException.class)

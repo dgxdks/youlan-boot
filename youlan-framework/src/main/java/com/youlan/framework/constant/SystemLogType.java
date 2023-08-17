@@ -30,6 +30,10 @@ public class SystemLogType {
      */
     public static final String OPERATION_LOG_TYPE_EXPORT = "7";
     /**
+     * 上传
+     */
+    public static final String OPERATION_LOG_TYPE_UPLOAD = "8";
+    /**
      * 其它
      */
     public static final String OPERATION_LOG_TYPE_OTHER = "99";

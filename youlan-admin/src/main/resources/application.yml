@@ -148,6 +148,10 @@ youlan:
       captcha-code-type: MATH
       # 验证码长度
       captcha-code-len: 5
+    # 存储
+    storage:
+      storage-path: 'youlan/'
+      record-enabled: true
   # 框架模块
   framework:
     # 操作日志

@@ -3,6 +3,7 @@ package com.youlan.system.entity;
 import com.baomidou.mybatisplus.annotation.*;
 import com.youlan.common.db.constant.DBConstant;
 import com.youlan.common.db.entity.dto.PageDTO;
+import com.youlan.common.storage.enums.StorageType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,7 +21,8 @@ public class StorageConfig extends PageDTO {
 
     @NotBlank(message = "存储类型不能为空")
     @Schema(title = "存储类型")
-    private String type;
+    @EnumValue
+    private StorageType type;
 
     @Schema(title = "存储平台名称")
     private String platform;
@@ -30,9 +32,6 @@ public class StorageConfig extends PageDTO {
 
     @Schema(title = "基础路径")
     private String basePath;
-
-    @Schema(title = "存储路径")
-    private String storagePath;
 
     @Schema(title = "访问秘钥(accessKey)")
     private String accessKey;

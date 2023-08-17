@@ -30,7 +30,7 @@ public class SystemUtil {
      * 获取存储配置redis key
      */
     public static String getStorageConfigRedisKey(String platform) {
-        return SystemConstant.REDIS_PREFIX_CONFIG + platform;
+        return SystemConstant.REDIS_PREFIX_STORAGE_CONFIG + platform;
     }
 
     /**

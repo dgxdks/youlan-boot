@@ -60,13 +60,17 @@ public class BaseController {
         return ApiResult.ok(data, status);
     }
 
-    public void toDownload(String fileName, byte[] data, HttpServletResponse response) throws IOException {
+    public void toDownload(String fileName, byte[] data, String contentType, HttpServletResponse response) throws IOException {
         response.reset();
         response.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
         response.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, "*");
         response.addHeader(HttpHeaders.CONTENT_DISPOSITION, StrUtil.format("attachment; filename=\"{}\"", fileName));
-        response.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
+        response.addHeader(HttpHeaders.CONTENT_TYPE, contentType);
         IoUtil.write(response.getOutputStream(), true, data);
+    }
+
+    public void toDownload(String fileName, byte[] data, HttpServletResponse response) throws IOException {
+        toDownload(fileName, data, MediaType.APPLICATION_OCTET_STREAM_VALUE, response);
     }
 
     public void toExcel(String fileName, Class<?> head, List<?> dataList, HttpServletResponse response) throws IOException {

@@ -12,4 +12,9 @@ public class SystemProperties {
      * 验证码配置
      */
     private CaptchaProperties captcha;
+
+    /**
+     * 存储配置
+     */
+    private StorageProperties storage;
 }

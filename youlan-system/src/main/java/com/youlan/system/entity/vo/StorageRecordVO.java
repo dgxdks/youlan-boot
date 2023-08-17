@@ -1,22 +1,12 @@
-package com.youlan.system.entity;
+package com.youlan.system.entity.vo;
 
-import com.baomidou.mybatisplus.annotation.*;
-import com.youlan.common.db.constant.DBConstant;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.util.Date;
-
-import static com.youlan.common.db.constant.DBConstant.DESC_ID;
-
 @Data
 @Accessors(chain = true)
-@TableName("t_sys_storage_record")
-public class StorageRecord {
-    @Schema(title = DESC_ID)
-    @TableId(type = IdType.AUTO)
-    private Long id;
+public class StorageRecordVO {
 
     @Schema(title = "文件访问地址")
     private String url;
@@ -29,12 +19,6 @@ public class StorageRecord {
 
     @Schema(title = "原始文件名称")
     private String originalFileName;
-
-    @Schema(title = "基础存储路径")
-    private String basePath;
-
-    @Schema(title = "存储路径")
-    private String path;
 
     @Schema(title = "文件扩展名")
     private String ext;
@@ -62,25 +46,4 @@ public class StorageRecord {
 
     @Schema(title = "文件所属对象类型")
     private String objectType;
-
-    @Schema(title = "附加属性")
-    private String attr;
-
-    @Schema(title = "文件ACL")
-    private String fileAcl;
-
-    @Schema(title = "缩略图文件ACL")
-    private String thFileAcl;
-
-    @Schema(title = DBConstant.DESC_CREATE_ID)
-    @TableField(fill = FieldFill.INSERT)
-    private Long createId;
-
-    @Schema(title = DBConstant.DESC_CREATE_BY)
-    @TableField(fill = FieldFill.INSERT)
-    private String createBy;
-
-    @Schema(title = DBConstant.DESC_CREATE_TIME)
-    @TableField(fill = FieldFill.INSERT)
-    private Date createTime;
 }

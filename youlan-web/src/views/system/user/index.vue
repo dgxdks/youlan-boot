@@ -236,7 +236,7 @@
             <dict-select v-model="form.sex" dict-type="sys_user_sex" placeholder="请选择性别" />
           </el-form-item>
           <el-form-item slot="2" label="状态">
-            <dict-radio v-model="form.status" dict-type="web_common_status" />
+            <dict-radio v-model="form.status" dict-type="db_status" />
           </el-form-item>
           <el-form-item slot="1" label="岗位">
             <el-select v-model="form.postIds" multiple placeholder="请选择岗位">

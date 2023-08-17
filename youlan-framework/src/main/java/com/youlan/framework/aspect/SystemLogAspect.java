@@ -11,8 +11,8 @@ import com.youlan.framework.config.FrameworkProperties;
 import com.youlan.plugin.region.helper.RegionHelper;
 import com.youlan.system.constant.SystemConstant;
 import com.youlan.system.entity.OperationLog;
-import com.youlan.system.service.OperationLogService;
 import com.youlan.system.helper.SystemAuthHelper;
+import com.youlan.system.service.OperationLogService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -45,8 +45,13 @@ public class SystemLogAspect {
     }
 
     public void handleOperationLog(final JoinPoint joinPoint, SystemLog systemLog, Object apiResult, final Exception exception) {
+        //项目开关判断逻辑
         boolean enabled = frameworkProperties.getSystemLog().getEnabled();
         if (!enabled) {
+            return;
+        }
+        //注解开关判断逻辑
+        if (!systemLog.enabled()) {
             return;
         }
         boolean regionEnabled = frameworkProperties.getSystemLog().getRegionEnabled();
