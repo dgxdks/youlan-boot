@@ -9,7 +9,7 @@
           placeholder="账号"
           type="text"
         >
-          <svg-icon slot="prefix" class="el-input__icon input-icon" icon-class="user"/>
+          <svg-icon slot="prefix" class="el-input__icon input-icon" icon-class="user" />
         </el-input>
       </el-form-item>
       <el-form-item prop="userPassword">
@@ -20,7 +20,7 @@
           type="password"
           @keyup.enter.native="handleLogin"
         >
-          <svg-icon slot="prefix" class="el-input__icon input-icon" icon-class="password"/>
+          <svg-icon slot="prefix" class="el-input__icon input-icon" icon-class="password" />
         </el-input>
       </el-form-item>
       <el-form-item v-if="captchaEnabled" prop="captchaCode">
@@ -31,10 +31,10 @@
           style="width: 63%"
           @keyup.enter.native="handleLogin"
         >
-          <svg-icon slot="prefix" class="el-input__icon input-icon" icon-class="validCode"/>
+          <svg-icon slot="prefix" class="el-input__icon input-icon" icon-class="validCode" />
         </el-input>
         <div class="login-code">
-          <img :src="captchaImg" alt="" class="login-code-img" @click="getCode"/>
+          <img :src="captchaImg" alt="" class="login-code-img" @click="getCode">
         </div>
       </el-form-item>
       <el-checkbox v-model="loginForm.rememberMe" style="margin:0 0 25px 0;">记住密码</el-checkbox>
@@ -56,14 +56,14 @@
     </el-form>
     <!--  底部  -->
     <div class="el-login-footer">
-      <span v-html="$store.state.settings.loginFooter"></span>
+      <span v-html="$store.state.settings.loginFooter" />
     </div>
   </div>
 </template>
 
 <script>
 
-import { getImageCaptcha } from '@/api/common/captcha'
+import { getImageCaptcha } from '@/api/system/captcha'
 
 export default {
   name: 'Login',

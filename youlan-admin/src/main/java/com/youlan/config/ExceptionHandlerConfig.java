@@ -105,33 +105,34 @@ public class ExceptionHandlerConfig {
     @ExceptionHandler(NotLoginException.class)
     public ApiResult notLoginException(NotLoginException exception, HttpServletRequest request) {
         String notLoginType = exception.getType();
-        String errorMsg = ApiResultCode.A0003.getErrorMsg();
+        String logMsg = ApiResultCode.A0003.getErrorMsg();
         switch (notLoginType) {
             case NOT_TOKEN:
-                errorMsg = NOT_TOKEN_MESSAGE;
+                logMsg = NOT_TOKEN_MESSAGE;
                 break;
             case INVALID_TOKEN:
-                errorMsg = INVALID_TOKEN_MESSAGE;
+                logMsg = INVALID_TOKEN_MESSAGE;
                 break;
             case TOKEN_TIMEOUT:
-                errorMsg = TOKEN_TIMEOUT;
+                logMsg = TOKEN_TIMEOUT;
                 break;
             case BE_REPLACED:
-                errorMsg = BE_REPLACED_MESSAGE;
+                logMsg = BE_REPLACED_MESSAGE;
                 break;
             case KICK_OUT:
-                errorMsg = KICK_OUT_MESSAGE;
+                logMsg = KICK_OUT_MESSAGE;
                 break;
             case TOKEN_FREEZE:
-                errorMsg = TOKEN_FREEZE_MESSAGE;
+                logMsg = TOKEN_FREEZE_MESSAGE;
                 break;
             case NO_PREFIX:
-                errorMsg = NO_PREFIX_MESSAGE;
+                logMsg = NO_PREFIX_MESSAGE;
                 break;
             default:
                 break;
         }
-        return toApiResult(ApiResultCode.A0003.getStatus(), errorMsg, exception, request);
+        log.info("用户未登录: {}", logMsg);
+        return toApiResult(A0003.getStatus(), A0003.getErrorMsg(), exception, request);
     }
 
     @ExceptionHandler(SaTokenException.class)

@@ -8,6 +8,7 @@ import array from './array'
 import env from './env'
 import auth from './auth'
 import dict from './dict'
+import upload from './upload'
 
 export default {
   StrUtil: str,
@@ -19,7 +20,8 @@ export default {
   ArrayUtil: array,
   EnvUtil: env,
   AuthUtil: auth,
-  DictUtil: dict
+  DictUtil: dict,
+  UploadUtil: upload
 }
 
 export const StrUtil = str
@@ -32,3 +34,4 @@ export const ArrayUtil = array
 export const EnvUtil = env
 export const AuthUtil = auth
 export const DictUtil = dict
+export const UploadUtil = upload

@@ -1,5 +1,6 @@
 import { Loading, Message, MessageBox, Notification } from 'element-ui'
 
+let loadingInstance
 export default {
   // 消息提示
   infoM(content) {
@@ -67,14 +68,14 @@ export default {
   },
   // 打开遮罩层
   loading(content) {
-    return new Promise((resolve) => {
-      let loading = Loading.service({
-        lock: true,
-        text: content,
-        spinner: 'el-icon-loading',
-        background: 'rgba(0, 0, 0, 0.7)'
-      })
-      resolve(loading)
+    loadingInstance = Loading.service({
+      lock: true,
+      text: content,
+      spinner: 'el-icon-loading',
+      background: 'rgba(0, 0, 0, 0.7)'
     })
+  },
+  loadingClose() {
+    loadingInstance && loadingInstance.close()
   }
 }

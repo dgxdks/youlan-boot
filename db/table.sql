@@ -589,7 +589,7 @@ create table t_sys_storage_record
     ext                varchar(32)  default '' comment '文件扩展名',
     content_type       varchar(128) default '' comment 'MIME类型',
     platform           varchar(32)  default '' comment '存储平台名称',
-    th_ur              varchar(512) default '' comment '缩略图访问路径',
+    th_url              varchar(512) default '' comment '缩略图访问路径',
     th_file_name       varchar(256) default '' comment '缩略图文件名称',
     th_size            bigint       default 0 comment '缩略图大小',
     th_content_type    varchar(128) default '' comment '缩略图MIME类型',

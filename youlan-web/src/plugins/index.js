@@ -1,7 +1,17 @@
 import tab from './tab'
 import modal from '../utils/modal'
 import download from './download'
-import Tools, { ArrayUtil, AuthUtil, CookieUtil, CryptoUtil, DictUtil, StrUtil, UrlUtil } from '@/utils/tools'
+import Tools, {
+  ArrayUtil,
+  AuthUtil,
+  CookieUtil,
+  CryptoUtil,
+  DictUtil,
+  StrUtil,
+  UploadUtil,
+  UrlUtil,
+  ObjectUtil
+} from '@/utils/tools'
 import { StorageUtil } from '@/utils/tools/storage'
 import Config from '@/plugins/config'
 
@@ -31,6 +41,10 @@ export default {
     Vue.prototype.$array = ArrayUtil
     // 字典工具
     Vue.prototype.$dict = DictUtil
+    // 上传工具
+    Vue.prototype.$upload = UploadUtil
+    // 对象工具
+    Vue.prototype.$obj = ObjectUtil
     // 全量工具包
     Vue.prototype.$tools = Tools
   }

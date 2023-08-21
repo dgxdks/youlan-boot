@@ -35,7 +35,7 @@ public class StorageHelper {
      * 创建上传预处理器
      */
     public static UploadPretreatment of(String platform, Supplier<StorageContext> supplier) {
-        addFileStorageIfNotExist(platform, supplier);
+        getFileStorageIfNotExist(platform, supplier);
         return of().setPlatform(platform);
     }
 
@@ -50,7 +50,7 @@ public class StorageHelper {
      * 创建上传预处理器
      */
     public static UploadPretreatment of(Object source, String platform, Supplier<StorageContext> supplier) {
-        addFileStorageIfNotExist(platform, supplier);
+        getFileStorageIfNotExist(platform, supplier);
         return of(source).setPlatform(platform);
     }
 
@@ -65,7 +65,7 @@ public class StorageHelper {
      * 创建上传预处理器
      */
     public static UploadPretreatment of(Object source, String name, String platform, Supplier<StorageContext> supplier) {
-        addFileStorageIfNotExist(platform, supplier);
+        getFileStorageIfNotExist(platform, supplier);
         return of(source, name).setPlatform(platform);
     }
 
@@ -80,7 +80,7 @@ public class StorageHelper {
      * 创建上传预处理器
      */
     public static UploadPretreatment of(Object source, String name, String contentType, String platform, Supplier<StorageContext> supplier) {
-        addFileStorageIfNotExist(platform, supplier);
+        getFileStorageIfNotExist(platform, supplier);
         return of(source, name, contentType).setPlatform(platform);
     }
 
@@ -95,7 +95,7 @@ public class StorageHelper {
      * 创建上传预处理器
      */
     public static UploadPretreatment of(Object source, String name, String contentType, Long size, String platform, Supplier<StorageContext> supplier) {
-        addFileStorageIfNotExist(platform, supplier);
+        getFileStorageIfNotExist(platform, supplier);
         return getFileStorageService().of(source, name, contentType, size).setPlatform(platform);
     }
 
@@ -143,17 +143,20 @@ public class StorageHelper {
 
     /**
      * 获取或创建文件存储
+     *
+     * @return
      */
-    public static void addFileStorageIfNotExist(String platform, Supplier<StorageContext> supplier) {
+    public static FileStorage getFileStorageIfNotExist(String platform, Supplier<StorageContext> supplier) {
         //多线程下避免重复创建
         try {
             LOCK.lock();
             FileStorage fileStorage = getFileStorage(platform);
             if (ObjectUtil.isNotNull(fileStorage)) {
-                return;
+                return fileStorage;
             }
             fileStorage = createFileStorage(supplier.get());
             addFileStorage(fileStorage);
+            return fileStorage;
         } finally {
             LOCK.unlock();
         }

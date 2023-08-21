@@ -1,21 +1,21 @@
 package com.youlan.framework.controller;
 
-import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.excel.write.builder.ExcelWriterBuilder;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.youlan.common.core.helper.FileHelper;
 import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.core.restful.enums.ApiResultCode;
+import com.youlan.common.core.servlet.helper.ServletHelper;
 import com.youlan.common.db.entity.vo.PageVO;
 import com.youlan.common.excel.helper.ExcelHelper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -61,16 +61,19 @@ public class BaseController {
     }
 
     public void toDownload(String fileName, byte[] data, String contentType, HttpServletResponse response) throws IOException {
-        response.reset();
-        response.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
-        response.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, "*");
-        response.addHeader(HttpHeaders.CONTENT_DISPOSITION, StrUtil.format("attachment; filename=\"{}\"", fileName));
-        response.addHeader(HttpHeaders.CONTENT_TYPE, contentType);
-        IoUtil.write(response.getOutputStream(), true, data);
+        ServletHelper.download(fileName, data, contentType, response);
+    }
+
+    public void toDownload(String fileName, byte[] data, String contentType) throws IOException {
+        toDownload(fileName, data, contentType, ServletHelper.getHttpServletResponse());
+    }
+
+    public void toDownload(String fileName, byte[] data) throws IOException {
+        toDownload(fileName, data, ServletHelper.getHttpServletResponse());
     }
 
     public void toDownload(String fileName, byte[] data, HttpServletResponse response) throws IOException {
-        toDownload(fileName, data, MediaType.APPLICATION_OCTET_STREAM_VALUE, response);
+        toDownload(fileName, data, FileHelper.getContentTypeByFileName(fileName), response);
     }
 
     public void toExcel(String fileName, Class<?> head, List<?> dataList, HttpServletResponse response) throws IOException {
@@ -79,21 +82,16 @@ public class BaseController {
 
     public void toExcel(String fileName, String sheetName, Class<?> head, List<?> dataList, HttpServletResponse response) throws IOException {
         try {
-            response.reset();
-            response.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
-            response.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, "*");
-            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-            response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-            // 这里URLEncoder.encode可以防止中文乱码
-            String fileNameEncode = URLEncoder.encode(fileName, StandardCharsets.UTF_8).replaceAll("\\+", "%20");
-            response.addHeader(HttpHeaders.CONTENT_DISPOSITION, StrUtil.format("attachment; filename=\"{}\"", fileNameEncode));
-            ExcelWriterBuilder excelWriterBuilder = ExcelHelper.write(response.getOutputStream(), head)
+            ByteArrayOutputStream cacheBos = new ByteArrayOutputStream(1024);
+            ExcelWriterBuilder excelWriterBuilder = ExcelHelper.write(cacheBos, head)
                     .autoCloseStream(false);
             if (StrUtil.isNotBlank(sheetName)) {
                 excelWriterBuilder.sheet(sheetName).doWrite(dataList);
                 return;
             }
             excelWriterBuilder.sheet().doWrite(dataList);
+            String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            ServletHelper.download(fileName, cacheBos.toByteArray(), contentType);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             toJson(ApiResult.error(B0001), response);

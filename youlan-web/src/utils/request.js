@@ -16,14 +16,13 @@ const service = axios.create({
 
 // request拦截器
 service.interceptors.request.use(config => {
-
   // 是否需要防止数据重复提交
   const requestCanRepeatSubmit = config.canRepeatSubmit ? config.canRepeatSubmit : canRepeatSubmit
   if (store.state.token) {
     // 让每个请求携带自定义token 请根据实际情况自行修改
     config.headers[store.state.tokenName] = tokenValuePrefix + store.state.tokenValue
   }
-  //如果不允许重复提交则需要判断请求
+  // 如果不允许重复提交则需要判断请求
   if (!requestCanRepeatSubmit && (config.method === 'post' || config.method === 'put')) {
     const submitInfo = {
       url: config.url,
@@ -55,17 +54,17 @@ service.interceptors.request.use(config => {
 
 // 响应拦截器
 service.interceptors.response.use(response => {
-  //响应体
+  // 响应体
   const data = response.data
   // 二进制数据则直接返回
   if (ObjectUtil.isBlob(data) || ObjectUtil.isArrayBuffer(data)) {
     return data
   }
-  //响应状态码
+  // 响应状态码
   const status = data.status || '00000'
-  //响应错误信息
+  // 响应错误信息
   const errorMsg = data.errorMsg || '系统未知错误，请反馈给管理员'
-  //判断是否已登录
+  // 判断是否已登录
   if (status === '00000') {
     return data.data
   }

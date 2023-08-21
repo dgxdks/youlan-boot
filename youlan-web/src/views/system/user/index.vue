@@ -269,20 +269,7 @@
 
     <!-- 用户导入对话框 -->
     <base-dialog :title="upload.title" :open.sync="upload.open" width="400px" @confirm="submitFileForm">
-      <el-upload
-        ref="upload"
-        :action="upload.url + '?updateSupport=' + upload.updateSupport"
-        :auto-upload="false"
-        :disabled="upload.isUploading"
-        :headers="upload.headers"
-        :limit="1"
-        :on-progress="handleFileUploadProgress"
-        :on-success="handleFileSuccess"
-        accept=".xlsx, .xls"
-        drag
-      >
-        <i class="el-icon-upload" />
-        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+      <file-upload-drag ref="upload" v-model="upload.urls" :limit="3" auto-upload>
         <div slot="tip" class="el-upload__tip text-center">
           <div slot="tip" class="el-upload__tip">
             <el-checkbox v-model="upload.updateSupport" />
@@ -297,7 +284,36 @@
           >下载模板
           </el-link>
         </div>
-      </el-upload>
+      </file-upload-drag>
+      <!--      <el-upload-->
+      <!--        ref="upload"-->
+      <!--        :action="upload.url + '?updateSupport=' + upload.updateSupport"-->
+      <!--        :auto-upload="false"-->
+      <!--        :disabled="upload.isUploading"-->
+      <!--        :headers="upload.headers"-->
+      <!--        :limit="1"-->
+      <!--        :on-progress="handleFileUploadProgress"-->
+      <!--        :on-success="handleFileSuccess"-->
+      <!--        accept=".xlsx, .xls"-->
+      <!--        drag-->
+      <!--      >-->
+      <!--        <i class="el-icon-upload" />-->
+      <!--        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>-->
+      <!--        <div slot="tip" class="el-upload__tip text-center">-->
+      <!--          <div slot="tip" class="el-upload__tip">-->
+      <!--            <el-checkbox v-model="upload.updateSupport" />-->
+      <!--            是否更新已经存在的用户数据-->
+      <!--          </div>-->
+      <!--          <span>仅允许导入xls、xlsx格式文件。</span>-->
+      <!--          <el-link-->
+      <!--            :underline="false"-->
+      <!--            style="font-size:12px;vertical-align: baseline;"-->
+      <!--            type="primary"-->
+      <!--            @click="importTemplate"-->
+      <!--          >下载模板-->
+      <!--          </el-link>-->
+      <!--        </div>-->
+      <!--      </el-upload>-->
     </base-dialog>
   </div>
 </template>
@@ -312,9 +328,11 @@ import {
   resetUserPwd,
   updateUser
 } from '@/api/system/user'
+import FileUploadDrag from '@/views/components/FileUploadDrag/index.vue'
 
 export default {
   name: 'User',
+  components: { FileUploadDrag },
   data() {
     return {
       // 遮罩层
@@ -360,7 +378,8 @@ export default {
         // 设置上传的请求头部
         headers: this.$store.state.tokenHeaders,
         // 上传的地址
-        url: process.env.VUE_APP_BASE_API + '/system/user/importData'
+        url: process.env.VUE_APP_BASE_API + '/system/user/importData',
+        urls: []
       },
       // 查询参数
       queryParams: {

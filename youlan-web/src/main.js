@@ -24,21 +24,21 @@ import RightToolbar from '@/components/RightToolbar'
 // 富文本组件
 import Editor from '@/components/Editor'
 // 文件上传组件
-import FileUpload from '@/components/FileUpload'
+import FileUpload from '@/views/components/FileUpload/index.vue'
 // 图片上传组件
 import ImageUpload from '@/components/ImageUpload'
 // 图片预览组件
 import ImagePreview from '@/components/ImagePreview'
 // 字典标签组件
-import DictTag from '@/components/DictTag'
+import DictTag from '@/views/components/DictTag/index.vue'
 // 头部标签组件
 import VueMeta from 'vue-meta'
 // 表格查询参数组件
-import TableQuery from '@/views/components/TableQuery/index.vue'
+import TableQuery from '@/components/TableQuery/index.vue'
 // 表格操作选项组件
-import TableOptions from '@/views/components/TableOptions/index.vue'
-import RowSplit2 from '@/views/components/RowSplit2/index.vue'
-import RowSplit3 from '@/views/components/RowSplit3/index.vue'
+import TableOptions from '@/components/TableOptions/index.vue'
+import RowSplit2 from '@/components/RowSplit2/index.vue'
+import RowSplit3 from '@/components/RowSplit3/index.vue'
 import BaseDialog from '@/views/components/BaseDialog/index.vue'
 import mixin from '@/mixin'
 import DictSelect from '@/views/components/DictSelect/index.vue'

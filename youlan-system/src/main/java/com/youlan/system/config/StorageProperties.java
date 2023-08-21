@@ -15,6 +15,11 @@ public class StorageProperties {
      */
     private boolean recordEnabled = true;
 
+    /**
+     * 存储记录缓存时间(s)
+     */
+    private long recordCacheTimeout = 1800;
+
     public boolean getRecordEnabled() {
         return recordEnabled;
     }

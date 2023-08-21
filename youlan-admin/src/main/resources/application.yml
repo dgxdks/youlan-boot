@@ -150,8 +150,12 @@ youlan:
       captcha-code-len: 5
     # 存储
     storage:
+      # 文件存储根路径(默认/, 指定路径时必须以/结尾)
       storage-path: 'youlan/'
+      # 是否开始存储记录
       record-enabled: true
+      # 存储记录缓存时间(s)
+      record-cache-timeout: 1800
   # 框架模块
   framework:
     # 操作日志

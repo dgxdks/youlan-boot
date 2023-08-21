@@ -4,7 +4,18 @@ import cn.hutool.core.util.RandomUtil;
 import com.youlan.common.storage.enums.StorageType;
 import com.youlan.system.constant.SystemConstant;
 
+import static com.youlan.system.constant.SystemConstant.REDIS_PREFIX_STORAGE_FILE_NAME;
+import static com.youlan.system.constant.SystemConstant.REDIS_PREFIX_STORAGE_OBJECT_ID;
+
 public class SystemUtil {
+    public static String getStorageObjectIdRedisKey(String objectId) {
+        return REDIS_PREFIX_STORAGE_OBJECT_ID + objectId;
+    }
+
+    public static String getStorageFileNameRedisKey(String fileName) {
+        return REDIS_PREFIX_STORAGE_FILE_NAME + fileName;
+    }
+
     /**
      * 获取系统配置redis key
      */

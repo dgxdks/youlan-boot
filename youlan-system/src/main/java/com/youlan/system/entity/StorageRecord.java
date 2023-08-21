@@ -2,6 +2,7 @@ package com.youlan.system.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.youlan.common.db.constant.DBConstant;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -83,4 +84,8 @@ public class StorageRecord {
     @Schema(title = DBConstant.DESC_CREATE_TIME)
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
+
+    @Hidden
+    @TableField(exist = false)
+    private byte[] data;
 }
