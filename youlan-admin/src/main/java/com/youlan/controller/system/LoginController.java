@@ -28,6 +28,7 @@ public class LoginController extends BaseController {
         return toSuccess(loginBizService.login(dto));
     }
 
+    @SaIgnore
     @Operation(summary = "用户退出登录")
     @PostMapping("/logout")
     public ApiResult logout() {

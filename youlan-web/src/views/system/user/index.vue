@@ -269,21 +269,19 @@
 
     <!-- 用户导入对话框 -->
     <base-dialog :title="upload.title" :open.sync="upload.open" width="400px" @confirm="submitFileForm">
-      <file-upload-drag ref="upload" v-model="upload.urls" :limit="3" auto-upload>
-        <div slot="tip" class="el-upload__tip text-center">
-          <div slot="tip" class="el-upload__tip">
-            <el-checkbox v-model="upload.updateSupport" />
-            是否更新已经存在的用户数据
-          </div>
-          <span>仅允许导入xls、xlsx格式文件。</span>
-          <el-link
-            :underline="false"
-            style="font-size:12px;vertical-align: baseline;"
-            type="primary"
-            @click="importTemplate"
-          >下载模板
-          </el-link>
-        </div>
+      <file-upload-drag ref="upload" v-model="upload.files" :urls.sync="upload.urls" :limit="3" auto-upload>
+        <template slot="tip">
+          <el-checkbox />
+          是否更新已经存在的用户数据
+        </template>
+        <span>仅允许导入xls、xlsx格式文件。</span>
+        <el-link
+          :underline="false"
+          style="font-size:12px;vertical-align: baseline;"
+          type="primary"
+          @click="importTemplate"
+        >下载模板
+        </el-link>
       </file-upload-drag>
       <!--      <el-upload-->
       <!--        ref="upload"-->
@@ -379,7 +377,8 @@ export default {
         headers: this.$store.state.tokenHeaders,
         // 上传的地址
         url: process.env.VUE_APP_BASE_API + '/system/user/importData',
-        urls: []
+        files: [],
+        urls: null
       },
       // 查询参数
       queryParams: {
