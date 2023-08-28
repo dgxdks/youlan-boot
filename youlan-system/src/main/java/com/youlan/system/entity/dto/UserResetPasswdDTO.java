@@ -8,6 +8,7 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Data
 @Accessors(chain = true)
@@ -19,6 +20,7 @@ public class UserResetPasswdDTO {
 
     @Schema(title = "用户密码")
     @NotBlank(message = "用户密码不能为空")
+    @Size(min = 6, max = 20, message = "用户密码长度必须介于5和20之间")
     @DecryptField(algorithm = AlgorithmType.AES)
     private String userPassword;
 

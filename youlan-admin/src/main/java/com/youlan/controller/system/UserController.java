@@ -7,6 +7,7 @@ import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.db.entity.dto.ListDTO;
+import com.youlan.common.excel.helper.ExcelHelper;
 import com.youlan.common.validator.Insert;
 import com.youlan.common.validator.Update;
 import com.youlan.framework.anno.SystemLog;
@@ -24,6 +25,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -105,8 +107,12 @@ public class UserController extends BaseController {
     @Operation(summary = "用户导入")
     @PostMapping("/importUserList")
     @SystemLog(name = "用户", type = SystemLogType.OPERATION_LOG_TYPE_IMPORT)
-    public void importUserList() {
-
+    public ApiResult importUserList(@RequestPart("file") MultipartFile file, boolean cover) throws IOException {
+        List<UserTemplateVO> userTemplateList = ExcelHelper.readList(file.getInputStream(), UserTemplateVO.class);
+        if (CollectionUtil.isEmpty(userTemplateList)) {
+            return toSuccess();
+        }
+        return toSuccess(userBizService.importUserList(userTemplateList));
     }
 
     @SaCheckPermission("system:user:resetPasswd")

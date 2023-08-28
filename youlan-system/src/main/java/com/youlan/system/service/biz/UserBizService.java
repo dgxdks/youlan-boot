@@ -6,11 +6,14 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.db.helper.DBHelper;
+import com.youlan.common.validator.helper.ValidatorHelper;
+import com.youlan.system.entity.Config;
 import com.youlan.system.entity.User;
 import com.youlan.system.entity.dto.UserDTO;
 import com.youlan.system.entity.dto.UserPageDTO;
 import com.youlan.system.entity.dto.UserResetPasswdDTO;
 import com.youlan.system.entity.dto.UserUpdatePasswdDTO;
+import com.youlan.system.entity.vo.UserTemplateVO;
 import com.youlan.system.entity.vo.UserVO;
 import com.youlan.system.helper.SystemAuthHelper;
 import com.youlan.system.service.OrgService;
@@ -21,8 +24,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.ConstraintViolation;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -155,8 +160,15 @@ public class UserBizService {
     /**
      * 用户导入
      */
-    public boolean importUserList() {
+    public boolean importUserList(List<UserTemplateVO> userTemplateList) {
         throw new UnsupportedOperationException("导出未实现");
+    }
+
+    public static void main(String[] args) {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setNickName("dfa");
+        Set<ConstraintViolation<UserDTO>> validate = ValidatorHelper.validate(userDTO);
+        System.out.println(validate);
     }
 
     /**
