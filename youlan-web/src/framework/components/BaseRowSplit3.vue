@@ -1,0 +1,60 @@
+<template>
+  <el-row>
+    <el-col :span="8">
+      <slot name="1" />
+    </el-col>
+    <el-col :span="8">
+      <slot name="2" />
+    </el-col>
+    <el-col :span="8">
+      <slot name="3" />
+    </el-col>
+  </el-row>
+</template>
+
+<script>
+export default {
+  name: 'RowSplit3',
+  render(createElement, context) {
+    const vNodes = this.$slots.default
+    if (this.$array.isEmpty(vNodes)) {
+      return null
+    }
+    const leftNodes = []
+    const middleNodes = []
+    const rightNodes = []
+    for (let i = 0; i < vNodes.length; i++) {
+      const vNode = vNodes[i]
+      const index = i % 2
+      if (index === 0) {
+        leftNodes.push(vNode)
+      } else if (index === 1) {
+        middleNodes.push(vNode)
+      } else if (index === 2) {
+        rightNodes.push(vNode)
+      }
+    }
+    return createElement('el-row', [
+      createElement('el-col', {
+        props: {
+          span: 8
+        }
+      }, leftNodes),
+      createElement('el-col', {
+        props: {
+          span: 8
+        }
+      }, middleNodes),
+      createElement('el-col', {
+        props: {
+          span: 8
+        }
+      }, rightNodes)
+    ])
+  }
+}
+</script>
+
+<style scoped>
+
+</style>

@@ -49,7 +49,7 @@
           style="width: 240px"
           type="daterange"
           value-format="yyyy-MM-dd"
-        ></el-date-picker>
+        />
       </el-form-item>
       <el-form-item>
         <el-button icon="el-icon-search" size="mini" type="primary" @click="handleQuery">搜索</el-button>
@@ -102,23 +102,23 @@
         >关闭
         </el-button>
       </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar :query-show.sync="showSearch" @queryTable="getList" />
     </el-row>
 
     <el-table v-loading="loading" :data="jobLogList" @selection-change="handleSelectionChange">
-      <el-table-column align="center" type="selection" width="55"/>
-      <el-table-column align="center" label="日志编号" prop="jobLogId" width="80"/>
-      <el-table-column :show-overflow-tooltip="true" align="center" label="任务名称" prop="jobName"/>
+      <el-table-column align="center" type="selection" width="55" />
+      <el-table-column align="center" label="日志编号" prop="jobLogId" width="80" />
+      <el-table-column :show-overflow-tooltip="true" align="center" label="任务名称" prop="jobName" />
       <el-table-column :show-overflow-tooltip="true" align="center" label="任务组名" prop="jobGroup">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_job_group" :value="scope.row.jobGroup"/>
+          <dict-tag :options="dict.type.sys_job_group" :value="scope.row.jobGroup" />
         </template>
       </el-table-column>
-      <el-table-column :show-overflow-tooltip="true" align="center" label="调用目标字符串" prop="invokeTarget"/>
-      <el-table-column :show-overflow-tooltip="true" align="center" label="日志信息" prop="jobMessage"/>
+      <el-table-column :show-overflow-tooltip="true" align="center" label="调用目标字符串" prop="invokeTarget" />
+      <el-table-column :show-overflow-tooltip="true" align="center" label="日志信息" prop="jobMessage" />
       <el-table-column align="center" label="执行状态" prop="status">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_common_status" :value="scope.row.status"/>
+          <dict-tag :options="dict.type.sys_common_status" :value="scope.row.status" />
         </template>
       </el-table-column>
       <el-table-column align="center" label="执行时间" prop="createTime" width="180">
@@ -238,10 +238,10 @@ export default {
     getList() {
       this.loading = true
       listJobLog(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
-          this.jobLogList = response.rows
-          this.total = response.total
-          this.loading = false
-        }
+        this.jobLogList = response.rows
+        this.total = response.total
+        this.loading = false
+      }
       )
     },
     // 返回按钮

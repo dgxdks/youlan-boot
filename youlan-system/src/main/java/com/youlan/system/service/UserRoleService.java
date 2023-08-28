@@ -3,7 +3,6 @@ package com.youlan.system.service;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.db.service.BaseServiceImpl;
 import com.youlan.system.entity.UserRole;
 import com.youlan.system.mapper.UserRoleMapper;
@@ -25,30 +24,27 @@ public class UserRoleService extends BaseServiceImpl<UserRoleMapper, UserRole> {
      * 新增用户关联角色信息
      */
     @Transactional(rollbackFor = Exception.class)
-    public boolean addUserRoleBatch(Long userId, List<Long> roleIdList) {
+    public void addUserRoleBatch(Long userId, List<Long> roleIdList) {
         List<UserRole> userRoleList = toUserRoleList(userId, roleIdList);
-        return this.saveBatch(userRoleList);
+        this.saveBatch(userRoleList);
     }
 
     /**
      * 修改用户关联角色信息
      */
     @Transactional(rollbackFor = Exception.class)
-    public boolean updateUserRoleBatch(Long userId, List<Long> roleIdList) {
+    public void updateUserRoleBatch(Long userId, List<Long> roleIdList) {
         List<UserRole> userRoleList = toUserRoleList(userId, roleIdList);
-        boolean remove = this.removeByUserId(userId);
-        if (!remove) {
-            throw new BizRuntimeException("删除历史用户关联角色信息失败");
-        }
-        return this.saveBatch(userRoleList);
+        this.removeByUserId(userId);
+        this.saveBatch(userRoleList);
     }
 
     /**
      * 根据用户ID删除用户关联角色信息
      */
     @Transactional(rollbackFor = Exception.class)
-    public boolean removeByUserId(Long userId) {
-        return this.remove(Wrappers.<UserRole>lambdaQuery().eq(UserRole::getUserId, userId));
+    public void removeByUserId(Long userId) {
+        this.remove(Wrappers.<UserRole>lambdaQuery().eq(UserRole::getUserId, userId));
     }
 
     /**

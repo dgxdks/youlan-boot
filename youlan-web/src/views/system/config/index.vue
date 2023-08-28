@@ -38,7 +38,7 @@
           style="width: 240px"
           type="daterange"
           value-format="yyyy-MM-dd"
-        ></el-date-picker>
+        />
       </el-form-item>
       <el-form-item>
         <el-button icon="el-icon-search" size="mini" type="primary" @click="handleQuery">搜索</el-button>
@@ -104,21 +104,21 @@
         >刷新缓存
         </el-button>
       </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar :query-show.sync="showSearch" @queryTable="getList" />
     </el-row>
 
     <el-table v-loading="loading" :data="configList" @selection-change="handleSelectionChange">
-      <el-table-column align="center" type="selection" width="55"/>
-      <el-table-column align="center" label="参数主键" prop="configId"/>
-      <el-table-column :show-overflow-tooltip="true" align="center" label="参数名称" prop="configName"/>
-      <el-table-column :show-overflow-tooltip="true" align="center" label="参数键名" prop="configKey"/>
-      <el-table-column :show-overflow-tooltip="true" align="center" label="参数键值" prop="configValue"/>
+      <el-table-column align="center" type="selection" width="55" />
+      <el-table-column align="center" label="参数主键" prop="configId" />
+      <el-table-column :show-overflow-tooltip="true" align="center" label="参数名称" prop="configName" />
+      <el-table-column :show-overflow-tooltip="true" align="center" label="参数键名" prop="configKey" />
+      <el-table-column :show-overflow-tooltip="true" align="center" label="参数键值" prop="configValue" />
       <el-table-column align="center" label="系统内置" prop="configType">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_yes_no" :value="scope.row.configType"/>
+          <dict-tag :options="dict.type.sys_yes_no" :value="scope.row.configType" />
         </template>
       </el-table-column>
-      <el-table-column :show-overflow-tooltip="true" align="center" label="备注" prop="remark"/>
+      <el-table-column :show-overflow-tooltip="true" align="center" label="备注" prop="remark" />
       <el-table-column align="center" label="创建时间" prop="createTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
@@ -158,13 +158,13 @@
     <el-dialog :title="title" :visible.sync="open" append-to-body width="500px">
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="参数名称" prop="configName">
-          <el-input v-model="form.configName" placeholder="请输入参数名称"/>
+          <el-input v-model="form.configName" placeholder="请输入参数名称" />
         </el-form-item>
         <el-form-item label="参数键名" prop="configKey">
-          <el-input v-model="form.configKey" placeholder="请输入参数键名"/>
+          <el-input v-model="form.configKey" placeholder="请输入参数键名" />
         </el-form-item>
         <el-form-item label="参数键值" prop="configValue">
-          <el-input v-model="form.configValue" placeholder="请输入参数键值"/>
+          <el-input v-model="form.configValue" placeholder="请输入参数键值" />
         </el-form-item>
         <el-form-item label="系统内置" prop="configType">
           <el-radio-group v-model="form.configType">
@@ -177,7 +177,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" placeholder="请输入内容" type="textarea"/>
+          <el-input v-model="form.remark" placeholder="请输入内容" type="textarea" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -248,10 +248,10 @@ export default {
     getList() {
       this.loading = true
       listConfig(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
-          this.configList = response.rows
-          this.total = response.total
-          this.loading = false
-        }
+        this.configList = response.rows
+        this.total = response.total
+        this.loading = false
+      }
       )
     },
     // 取消按钮

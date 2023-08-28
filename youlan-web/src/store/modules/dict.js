@@ -1,4 +1,4 @@
-import { ArrayUtil, StrUtil } from '@/utils/tools'
+import { ArrayUtil, StrUtil } from '@/framework/tools'
 
 const state = {
   dict: {

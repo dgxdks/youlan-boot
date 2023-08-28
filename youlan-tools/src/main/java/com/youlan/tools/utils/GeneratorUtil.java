@@ -247,4 +247,11 @@ public class GeneratorUtil {
     public static String getQueryTypeAnno(String queryType) {
         return String.format("@Query(type = QueryType.%s)", queryType);
     }
+
+    /**
+     * 获取@QueryType注解
+     */
+    public static String getQueryTypeAnnoWithColumn(String column, String queryType) {
+        return String.format("@Query(column = \"%s\", type = QueryType.%s)", column, queryType);
+    }
 }

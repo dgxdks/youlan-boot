@@ -93,20 +93,20 @@
         >日志
         </el-button>
       </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar :query-show.sync="showSearch" @queryTable="getList" />
     </el-row>
 
     <el-table v-loading="loading" :data="jobList" @selection-change="handleSelectionChange">
-      <el-table-column align="center" type="selection" width="55"/>
-      <el-table-column align="center" label="任务编号" prop="jobId" width="100"/>
-      <el-table-column :show-overflow-tooltip="true" align="center" label="任务名称" prop="jobName"/>
+      <el-table-column align="center" type="selection" width="55" />
+      <el-table-column align="center" label="任务编号" prop="jobId" width="100" />
+      <el-table-column :show-overflow-tooltip="true" align="center" label="任务名称" prop="jobName" />
       <el-table-column align="center" label="任务组名" prop="jobGroup">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_job_group" :value="scope.row.jobGroup"/>
+          <dict-tag :options="dict.type.sys_job_group" :value="scope.row.jobGroup" />
         </template>
       </el-table-column>
-      <el-table-column :show-overflow-tooltip="true" align="center" label="调用目标字符串" prop="invokeTarget"/>
-      <el-table-column :show-overflow-tooltip="true" align="center" label="cron执行表达式" prop="cronExpression"/>
+      <el-table-column :show-overflow-tooltip="true" align="center" label="调用目标字符串" prop="invokeTarget" />
+      <el-table-column :show-overflow-tooltip="true" align="center" label="cron执行表达式" prop="cronExpression" />
       <el-table-column align="center" label="状态">
         <template slot-scope="scope">
           <el-switch
@@ -114,7 +114,7 @@
             active-value="0"
             inactive-value="1"
             @change="handleStatusChange(scope.row)"
-          ></el-switch>
+          />
         </template>
       </el-table-column>
       <el-table-column align="center" class-name="small-padding fixed-width" label="操作">
@@ -135,21 +135,29 @@
             @click="handleDelete(scope.row)"
           >删除
           </el-button>
-          <el-dropdown v-hasPerm="['monitor:job:changeStatus', 'monitor:job:query']" size="mini"
-                       @command="(command) => handleCommand(command, scope.row)"
+          <el-dropdown
+            v-hasPerm="['monitor:job:changeStatus', 'monitor:job:query']"
+            size="mini"
+            @command="(command) => handleCommand(command, scope.row)"
           >
             <el-button icon="el-icon-d-arrow-right" size="mini" type="text">更多</el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item v-hasPerm="['monitor:job:changeStatus']" command="handleRun"
-                                icon="el-icon-caret-right"
+              <el-dropdown-item
+                v-hasPerm="['monitor:job:changeStatus']"
+                command="handleRun"
+                icon="el-icon-caret-right"
               >执行一次
               </el-dropdown-item>
-              <el-dropdown-item v-hasPerm="['monitor:job:query']" command="handleView"
-                                icon="el-icon-view"
+              <el-dropdown-item
+                v-hasPerm="['monitor:job:query']"
+                command="handleView"
+                icon="el-icon-view"
               >任务详细
               </el-dropdown-item>
-              <el-dropdown-item v-hasPerm="['monitor:job:query']" command="handleJobLog"
-                                icon="el-icon-s-operation"
+              <el-dropdown-item
+                v-hasPerm="['monitor:job:query']"
+                command="handleJobLog"
+                icon="el-icon-s-operation"
               >调度日志
               </el-dropdown-item>
             </el-dropdown-menu>
@@ -172,7 +180,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="任务名称" prop="jobName">
-              <el-input v-model="form.jobName" placeholder="请输入任务名称"/>
+              <el-input v-model="form.jobName" placeholder="请输入任务名称" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -183,7 +191,7 @@
                   :key="dict.value"
                   :label="dict.label"
                   :value="dict.value"
-                ></el-option>
+                />
               </el-select>
             </el-form-item>
           </el-col>
@@ -194,13 +202,13 @@
                 <el-tooltip placement="top">
                   <div slot="content">
                     Bean调用示例：ryTask.ryParams('ry')
-                    <br/>Class类调用示例：com.ruoyi.quartz.task.RyTask.ryParams('ry')
-                    <br/>参数说明：支持字符串，布尔类型，长整型，浮点型，整型
+                    <br>Class类调用示例：com.ruoyi.quartz.task.RyTask.ryParams('ry')
+                    <br>参数说明：支持字符串，布尔类型，长整型，浮点型，整型
                   </div>
-                  <i class="el-icon-question"></i>
+                  <i class="el-icon-question" />
                 </el-tooltip>
               </span>
-              <el-input v-model="form.invokeTarget" placeholder="请输入调用目标字符串"/>
+              <el-input v-model="form.invokeTarget" placeholder="请输入调用目标字符串" />
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -209,7 +217,7 @@
                 <template slot="append">
                   <el-button type="primary" @click="handleShowCron">
                     生成表达式
-                    <i class="el-icon-time el-icon--right"></i>
+                    <i class="el-icon-time el-icon--right" />
                   </el-button>
                 </template>
               </el-input>
@@ -253,7 +261,7 @@
     </el-dialog>
 
     <el-dialog :visible.sync="openCron" append-to-body class="scrollbar" destroy-on-close title="Cron表达式生成器">
-      <crontab :expression="expression" @fill="crontabFill" @hide="openCron=false"></crontab>
+      <crontab :expression="expression" @fill="crontabFill" @hide="openCron=false" />
     </el-dialog>
 
     <!-- 任务日志详细 -->
@@ -311,8 +319,8 @@ import { addJob, changeJobStatus, delJob, getJob, listJob, runJob, updateJob } f
 import Crontab from '@/components/Crontab'
 
 export default {
-  components: { Crontab },
   name: 'Job',
+  components: { Crontab },
   dicts: ['sys_job_group', 'sys_job_status'],
   data() {
     return {
@@ -434,7 +442,7 @@ export default {
     },
     // 任务状态修改
     handleStatusChange(row) {
-      let text = row.status === '0' ? '启用' : '停用'
+      const text = row.status === '0' ? '启用' : '停用'
       this.$modal.confirm('确认要"' + text + '""' + row.jobName + '"任务吗？').then(function() {
         return changeJobStatus(row.jobId, row.status)
       }).then(() => {

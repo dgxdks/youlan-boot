@@ -56,6 +56,32 @@ public abstract class AbstractOrgModelService<M extends BaseMapper<T>, T extends
     }
 
     @Override
+    public boolean updateById(T entity) {
+        orgService.checkOrgNameRepeat(entity.getOrgName());
+        return super.updateById(entity);
+    }
+
+    @Override
+    public boolean updateBatchById(Collection<T> entityList) {
+        List<String> orgNameList = ListHelper.mapList(entityList, T::getOrgName);
+        orgService.checkOrgNameRepeat(orgNameList);
+        return super.updateBatchById(entityList);
+    }
+
+    @Override
+    public boolean updateBatchById(Collection<T> entityList, int batchSize) {
+        List<String> orgNameList = ListHelper.mapList(entityList, T::getOrgName);
+        orgService.checkOrgNameRepeat(orgNameList);
+        return super.updateBatchById(entityList, batchSize);
+    }
+
+    @Override
+    public boolean update(T entity, Wrapper<T> updateWrapper) {
+        orgService.checkOrgNameRepeat(entity.getOrgName());
+        return super.update(entity, updateWrapper);
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean save(T entity) {
         //处理机构表逻辑

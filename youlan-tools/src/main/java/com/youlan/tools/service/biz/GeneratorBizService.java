@@ -471,7 +471,7 @@ public class GeneratorBizService {
                         .setValidatorAnnoList(null)
                         .setIsCollection(VAL_YES)
                         .setTableFieldAnno(GeneratorUtil.getTableFieldNotExistAnno());
-                extendColumn.setQueryAnno(GeneratorUtil.getQueryTypeAnno(queryType.name()));
+                extendColumn.setQueryAnno(GeneratorUtil.getQueryTypeAnnoWithColumn(extendColumn.getColumnName(), queryType.name()));
                 setValidatorAnno(extendColumn);
                 extendColumnList.add(extendColumn);
                 //将原列的验证注解设为空

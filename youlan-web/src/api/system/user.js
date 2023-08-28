@@ -1,5 +1,4 @@
-import request from '@/utils/request'
-import { parseStrEmpty } from '@/utils/ruoyi'
+import request from '@/framework/tools/request'
 
 // 查询用户列表
 export function getUserPageList(data) {
@@ -11,20 +10,18 @@ export function getUserPageList(data) {
 }
 
 // 查询用户详细
-export function loadUser(id) {
+export function loadUser(params) {
   return request({
-    url: '/system/loadUser/',
+    url: '/system/user/loadUser',
     method: 'post',
-    params: {
-      id
-    }
+    params
   })
 }
 
 // 新增用户
 export function addUser(data) {
   return request({
-    url: '/system/user',
+    url: '/system/user/addUser',
     method: 'post',
     data: data
   })
@@ -33,43 +30,36 @@ export function addUser(data) {
 // 修改用户
 export function updateUser(data) {
   return request({
-    url: '/system/user',
-    method: 'put',
+    url: '/system/user/updateUser',
+    method: 'post',
     data: data
   })
 }
 
 // 删除用户
-export function delUser(userId) {
+export function removeUser(data) {
   return request({
-    url: '/system/user/' + userId,
-    method: 'delete'
+    url: '/system/user/removeUser',
+    method: 'post',
+    data
   })
 }
 
 // 用户密码重置
-export function resetUserPwd(userId, password) {
-  const data = {
-    userId,
-    password
-  }
+export function resetUserPasswd(data) {
   return request({
-    url: '/system/user/resetPwd',
-    method: 'put',
-    data: data
+    url: '/system/user/resetUserPasswd',
+    method: 'post',
+    data
   })
 }
 
 // 用户状态修改
-export function changeUserStatus(userId, status) {
-  const data = {
-    userId,
-    status
-  }
+export function updateUserStatus(params) {
   return request({
-    url: '/system/user/changeStatus',
-    method: 'put',
-    data: data
+    url: '/system/user/updateUserStatus',
+    method: 'post',
+    params
   })
 }
 
@@ -87,19 +77,6 @@ export function updateUserProfile(data) {
     url: '/system/user/profile',
     method: 'put',
     data: data
-  })
-}
-
-// 用户密码重置
-export function updateUserPwd(oldPassword, newPassword) {
-  const data = {
-    oldPassword,
-    newPassword
-  }
-  return request({
-    url: '/system/user/profile/updatePwd',
-    method: 'put',
-    params: data
   })
 }
 

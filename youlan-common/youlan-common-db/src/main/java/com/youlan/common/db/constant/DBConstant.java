@@ -1,5 +1,7 @@
 package com.youlan.common.db.constant;
 
+import cn.hutool.core.util.StrUtil;
+
 /**
  * 数据库常量
  */
@@ -186,5 +188,17 @@ public class DBConstant {
 
     public static boolean yesNo2Boolean(String yesNo) {
         return VAL_YES.equals(yesNo);
+    }
+
+    public static String statusInverse(String status) {
+        if (StrUtil.isBlank(status)) {
+            return VAL_STATUS_ENABLED;
+        } else if (VAL_STATUS_ENABLED.equals(status)) {
+            return VAL_STATUS_DISABLED;
+        } else if (VAL_STATUS_DISABLED.equals(status)) {
+            return VAL_STATUS_ENABLED;
+        } else {
+            return VAL_STATUS_ENABLED;
+        }
     }
 }

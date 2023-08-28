@@ -59,7 +59,7 @@
           style="width: 240px"
           type="daterange"
           value-format="yyyy-MM-dd HH:mm:ss"
-        ></el-date-picker>
+        />
       </el-form-item>
       <el-form-item>
         <el-button icon="el-icon-search" size="mini" type="primary" @click="handleQuery">搜索</el-button>
@@ -102,39 +102,61 @@
         >导出
         </el-button>
       </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar :query-show.sync="showSearch" @queryTable="getList" />
     </el-row>
 
-    <el-table ref="tables" v-loading="loading" :data="list" :default-sort="defaultSort"
-              @selection-change="handleSelectionChange" @sort-change="handleSortChange"
+    <el-table
+      ref="tables"
+      v-loading="loading"
+      :data="list"
+      :default-sort="defaultSort"
+      @selection-change="handleSelectionChange"
+      @sort-change="handleSortChange"
     >
-      <el-table-column align="center" type="selection" width="50"/>
-      <el-table-column align="center" label="日志编号" prop="operId"/>
-      <el-table-column :show-overflow-tooltip="true" align="center" label="系统模块" prop="title"/>
+      <el-table-column align="center" type="selection" width="50" />
+      <el-table-column align="center" label="日志编号" prop="operId" />
+      <el-table-column :show-overflow-tooltip="true" align="center" label="系统模块" prop="title" />
       <el-table-column align="center" label="操作类型" prop="businessType">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_oper_type" :value="scope.row.businessType"/>
+          <dict-tag :options="dict.type.sys_oper_type" :value="scope.row.businessType" />
         </template>
       </el-table-column>
-      <el-table-column :show-overflow-tooltip="true" :sort-orders="['descending', 'ascending']" align="center" label="操作人员" prop="operName"
-                       sortable="custom" width="110"
+      <el-table-column
+        :show-overflow-tooltip="true"
+        :sort-orders="['descending', 'ascending']"
+        align="center"
+        label="操作人员"
+        prop="operName"
+        sortable="custom"
+        width="110"
       />
-      <el-table-column :show-overflow-tooltip="true" align="center" label="操作地址" prop="operIp" width="130"/>
-      <el-table-column :show-overflow-tooltip="true" align="center" label="操作地点" prop="operLocation"/>
+      <el-table-column :show-overflow-tooltip="true" align="center" label="操作地址" prop="operIp" width="130" />
+      <el-table-column :show-overflow-tooltip="true" align="center" label="操作地点" prop="operLocation" />
       <el-table-column align="center" label="操作状态" prop="status">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_common_status" :value="scope.row.status"/>
+          <dict-tag :options="dict.type.sys_common_status" :value="scope.row.status" />
         </template>
       </el-table-column>
-      <el-table-column :sort-orders="['descending', 'ascending']" align="center" label="操作日期" prop="operTime" sortable="custom"
-                       width="160"
+      <el-table-column
+        :sort-orders="['descending', 'ascending']"
+        align="center"
+        label="操作日期"
+        prop="operTime"
+        sortable="custom"
+        width="160"
       >
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.operTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column :show-overflow-tooltip="true" :sort-orders="['descending', 'ascending']" align="center" label="消耗时间" prop="costTime"
-                       sortable="custom" width="110"
+      <el-table-column
+        :show-overflow-tooltip="true"
+        :sort-orders="['descending', 'ascending']"
+        align="center"
+        label="消耗时间"
+        prop="costTime"
+        sortable="custom"
+        width="110"
       >
         <template slot-scope="scope">
           <span>{{ scope.row.costTime }}毫秒</span>
@@ -257,10 +279,10 @@ export default {
     getList() {
       this.loading = true
       list(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
-          this.list = response.rows
-          this.total = response.total
-          this.loading = false
-        }
+        this.list = response.rows
+        this.total = response.total
+        this.loading = false
+      }
       )
     },
     // 操作日志类型字典翻译

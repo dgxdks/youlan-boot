@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/framework/tools/request'
 
 export function getOrgTreeList(data) {
   return request({

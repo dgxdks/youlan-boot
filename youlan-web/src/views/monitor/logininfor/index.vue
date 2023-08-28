@@ -44,7 +44,7 @@
           style="width: 240px"
           type="daterange"
           value-format="yyyy-MM-dd HH:mm:ss"
-        ></el-date-picker>
+        />
       </el-form-item>
       <el-form-item>
         <el-button icon="el-icon-search" size="mini" type="primary" @click="handleQuery">搜索</el-button>
@@ -99,29 +99,44 @@
         >导出
         </el-button>
       </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar :query-show.sync="showSearch" @queryTable="getList" />
     </el-row>
 
-    <el-table ref="tables" v-loading="loading" :data="list" :default-sort="defaultSort"
-              @selection-change="handleSelectionChange" @sort-change="handleSortChange"
+    <el-table
+      ref="tables"
+      v-loading="loading"
+      :data="list"
+      :default-sort="defaultSort"
+      @selection-change="handleSelectionChange"
+      @sort-change="handleSortChange"
     >
-      <el-table-column align="center" type="selection" width="55"/>
-      <el-table-column align="center" label="访问编号" prop="infoId"/>
-      <el-table-column :show-overflow-tooltip="true" :sort-orders="['descending', 'ascending']" align="center" label="用户名称" prop="userName"
-                       sortable="custom"
+      <el-table-column align="center" type="selection" width="55" />
+      <el-table-column align="center" label="访问编号" prop="infoId" />
+      <el-table-column
+        :show-overflow-tooltip="true"
+        :sort-orders="['descending', 'ascending']"
+        align="center"
+        label="用户名称"
+        prop="userName"
+        sortable="custom"
       />
-      <el-table-column :show-overflow-tooltip="true" align="center" label="登录地址" prop="ipaddr" width="130"/>
-      <el-table-column :show-overflow-tooltip="true" align="center" label="登录地点" prop="loginLocation"/>
-      <el-table-column :show-overflow-tooltip="true" align="center" label="浏览器" prop="browser"/>
-      <el-table-column align="center" label="操作系统" prop="os"/>
+      <el-table-column :show-overflow-tooltip="true" align="center" label="登录地址" prop="ipaddr" width="130" />
+      <el-table-column :show-overflow-tooltip="true" align="center" label="登录地点" prop="loginLocation" />
+      <el-table-column :show-overflow-tooltip="true" align="center" label="浏览器" prop="browser" />
+      <el-table-column align="center" label="操作系统" prop="os" />
       <el-table-column align="center" label="登录状态" prop="status">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_common_status" :value="scope.row.status"/>
+          <dict-tag :options="dict.type.sys_common_status" :value="scope.row.status" />
         </template>
       </el-table-column>
-      <el-table-column :show-overflow-tooltip="true" align="center" label="操作信息" prop="msg"/>
-      <el-table-column :sort-orders="['descending', 'ascending']" align="center" label="登录日期" prop="loginTime"
-                       sortable="custom" width="180"
+      <el-table-column :show-overflow-tooltip="true" align="center" label="操作信息" prop="msg" />
+      <el-table-column
+        :sort-orders="['descending', 'ascending']"
+        align="center"
+        label="登录日期"
+        prop="loginTime"
+        sortable="custom"
+        width="180"
       >
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.loginTime) }}</span>
@@ -185,10 +200,10 @@ export default {
     getList() {
       this.loading = true
       list(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
-          this.list = response.rows
-          this.total = response.total
-          this.loading = false
-        }
+        this.list = response.rows
+        this.total = response.total
+        this.loading = false
+      }
       )
     },
     /** 搜索按钮操作 */

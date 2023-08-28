@@ -1,6 +1,6 @@
-import request from '@/utils/request'
+import request from '@/framework/tools/request'
 
-//系统配置新增
+// 系统配置新增
 export function addConfig(data) {
   return request({
     url: '/system/config/addConfig',
@@ -9,7 +9,7 @@ export function addConfig(data) {
   })
 }
 
-//系统配置修改
+// 系统配置修改
 export function updateConfig(data) {
   return request({
     url: '/system/config/updateConfig',
@@ -18,7 +18,7 @@ export function updateConfig(data) {
   })
 }
 
-//系统配置删除
+// 系统配置删除
 export function removeConfig(data) {
   return request({
     url: '/system/config/removeConfig',
@@ -27,7 +27,7 @@ export function removeConfig(data) {
   })
 }
 
-//系统配置详情
+// 系统配置详情
 export function loadConfig(data) {
   return request({
     url: '/system/config/loadConfig',
@@ -36,7 +36,7 @@ export function loadConfig(data) {
   })
 }
 
-//系统配置详情
+// 系统配置详情
 export function loadConfigByConfigKey(params) {
   return request({
     url: '/system/config/loadConfigByConfigKey',
@@ -45,7 +45,7 @@ export function loadConfigByConfigKey(params) {
   })
 }
 
-//系统配置分页
+// 系统配置分页
 export function getConfigPageList(data) {
   return request({
     url: '/system/config/getConfigPageList',
@@ -54,7 +54,7 @@ export function getConfigPageList(data) {
   })
 }
 
-//系统配置导出
+// 系统配置导出
 export function exportConfigList(data) {
   return request({
     url: '/system/config/getConfigPageList',

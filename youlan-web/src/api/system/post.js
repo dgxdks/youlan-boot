@@ -1,11 +1,11 @@
-import request from '@/utils/request'
+import request from '@/framework/tools/request'
 
 // 查询岗位列表
-export function listPost(query) {
+export function getPostList(data) {
   return request({
-    url: '/system/post/list',
-    method: 'get',
-    params: query
+    url: '/system/post/getPostList',
+    method: 'post',
+    data
   })
 }
 

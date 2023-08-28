@@ -3,16 +3,21 @@ package com.youlan.controller.system;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
-import com.youlan.common.db.entity.dto.ListDTO;
+import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.core.restful.enums.ApiResultCode;
+import com.youlan.common.db.entity.dto.ListDTO;
+import com.youlan.common.validator.Insert;
+import com.youlan.common.validator.Update;
 import com.youlan.framework.anno.SystemLog;
 import com.youlan.framework.constant.SystemLogType;
 import com.youlan.framework.controller.BaseController;
 import com.youlan.system.entity.dto.UserDTO;
 import com.youlan.system.entity.dto.UserPageDTO;
-import com.youlan.system.entity.dto.UserPasswdDTO;
+import com.youlan.system.entity.dto.UserResetPasswdDTO;
+import com.youlan.system.entity.vo.UserTemplateVO;
 import com.youlan.system.entity.vo.UserVO;
+import com.youlan.system.service.UserService;
 import com.youlan.system.service.biz.UserBizService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Tag(name = "用户管理")
@@ -30,12 +36,13 @@ import java.util.List;
 @AllArgsConstructor
 public class UserController extends BaseController {
     private final UserBizService userBizService;
+    private final UserService userService;
 
     @SaCheckPermission("system:user:add")
     @Operation(summary = "用户新增")
     @PostMapping("/addUser")
     @SystemLog(name = "用户", type = SystemLogType.OPERATION_LOG_TYPE_ADD)
-    public ApiResult addUser(@Validated @RequestBody UserDTO dto) {
+    public ApiResult addUser(@Validated(Insert.class) @RequestBody UserDTO dto) {
         return toSuccess(userBizService.addUser(dto));
     }
 
@@ -43,10 +50,12 @@ public class UserController extends BaseController {
     @Operation(summary = "用户修改")
     @PostMapping("/updateUser")
     @SystemLog(name = "用户", type = SystemLogType.OPERATION_LOG_TYPE_UPDATE)
-    public ApiResult updateUser(@Validated @RequestBody UserDTO dto) {
+    public ApiResult updateUser(@Validated(Update.class) @RequestBody UserDTO dto) {
+        // TODO: 2023/8/28 数据权限
         if (ObjectUtil.isNull(dto.getId())) {
             return toError(ApiResultCode.C0001);
         }
+        checkUserAllowed(dto.getId());
         return toSuccess(userBizService.updateUser(dto));
     }
 
@@ -55,9 +64,15 @@ public class UserController extends BaseController {
     @PostMapping("/removeUser")
     @SystemLog(name = "用户", type = SystemLogType.OPERATION_LOG_TYPE_REMOVE)
     public ApiResult removeUser(@Validated @RequestBody ListDTO<Long> dto) {
+        // TODO: 2023/8/28 数据权限
         if (CollectionUtil.isEmpty(dto.getList())) {
             return toSuccess();
         }
+        //不能删除自己
+        if (CollectionUtil.contains(dto.getList(), getUserId())) {
+            throw new BizRuntimeException(ApiResultCode.A0012);
+        }
+        dto.getList().forEach(this::checkUserAllowed);
         return toSuccess(userBizService.removeUser(dto.getList()));
     }
 
@@ -94,11 +109,33 @@ public class UserController extends BaseController {
 
     }
 
-    @SaCheckPermission("system:user:updatePasswd")
-    @Operation(summary = "用户密码修改")
-    @PostMapping("/updateUserPasswd")
+    @SaCheckPermission("system:user:resetPasswd")
+    @Operation(summary = "用户密码重置")
+    @PostMapping("/resetUserPasswd")
     @SystemLog(name = "用户", type = SystemLogType.OPERATION_LOG_TYPE_UPDATE)
-    public ApiResult updateUserPasswd(@Validated @RequestBody UserPasswdDTO dto) {
-        return toSuccess(userBizService.updateUserPasswd(dto));
+    public ApiResult resetUserPasswd(@Validated @RequestBody UserResetPasswdDTO dto) {
+        // TODO: 2023/8/23 数据权限
+        if (ObjectUtil.isNull(dto.getId())) {
+            return toError(ApiResultCode.C0001);
+        }
+        checkUserAllowed(dto.getId());
+        return toSuccess(userBizService.resetUserPasswd(dto));
     }
+
+    @SaCheckPermission("system.user.update")
+    @Operation(summary = "用户状态修改")
+    @PostMapping("/updateUserStatus")
+    @SystemLog(name = "用户", type = SystemLogType.OPERATION_LOG_TYPE_UPDATE)
+    public ApiResult updateUserStatus(@RequestParam Long id, @RequestParam String status) {
+        // TODO: 2023/8/23 数据权限
+        checkUserAllowed(id);
+        return toSuccess(userService.updateStatus(id, status));
+    }
+
+    @Operation(summary = "下载用户导入模版")
+    @PostMapping("/downloadUserTemplate")
+    public void downloadUserTemplate() throws IOException {
+        toExcel("用户数据", UserTemplateVO.class, new ArrayList<>());
+    }
+
 }

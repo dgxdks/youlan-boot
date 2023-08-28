@@ -1,5 +1,6 @@
 package com.youlan.system.service;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -83,6 +84,8 @@ public class OrgService extends BaseServiceImpl<OrgMapper, Org> {
         if (StrUtil.isBlank(org.getOrgName())) {
             throw new BizRuntimeException("机构名称不能为空");
         }
+        //机构名称不能重复
+        this.checkOrgNameRepeat(org.getOrgName());
         String orgAncestors = StrUtil.join(StringPool.COMMA, parentOrg.getOrgAncestors());
         Integer orgLevel = parentOrg.getOrgLevel() + 1;
         org.setOrgAncestors(orgAncestors);
@@ -97,5 +100,28 @@ public class OrgService extends BaseServiceImpl<OrgMapper, Org> {
         QueryWrapper<Org> queryWrapper = DBHelper.getQueryWrapper(dto);
         List<OrgVO> orgList = this.loadMore(queryWrapper, OrgVO.class);
         return ListHelper.getTreeList(orgList, OrgVO::getChildren, OrgVO::getOrgId, OrgVO::getParentOrgId, OrgVO::getOrgSort);
+    }
+
+    /**
+     * 校验机构名称是否重复
+     */
+    public void checkOrgNameRepeat(String orgName) {
+        Org repeatNameOrg = this.loadOne(Org::getOrgName, orgName);
+        if (ObjectUtil.isNotNull(repeatNameOrg)) {
+            throw new BizRuntimeException("机构名称已存在");
+        }
+    }
+
+    /**
+     * 校验机构名称是否重复
+     */
+    public void checkOrgNameRepeat(List<String> orgNameList) {
+        List<Org> orgList = this.lambdaQuery()
+                .select(Org::getOrgName)
+                .in(Org::getOrgName, orgNameList)
+                .list();
+        if (CollectionUtil.isNotEmpty(orgList)) {
+            throw new BizRuntimeException("机构名称已存在");
+        }
     }
 }

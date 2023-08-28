@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/framework/tools/request'
 
 // 查询定时任务调度列表
 export function listJob(query) {
@@ -55,7 +55,6 @@ export function changeJobStatus(jobId, status) {
     data: data
   })
 }
-
 
 // 定时任务立即执行一次
 export function runJob(jobId, jobGroup) {

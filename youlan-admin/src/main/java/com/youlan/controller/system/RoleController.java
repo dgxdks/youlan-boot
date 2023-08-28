@@ -74,11 +74,10 @@ public class RoleController extends BaseController {
     @PostMapping("/getRoleList")
     @SystemLog(name = "角色", type = SystemLogType.OPERATION_LOG_TYPE_LIST)
     public ApiResult getRoleList(@RequestBody Role role) {
+        // TODO: 2023/8/23 需要考虑数据权限 只能看当前用户可以看的角色
         List<Role> roleList = roleService.loadMore(DBHelper.getQueryWrapper(role));
-        //非管理员用户不显示超级管理员角色信息
-        if (!SystemAuthHelper.isAdmin()) {
-            roleList = ListHelper.filterList(roleList, r -> !SystemAuthHelper.isAdminRole(r.getRoleStr()));
-        }
+        //不显示管理员角色信息
+        roleList = ListHelper.filterList(roleList, r -> !SystemAuthHelper.isAdminRole(r.getRoleStr()));
         return toSuccess(roleList);
     }
 

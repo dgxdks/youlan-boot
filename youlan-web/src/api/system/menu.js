@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/framework/tools/request'
 
 // 查询菜单列表
 export function listMenu(query) {

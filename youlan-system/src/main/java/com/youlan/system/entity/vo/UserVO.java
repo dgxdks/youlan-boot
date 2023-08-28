@@ -2,10 +2,13 @@ package com.youlan.system.entity.vo;
 
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.write.style.ColumnWidth;
+import com.alibaba.excel.annotation.write.style.HeadFontStyle;
 import com.youlan.common.db.constant.DBConstant;
 import com.youlan.common.db.enums.DBStatus;
 import com.youlan.common.excel.anno.ExcelEnumProperty;
 import com.youlan.common.excel.converter.EnumConverter;
+import com.youlan.system.excel.anno.ExcelDictProperty;
 import com.youlan.system.excel.converter.DictConverter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -14,10 +17,12 @@ import java.util.Date;
 import java.util.List;
 
 @Data
+@ColumnWidth(20)
+@HeadFontStyle(fontHeightInPoints = 12)
 @ExcelIgnoreUnannotated
 public class UserVO {
 
-    @ExcelProperty(value = "主键ID")
+    @ExcelProperty(value = "用户编号")
     @Schema(title = DBConstant.DESC_ID)
     private Long id;
 
@@ -36,7 +41,6 @@ public class UserVO {
     @Schema(title = "用户手机")
     private String userMobile;
 
-    @ExcelProperty(value = "用户昵称")
     @Schema(title = "用户昵称")
     private String nickName;
 
@@ -48,10 +52,11 @@ public class UserVO {
     private String avatar;
 
     @ExcelProperty(value = "用户性别", converter = DictConverter.class)
+    @ExcelDictProperty("sys_user_sex")
     @Schema(title = "用户性别(字典类型[sys_user_sex])")
     private String sex;
 
-    @ExcelProperty(value = "状态(1-正常 2-停用)", converter = EnumConverter.class)
+    @ExcelProperty(value = "账号状态", converter = EnumConverter.class)
     @ExcelEnumProperty(value = DBStatus.class)
     @Schema(title = DBConstant.DESC_STATUS)
     private String status;
@@ -64,31 +69,24 @@ public class UserVO {
     @Schema(title = "最后登录时间")
     private String loginTime;
 
-    @ExcelProperty(value = "备注")
     @Schema(title = DBConstant.DESC_REMARK)
     private String remark;
 
-    @ExcelProperty(value = "创建用户ID")
     @Schema(title = DBConstant.DESC_CREATE_ID)
     private Long createId;
 
-    @ExcelProperty(value = "创建用户")
     @Schema(title = DBConstant.DESC_CREATE_BY)
     private String createBy;
 
-    @ExcelProperty(value = "修改用户ID")
     @Schema(title = DBConstant.DESC_UPDATE_ID)
     private Long updateId;
 
-    @ExcelProperty(value = "修改用户")
     @Schema(title = DBConstant.DESC_UPDATE_BY)
     private String updateBy;
 
-    @ExcelProperty(value = "创建时间")
     @Schema(title = DBConstant.DESC_CREATE_TIME)
     private Date createTime;
 
-    @ExcelProperty(value = "修改时间")
     @Schema(title = DBConstant.DESC_UPDATE_TIME)
     private Date updateTime;
 

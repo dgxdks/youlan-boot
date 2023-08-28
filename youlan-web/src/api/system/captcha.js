@@ -1,6 +1,6 @@
-import request from '@/utils/request'
+import request from '@/framework/tools/request'
 
-//获取验证码
+// 获取验证码
 export function getImageCaptcha() {
   return request({
     url: '/system/captcha/getImageCaptcha',

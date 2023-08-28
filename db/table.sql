@@ -278,7 +278,7 @@ values (20000, '用户新增', '3', 'system:user:add', 101, '', '', '', '1', '',
         'admin', 0, '', sysdate(), null),
        (20006, '用户导入', '3', 'system:user:import', 101, '', '', '', '1', '', '2', 7, '1', '1', '', 100,
         'admin', 0, '', sysdate(), null),
-       (20007, '密码修改', '3', 'system:user:updatePasswd', 101, '', '', '', '1', '', '2', 8, '1', '1', '', 100,
+       (20007, '密码重置', '3', 'system:user:resetPasswd', 101, '', '', '', '1', '', '2', 8, '1', '1', '', 100,
         'admin', 0, '', sysdate(), null);
 -- 角色管理按钮
 insert into t_sys_menu
@@ -589,7 +589,7 @@ create table t_sys_storage_record
     ext                varchar(32)  default '' comment '文件扩展名',
     content_type       varchar(128) default '' comment 'MIME类型',
     platform           varchar(32)  default '' comment '存储平台名称',
-    th_url              varchar(512) default '' comment '缩略图访问路径',
+    th_url             varchar(512) default '' comment '缩略图访问路径',
     th_file_name       varchar(256) default '' comment '缩略图文件名称',
     th_size            bigint       default 0 comment '缩略图大小',
     th_content_type    varchar(128) default '' comment '缩略图MIME类型',

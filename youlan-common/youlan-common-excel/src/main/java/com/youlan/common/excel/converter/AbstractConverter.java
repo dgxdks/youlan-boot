@@ -53,7 +53,7 @@ public abstract class AbstractConverter implements Converter<Object> {
         Field field = getField(contentProperty);
         A fieldAnno = field.getAnnotation(annoClz);
         if (ObjectUtil.isNull(fieldAnno)) {
-            throw new IllegalArgumentException(StrUtil.format("字段{}未找到对应{}注解{}", field.getName(),
+            throw new IllegalArgumentException(StrUtil.format("字段{}未找到对应{}注解", field.getName(),
                     annoClz.getName()));
         }
         return fieldAnno;

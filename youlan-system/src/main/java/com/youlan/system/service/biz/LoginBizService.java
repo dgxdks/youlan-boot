@@ -16,11 +16,11 @@ import com.youlan.system.entity.dto.AccountLoginDTO;
 import com.youlan.system.entity.vo.LoginInfoVO;
 import com.youlan.system.entity.vo.UserVO;
 import com.youlan.system.enums.LoginStatus;
+import com.youlan.system.helper.SystemAuthHelper;
+import com.youlan.system.helper.SystemConfigHelper;
 import com.youlan.system.service.LoginLogService;
 import com.youlan.system.service.OrgService;
 import com.youlan.system.service.UserService;
-import com.youlan.system.helper.SystemAuthHelper;
-import com.youlan.system.helper.SystemConfigHelper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -89,6 +89,8 @@ public class LoginBizService {
         if (loginMaxRetryTimes <= 0) {
             //不处理重试逻辑但是要处理密码是否匹配逻辑
             if (passwordMatch.get()) {
+                //更新用户登录信息
+                userService.updateUserLoginInfo(user.getId());
                 return;
             }
             loginLogService.addAsync(user.getUserName(), LoginStatus.FAILED.getCode(), A0002.getErrorMsg());
@@ -119,6 +121,8 @@ public class LoginBizService {
                 throw new BizRuntimeException(A0002);
             }
         }
+        //更新用户登录信息
+        userService.updateUserLoginInfo(user.getId());
         redisHelper.delete(loginRetryKey);
     }
 

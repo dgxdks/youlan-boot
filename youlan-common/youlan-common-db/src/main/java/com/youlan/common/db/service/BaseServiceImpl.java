@@ -2,12 +2,21 @@ package com.youlan.common.db.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.ReflectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
+import com.baomidou.mybatisplus.core.metadata.TableInfo;
+import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.youlan.common.core.helper.ListHelper;
+import com.youlan.common.db.constant.DBConstant;
 import com.youlan.common.db.entity.dto.PageDTO;
 import com.youlan.common.db.helper.DBHelper;
 
@@ -119,5 +128,35 @@ public class BaseServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M, 
 
     public <VO> IPage<VO> loadPage(IPage<T> page, Class<VO> clz) {
         return this.loadPage(page, null, clz);
+    }
+
+    public TableInfo tableInfo() {
+        return TableInfoHelper.getTableInfo(getEntityClass());
+    }
+
+    public boolean updateStatus(Serializable id, String status, String statusProp) {
+        Assert.notNull(id);
+        Assert.notBlank(statusProp);
+        TableInfo tableInfo = tableInfo();
+        List<TableFieldInfo> tableFieldInfoList = ListHelper.filterList(tableInfo.getFieldList(), tableFieldInfo -> statusProp.equals(tableFieldInfo.getProperty()));
+        Assert.notEmpty(tableFieldInfoList);
+        TableFieldInfo tableFieldInfo = tableFieldInfoList.get(0);
+        if (StrUtil.isBlank(status)) {
+            T entity = getById(id);
+            Object retStatus = ReflectUtil.getFieldValue(entity, statusProp);
+            if (ObjectUtil.isNull(retStatus)) {
+                status = DBConstant.statusInverse(StrUtil.EMPTY);
+            } else {
+                status = DBConstant.statusInverse(retStatus.toString());
+            }
+        }
+        T entity = tableInfo.newInstance();
+        ReflectUtil.setFieldValue(entity, tableInfo.getKeyProperty(), id);
+        ReflectUtil.setFieldValue(entity, tableFieldInfo.getProperty(), status);
+        return this.updateById(entity);
+    }
+
+    public boolean updateStatus(Serializable id, String status) {
+        return updateStatus(id, status, DBConstant.COL_STATUS);
     }
 }

@@ -82,6 +82,10 @@ public class StorageBizService {
         if (StrUtil.isBlank(url)) {
             throw new BizRuntimeException(ApiResultCode.B0008);
         }
+        //不允许目录上跳
+        if (url.contains("..")) {
+            throw new BizRuntimeException(ApiResultCode.B0012);
+        }
         String filePath = systemProperties.getStorage().getStoragePath() + url;
         boolean isFile = FileUtil.isFile(filePath);
         if (!isFile) {

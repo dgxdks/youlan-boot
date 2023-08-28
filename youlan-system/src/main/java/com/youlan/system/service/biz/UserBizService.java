@@ -9,7 +9,8 @@ import com.youlan.common.db.helper.DBHelper;
 import com.youlan.system.entity.User;
 import com.youlan.system.entity.dto.UserDTO;
 import com.youlan.system.entity.dto.UserPageDTO;
-import com.youlan.system.entity.dto.UserPasswdDTO;
+import com.youlan.system.entity.dto.UserResetPasswdDTO;
+import com.youlan.system.entity.dto.UserUpdatePasswdDTO;
 import com.youlan.system.entity.vo.UserVO;
 import com.youlan.system.helper.SystemAuthHelper;
 import com.youlan.system.service.OrgService;
@@ -37,22 +38,16 @@ public class UserBizService {
      */
     @Transactional(rollbackFor = Exception.class)
     public boolean addUser(UserDTO dto) {
-        User user = createAddOrUpdateUser(dto);
         //生成用户密码，密码需要加密
-        userService.setUserPassword(user, dto.getUserPassword());
+        User user = createAddOrUpdateUser(dto)
+                .setUserPassword(userService.genUserPassword(dto.getUserPassword()));
         //保存用户信息
         boolean saveUser = userService.save(user);
         if (!saveUser) {
             throw new BizRuntimeException("新增用户失败");
         }
-        boolean addUserPostBatch = userPostService.addUserPostBatch(user.getId(), dto.getPostIdList());
-        if (!addUserPostBatch) {
-            throw new BizRuntimeException("新增用户岗位信息失败");
-        }
-        boolean addUserRoleBatch = userRoleService.addUserRoleBatch(user.getId(), dto.getRoleIdList());
-        if (!addUserRoleBatch) {
-            throw new BizRuntimeException("新增用户角色信息失败");
-        }
+        userPostService.addUserPostBatch(user.getId(), dto.getPostIdList());
+        userRoleService.addUserRoleBatch(user.getId(), dto.getRoleIdList());
         return true;
     }
 
@@ -62,21 +57,16 @@ public class UserBizService {
     @Transactional(rollbackFor = Exception.class)
     public boolean updateUser(UserDTO dto) {
         User user = createAddOrUpdateUser(dto);
-        //保证不允许修改密码
-        user.setUserPassword(null);
+        //保证不允许修改密码和用户名称
+        user.setUserPassword(null)
+                .setUserName(null);
         //修改用户信息
         boolean updateUser = userService.updateById(user);
         if (!updateUser) {
             throw new BizRuntimeException("修改用户失败");
         }
-        boolean updateUserPostBatch = userPostService.updateUserPostBatch(user.getId(), dto.getPostIdList());
-        if (!updateUserPostBatch) {
-            throw new BizRuntimeException("修改用户岗位信息失败");
-        }
-        boolean updateUserRoleBatch = userRoleService.updateUserRoleBatch(user.getId(), dto.getRoleIdList());
-        if (!updateUserRoleBatch) {
-            throw new BizRuntimeException("修改用户角色信息失败");
-        }
+        userPostService.updateUserPostBatch(user.getId(), dto.getPostIdList());
+        userRoleService.updateUserRoleBatch(user.getId(), dto.getRoleIdList());
         return true;
     }
 
@@ -140,12 +130,14 @@ public class UserBizService {
         IPage<UserVO> userPageList = userService.loadPage(DBHelper.getIPage(dto), DBHelper.getQueryWrapper(dto), UserVO.class);
         //增加机构名称
         List<Long> orgIdList = userPageList.getRecords().stream().map(UserVO::getOrgId).collect(Collectors.toList());
-        Map<Long, String> orgIdOrgNameMap = orgService.getOrgIdOrgNameMap(orgIdList);
-        userPageList.getRecords().forEach(user -> {
-            if (orgIdOrgNameMap.containsKey(user.getOrgId())) {
-                user.setOrgName(orgIdOrgNameMap.get(user.getOrgId()));
-            }
-        });
+        if (CollectionUtil.isNotEmpty(orgIdList)) {
+            Map<Long, String> orgIdOrgNameMap = orgService.getOrgIdOrgNameMap(orgIdList);
+            userPageList.getRecords().forEach(user -> {
+                if (orgIdOrgNameMap.containsKey(user.getOrgId())) {
+                    user.setOrgName(orgIdOrgNameMap.get(user.getOrgId()));
+                }
+            });
+        }
         return userPageList;
     }
 
@@ -153,7 +145,7 @@ public class UserBizService {
      * 用户导出
      */
     public List<UserVO> exportUserList(UserPageDTO dto) {
-        List<UserVO> userList = orgService.loadMore(DBHelper.getQueryWrapper(dto), UserVO.class);
+        List<UserVO> userList = userService.loadMore(DBHelper.getQueryWrapper(dto), UserVO.class);
         List<Long> orgIdSet = userList.stream().map(UserVO::getOrgId).collect(Collectors.toList());
         Map<Long, String> orgIdOrgNameMapping = orgService.getOrgIdOrgNameMap(orgIdSet);
         userList.forEach(user -> user.setOrgName(orgIdOrgNameMapping.get(user.getId())));
@@ -168,9 +160,19 @@ public class UserBizService {
     }
 
     /**
+     * 重置用户密码
+     */
+    public boolean resetUserPasswd(UserResetPasswdDTO dto) {
+        return userService.lambdaUpdate()
+                .eq(User::getId, dto.getId())
+                .set(User::getUserPassword, userService.genUserPassword(dto.getUserPassword()))
+                .update();
+    }
+
+    /**
      * 修改用户密码
      */
-    public boolean updateUserPasswd(UserPasswdDTO dto) {
+    public boolean updateUserPasswd(UserUpdatePasswdDTO dto) {
         String oldPasswd = dto.getOldPasswd();
         String newPasswd = dto.getNewPasswd();
         String confirmPasswd = dto.getConfirmPasswd();
@@ -183,8 +185,9 @@ public class UserBizService {
         if (!validUserPassword) {
             throw new BizRuntimeException("旧密码与用户密码不一致");
         }
-        user = new User().setId(userId)
-                .setUserPassword(newPasswd);
+        user = new User()
+                .setId(userId)
+                .setUserPassword(userService.genUserPassword(newPasswd));
         return userService.updateById(user);
     }
 }

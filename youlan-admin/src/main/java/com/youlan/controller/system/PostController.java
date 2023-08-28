@@ -3,9 +3,9 @@ package com.youlan.controller.system;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
-import com.youlan.common.db.entity.dto.ListDTO;
 import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.core.restful.enums.ApiResultCode;
+import com.youlan.common.db.entity.dto.ListDTO;
 import com.youlan.common.db.helper.DBHelper;
 import com.youlan.framework.anno.SystemLog;
 import com.youlan.framework.constant.SystemLogType;
@@ -72,6 +72,14 @@ public class PostController extends BaseController {
     @SystemLog(name = "岗位", type = SystemLogType.OPERATION_LOG_TYPE_PAGE_LIST)
     public ApiResult getPostPageList(@RequestBody Post post) {
         return toSuccess(postService.loadPage(post, DBHelper.getQueryWrapper(post)));
+    }
+
+    @SaCheckPermission("system:post:list")
+    @Operation(summary = "岗位列表")
+    @PostMapping("/getPostList")
+    @SystemLog(name = "岗位", type = SystemLogType.OPERATION_LOG_TYPE_LIST)
+    public ApiResult getPostList(@RequestBody Post post) {
+        return toSuccess(postService.loadMore(DBHelper.getQueryWrapper(post)));
     }
 
     @SaCheckPermission("system:post:export")

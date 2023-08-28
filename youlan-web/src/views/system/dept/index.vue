@@ -47,7 +47,7 @@
         >展开/折叠
         </el-button>
       </el-col>
-      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
+      <right-toolbar :query-show.sync="showSearch" @queryTable="getList" />
     </el-row>
 
     <el-table

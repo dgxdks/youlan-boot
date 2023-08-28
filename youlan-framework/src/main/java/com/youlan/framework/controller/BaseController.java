@@ -10,6 +10,7 @@ import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.core.servlet.helper.ServletHelper;
 import com.youlan.common.db.entity.vo.PageVO;
 import com.youlan.common.excel.helper.ExcelHelper;
+import com.youlan.system.helper.SystemAuthHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 
@@ -80,16 +81,20 @@ public class BaseController {
         toExcel(fileName, null, head, dataList, response);
     }
 
+    public void toExcel(String fileName, Class<?> head, List<?> dataList) throws IOException {
+        toExcel(fileName, head, dataList, ServletHelper.getHttpServletResponse());
+    }
+
     public void toExcel(String fileName, String sheetName, Class<?> head, List<?> dataList, HttpServletResponse response) throws IOException {
         try {
             ByteArrayOutputStream cacheBos = new ByteArrayOutputStream(1024);
             ExcelWriterBuilder excelWriterBuilder = ExcelHelper.write(cacheBos, head)
-                    .autoCloseStream(false);
+                    .autoCloseStream(true);
             if (StrUtil.isNotBlank(sheetName)) {
                 excelWriterBuilder.sheet(sheetName).doWrite(dataList);
-                return;
+            } else {
+                excelWriterBuilder.sheet().doWrite(dataList);
             }
-            excelWriterBuilder.sheet().doWrite(dataList);
             String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
             ServletHelper.download(fileName, cacheBos.toByteArray(), contentType);
         } catch (Exception e) {
@@ -103,5 +108,13 @@ public class BaseController {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.getWriter().println(JSONUtil.toJsonStr(object));
+    }
+
+    public void checkUserAllowed(Long userId) {
+        SystemAuthHelper.checkUserAllowed(userId);
+    }
+
+    public Long getUserId() {
+        return SystemAuthHelper.getUserId();
     }
 }

@@ -2,9 +2,9 @@ package com.youlan.system.service;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.crypto.digest.BCrypt;
-import com.youlan.common.db.constant.DBConstant;
 import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.core.servlet.helper.ServletHelper;
+import com.youlan.common.db.constant.DBConstant;
 import com.youlan.common.db.service.BaseServiceImpl;
 import com.youlan.system.constant.SystemConstant;
 import com.youlan.system.entity.User;
@@ -89,13 +89,6 @@ public class UserService extends BaseServiceImpl<UserMapper, User> {
      */
     public boolean validUserPassword(String plainTextPassword, String userPassword) {
         return BCrypt.checkpw(plainTextPassword, userPassword);
-    }
-
-    /**
-     * 设置用户秘钥
-     */
-    public void setUserPassword(User user, String plainTextPassword) {
-        user.setUserPassword(genUserPassword(plainTextPassword));
     }
 
     /**

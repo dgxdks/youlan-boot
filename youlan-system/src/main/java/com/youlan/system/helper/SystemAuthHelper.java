@@ -3,6 +3,9 @@ package com.youlan.system.helper;
 import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.util.ObjectUtil;
+import com.youlan.common.core.exception.BizRuntimeException;
+import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.system.entity.auth.SystemAuthInfo;
 
 import java.util.ArrayList;
@@ -112,5 +115,14 @@ public class SystemAuthHelper {
         SaSession session = getTokenSession();
         List<?> roleList = session.getModel(SaSession.ROLE_LIST, List.class, new ArrayList<>());
         return roleList.contains(ADMIN_ROLE_STR);
+    }
+
+    /**
+     * 校验用户是否允许操作
+     */
+    public static void checkUserAllowed(Long userId) {
+        if (ObjectUtil.isNotNull(userId) && isAdmin(userId)) {
+            throw new BizRuntimeException(ApiResultCode.A0011);
+        }
     }
 }

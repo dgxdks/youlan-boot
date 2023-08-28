@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/framework/tools/request'
 
 // 查询字典数据列表
 export function getDictDataListByTypeKey(typeKey) {

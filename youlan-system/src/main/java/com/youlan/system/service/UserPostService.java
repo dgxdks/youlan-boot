@@ -3,7 +3,6 @@ package com.youlan.system.service;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.db.service.BaseServiceImpl;
 import com.youlan.system.entity.UserPost;
 import com.youlan.system.mapper.UserPostMapper;
@@ -25,30 +24,27 @@ public class UserPostService extends BaseServiceImpl<UserPostMapper, UserPost> {
      * 新增用户关联岗位信息
      */
     @Transactional(rollbackFor = Exception.class)
-    public boolean addUserPostBatch(Long userId, List<Long> postIdList) {
+    public void addUserPostBatch(Long userId, List<Long> postIdList) {
         List<UserPost> userPosts = toUserPostList(userId, postIdList);
-        return saveBatch(userPosts);
+        saveBatch(userPosts);
     }
 
     /**
      * 修改用户关联岗位信息
      */
     @Transactional(rollbackFor = Exception.class)
-    public boolean updateUserPostBatch(Long userId, List<Long> postIdList) {
+    public void updateUserPostBatch(Long userId, List<Long> postIdList) {
         List<UserPost> userPosts = toUserPostList(userId, postIdList);
-        boolean remove = removeByUserId(userId);
-        if (!remove) {
-            throw new BizRuntimeException("删除历史用户关联岗位信息失败");
-        }
-        return this.saveBatch(userPosts);
+        removeByUserId(userId);
+        this.saveBatch(userPosts);
     }
 
     /**
      * 根据用户ID删除用户关联岗位信息
      */
     @Transactional(rollbackFor = Exception.class)
-    public boolean removeByUserId(Long userId) {
-        return this.remove(Wrappers.<UserPost>lambdaQuery().eq(UserPost::getUserId, userId));
+    public void removeByUserId(Long userId) {
+        this.remove(Wrappers.<UserPost>lambdaQuery().eq(UserPost::getUserId, userId));
     }
 
     /**

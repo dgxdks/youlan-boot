@@ -3,7 +3,7 @@ import store from './store'
 import { Message } from 'element-ui'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
-import { ArrayUtil, CookieUtil } from '@/utils/tools'
+import { ArrayUtil, CookieUtil } from '@/framework/tools'
 
 NProgress.configure({ showSpinner: false })
 
