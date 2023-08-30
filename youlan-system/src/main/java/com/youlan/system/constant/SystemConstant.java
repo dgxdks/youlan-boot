@@ -139,4 +139,9 @@ public class SystemConstant {
      * 超级管理员角色字符
      */
     public static final String ADMIN_ROLE_STR = "admin";
+
+    /**
+     * 超级管理员角色ID
+     */
+    public static final Long ADMIN_ROLE_ID = 100L;
 }

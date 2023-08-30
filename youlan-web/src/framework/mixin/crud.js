@@ -83,6 +83,10 @@ export default {
     // 开启表格加载状态
     openTableLoading() {
       this.tableLoading = true
+    },
+    // 表格行是否允许被选中
+    tableSelectEnabled(row, index) {
+      return true
     }
   }
 }

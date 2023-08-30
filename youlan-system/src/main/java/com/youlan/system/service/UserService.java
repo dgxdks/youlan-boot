@@ -25,8 +25,8 @@ public class UserService extends BaseServiceImpl<UserMapper, User> {
     /**
      * 更新用户登录信息
      */
-    public boolean updateUserLoginInfo(Long userId) {
-        return this.lambdaUpdate()
+    public void updateUserLoginInfo(Long userId) {
+        this.lambdaUpdate()
                 .eq(User::getId, userId)
                 .set(User::getLoginIp, ServletHelper.getClientIp())
                 .set(User::getLoginTime, new Date())

@@ -1,5 +1,6 @@
 package com.youlan.common.core.restful.enums;
 
+import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.core.spring.helper.MessageHelper;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,6 +26,9 @@ public enum ApiResultCode {
     A0010("A0010", "验证码信息不存在"),
     A0011("A0011", "不允许操作管理员用户"),
     A0012("A0012", "当前用户不允许删除"),
+    A0013("A0013", "无此用户操作权限"),
+    A0014("A0014", "不允许操作管理员角色"),
+    A0015("A0015", "无此角色操作权限"),
 
     // ********************** 功能类 **********************
     B0001("B0001", "文件导出失败"),
@@ -47,7 +51,11 @@ public enum ApiResultCode {
 
     C0003("C0003", "缺少路径参数"),
 
-    C0004("C0004", "缺少表单参数");
+    C0004("C0004", "缺少表单参数"),
+
+    // ********************** 组织机构类 **********************
+    D0001("D0001", "机构信息不存在"),
+    D0002("D0002", "机构已被禁用");
 
     /**
      * 响应码
@@ -65,5 +73,9 @@ public enum ApiResultCode {
 
     public String getErrorMsg(Object[] args) {
         return MessageHelper.message(this.errorMsg, args);
+    }
+
+    public BizRuntimeException getException() {
+        return new BizRuntimeException(this);
     }
 }

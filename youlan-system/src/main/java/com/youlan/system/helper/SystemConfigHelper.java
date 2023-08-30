@@ -18,6 +18,13 @@ public class SystemConfigHelper {
     private static final ConfigBizService CONFIG_BIZ_SERVICE = SpringUtil.getBean(ConfigBizService.class);
 
     /**
+     * 用户初始密码
+     */
+    public static String userInitPassword() {
+        return getConfigValueString(CONFIG_KEY_USER_INIT_PASSWORD);
+    }
+
+    /**
      * 是否开启图片验证码
      */
     public static boolean captchaImageEnabled() {

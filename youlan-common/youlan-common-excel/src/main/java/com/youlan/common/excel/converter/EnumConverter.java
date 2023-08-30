@@ -8,6 +8,7 @@ import com.alibaba.excel.metadata.GlobalConfiguration;
 import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
+import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.excel.anno.ExcelEnumProperty;
 
 import java.util.Arrays;
@@ -37,7 +38,11 @@ public class EnumConverter extends AbstractConverter {
 
         });
         //强制使用字符进行匹配
-        return Convert.convert(getField(contentProperty).getType(), mappingMap.get(javaData.toString()));
+        String value = mappingMap.get(javaData.toString());
+        if (StrUtil.isBlank(value)) {
+            throw new BizRuntimeException("映射值不存在");
+        }
+        return Convert.convert(getField(contentProperty).getType(), value);
     }
 
     /**

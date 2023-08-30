@@ -158,7 +158,8 @@ create table t_sys_role
     primary key (id)
 ) auto_increment = 100 comment '角色表';
 insert into t_sys_role(id, role_name, role_str, role_scope, remark, create_id, create_by, create_time)
-values (100, '超级管理员', 'admin', '1', '超级管理员', 100, 'admin', sysdate());
+values (100, '超级管理员', 'admin', '1', '超级管理员', 100, 'admin', sysdate()),
+       (101, '普通角色', 'common', '4', '普通角色', 100, 'admin', sysdate());
 
 -- ----------------------------
 -- 用户关联角色表(一对多)

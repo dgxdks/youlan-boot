@@ -6,6 +6,7 @@ import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.converters.ReadConverterContext;
 import com.alibaba.excel.converters.WriteConverterContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
+import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.metadata.GlobalConfiguration;
 import com.alibaba.excel.metadata.data.CellData;
 import com.alibaba.excel.metadata.data.ReadCellData;
@@ -53,7 +54,7 @@ public abstract class AbstractConverter implements Converter<Object> {
         Field field = getField(contentProperty);
         A fieldAnno = field.getAnnotation(annoClz);
         if (ObjectUtil.isNull(fieldAnno)) {
-            throw new IllegalArgumentException(StrUtil.format("字段{}未找到对应{}注解", field.getName(),
+            throw new ExcelAnalysisException(StrUtil.format("字段{}未找到对应{}注解", field.getName(),
                     annoClz.getName()));
         }
         return fieldAnno;

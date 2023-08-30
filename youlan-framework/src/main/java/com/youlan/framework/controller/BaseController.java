@@ -110,8 +110,8 @@ public class BaseController {
         response.getWriter().println(JSONUtil.toJsonStr(object));
     }
 
-    public void checkUserAllowed(Long userId) {
-        SystemAuthHelper.checkUserAllowed(userId);
+    public void checkUserNotAdmin(Long userId) {
+        SystemAuthHelper.checkUserNotAdmin(userId);
     }
 
     public Long getUserId() {

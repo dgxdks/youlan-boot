@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.core.helper.ListHelper;
+import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.db.helper.DBHelper;
 import com.youlan.common.db.service.BaseServiceImpl;
 import com.youlan.system.entity.Org;
@@ -20,7 +21,6 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.youlan.common.db.constant.DBConstant.VAL_STATUS_DISABLED;
 import static com.youlan.common.db.constant.DBConstant.VAL_STATUS_ENABLED;
 
 @Slf4j
@@ -44,19 +44,15 @@ public class OrgService extends BaseServiceImpl<OrgMapper, Org> {
      * 查询机构详情
      */
     public Org loadOrgIfExist(Long orgId) {
-        Optional<Org> orgOpt = this.loadOneOpt(orgId);
-        return orgOpt.orElseThrow(() -> new BizRuntimeException("机构信息不存在"));
+        return this.loadOneOpt(orgId)
+                .orElseThrow(ApiResultCode.D0001::getException);
     }
 
     /**
-     * 查询没有被禁用的机构
+     * 查询机构详情
      */
-    public Org loadOrgIfEnabled(Long orgId) {
-        Org org = loadOrgIfExist(orgId);
-        if (VAL_STATUS_DISABLED.equals(org.getOrgStatus())) {
-            throw new BizRuntimeException("机构已被禁用");
-        }
-        return org;
+    public Org loadOrgByOrgName(String orgName) {
+        return this.loadOne(Org::getOrgName, orgName);
     }
 
     /**

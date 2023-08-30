@@ -14,6 +14,7 @@ import com.youlan.framework.controller.BaseController;
 import com.youlan.system.entity.Role;
 import com.youlan.system.entity.dto.RoleOrgDTO;
 import com.youlan.system.helper.SystemAuthHelper;
+import com.youlan.system.helper.SystemDataScopeHelper;
 import com.youlan.system.service.RoleService;
 import com.youlan.system.service.biz.RoleBizService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,6 +46,7 @@ public class RoleController extends BaseController {
     @PostMapping("/updateRole")
     @SystemLog(name = "角色", type = SystemLogType.OPERATION_LOG_TYPE_UPDATE)
     public ApiResult updateRole(@Validated @RequestBody Role role) {
+        // TODO: 2023/8/30 需要清除权限缓存
         if (ObjectUtil.isNull(role.getId())) {
             return toError(ApiResultCode.C0001);
         }
@@ -56,6 +58,7 @@ public class RoleController extends BaseController {
     @PostMapping("/removeRole")
     @SystemLog(name = "角色", type = SystemLogType.OPERATION_LOG_TYPE_REMOVE)
     public ApiResult removeRole(@Validated @RequestBody ListDTO<Long> dto) {
+        // TODO: 2023/8/30 需要清除权限缓存
         if (CollectionUtil.isEmpty(dto.getList())) {
             return toSuccess();
         }
@@ -86,6 +89,7 @@ public class RoleController extends BaseController {
     @PostMapping("/getRolePageList")
     @SystemLog(name = "角色", type = SystemLogType.OPERATION_LOG_TYPE_PAGE_LIST)
     public ApiResult getRolePageList(@RequestBody Role role) {
+        // TODO: 2023/8/30 缺少数据权限
         return toSuccess(roleService.loadPage(role, DBHelper.getQueryWrapper(role)));
     }
 
@@ -94,7 +98,17 @@ public class RoleController extends BaseController {
     @PostMapping("/updateRoleScope")
     @SystemLog(name = "角色", type = SystemLogType.OPERATION_LOG_TYPE_UPDATE)
     public ApiResult updateRoleScope(@RequestBody RoleOrgDTO dto) {
+        SystemAuthHelper.checkRoleNotAdmin(dto.getRoleId());
+        SystemDataScopeHelper.checkHasRoleId(dto.getRoleId());
         return toSuccess(roleBizService.updateRoleScope(dto));
     }
 
+    @SaCheckPermission("system:role:update")
+    @Operation(summary = "角色状态修改")
+    @PostMapping("/updateRoleStatus")
+    public ApiResult updateRoleStatus(@RequestParam Long id, @RequestParam String status) {
+        SystemAuthHelper.checkRoleNotAdmin(id);
+        SystemDataScopeHelper.checkHasRoleId(id);
+        return toSuccess(roleService.updateStatus(id, status));
+    }
 }

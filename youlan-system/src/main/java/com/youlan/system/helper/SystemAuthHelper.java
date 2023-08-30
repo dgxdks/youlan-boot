@@ -11,8 +11,7 @@ import com.youlan.system.entity.auth.SystemAuthInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.youlan.system.constant.SystemConstant.ADMIN_ROLE_STR;
-import static com.youlan.system.constant.SystemConstant.ADMIN_USER_ID;
+import static com.youlan.system.constant.SystemConstant.*;
 
 public class SystemAuthHelper {
     /**
@@ -42,7 +41,11 @@ public class SystemAuthHelper {
      */
     public static SystemAuthInfo getSystemAuthInfo() {
         SaSession tokenSession = StpUtil.getTokenSession();
-        return tokenSession.getModel(SaSession.USER, SystemAuthInfo.class);
+        SystemAuthInfo systemAuthInfo = tokenSession.getModel(SaSession.USER, SystemAuthInfo.class);
+        if (ObjectUtil.isNull(systemAuthInfo)) {
+            throw new BizRuntimeException(ApiResultCode.A0003);
+        }
+        return systemAuthInfo;
     }
 
     /**
@@ -111,6 +114,13 @@ public class SystemAuthHelper {
     /**
      * 判断是否是超级管理员角色
      */
+    public static boolean isAdminRole(Long roleId) {
+        return ADMIN_ROLE_ID.equals(roleId);
+    }
+
+    /**
+     * 判断是否是超级管理员角色
+     */
     public static boolean isAdminRole() {
         SaSession session = getTokenSession();
         List<?> roleList = session.getModel(SaSession.ROLE_LIST, List.class, new ArrayList<>());
@@ -118,11 +128,20 @@ public class SystemAuthHelper {
     }
 
     /**
-     * 校验用户是否允许操作
+     * 校验用户不是管理员用户
      */
-    public static void checkUserAllowed(Long userId) {
+    public static void checkUserNotAdmin(Long userId) {
         if (ObjectUtil.isNotNull(userId) && isAdmin(userId)) {
             throw new BizRuntimeException(ApiResultCode.A0011);
+        }
+    }
+
+    /**
+     * 校验角色不是管理员角色
+     */
+    public static void checkRoleNotAdmin(Long roleId) {
+        if (ObjectUtil.isNotNull(roleId) && isAdminRole(roleId)) {
+            throw new BizRuntimeException(ApiResultCode.A0014);
         }
     }
 }

@@ -9,6 +9,7 @@ import com.alibaba.excel.metadata.GlobalConfiguration;
 import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
+import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.excel.converter.AbstractConverter;
 import com.youlan.system.entity.DictData;
 import com.youlan.system.excel.anno.ExcelDictProperty;
@@ -38,7 +39,7 @@ public class DictConverter extends AbstractConverter {
         //强制使用字符串进行匹配
         DictData dictData = dictDataMap.get(javaData.toString());
         if (ObjectUtil.isNull(dictData)) {
-            return javaData;
+            throw new BizRuntimeException("字典值不存在");
         }
         return Convert.convert(getField(contentProperty).getType(), dictData.getDataValue());
     }

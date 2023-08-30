@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-row :gutter="20">
-      <!--部门数据-->
+      <!--机构树-->
       <el-col :span="4" :xs="24">
         <org-tree @nodeClick="handleOrgClick" />
       </el-col>
@@ -50,24 +50,24 @@
         </el-form>
         <el-row :gutter="10" class="mb8">
           <el-col :span="1.5">
-            <base-add-button v-has-perm="['system:user:add']" @click="handleAdd('用户新增')" />
+            <base-add-button v-has-perm="['system:user:add']" plain @click="handleAdd('用户新增')" />
           </el-col>
           <el-col :span="1.5">
-            <base-update-button v-has-perm="['system:user:update']" :disabled="!tableSelectOne" @click="handleUpdate" />
+            <base-update-button v-has-perm="['system:user:update']" plain :disabled="!tableSelectOne" @click="handleUpdate" />
           </el-col>
           <el-col :span="1.5">
-            <base-remove-button v-has-perm="['system:user:remove']" :disabled="tableNoSelected" @click="handleDelete" />
+            <base-remove-button v-has-perm="['system:user:remove']" plain :disabled="tableNoSelected" @click="handleDelete" />
           </el-col>
           <el-col :span="1.5">
-            <base-upload-button v-has-perm="['system:user:import']" @click="handleImport">导入</base-upload-button>
+            <base-upload-button v-has-perm="['system:user:import']" plain @click="handleImport">导入</base-upload-button>
           </el-col>
           <el-col :span="1.5">
-            <base-download-button v-has-perm="['system:user:export']" @click="handleExport">导出</base-download-button>
+            <base-download-button v-has-perm="['system:user:export']" plain @click="handleExport">导出</base-download-button>
           </el-col>
           <right-toolbar :columns.sync="columns" :query-show.sync="queryShow" @refresh="getList" />
         </el-row>
         <el-table v-loading="tableLoading" :data="userList" @selection-change="handleSelectionChange">
-          <el-table-column align="center" type="selection" width="50" />
+          <el-table-column align="center" type="selection" :selectable="tableSelectEnabled" width="50" />
           <el-table-column v-if="columns.id.show" key="id" align="center" label="用户编号" prop="id" />
           <el-table-column
             v-if="columns.userName.show"
@@ -185,8 +185,15 @@
     </base-dialog>
 
     <!-- 用户导入对话框 -->
-    <base-dialog :title="upload.title" :open.sync="upload.open" width="400px" @confirm="submitFileForm">
-      <file-upload-drag ref="upload" v-model="upload.urls" action="">
+    <base-dialog :title="upload.title" :open.sync="upload.open" width="400px" @confirm="handleImportConfirm">
+      <file-upload-drag
+        ref="upload"
+        :action="upload.action"
+        :accept="upload.accept"
+        :form-data="{cover: upload.cover}"
+        @onError="handleImportError"
+        @onSuccess="handleImportSuccess"
+      >
         <template slot="tip">
           <el-checkbox v-model="upload.cover" />
           是否更新已经存在的用户数据
@@ -240,11 +247,11 @@ export default {
         // 弹出层标题
         title: '用户导入',
         // 是否更新已经存在的用户数据
-        cover: 0,
+        cover: false,
         // 上传的地址
         action: '/system/user/importUserList',
-        // 文件路径
-        urls: null
+        // 接受格式
+        accept: '.xls, .xlsx'
       },
       // 列信息
       columns: {
@@ -288,6 +295,7 @@ export default {
     })
   },
   methods: {
+    // 列表查询
     getList() {
       this.openTableLoading()
       getUserPageList(this.queryForm).then(res => {
@@ -428,7 +436,10 @@ export default {
     },
     // 导出按钮
     handleExport() {
-      this.$download.postAsName('/system/user/exportUserList', {}, { ...this.queryForm }, `user_${new Date().getTime()}.xlsx`)
+      this.$download.postAsName('/system/user/exportUserList', {}, { ...this.queryForm }, `user_${new Date().getTime()}.xlsx`).catch(error => {
+        console.log(error)
+        this.$modal.error('导出失败')
+      })
     },
     // 导入按钮
     handleImport() {
@@ -437,23 +448,31 @@ export default {
     },
     // 下载导入模版
     handleDownloadTemplate() {
-      this.$download.postAsName('/system/user/downloadUserTemplate', {}, {}, `user_template_${new Date().getTime()}.xlsx`)
+      this.$download.postAsName('/system/user/downloadUserTemplate', {}, {}, `user_template_${new Date().getTime()}.xlsx`).then(error => {
+        console.log(error)
+        this.$modal.error('下载模版失败')
+      })
     },
-    // 文件上传中处理
-    handleFileUploadProgress(event, file, fileList) {
-      this.upload.isUploading = true
+    // 导入确认按钮
+    handleImportConfirm() {
+      this.$refs.upload.submit()
     },
-    // 文件上传成功处理
-    handleFileSuccess(response, file, fileList) {
+    handleImportError() {
+      this.$modal.error('用户导入失败')
       this.upload.open = false
-      this.upload.isUploading = false
-      this.$refs.upload.clearFiles()
-      this.$alert('<div style=\'overflow: auto;overflow-x: hidden;max-height: 70vh;padding: 10px 20px 0;\'>' + response.msg + '</div>', '导入结果', { dangerouslyUseHTMLString: true })
+      this.$refs.upload.clear()
+    },
+    handleImportSuccess(res) {
+      this.$refs.upload.clear()
+      this.upload.open = false
+      this.alertImportMsg(res)
       this.getList()
     },
-    // 提交上传文件
-    submitFileForm() {
-      this.$refs.upload.submit()
+    alertImportMsg(msg) {
+      this.$alert('<div style=\'overflow: auto;overflow-x: hidden;max-height: 70vh;padding: 10px 20px 0;\'>' + msg + '</div>', '导入结果', { dangerouslyUseHTMLString: true })
+    },
+    tableSelectEnabled(row, index) {
+      return !this.$auth.isAdminRole(row.id)
     }
   }
 }

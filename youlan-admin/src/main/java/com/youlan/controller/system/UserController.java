@@ -1,6 +1,7 @@
 package com.youlan.controller.system;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.youlan.common.core.exception.BizRuntimeException;
@@ -18,6 +19,7 @@ import com.youlan.system.entity.dto.UserPageDTO;
 import com.youlan.system.entity.dto.UserResetPasswdDTO;
 import com.youlan.system.entity.vo.UserTemplateVO;
 import com.youlan.system.entity.vo.UserVO;
+import com.youlan.system.excel.listener.UserExcelListener;
 import com.youlan.system.service.UserService;
 import com.youlan.system.service.biz.UserBizService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -57,7 +59,7 @@ public class UserController extends BaseController {
         if (ObjectUtil.isNull(dto.getId())) {
             return toError(ApiResultCode.C0001);
         }
-        checkUserAllowed(dto.getId());
+        checkUserNotAdmin(dto.getId());
         return toSuccess(userBizService.updateUser(dto));
     }
 
@@ -74,7 +76,7 @@ public class UserController extends BaseController {
         if (CollectionUtil.contains(dto.getList(), getUserId())) {
             throw new BizRuntimeException(ApiResultCode.A0012);
         }
-        dto.getList().forEach(this::checkUserAllowed);
+        dto.getList().forEach(this::checkUserNotAdmin);
         return toSuccess(userBizService.removeUser(dto.getList()));
     }
 
@@ -91,6 +93,7 @@ public class UserController extends BaseController {
     @PostMapping("/getUserPageList")
     @SystemLog(name = "用户", type = SystemLogType.OPERATION_LOG_TYPE_PAGE_LIST)
     public ApiResult getUserPageList(@RequestBody UserPageDTO dto) {
+        // TODO: 2023/8/30 缺少数据权限
         return toSuccess(userBizService.getUserPageList(dto));
     }
 
@@ -108,11 +111,11 @@ public class UserController extends BaseController {
     @PostMapping("/importUserList")
     @SystemLog(name = "用户", type = SystemLogType.OPERATION_LOG_TYPE_IMPORT)
     public ApiResult importUserList(@RequestPart("file") MultipartFile file, boolean cover) throws IOException {
-        List<UserTemplateVO> userTemplateList = ExcelHelper.readList(file.getInputStream(), UserTemplateVO.class);
-        if (CollectionUtil.isEmpty(userTemplateList)) {
-            return toSuccess();
-        }
-        return toSuccess(userBizService.importUserList(userTemplateList));
+        UserExcelListener userExcelListener = new UserExcelListener(cover);
+        ExcelHelper.read(file.getInputStream(), UserTemplateVO.class, userExcelListener)
+                .sheet()
+                .doRead();
+        return toSuccess(userExcelListener.getResultMsg());
     }
 
     @SaCheckPermission("system:user:resetPasswd")
@@ -124,7 +127,7 @@ public class UserController extends BaseController {
         if (ObjectUtil.isNull(dto.getId())) {
             return toError(ApiResultCode.C0001);
         }
-        checkUserAllowed(dto.getId());
+        checkUserNotAdmin(dto.getId());
         return toSuccess(userBizService.resetUserPasswd(dto));
     }
 
@@ -134,7 +137,7 @@ public class UserController extends BaseController {
     @SystemLog(name = "用户", type = SystemLogType.OPERATION_LOG_TYPE_UPDATE)
     public ApiResult updateUserStatus(@RequestParam Long id, @RequestParam String status) {
         // TODO: 2023/8/23 数据权限
-        checkUserAllowed(id);
+        checkUserNotAdmin(id);
         return toSuccess(userService.updateStatus(id, status));
     }
 

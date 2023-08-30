@@ -39,5 +39,12 @@ export default {
       return url.replace('/', '')
     }
     return url
+  },
+  // 是否包含此字符
+  isContains(str, search) {
+    if (this.isBlank(str) || this.isBlank(search)) {
+      return false
+    }
+    return str.indexOf(search) !== -1
   }
 }

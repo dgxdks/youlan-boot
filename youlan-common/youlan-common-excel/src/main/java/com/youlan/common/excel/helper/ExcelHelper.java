@@ -6,7 +6,7 @@ import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.write.builder.ExcelWriterBuilder;
 import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.builder.ExcelWriterTableBuilder;
-import com.youlan.common.excel.listener.DefaultReadListener;
+import com.youlan.common.excel.listener.DefaultExcelListener;
 import org.apache.poi.ss.formula.functions.T;
 
 import java.io.File;
@@ -103,21 +103,21 @@ public class ExcelHelper {
     }
 
     public static List<T> readList(File file, Class<T> head) {
-        DefaultReadListener<T> defaultReadListener = new DefaultReadListener<>();
-        read(file, head, defaultReadListener).sheet().doRead();
-        return defaultReadListener.getCacheList();
+        DefaultExcelListener<T> defaultExcelListener = new DefaultExcelListener<>();
+        read(file, head, defaultExcelListener).sheet().doRead();
+        return defaultExcelListener.getDataList();
     }
 
     public static <T> List<T> readList(String pathName, Class<T> head) {
-        DefaultReadListener<T> defaultReadListener = new DefaultReadListener<>();
-        read(pathName, head, defaultReadListener).sheet().doRead();
-        return defaultReadListener.getCacheList();
+        DefaultExcelListener<T> defaultExcelListener = new DefaultExcelListener<>();
+        read(pathName, head, defaultExcelListener).sheet().doRead();
+        return defaultExcelListener.getDataList();
     }
 
     public static <T> List<T> readList(InputStream inputStream, Class<T> head) {
-        DefaultReadListener<T> defaultReadListener = new DefaultReadListener<>();
-        read(inputStream, head, defaultReadListener).sheet().doRead();
-        return defaultReadListener.getCacheList();
+        DefaultExcelListener<T> defaultExcelListener = new DefaultExcelListener<>();
+        read(inputStream, head, defaultExcelListener).sheet().doRead();
+        return defaultExcelListener.getDataList();
     }
 
     public static ExcelReaderBuilder read(File file, ReadListener readListener) {

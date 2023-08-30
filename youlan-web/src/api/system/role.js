@@ -1,37 +1,56 @@
 import request from '@/framework/tools/request'
 
 // 查询角色列表
-export function getRoleList(data) {
+export function getRolePageList(data) {
   return request({
-    url: '/system/role/getRoleList',
+    url: '/system/role/getRolePageList',
     method: 'post',
     data
   })
 }
 
 // 查询角色详细
-export function getRole(roleId) {
+export function loadRole(params) {
   return request({
-    url: '/system/role/' + roleId,
-    method: 'get'
+    url: '/system/role/loadRole',
+    method: 'post',
+    params
   })
 }
 
 // 新增角色
 export function addRole(data) {
   return request({
-    url: '/system/role',
+    url: '/system/role/addRole',
     method: 'post',
-    data: data
+    data
   })
 }
 
 // 修改角色
 export function updateRole(data) {
   return request({
-    url: '/system/role',
-    method: 'put',
-    data: data
+    url: '/system/role/updateRole',
+    method: 'post',
+    data
+  })
+}
+
+// 角色状态修改
+export function updateRoleStatus(params) {
+  return request({
+    url: '/system/role/updateRoleStatus',
+    method: 'post',
+    params
+  })
+}
+
+// 删除角色
+export function removeRole(params) {
+  return request({
+    url: '/system/role/removeRole',
+    method: 'post',
+    params
   })
 }
 
@@ -41,27 +60,6 @@ export function dataScope(data) {
     url: '/system/role/dataScope',
     method: 'put',
     data: data
-  })
-}
-
-// 角色状态修改
-export function changeRoleStatus(roleId, status) {
-  const data = {
-    roleId,
-    status
-  }
-  return request({
-    url: '/system/role/changeStatus',
-    method: 'put',
-    data: data
-  })
-}
-
-// 删除角色
-export function delRole(roleId) {
-  return request({
-    url: '/system/role/' + roleId,
-    method: 'delete'
   })
 }
 

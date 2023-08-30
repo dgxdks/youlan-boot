@@ -5,9 +5,9 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.youlan.common.core.exception.BizRuntimeException;
+import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.db.helper.DBHelper;
-import com.youlan.common.validator.helper.ValidatorHelper;
-import com.youlan.system.entity.Config;
+import com.youlan.system.entity.Org;
 import com.youlan.system.entity.User;
 import com.youlan.system.entity.dto.UserDTO;
 import com.youlan.system.entity.dto.UserPageDTO;
@@ -24,11 +24,12 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.ConstraintViolation;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
+
+import static com.youlan.common.db.constant.DBConstant.VAL_STATUS_DISABLED;
 
 @Service
 @AllArgsConstructor
@@ -80,7 +81,10 @@ public class UserBizService {
      */
     public User createAddOrUpdateUser(UserDTO dto) {
         Long orgId = dto.getOrgId();
-        orgService.loadOrgIfEnabled(dto.getOrgId());
+        Org org = orgService.loadOrgIfExist(orgId);
+        if (VAL_STATUS_DISABLED.equals(org.getOrgStatus())) {
+            throw new BizRuntimeException(ApiResultCode.D0002);
+        }
         User user = new User()
                 .setId(dto.getId())
                 .setOrgId(orgId)
@@ -151,6 +155,9 @@ public class UserBizService {
      */
     public List<UserVO> exportUserList(UserPageDTO dto) {
         List<UserVO> userList = userService.loadMore(DBHelper.getQueryWrapper(dto), UserVO.class);
+        if (CollectionUtil.isEmpty(userList)) {
+            return new ArrayList<>();
+        }
         List<Long> orgIdSet = userList.stream().map(UserVO::getOrgId).collect(Collectors.toList());
         Map<Long, String> orgIdOrgNameMapping = orgService.getOrgIdOrgNameMap(orgIdSet);
         userList.forEach(user -> user.setOrgName(orgIdOrgNameMapping.get(user.getId())));
@@ -162,13 +169,6 @@ public class UserBizService {
      */
     public boolean importUserList(List<UserTemplateVO> userTemplateList) {
         throw new UnsupportedOperationException("导出未实现");
-    }
-
-    public static void main(String[] args) {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setNickName("dfa");
-        Set<ConstraintViolation<UserDTO>> validate = ValidatorHelper.validate(userDTO);
-        System.out.println(validate);
     }
 
     /**

@@ -72,5 +72,9 @@ export default {
   // 是否管理员用户ID
   isAdmin(userId) {
     return userId === 100 || userId === '100'
+  },
+  // 是否管理员角色ID
+  isAdminRole(roleId) {
+    return roleId === 100 || roleId === '100'
   }
 }

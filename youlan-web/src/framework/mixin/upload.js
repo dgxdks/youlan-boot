@@ -57,6 +57,10 @@ export default {
     multiple: {
       type: Boolean,
       default: false
+    },
+    timeout: {
+      type: Number,
+      default: 60 * 1000
     }
   },
   data() {
@@ -99,6 +103,9 @@ export default {
     submit() {
       this.$refs.upload && this.$refs.upload.submit()
     },
+    clear() {
+      this.fileList = []
+    },
     onRemove(file, fileList) {
       this.fileList = fileList
       this.updateValue()
@@ -115,9 +122,12 @@ export default {
       this.$emit('onSuccess', response, file, fileList)
     },
     onError(error, file, fileList) {
+      this.$modal.loadingClose()
+      this.$emit('onError', error, file, fileList)
       this.$modal.error(error)
     },
     onExceed(files, fileList) {
+      this.$modal.loadingClose()
       this.$emit('onExceed', files, fileList)
     },
     beforeUpload(file) {
@@ -133,9 +143,10 @@ export default {
         [this.fileName]: context.file,
         ...this.formData
       }
-      this.$upload.upload(action, formParams, this.paramsData, this.headers).then(res => {
+      this.$upload.upload(action, formParams, this.paramsData, this.headers, { timeout: this.timeout }).then(res => {
         context.onSuccess(res)
       }).catch(error => {
+        console.log(error)
         context.onError(error)
       })
     }

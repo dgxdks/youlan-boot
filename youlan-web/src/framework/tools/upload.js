@@ -1,12 +1,11 @@
 import request from '@/framework/tools/request'
 
 export default {
-  upload(uploadUrl, formParams, paramsData, headers) {
+  upload(uploadUrl, formParams, paramsData, headers, config) {
+    config = config || {}
     const formData = new FormData()
     for (const paramName in formParams) {
-      if (formParams[paramName]) {
-        formData.append(paramName, formParams[paramName])
-      }
+      formData.append(paramName, formParams[paramName])
     }
     return request({
       url: uploadUrl,
@@ -14,7 +13,8 @@ export default {
       headers: headers || {},
       contentType: 'multipart/form-data',
       data: formData,
-      params: paramsData
+      params: paramsData,
+      ...config
     })
   }
 }
