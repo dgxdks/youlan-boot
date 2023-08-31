@@ -47,10 +47,11 @@ public class RoleController extends BaseController {
     @PostMapping("/updateRole")
     @SystemLog(name = "角色", type = SystemLogType.OPERATION_LOG_TYPE_UPDATE)
     public ApiResult updateRole(@Validated @RequestBody Role role) {
-        // TODO: 2023/8/30 需要清除权限缓存
         if (ObjectUtil.isNull(role.getId())) {
             return toError(ApiResultCode.C0001);
         }
+        SystemAuthHelper.checkRoleNotAdmin(role.getId());
+        SystemAuthHelper.checkHasRoleId(role.getId());
         return toSuccess(roleBizService.updateRole(role));
     }
 
@@ -59,11 +60,11 @@ public class RoleController extends BaseController {
     @PostMapping("/removeRole")
     @SystemLog(name = "角色", type = SystemLogType.OPERATION_LOG_TYPE_REMOVE)
     public ApiResult removeRole(@Validated @RequestBody ListDTO<Long> dto) {
-        // TODO: 2023/8/30 需要清除权限缓存
         if (CollectionUtil.isEmpty(dto.getList())) {
             return toSuccess();
         }
-        dto.getList().forEach(this::checkRoleNotAdmin);
+        dto.getList().forEach(SystemAuthHelper::checkRoleNotAdmin);
+        dto.getList().forEach(SystemAuthHelper::checkHasRoleId);
         return toSuccess(roleBizService.removeRole(dto.getList()));
     }
 
@@ -100,6 +101,7 @@ public class RoleController extends BaseController {
     @PostMapping("/exportRoleList")
     @SystemLog(name = "角色", type = SystemLogType.OPERATION_LOG_TYPE_EXPORT)
     public void exportRoleList(@RequestBody Role role, HttpServletResponse response) throws IOException {
+        // TODO: 2023/8/30 缺少数据权限
         List<Role> roleList = roleService.loadMore(DBHelper.getQueryWrapper(role));
         toExcel("角色数据.xlsx", Role.class, roleList, response);
     }

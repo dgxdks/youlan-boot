@@ -10,7 +10,6 @@ import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.core.servlet.helper.ServletHelper;
 import com.youlan.common.db.entity.vo.PageVO;
 import com.youlan.common.excel.helper.ExcelHelper;
-import com.youlan.system.helper.SystemAuthHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 
@@ -108,17 +107,5 @@ public class BaseController {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.getWriter().println(JSONUtil.toJsonStr(object));
-    }
-
-    public void checkUserNotAdmin(Long userId) {
-        SystemAuthHelper.checkUserNotAdmin(userId);
-    }
-
-    public void checkRoleNotAdmin(Long roleId) {
-        SystemAuthHelper.checkRoleNotAdmin(roleId);
-    }
-
-    public Long getUserId() {
-        return SystemAuthHelper.getUserId();
     }
 }

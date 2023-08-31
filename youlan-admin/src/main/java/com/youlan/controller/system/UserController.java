@@ -1,7 +1,6 @@
 package com.youlan.controller.system;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
-import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.youlan.common.core.exception.BizRuntimeException;
@@ -20,6 +19,7 @@ import com.youlan.system.entity.dto.UserResetPasswdDTO;
 import com.youlan.system.entity.vo.UserTemplateVO;
 import com.youlan.system.entity.vo.UserVO;
 import com.youlan.system.excel.listener.UserExcelListener;
+import com.youlan.system.helper.SystemAuthHelper;
 import com.youlan.system.service.UserService;
 import com.youlan.system.service.biz.UserBizService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -59,7 +59,8 @@ public class UserController extends BaseController {
         if (ObjectUtil.isNull(dto.getId())) {
             return toError(ApiResultCode.C0001);
         }
-        checkUserNotAdmin(dto.getId());
+        SystemAuthHelper.checkUserNotAdmin(dto.getId());
+        SystemAuthHelper.checkHasUserId(dto.getId());
         return toSuccess(userBizService.updateUser(dto));
     }
 
@@ -73,18 +74,19 @@ public class UserController extends BaseController {
             return toSuccess();
         }
         //不能删除自己
-        if (CollectionUtil.contains(dto.getList(), getUserId())) {
+        if (CollectionUtil.contains(dto.getList(), SystemAuthHelper.getUserId())) {
             throw new BizRuntimeException(ApiResultCode.A0012);
         }
-        dto.getList().forEach(this::checkUserNotAdmin);
+        dto.getList().forEach(SystemAuthHelper::checkUserNotAdmin);
         return toSuccess(userBizService.removeUser(dto.getList()));
     }
 
     @SaCheckPermission("system:user:load")
     @Operation(summary = "用户详情")
     @PostMapping("/loadUser")
-    public ApiResult loadUser(@RequestParam(required = false) Long id) {
-        // TODO: 2023/8/15 数据权限
+    public ApiResult loadUser(@RequestParam Long id) {
+        // TODO: 2023/8/30 缺少数据权限
+        SystemAuthHelper.checkHasUserId(id);
         return toSuccess(userBizService.loadUser(id));
     }
 
@@ -102,6 +104,7 @@ public class UserController extends BaseController {
     @PostMapping("/exportUserList")
     @SystemLog(name = "用户", type = SystemLogType.OPERATION_LOG_TYPE_EXPORT)
     public void exportUserList(@RequestBody UserPageDTO dto, HttpServletResponse response) throws IOException {
+        // TODO: 2023/8/30 缺少数据权限
         List<UserVO> userList = userBizService.exportUserList(dto);
         toExcel("用户.xlsx", "用户", UserVO.class, userList, response);
     }
@@ -127,7 +130,8 @@ public class UserController extends BaseController {
         if (ObjectUtil.isNull(dto.getId())) {
             return toError(ApiResultCode.C0001);
         }
-        checkUserNotAdmin(dto.getId());
+        SystemAuthHelper.checkUserNotAdmin(dto.getId());
+        SystemAuthHelper.checkHasUserId(dto.getId());
         return toSuccess(userBizService.resetUserPasswd(dto));
     }
 
@@ -136,8 +140,8 @@ public class UserController extends BaseController {
     @PostMapping("/updateUserStatus")
     @SystemLog(name = "用户", type = SystemLogType.OPERATION_LOG_TYPE_UPDATE)
     public ApiResult updateUserStatus(@RequestParam Long id, @RequestParam String status) {
-        // TODO: 2023/8/23 数据权限
-        checkUserNotAdmin(id);
+        SystemAuthHelper.checkUserNotAdmin(id);
+        SystemAuthHelper.checkHasUserId(id);
         return toSuccess(userService.updateStatus(id, status));
     }
 
