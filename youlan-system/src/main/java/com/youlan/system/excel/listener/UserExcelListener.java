@@ -16,7 +16,6 @@ import com.youlan.system.entity.dto.UserDTO;
 import com.youlan.system.entity.vo.UserTemplateVO;
 import com.youlan.system.helper.SystemAuthHelper;
 import com.youlan.system.helper.SystemConfigHelper;
-import com.youlan.system.helper.SystemDataScopeHelper;
 import com.youlan.system.service.OrgService;
 import com.youlan.system.service.UserService;
 import com.youlan.system.service.biz.UserBizService;
@@ -65,7 +64,7 @@ public class UserExcelListener extends AbstractExcelListener<UserTemplateVO> {
                 this.addResultMsg(StrUtil.format("账号 {} 导入成功", data.getUserName()));
             } else if (this.cover) {
                 SystemAuthHelper.checkUserNotAdmin(user.getId());
-                SystemDataScopeHelper.checkHasUserId(user.getId());
+                SystemAuthHelper.checkHasUserId(user.getId());
                 UserDTO userDTO = BeanUtil.copyProperties(data, UserDTO.class);
                 //更新要设置ID
                 userDTO.setId(user.getId());

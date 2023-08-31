@@ -1,6 +1,7 @@
 package com.youlan.system.service;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.db.service.BaseServiceImpl;
@@ -9,8 +10,10 @@ import com.youlan.system.mapper.RoleMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -18,21 +21,31 @@ import java.util.List;
 public class RoleService extends BaseServiceImpl<RoleMapper, Role> {
 
     /**
-     * 新增角色
+     * 根据角色ID获取权限字符列表
      */
-    public boolean addRole(Role role) {
-        checkRoleNameRepeat(role);
-        checkRoleStrRepeat(role);
-        return this.save(role);
+    public List<String> getRoleStrList(List<Long> roleIdList) {
+        return this.lambdaQuery()
+                .select(Role::getRoleStr)
+                .in(Role::getId, roleIdList)
+                .list()
+                .stream()
+                .map(Role::getRoleStr)
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     /**
-     * 修改角色
+     * 更新用户角色数据范围
      */
-    public boolean updateRole(Role role) {
-        checkRoleNameRepeat(role);
-        checkRoleStrRepeat(role);
-        return this.updateById(role);
+    @Transactional(rollbackFor = Exception.class)
+    public void updateRoleScope(Long roleId, String roleScope) {
+        if (ObjectUtil.isNull(roleId) || StrUtil.isBlank(roleScope)) {
+            return;
+        }
+        this.lambdaUpdate()
+                .eq(Role::getId, roleId)
+                .set(Role::getRoleScope, roleScope)
+                .update();
     }
 
     /**

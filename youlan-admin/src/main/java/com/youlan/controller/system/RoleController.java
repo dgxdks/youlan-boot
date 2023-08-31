@@ -14,7 +14,6 @@ import com.youlan.framework.controller.BaseController;
 import com.youlan.system.entity.Role;
 import com.youlan.system.entity.dto.RoleOrgDTO;
 import com.youlan.system.helper.SystemAuthHelper;
-import com.youlan.system.helper.SystemDataScopeHelper;
 import com.youlan.system.service.RoleService;
 import com.youlan.system.service.biz.RoleBizService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,6 +22,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 @Tag(name = "角色管理")
@@ -38,7 +39,7 @@ public class RoleController extends BaseController {
     @PostMapping("/addRole")
     @SystemLog(name = "角色", type = SystemLogType.OPERATION_LOG_TYPE_ADD)
     public ApiResult addRole(@Validated @RequestBody Role role) {
-        return toSuccess(roleService.addRole(role));
+        return toSuccess(roleBizService.addRole(role));
     }
 
     @SaCheckPermission("system:role:update")
@@ -50,7 +51,7 @@ public class RoleController extends BaseController {
         if (ObjectUtil.isNull(role.getId())) {
             return toError(ApiResultCode.C0001);
         }
-        return toSuccess(roleService.updateRole(role));
+        return toSuccess(roleBizService.updateRole(role));
     }
 
     @SaCheckPermission("system:role:remove")
@@ -62,14 +63,15 @@ public class RoleController extends BaseController {
         if (CollectionUtil.isEmpty(dto.getList())) {
             return toSuccess();
         }
-        return toSuccess(roleService.removeBatchByIds(dto.getList()));
+        dto.getList().forEach(this::checkRoleNotAdmin);
+        return toSuccess(roleBizService.removeRole(dto.getList()));
     }
 
     @SaCheckPermission("system:role:load")
     @Operation(summary = "角色详情")
     @PostMapping("/loadRole")
     public ApiResult loadRole(@RequestParam Long id) {
-        return toSuccess(roleService.loadOne(id));
+        return toSuccess(roleBizService.loadRole(id));
     }
 
     @SaCheckPermission("system:role:list")
@@ -93,13 +95,22 @@ public class RoleController extends BaseController {
         return toSuccess(roleService.loadPage(role, DBHelper.getQueryWrapper(role)));
     }
 
+    @SaCheckPermission("system:role:export")
+    @Operation(summary = "角色导出")
+    @PostMapping("/exportRoleList")
+    @SystemLog(name = "角色", type = SystemLogType.OPERATION_LOG_TYPE_EXPORT)
+    public void exportRoleList(@RequestBody Role role, HttpServletResponse response) throws IOException {
+        List<Role> roleList = roleService.loadMore(DBHelper.getQueryWrapper(role));
+        toExcel("角色数据.xlsx", Role.class, roleList, response);
+    }
+
     @SaCheckPermission("system:role:update")
     @Operation(summary = "角色数据权限修改")
     @PostMapping("/updateRoleScope")
     @SystemLog(name = "角色", type = SystemLogType.OPERATION_LOG_TYPE_UPDATE)
     public ApiResult updateRoleScope(@RequestBody RoleOrgDTO dto) {
         SystemAuthHelper.checkRoleNotAdmin(dto.getRoleId());
-        SystemDataScopeHelper.checkHasRoleId(dto.getRoleId());
+        SystemAuthHelper.checkHasRoleId(dto.getRoleId());
         return toSuccess(roleBizService.updateRoleScope(dto));
     }
 
@@ -108,7 +119,7 @@ public class RoleController extends BaseController {
     @PostMapping("/updateRoleStatus")
     public ApiResult updateRoleStatus(@RequestParam Long id, @RequestParam String status) {
         SystemAuthHelper.checkRoleNotAdmin(id);
-        SystemDataScopeHelper.checkHasRoleId(id);
+        SystemAuthHelper.checkHasRoleId(id);
         return toSuccess(roleService.updateStatus(id, status));
     }
 }

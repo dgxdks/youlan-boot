@@ -2,6 +2,8 @@ package ${packageName}.entity;
 
 #if(!${needVo})
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.write.style.ColumnWidth;
+import com.alibaba.excel.annotation.write.style.HeadFontStyle;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.youlan.common.db.constant.DBConstant;
 import com.youlan.system.excel.anno.ExcelDictProperty;
@@ -22,6 +24,8 @@ import org.springframework.validation.annotation.Validated;
 public class ${EntityName} {
 #else
 #if(!${needVo})
+@ColumnWidth(20)
+@HeadFontStyle(fontHeightInPoints = 12)
 @ExcelIgnoreUnannotated
 #end
 @EqualsAndHashCode(callSuper = true)

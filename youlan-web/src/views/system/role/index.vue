@@ -91,7 +91,7 @@
 
     <!-- 角色编辑对话框 -->
     <base-dialog :title="editTitle" :open.sync="editOpen" @confirm="handleEditSubmit" @cancel="handleEditCancel">
-      <el-form ref="form" :model="editForm" :rules="editRules" label-width="100px">
+      <el-form ref="editForm" :model="editForm" :rules="editRules" label-width="100px">
         <row-split2>
           <el-form-item label="角色名称" prop="roleName">
             <el-input v-model="editForm.roleName" placeholder="请输入角色名称" />
@@ -112,15 +112,12 @@
         </el-form-item>
         <el-form-item label="菜单权限">
           <el-checkbox v-model="menuExpandAll">展开/折叠</el-checkbox>
-          <el-checkbox v-model="menuCheckAll">全选/全不选
-          </el-checkbox>
-          <el-checkbox v-model="menuCheckStrictly">父子联动
-          </el-checkbox>
+          <el-checkbox v-model="menuCheckAll">全选/全不选</el-checkbox>
           <menu-tree
+            ref="menu"
             :expand-all="menuExpandAll"
             :default-expand-all="menuExpandAll"
             :check-all="menuCheckAll"
-            :check-strictly="!menuCheckStrictly"
             class="tree-border"
           />
         </el-form-item>
@@ -128,48 +125,30 @@
     </base-dialog>
 
     <!-- 数据权限编辑对话框 -->
-    <el-dialog :title="dataScope.title" :visible.sync="dataScope.open" append-to-body width="500px">
+    <base-dialog :title="dataScope.title" :open="dataScope.open" width="500px" @confirm="handleDataScopeConfirm" @cancel="handleDataScopeCancel">
       <el-form :model="editForm" label-width="80px">
         <el-form-item label="角色名称">
           <el-input v-model="editForm.roleName" :disabled="true" />
         </el-form-item>
-        <el-form-item label="权限字符">
-          <el-input v-model="editForm.roleKey" :disabled="true" />
+        <el-form-item label="角色字符">
+          <el-input v-model="editForm.roleStr" :disabled="true" />
         </el-form-item>
         <el-form-item label="权限范围">
-          <el-select v-model="editForm.dataScope" @change="dataScopeSelectChange">
-            <el-option
-              v-for="item in dataScopeOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
+          <dict-select v-model="editForm.roleScope" dict-type="sys_data_scope" />
         </el-form-item>
-        <el-form-item v-show="editForm.dataScope == 2" label="数据权限">
-          <el-checkbox v-model="deptExpand" @change="handleCheckedTreeExpand($event, 'dept')">展开/折叠</el-checkbox>
-          <el-checkbox v-model="deptNodeAll" @change="handleCheckedTreeNodeAll($event, 'dept')">全选/全不选
-          </el-checkbox>
-          <el-checkbox v-model="editForm.deptCheckStrictly" @change="handleCheckedTreeConnect($event, 'dept')">父子联动
-          </el-checkbox>
-          <el-tree
-            ref="dept"
-            :check-strictly="!editForm.deptCheckStrictly"
-            :data="deptOptions"
-            :props="defaultProps"
+        <el-form-item v-show="editForm.roleScope === '2'" label="数据权限">
+          <el-checkbox v-model="orgExpandAll">展开/折叠</el-checkbox>
+          <el-checkbox v-model="orgCheckAll">全选/全不选</el-checkbox>
+          <org-tree
+            show-check-box
+            :expand-all="orgExpandAll"
+            :default-expand-all="orgExpandAll"
+            :check-all="orgCheckAll"
+            :search-enabled="false"
             class="tree-border"
-            default-expand-all
-            empty-text="加载中，请稍候"
-            node-key="id"
-            show-checkbox
           />
         </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitDataScope">确 定</el-button>
-        <el-button @click="cancelDataScope">取 消</el-button>
-      </div>
-    </el-dialog>
+      </el-form></base-dialog>
   </div>
 </template>
 
@@ -182,7 +161,6 @@ import {
 } from '@/api/system/role'
 import { roleMenuTreeselect } from '@/api/system/menu'
 import crud from '@/framework/mixin/crud'
-import { addUser, updateUser } from '@/api/system/user'
 import MenuTree from '@/views/components/MenuTree.vue'
 
 export default {
@@ -204,10 +182,10 @@ export default {
       menuExpandAll: false,
       // 是否选中全部菜单
       menuCheckAll: false,
-      // 是否直接选中菜单
-      menuCheckStrictly: true,
-      deptExpand: true,
-      deptNodeAll: false,
+      // 是否展开全部机构
+      orgExpandAll: true,
+      // 是否选中全部机构
+      orgCheckAll: false,
       // 数据范围选项
       dataScopeOptions: [
         {
@@ -303,6 +281,9 @@ export default {
         this.editForm = {
           ...res
         }
+        this.$nextTick(() => {
+          this.$refs.menu.setCheckedKeys(this.editForm.menuIdList)
+        })
       })
     },
     // 删除按钮
@@ -321,15 +302,15 @@ export default {
     handleEditSubmit() {
       this.$refs.editForm.validate(valid => {
         if (valid) {
+          this.editForm.menuIdList = this.getMenuAllCheckedKeys()
           if (this.editForm.id) {
-            updateUser(this.editForm).then(res => {
+            updateRole(this.editForm).then(res => {
               this.$modal.success('修改成功')
               this.closeEdit()
               this.getList()
             })
           } else {
-            this.editForm.userPassword = this.$crypto.aesEncrypt(this.editForm.userPassword)
-            addUser(this.editForm).then(res => {
+            addRole(this.editForm).then(res => {
               this.$modal.success('新增成功')
               this.closeEdit()
               this.getList()
@@ -348,14 +329,21 @@ export default {
         id: null,
         roleName: null,
         roleStr: null,
+        roleScope: null,
         sort: 0,
         status: '1',
-        menuIds: [],
-        deptIds: [],
-        menuCheckStrictly: true,
-        deptCheckStrictly: true,
+        menuIdList: [],
+        orgIdList: [],
         remark: null
       }
+      this.menuCheckAll = false
+      this.menuExpandAll = false
+      this.orgExpandAll = true
+      this.orgCheckAll = false
+      // 置空选中菜单节点
+      this.$refs.menu && this.$refs.menu.setCheckedKeys([])
+      // 折叠菜单树
+      this.$refs.menu && this.$refs.menu.handleExpandAll(false)
       this.$refs.editForm && this.$refs.editForm.resetFields()
     },
     // 所有菜单节点数据
@@ -376,20 +364,6 @@ export default {
       checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys)
       return checkedKeys
     },
-    /** 根据角色ID查询菜单树结构 */
-    getRoleMenuTreeselect(roleId) {
-      return roleMenuTreeselect(roleId).then(response => {
-        this.menuOptions = response.menus
-        return response
-      })
-    },
-    /** 根据角色ID查询部门树结构 */
-    getDeptTree(roleId) {
-      return deptTreeSelect(roleId).then(response => {
-        this.deptOptions = response.depts
-        return response
-      })
-    },
     // 角色状态修改
     handleStatusChange(row) {
       const confirmAction = row.status === '1' ? '停用' : '启用'
@@ -409,133 +383,32 @@ export default {
         row.status = row.status === '1' ? '2' : '1'
       })
     },
-    // 取消按钮
-    cancel() {
-      this.open = false
-      this.reset()
-    },
-    // 取消按钮（数据权限）
-    cancelDataScope() {
-      this.openDataScope = false
-      this.reset()
-    },
-    // 表单重置
-    reset() {
-      if (this.$refs.menu !== undefined) {
-        this.$refs.menu.setCheckedKeys([])
-      }
-      this.menuExpandAll = false
-      this.menuNodeAll = false
-      this.deptExpand = true
-      this.deptNodeAll = false
-      this.form = {
-        roleId: undefined,
-        roleName: undefined,
-        roleKey: undefined,
-        roleSort: 0,
-        status: '0',
-        menuIds: [],
-        deptIds: [],
-        menuCheckStrictly: true,
-        deptCheckStrictly: true,
-        remark: undefined
-      }
-      this.resetForm('form')
-    },
-
-    // 更多操作触发
-    handleCommand(command, row) {
-      switch (command) {
-        case 'handleDataScope':
-          this.handleDataScope(row)
-          break
-        case 'handleAuthUser':
-          this.handleAuthUser(row)
-          break
-        default:
-          break
-      }
-    },
-    // 树权限（展开/折叠）
-    handleCheckedTreeExpand(value, type) {
-      if (type === 'menu') {
-        const treeList = this.menuOptions
-        for (let i = 0; i < treeList.length; i++) {
-          this.$refs.menu.store.nodesMap[treeList[i].id].expanded = value
-        }
-      } else if (type === 'dept') {
-        const treeList = this.deptOptions
-        for (let i = 0; i < treeList.length; i++) {
-          this.$refs.dept.store.nodesMap[treeList[i].id].expanded = value
-        }
-      }
-    },
-    // 树权限（全选/全不选）
-    handleCheckedTreeNodeAll(value, type) {
-      if (type === 'menu') {
-        this.$refs.menu.setCheckedNodes(value ? this.menuOptions : [])
-      } else if (type === 'dept') {
-        this.$refs.dept.setCheckedNodes(value ? this.deptOptions : [])
-      }
-    },
-    // 树权限（父子联动）
-    handleCheckedTreeConnect(value, type) {
-      if (type === 'menu') {
-        this.editForm.menuCheckStrictly = !!value
-      } else if (type === 'dept') {
-        this.editForm.deptCheckStrictly = !!value
-      }
-    },
     /** 选择角色权限范围触发 */
     dataScopeSelectChange(value) {
       if (value !== '2') {
         this.$refs.dept.setCheckedKeys([])
       }
     },
-    /** 分配数据权限操作 */
-    handleDataScope(row) {
-      this.reset()
-      const deptTreeSelect = this.getDeptTree(row.roleId)
-      getRole(row.roleId).then(response => {
-        this.form = response.data
-        this.openDataScope = true
-        this.$nextTick(() => {
-          deptTreeSelect.then(res => {
-            this.$refs.dept.setCheckedKeys(res.checkedKeys)
-          })
-        })
-        this.title = '分配数据权限'
-      })
-    },
     /** 分配用户操作 */
     handleAuthUser: function(row) {
       const roleId = row.roleId
       this.$router.push('/system/role-auth/user/' + roleId)
     },
-    /** 提交按钮 */
-    submitForm: function() {
-      this.$refs['form'].validate(valid => {
-        if (valid) {
-          if (this.editForm.roleId !== undefined) {
-            this.editForm.menuIds = this.getMenuAllCheckedKeys()
-            updateRole(this.form).then(response => {
-              this.$modal.msgSuccess('修改成功')
-              this.open = false
-              this.getList()
-            })
-          } else {
-            this.editForm.menuIds = this.getMenuAllCheckedKeys()
-            addRole(this.form).then(response => {
-              this.$modal.msgSuccess('新增成功')
-              this.open = false
-              this.getList()
-            })
-          }
+    // 数据权限编辑按钮
+    handleDataScope(row) {
+      loadRole({ id: row.id }).then(res => {
+        this.resetEdit()
+        this.dataScope.open = true
+        this.editForm = {
+          ...res
         }
+        // this.$nextTick(() => {
+        //   this.$refs.menu.setCheckedKeys(this.editForm.menuIdList)
+        // })
       })
     },
-    /** 提交按钮（数据权限） */
-    submitDataScope: function() {
+    // 数据权限提交按钮
+    handleDataScopeConfirm() {
       if (this.editForm.roleId !== undefined) {
         this.editForm.deptIds = this.getDeptAllCheckedKeys()
         dataScope(this.form).then(response => {
@@ -545,12 +418,14 @@ export default {
         })
       }
     },
-
-    /** 导出按钮操作 */
+    // 数据权限取消按钮
+    handleDataScopeCancel() {
+      this.dataScope.open = false
+      this.resetEdit()
+    },
+    // 导出按钮
     handleExport() {
-      this.download('system/role/export', {
-        ...this.queryParams
-      }, `role_${new Date().getTime()}.xlsx`)
+      this.$download.postAsName('/system/role/exportRoleList', {}, this.queryForm, `role_${new Date().getTime()}.xlsx`)
     },
     tableSelectEnabled(row, index) {
       return !this.$auth.isAdminRole(row.id)

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div>
+    <div v-if="searchEnabled">
       <el-input
         v-model="orgName"
         :size="size"
@@ -13,11 +13,12 @@
     <div>
       <el-tree
         ref="tree"
-        :data="orgTreeList"
+        :data="treeList"
         :expand-on-click-node="false"
         :filter-node-method="filterNode"
-        :props="props"
-        default-expand-all
+        :props="treeProps"
+        :show-checkbox="showCheckBox"
+        :default-expand-all="defaultExpandAll"
         highlight-current
         node-key="orgId"
         @node-click="handleNodeClick"
@@ -29,20 +30,25 @@
 
 <script>
 import { getOrgTreeList } from '@/api/system/org'
+import tree from '@/framework/mixin/tree'
 
 export default {
   name: 'OrgTree',
+  mixins: [tree],
   props: {
-    size: {
-      type: String,
-      default: 'small'
+    searchEnabled: {
+      type: Boolean,
+      default: true
+    },
+    showCheckBox: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
       orgName: null,
-      orgTreeList: null,
-      props: {
+      treeProps: {
         children: 'children',
         label: 'orgName'
       }
@@ -54,16 +60,13 @@ export default {
     }
   },
   mounted() {
-    this.getOrgTreeList()
+    this.getList()
   },
   methods: {
-    getOrgTreeList() {
+    getList() {
       getOrgTreeList({}).then(res => {
-        this.orgTreeList = res
+        this.treeList = res
       })
-    },
-    handleNodeClick(data) {
-      this.$emit('nodeClick', data)
     },
     filterNode(value, data) {
       if (!value) {

@@ -2,8 +2,8 @@
   <el-tree
     ref="tree"
     :check-strictly="checkStrictly"
-    :data="menuList"
-    :props="menuProps"
+    :data="treeList"
+    :props="treeProps"
     node-key="id"
     :show-checkbox="showCheckBox"
     :default-expand-all="defaultExpandAll"
@@ -14,91 +14,33 @@
 
 <script>
 import { getMenuTreeList } from '@/api/system/menu'
+import tree from '@/framework/mixin/tree'
 
 export default {
   name: 'MenuTree',
-  props: {
-    showCheckBox: {
-      type: Boolean,
-      default: true
-    },
-    defaultExpandAll: {
-      type: Boolean,
-      default: false
-    },
-    expandAll: {
-      type: Boolean,
-      default: false
-    },
-    checkAll: {
-      type: Boolean,
-      default: false
-    },
-    checkStrictly: {
-      type: Boolean,
-      default: true
-    }
-  },
+  mixins: [tree],
+
   data() {
     return {
-      menuList: [],
-      menuProps: {
+      checkedKeys: [],
+      treeProps: {
         children: 'children',
         label: 'menuName'
       }
     }
   },
-  watch: {
-    expandAll: {
-      handler(newVal) {
-        this.handleExpandAll(newVal)
-      }
-    },
-    checkAll: {
-      handler(newVal) {
-        this.handleCheckAll(newVal)
-      }
-    }
-  },
-  mounted() {
+  created() {
     this.getList()
   },
   methods: {
     getList() {
       getMenuTreeList({}).then(res => {
-        this.menuList = res
+        this.treeList = res
+        // 刷新一次选中的key
+        this.$nextTick(() => {
+          this.setCheckedKeys(this.checkedKeys)
+        })
       })
-    },
-    handleExpandAll(expanded) {
-      this.$refs.tree.store._getAllNodes().forEach(node => {
-        node.expanded = expanded
-      })
-    },
-    handleCheckAll(checkAll) {
-      if (checkAll) {
-        this.$refs.tree.setCheckedNodes(this.menuList)
-      } else {
-        this.$refs.tree.setCheckedNodes([])
-      }
-    },
-    handleNodeClick(data, node, component) {
-      this.$emit('nodeClick', data, node, component)
-    },
-    handleCheck(data, context) {
-      // const { checkedNodes, checkedKeys, halfCheckedNodes, halfCheckedKeys } = context
-      this.$emit('check', data, context)
-    },
-    getCheckedNodes() {
-      return this.$refs.tree.getCheckedNodes()
-    },
-    getCheckedKeys() {
-      return this.$refs.tree.getCheckedKeys()
-    },
-    getHalfCheckedNodes() {
-      return this.$refs.tree.getHalfCheckedNodes()
-    },
-    getHalfCheckedKeys() {
-      return this.$refs.tree.getHalfCheckedKeys()
     }
   }
 }

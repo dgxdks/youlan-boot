@@ -13,7 +13,6 @@ import com.youlan.system.entity.dto.UserDTO;
 import com.youlan.system.entity.dto.UserPageDTO;
 import com.youlan.system.entity.dto.UserResetPasswdDTO;
 import com.youlan.system.entity.dto.UserUpdatePasswdDTO;
-import com.youlan.system.entity.vo.UserTemplateVO;
 import com.youlan.system.entity.vo.UserVO;
 import com.youlan.system.helper.SystemAuthHelper;
 import com.youlan.system.service.OrgService;
@@ -45,7 +44,7 @@ public class UserBizService {
     @Transactional(rollbackFor = Exception.class)
     public boolean addUser(UserDTO dto) {
         //生成用户密码，密码需要加密
-        User user = createAddOrUpdateUser(dto)
+        User user = buildAddOrUpdateUser(dto)
                 .setUserPassword(userService.genUserPassword(dto.getUserPassword()));
         //保存用户信息
         boolean saveUser = userService.save(user);
@@ -62,7 +61,7 @@ public class UserBizService {
      */
     @Transactional(rollbackFor = Exception.class)
     public boolean updateUser(UserDTO dto) {
-        User user = createAddOrUpdateUser(dto);
+        User user = buildAddOrUpdateUser(dto);
         //保证不允许修改密码和用户名称
         user.setUserPassword(null)
                 .setUserName(null);
@@ -79,7 +78,7 @@ public class UserBizService {
     /**
      * 根据{@link UserDTO}创建要新增或修改的{@link User}
      */
-    public User createAddOrUpdateUser(UserDTO dto) {
+    public User buildAddOrUpdateUser(UserDTO dto) {
         Long orgId = dto.getOrgId();
         Org org = orgService.loadOrgIfExist(orgId);
         if (VAL_STATUS_DISABLED.equals(org.getOrgStatus())) {
@@ -162,13 +161,6 @@ public class UserBizService {
         Map<Long, String> orgIdOrgNameMapping = orgService.getOrgIdOrgNameMap(orgIdSet);
         userList.forEach(user -> user.setOrgName(orgIdOrgNameMapping.get(user.getId())));
         return userList;
-    }
-
-    /**
-     * 用户导入
-     */
-    public boolean importUserList(List<UserTemplateVO> userTemplateList) {
-        throw new UnsupportedOperationException("导出未实现");
     }
 
     /**

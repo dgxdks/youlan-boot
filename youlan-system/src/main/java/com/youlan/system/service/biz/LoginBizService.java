@@ -151,8 +151,8 @@ public class LoginBizService {
     public LoginInfoVO getLoginInfo() {
         Long userId = SystemAuthHelper.getUserId();
         UserVO user = userService.loadOne(userId, UserVO.class);
-        List<String> roleList = roleBizService.getRoleStrListCache(userId);
-        List<String> permissionList = roleBizService.getMenuPermsList(userId);
+        List<String> roleList = SystemAuthHelper.getRoleStrList(userId);
+        List<String> permissionList = SystemAuthHelper.getMenuPermsList(userId);
         return new LoginInfoVO().setUser(user)
                 .setRoleList(roleList)
                 .setPermissionList(permissionList);

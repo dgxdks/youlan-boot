@@ -114,6 +114,10 @@ public class BaseController {
         SystemAuthHelper.checkUserNotAdmin(userId);
     }
 
+    public void checkRoleNotAdmin(Long roleId) {
+        SystemAuthHelper.checkRoleNotAdmin(roleId);
+    }
+
     public Long getUserId() {
         return SystemAuthHelper.getUserId();
     }

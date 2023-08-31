@@ -1,6 +1,8 @@
 package ${packageName}.entity.vo;
 
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.write.style.ColumnWidth;
+import com.alibaba.excel.annotation.write.style.HeadFontStyle;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.youlan.system.excel.anno.ExcelDictProperty;
 import com.youlan.system.excel.converter.DictConverter;
@@ -8,6 +10,8 @@ import com.youlan.common.db.constant.DBConstant;
 import lombok.Data;
 
 @Data
+@ColumnWidth(20)
+@HeadFontStyle(fontHeightInPoints = 12)
 @ExcelIgnoreUnannotated
 public class ${EntityName}VO {
 
