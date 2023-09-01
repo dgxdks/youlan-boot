@@ -134,12 +134,14 @@
           <el-input v-model="editForm.roleStr" :disabled="true" />
         </el-form-item>
         <el-form-item label="权限范围">
-          <dict-select v-model="editForm.roleScope" dict-type="sys_data_scope" />
+          <dict-select v-model="editForm.roleScope" dict-type="sys_data_scope" @change="handleDataScopeChange" />
         </el-form-item>
+        <!--自定义数据权限展示-->
         <el-form-item v-show="editForm.roleScope === '2'" label="数据权限">
           <el-checkbox v-model="orgExpandAll">展开/折叠</el-checkbox>
           <el-checkbox v-model="orgCheckAll">全选/全不选</el-checkbox>
           <org-tree
+            ref="org"
             show-check-box
             :expand-all="orgExpandAll"
             :default-expand-all="orgExpandAll"
@@ -155,11 +157,9 @@
 <script>
 import {
   addRole,
-  dataScope,
-  deptTreeSelect, getRolePageList, loadRole, removeRole,
-  updateRole, updateRoleStatus
+  getRolePageList, loadRole, removeRole,
+  updateRole, updateRoleScope, updateRoleStatus
 } from '@/api/system/role'
-import { roleMenuTreeselect } from '@/api/system/menu'
 import crud from '@/framework/mixin/crud'
 import MenuTree from '@/views/components/MenuTree.vue'
 
@@ -186,33 +186,6 @@ export default {
       orgExpandAll: true,
       // 是否选中全部机构
       orgCheckAll: false,
-      // 数据范围选项
-      dataScopeOptions: [
-        {
-          value: '1',
-          label: '全部数据权限'
-        },
-        {
-          value: '2',
-          label: '自定数据权限'
-        },
-        {
-          value: '3',
-          label: '本部门数据权限'
-        },
-        {
-          value: '4',
-          label: '本部门及以下数据权限'
-        },
-        {
-          value: '5',
-          label: '仅本人数据权限'
-        }
-      ],
-      // 菜单列表
-      menuOptions: [],
-      // 部门列表
-      deptOptions: [],
       // 查询参数
       queryForm: {
         pageNum: 1,
@@ -221,11 +194,6 @@ export default {
         roleStr: null,
         status: null,
         createTimeRange: null
-      },
-      // 表单参数
-      defaultProps: {
-        children: 'children',
-        label: 'label'
       },
       // 表单校验
       editRules: {
@@ -259,7 +227,7 @@ export default {
       this.resetPageNum()
       this.getList()
     },
-    // 查询充值按钮
+    // 查询重置按钮
     handleResetQuery() {
       this.$refs.queryForm && this.$refs.queryForm.resetFields()
       this.queryForm.orgId = null
@@ -356,11 +324,11 @@ export default {
       return checkedKeys
     },
     // 所有部门节点数据
-    getDeptAllCheckedKeys() {
-      // 目前被选中的部门节点
-      const checkedKeys = this.$refs.dept.getCheckedKeys()
-      // 半选中的部门节点
-      const halfCheckedKeys = this.$refs.dept.getHalfCheckedKeys()
+    getOrgAllCheckedKeys() {
+      // 目前被选中的菜单节点
+      const checkedKeys = this.$refs.org.getCheckedKeys()
+      // 半选中的菜单节点
+      const halfCheckedKeys = this.$refs.org.getHalfCheckedKeys()
       checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys)
       return checkedKeys
     },
@@ -383,17 +351,6 @@ export default {
         row.status = row.status === '1' ? '2' : '1'
       })
     },
-    /** 选择角色权限范围触发 */
-    dataScopeSelectChange(value) {
-      if (value !== '2') {
-        this.$refs.dept.setCheckedKeys([])
-      }
-    },
-    /** 分配用户操作 */
-    handleAuthUser: function(row) {
-      const roleId = row.roleId
-      this.$router.push('/system/role-auth/user/' + roleId)
-    },
     // 数据权限编辑按钮
     handleDataScope(row) {
       loadRole({ id: row.id }).then(res => {
@@ -402,26 +359,39 @@ export default {
         this.editForm = {
           ...res
         }
-        // this.$nextTick(() => {
-        //   this.$refs.menu.setCheckedKeys(this.editForm.menuIdList)
-        // })
+        this.$nextTick(() => {
+          this.$refs.org.setCheckedKeys(this.editForm.orgIdList)
+        })
       })
     },
     // 数据权限提交按钮
     handleDataScopeConfirm() {
-      if (this.editForm.roleId !== undefined) {
-        this.editForm.deptIds = this.getDeptAllCheckedKeys()
-        dataScope(this.form).then(response => {
-          this.$modal.msgSuccess('修改成功')
-          this.openDataScope = false
-          this.getList()
-        })
+      if (!this.editForm.id) {
+        return
       }
+      this.editForm.orgIdList = this.getOrgAllCheckedKeys()
+      updateRoleScope(this.editForm).then(response => {
+        this.dataScope.open = false
+        this.resetEdit()
+        this.$modal.success('修改成功')
+        this.getList()
+      })
     },
     // 数据权限取消按钮
     handleDataScopeCancel() {
       this.dataScope.open = false
       this.resetEdit()
+    },
+    // 数据权限变更
+    handleDataScopeChange(data) {
+      // 选中不是自定义权限的时候要将机构数据恢复至默认
+      if (data !== '2') {
+        this.$refs.org.setCheckedKeys(this.editForm.orgIdList)
+      }
+    },
+    // 分配用户按钮
+    handleAuthUser(row) {
+      this.$router.push('/system/role-auth/user/' + row.id)
     },
     // 导出按钮
     handleExport() {

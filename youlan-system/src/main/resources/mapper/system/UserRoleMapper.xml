@@ -4,4 +4,20 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.youlan.system.mapper.UserRoleMapper">
 
+    <select id="getUserListByRoleId" resultType="com.youlan.system.entity.User">
+        select u.*
+        from t_sys_user_role ur
+        left join t_sys_user as u on u.id = ur.user_id
+        where u.sts = '1'
+        and ur.role_id = #{dto.roleId}
+        <if test="dto.status != null and dto.status != ''">
+            and u.status = #{dto.status}
+        </if>
+        <if test="dto.userName != null and dto.userName != ''">
+            and u.user_name like concat('%', #{dto.userName} ,'%')
+        </if>
+        <if test="dto.userMobile != null and dto.userMobile != ''">
+            and u.user_mobile like concat('%', #{dto.userMobile}, '%')
+        </if>
+    </select>
 </mapper>

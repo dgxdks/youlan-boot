@@ -48,6 +48,7 @@ import BaseResetButton from '@/framework/components/BaseResetButton.vue'
 import BaseColumnMenu from '@/framework/components/BaseColumnMenu.vue'
 import BaseTextButton from '@/framework/components/BaseTextButton.vue'
 import BaseFormLabel from '@/framework/components/BaseFormLabel.vue'
+import BaseCloseButton from '@/framework/components/BaseCloseButton.vue'
 
 // 全局组件
 function mountComponent() {
@@ -78,6 +79,7 @@ function mountComponent() {
   Vue.component('BaseAddButton', BaseAddButton)
   Vue.component('BaseSearchButton', BaseSearchButton)
   Vue.component('BaseResetButton', BaseResetButton)
+  Vue.component('BaseCloseButton', BaseCloseButton)
   Vue.component('BaseColumnMenu', BaseColumnMenu)
   Vue.component('BaseTextButton', BaseTextButton)
   Vue.component('BaseFormLabel', BaseFormLabel)

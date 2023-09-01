@@ -1,4 +1,3 @@
-import { ArrayUtil } from '../tools'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -6,8 +5,8 @@ export default {
     ...mapGetters(['dict'])
   },
   data() {
-    if (ArrayUtil.isNotEmpty(this.dictTypes)) {
-      this.$dict.getDictList(this.dictTypes)
+    if (this.$options && this.$array.isNotEmpty(this.$options.dictTypes)) {
+      this.$dict.loadDictList(this.$options.dictTypes)
     }
     return {
 

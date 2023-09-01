@@ -1,11 +1,11 @@
 import request from '@/framework/tools/request'
 
 // 查询字典数据列表
-export function getDictDataListByTypeKey(typeKey) {
+export function getDictDataListByTypeKey(params) {
   return request({
     url: '/system/dictData/getDictDataListByTypeKey',
     method: 'post',
-    params: { typeKey }
+    params
   })
 }
 // 查询字典数据列表

@@ -6,7 +6,6 @@ import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.db.enums.DBStatus;
 import com.youlan.system.entity.Menu;
 import com.youlan.system.entity.Role;
-import com.youlan.system.entity.dto.RoleOrgDTO;
 import com.youlan.system.enums.MenuType;
 import com.youlan.system.helper.SystemAuthHelper;
 import com.youlan.system.service.MenuService;
@@ -117,11 +116,11 @@ public class RoleBizService {
      * 修改角色数据权限范围
      */
     @Transactional(rollbackFor = Exception.class)
-    public boolean updateRoleScope(RoleOrgDTO dto) {
-        Long roleId = dto.getRoleId();
+    public boolean updateRoleScope(Role role) {
+        Long roleId = role.getId();
         roleService.loadOneOpt(roleId)
                 .orElseThrow(ApiResultCode.A0016::getException);
-        String roleScope = dto.getRoleScope();
+        String roleScope = role.getRoleScope();
         // 先更新角色数据范围
         roleService.updateRoleScope(roleId, roleScope);
         // 如果不是自定义数据权限则删除角色关联机构ID信息并返回
@@ -129,7 +128,7 @@ public class RoleBizService {
             roleOrgService.removeByRoleId(roleId);
             return true;
         }
-        roleOrgService.updateRoleOrgBatch(roleId, dto.getOrgIdList());
+        roleOrgService.updateRoleOrgBatch(roleId, role.getOrgIdList());
         return true;
     }
 }

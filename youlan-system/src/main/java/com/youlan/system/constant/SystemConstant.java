@@ -144,4 +144,9 @@ public class SystemConstant {
      * 超级管理员角色ID
      */
     public static final Long ADMIN_ROLE_ID = 100L;
+
+    /**
+     * 超级管理员权限字符
+     */
+    public static final String ADMIN_PERM_STR = "*";
 }

@@ -2,7 +2,7 @@ package com.youlan.system.service;
 
 import com.youlan.system.entity.Dept;
 import com.youlan.system.mapper.DeptMapper;
-import com.youlan.system.org.AbstractOrgModelService;
+import com.youlan.system.org.service.AbstractOrgModelService;
 import org.springframework.stereotype.Service;
 
 @Service

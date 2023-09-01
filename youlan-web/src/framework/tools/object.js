@@ -3,6 +3,12 @@ export default {
     if (this.isBoolean(obj)) {
       return false
     }
+    if (this.isNumber(obj)) {
+      return false
+    }
+    if (this.isString(obj)) {
+      return false
+    }
     return !obj || obj === '' || typeof (obj) === 'undefined'
   },
   isNotEmpty(obj) {
@@ -12,7 +18,7 @@ export default {
     return obj && typeof obj === 'object'
   },
   isArray(obj) {
-    return toString.call(obj) === '[object Array]'
+    return Array.isArray(obj) || toString.call(obj) === '[object Array]'
   },
   isBoolean(obj) {
     return typeof obj === 'boolean'

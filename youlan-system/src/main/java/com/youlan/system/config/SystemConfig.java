@@ -2,7 +2,7 @@ package com.youlan.system.config;
 
 import cn.hutool.extra.spring.SpringUtil;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
-import com.youlan.system.org.OrgModelInnerInterceptor;
+import com.youlan.system.org.interceptor.OrgModelInnerInterceptor;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

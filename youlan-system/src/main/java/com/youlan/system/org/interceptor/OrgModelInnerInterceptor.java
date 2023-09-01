@@ -1,4 +1,4 @@
-package com.youlan.system.org;
+package com.youlan.system.org.interceptor;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.*;
 import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
 import com.youlan.common.core.exception.BizRuntimeException;
+import com.youlan.system.org.entity.AbstractOrgModel;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.*;

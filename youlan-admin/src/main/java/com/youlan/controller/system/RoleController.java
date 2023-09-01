@@ -12,10 +12,12 @@ import com.youlan.framework.anno.SystemLog;
 import com.youlan.framework.constant.SystemLogType;
 import com.youlan.framework.controller.BaseController;
 import com.youlan.system.entity.Role;
-import com.youlan.system.entity.dto.RoleOrgDTO;
+import com.youlan.system.entity.dto.UserRolePageDTO;
 import com.youlan.system.helper.SystemAuthHelper;
 import com.youlan.system.service.RoleService;
+import com.youlan.system.service.UserRoleService;
 import com.youlan.system.service.biz.RoleBizService;
+import com.youlan.system.service.biz.UserBizService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -33,6 +35,7 @@ import java.util.List;
 public class RoleController extends BaseController {
     private final RoleService roleService;
     private final RoleBizService roleBizService;
+    private final UserBizService userBizService;
 
     @SaCheckPermission("system:role:add")
     @Operation(summary = "角色新增")
@@ -110,10 +113,13 @@ public class RoleController extends BaseController {
     @Operation(summary = "角色数据权限修改")
     @PostMapping("/updateRoleScope")
     @SystemLog(name = "角色", type = SystemLogType.OPERATION_LOG_TYPE_UPDATE)
-    public ApiResult updateRoleScope(@RequestBody RoleOrgDTO dto) {
-        SystemAuthHelper.checkRoleNotAdmin(dto.getRoleId());
-        SystemAuthHelper.checkHasRoleId(dto.getRoleId());
-        return toSuccess(roleBizService.updateRoleScope(dto));
+    public ApiResult updateRoleScope(@RequestBody Role role) {
+        if (ObjectUtil.isNull(role.getId())) {
+            return toError(ApiResultCode.C0001);
+        }
+        SystemAuthHelper.checkRoleNotAdmin(role.getId());
+        SystemAuthHelper.checkHasRoleId(role.getId());
+        return toSuccess(roleBizService.updateRoleScope(role));
     }
 
     @SaCheckPermission("system:role:update")
@@ -123,5 +129,27 @@ public class RoleController extends BaseController {
         SystemAuthHelper.checkRoleNotAdmin(id);
         SystemAuthHelper.checkHasRoleId(id);
         return toSuccess(roleService.updateStatus(id, status));
+    }
+
+    @SaCheckPermission("system:role:list")
+    @Operation(summary = "已分配角色用户分页")
+    @PostMapping("/authUser/getAllocatedUserPageList")
+    public ApiResult getAllocatedPageList(@RequestBody UserRolePageDTO dto) {
+        if (ObjectUtil.isNull(dto.getRoleId())) {
+            return toError(ApiResultCode.A0017);
+        }
+        SystemAuthHelper.checkHasRoleId(dto.getRoleId());
+        return toSuccess(userBizService.getRoleAllocatedUserPageList(dto));
+    }
+
+    @SaCheckPermission("system:role:list")
+    @Operation(summary = "未分配角色用户分页")
+    @PostMapping("/authUser/getUnallocatedUserPageList")
+    public ApiResult getUnallocatedPageList(@RequestBody UserRolePageDTO dto) {
+        if (ObjectUtil.isNull(dto.getRoleId())) {
+            return toError(ApiResultCode.A0017);
+        }
+        SystemAuthHelper.checkHasRoleId(dto.getRoleId());
+        return null;
     }
 }

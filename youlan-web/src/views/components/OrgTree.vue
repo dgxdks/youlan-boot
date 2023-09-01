@@ -43,6 +43,10 @@ export default {
     showCheckBox: {
       type: Boolean,
       default: false
+    },
+    defaultExpandAll: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -66,6 +70,9 @@ export default {
     getList() {
       getOrgTreeList({}).then(res => {
         this.treeList = res
+        this.$nextTick(() => {
+          this.setCheckedKeys(this.checkedKeys)
+        })
       })
     },
     filterNode(value, data) {

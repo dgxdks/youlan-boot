@@ -19,6 +19,11 @@ const mutations = {
   },
   CLEAN_DICT: (state) => {
     state.dict = {}
+  },
+  INIT_DICT: (state, type) => {
+    if (!state[type]) {
+      state.dict[type] = []
+    }
   }
 }
 

@@ -1,4 +1,4 @@
-package com.youlan.system.org;
+package com.youlan.system.org.entity;
 
 import com.youlan.common.db.constant.DBConstant;
 import io.swagger.v3.oas.annotations.media.Schema;

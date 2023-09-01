@@ -28,7 +28,8 @@ export default {
   data() {
     return {
       treeList: [],
-      treeProps: {}
+      treeProps: {},
+      checkedKeys: []
     }
   },
   watch: {

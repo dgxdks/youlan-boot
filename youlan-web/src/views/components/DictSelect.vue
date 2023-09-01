@@ -1,5 +1,5 @@
 <template>
-  <el-select v-model="data" :placeholder="placeholder">
+  <el-select v-model="data" :placeholder="placeholder" @change="handleChange">
     <el-option v-for="item in dict[dictType]" :key="item.value" :label="item.name" :value="item.value">
       {{ item.name }}
     </el-option>
@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { StrUtil } from '../../framework/tools'
+import { StrUtil } from '@/framework/tools'
 
 export default {
   name: 'DictSelect',
@@ -47,9 +47,13 @@ export default {
   },
   created() {
     if (StrUtil.isNotBlank(this.dictType)) {
-      this.$dict.getDict(this.dictType)
+      this.$dict.loadDict(this.dictType)
     }
   },
-  methods: {}
+  methods: {
+    handleChange(data) {
+      this.$emit('change', data)
+    }
+  }
 }
 </script>

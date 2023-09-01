@@ -1,4 +1,4 @@
-package com.youlan.system.org;
+package com.youlan.system.org.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
@@ -21,6 +21,7 @@ import com.youlan.common.db.service.BaseServiceImpl;
 import com.youlan.system.entity.Org;
 import com.youlan.system.entity.dto.OrgPageDTO;
 import com.youlan.system.entity.vo.OrgVO;
+import com.youlan.system.org.entity.AbstractOrgModel;
 import com.youlan.system.service.OrgService;
 import org.apache.ibatis.binding.MapperMethod;
 import org.springframework.transaction.annotation.Transactional;

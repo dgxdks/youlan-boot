@@ -19,12 +19,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import static com.youlan.system.constant.SystemConstant.ADMIN_ROLE_ID;
-import static com.youlan.system.constant.SystemConstant.ADMIN_USER_ID;
+import static com.youlan.system.constant.SystemConstant.*;
 
 public class SystemAuthHelper {
     public static final String ROLE_STR_PREFIX = "sys-role-";
-    public static final String ADMIN_ROLE_STR = "*";
     private static final RoleService roleService = SpringUtil.getBean(RoleService.class);
     private static final UserRoleService userRoleService = SpringUtil.getBean(UserRoleService.class);
     private static final RoleMenuService roleMenuService = SpringUtil.getBean(RoleMenuService.class);
@@ -236,7 +234,7 @@ public class SystemAuthHelper {
      */
     public static List<String> getMenuPermsList(Long userId) {
         if (isAdmin(userId)) {
-            return Collections.singletonList(ADMIN_ROLE_STR);
+            return Collections.singletonList(ADMIN_PERM_STR);
         }
         Set<String> menPermsList = roleMenuService.getBaseMapper().getMenuPermsListByUserId(userId);
         return new ArrayList<>(menPermsList);
@@ -249,7 +247,7 @@ public class SystemAuthHelper {
         SaSession session = SaSessionCustomUtil.getSessionById(ROLE_STR_PREFIX + roleStr);
         return session.get(SaSession.PERMISSION_LIST, () -> {
             if (isAdminRoleStr(roleStr)) {
-                return Collections.singletonList(ADMIN_ROLE_STR);
+                return Collections.singletonList(ADMIN_PERM_STR);
             }
             return new ArrayList<>(roleMenuService.getBaseMapper().getMenuPermsListByRoleStr(roleStr));
         });

@@ -9,6 +9,14 @@ export function getRolePageList(data) {
   })
 }
 
+export function getRoleList(data) {
+  return request({
+    url: '/system/role/getRoleList',
+    method: 'post',
+    data
+  })
+}
+
 // 查询角色详细
 export function loadRole(params) {
   return request({
@@ -36,6 +44,15 @@ export function updateRole(data) {
   })
 }
 
+// 修改角色数据权限
+export function updateRoleScope(data) {
+  return request({
+    url: '/system/role/updateRoleScope',
+    method: 'post',
+    data
+  })
+}
+
 // 角色状态修改
 export function updateRoleStatus(params) {
   return request({
@@ -54,30 +71,21 @@ export function removeRole(params) {
   })
 }
 
-// 角色数据权限
-export function dataScope(data) {
-  return request({
-    url: '/system/role/dataScope',
-    method: 'put',
-    data: data
-  })
-}
-
 // 查询角色已授权用户列表
-export function allocatedUserList(query) {
+export function getAllocatedUserPageList(data) {
   return request({
-    url: '/system/role/authUser/allocatedList',
-    method: 'get',
-    params: query
+    url: '/system/role/authUser/getAllocatedUserPageList',
+    method: 'post',
+    data
   })
 }
 
 // 查询角色未授权用户列表
-export function unallocatedUserList(query) {
+export function getUnallocatedUserPageList(data) {
   return request({
-    url: '/system/role/authUser/unallocatedList',
-    method: 'get',
-    params: query
+    url: '/system/role/authUser/getUnallocatedUserPageList',
+    method: 'post',
+    data
   })
 }
 
@@ -105,13 +113,5 @@ export function authUserSelectAll(data) {
     url: '/system/role/authUser/selectAll',
     method: 'put',
     params: data
-  })
-}
-
-// 根据角色ID查询部门树结构
-export function deptTreeSelect(roleId) {
-  return request({
-    url: '/system/role/deptTree/' + roleId,
-    method: 'get'
   })
 }

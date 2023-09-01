@@ -4,4 +4,33 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.youlan.system.mapper.UserMapper">
 
+    <select id="getList" resultType="com.youlan.system.entity.vo.UserVO">
+        select u.*, o.org_name
+        from t_sys_user as u
+        left join t_sys_org as o on u.org_id = o.org_id
+        where u.sts = '1'
+        and o.org_sts = '1'
+        <if test="dto.orgId != null">
+            and (o.org_id = #{dto.orgId} or find_in_set(#{dto.orgId}, o.org_ancestors))
+        </if>
+        <if test="dto.userName != null and dto.userName != ''">
+            and u.user_name like concat('%', #{dto.userName},'%')
+        </if>
+        <if test="dto.userMobile != null and dto.userMobile != ''">
+            and u.user_mobile like concat('%', #{dto.userMobile},'%')
+        </if>
+        <if test="dto.nickName != null and dto.nickName != ''">
+            and u.nick_name like concat('%', #{dto.nickName} ,'%')
+        </if>
+        <if test="dto.status != null and dto.status != ''">
+            and u.status = #{dto.status}
+        </if>
+        <if test="dto.createTimeRange != null and dto.createTimeRange.size() > 1">
+            and u.create_time between #{dto.createTimeRange[0]} and #{dto.createTimeRange[1]}
+        </if>
+    </select>
+
+    <select id="getUserIdList" resultType="java.lang.Long">
+
+    </select>
 </mapper>

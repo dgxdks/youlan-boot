@@ -22,13 +22,17 @@ const fieldMapping = {
  * ]
  */
 const staticDict = {}
+// 管理数据字典加载状态
+const loadingStatus = {}
 export default {
 
   // 根据字典类型获取字典
-  async getDict(typeKey) {
+  loadDict(typeKey) {
     if (StrUtil.isBlank(typeKey)) {
       return []
     }
+    // 尝试初始化字典
+    store.commit('dict/INIT_DICT', typeKey)
     // 如果store中有则直接返回
     const dict = store.getters.dict
     if (ArrayUtil.isNotEmpty(dict[typeKey])) {
@@ -44,27 +48,32 @@ export default {
     }
     // 没有则需要同步获取
     const _this = this
-    return await getDictDataListByTypeKey(typeKey).then(res => {
+    // 如果正在加载则不重复加载
+    if (loadingStatus[typeKey]) {
+      return
+    }
+    loadingStatus[typeKey] = true
+    getDictDataListByTypeKey({ typeKey }).then(res => {
       if (ArrayUtil.isNotEmpty(res)) {
         store.commit('dict/SET_DICT', {
           type: typeKey,
           values: _this.formatDict(res)
         })
+        loadingStatus[typeKey] = false
       }
-      return res
+    }).catch(error => {
+      loadingStatus[typeKey] = false
+      console.log(error)
     })
   },
   // 根据字典类型列表获取字典
-  async getDictList(typeKeys) {
+  loadDictList(typeKeys) {
     if (ArrayUtil.isEmpty(typeKeys)) {
       return []
     }
-    const dictList = []
     for (let i = 0; i < typeKeys.length; i++) {
-      const dict = await this.getDict(typeKeys[i])
-      dictList.push(dict)
+      this.loadDict(typeKeys[i])
     }
-    return dictList
   },
   // 根据fieldMapping格式化字典值
   formatDict(dictDataList) {

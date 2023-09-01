@@ -2,7 +2,7 @@ package com.youlan.system.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.youlan.common.db.constant.DBConstant;
-import com.youlan.system.org.AbstractOrgModel;
+import com.youlan.system.org.entity.AbstractOrgModel;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

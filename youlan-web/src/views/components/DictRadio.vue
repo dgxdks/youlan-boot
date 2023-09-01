@@ -37,7 +37,7 @@ export default {
   },
   created() {
     if (this.dictType) {
-      this.$dict.getDict(this.dictType)
+      this.$dict.loadDict(this.dictType)
     }
   },
   methods: {}

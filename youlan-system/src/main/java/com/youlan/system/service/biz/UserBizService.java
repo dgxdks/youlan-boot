@@ -9,10 +9,7 @@ import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.db.helper.DBHelper;
 import com.youlan.system.entity.Org;
 import com.youlan.system.entity.User;
-import com.youlan.system.entity.dto.UserDTO;
-import com.youlan.system.entity.dto.UserPageDTO;
-import com.youlan.system.entity.dto.UserResetPasswdDTO;
-import com.youlan.system.entity.dto.UserUpdatePasswdDTO;
+import com.youlan.system.entity.dto.*;
 import com.youlan.system.entity.vo.UserVO;
 import com.youlan.system.helper.SystemAuthHelper;
 import com.youlan.system.service.OrgService;
@@ -23,10 +20,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.youlan.common.db.constant.DBConstant.VAL_STATUS_DISABLED;
 
@@ -135,32 +129,14 @@ public class UserBizService {
      * 用户分页
      */
     public IPage<UserVO> getUserPageList(UserPageDTO dto) {
-        IPage<UserVO> userPageList = userService.loadPage(DBHelper.getIPage(dto), DBHelper.getQueryWrapper(dto), UserVO.class);
-        //增加机构名称
-        List<Long> orgIdList = userPageList.getRecords().stream().map(UserVO::getOrgId).collect(Collectors.toList());
-        if (CollectionUtil.isNotEmpty(orgIdList)) {
-            Map<Long, String> orgIdOrgNameMap = orgService.getOrgIdOrgNameMap(orgIdList);
-            userPageList.getRecords().forEach(user -> {
-                if (orgIdOrgNameMap.containsKey(user.getOrgId())) {
-                    user.setOrgName(orgIdOrgNameMap.get(user.getOrgId()));
-                }
-            });
-        }
-        return userPageList;
+        return userService.getBaseMapper().getList(DBHelper.getIPage(dto), dto);
     }
 
     /**
      * 用户导出
      */
     public List<UserVO> exportUserList(UserPageDTO dto) {
-        List<UserVO> userList = userService.loadMore(DBHelper.getQueryWrapper(dto), UserVO.class);
-        if (CollectionUtil.isEmpty(userList)) {
-            return new ArrayList<>();
-        }
-        List<Long> orgIdSet = userList.stream().map(UserVO::getOrgId).collect(Collectors.toList());
-        Map<Long, String> orgIdOrgNameMapping = orgService.getOrgIdOrgNameMap(orgIdSet);
-        userList.forEach(user -> user.setOrgName(orgIdOrgNameMapping.get(user.getId())));
-        return userList;
+        return userService.getBaseMapper().getList(dto);
     }
 
     /**
@@ -193,5 +169,13 @@ public class UserBizService {
                 .setId(userId)
                 .setUserPassword(userService.genUserPassword(newPasswd));
         return userService.updateById(user);
+    }
+
+    /**
+     * 已分配角色用户分页
+     */
+    public IPage<UserVO> getRoleAllocatedUserPageList(UserRolePageDTO dto) {
+        IPage<User> userPage = userRoleService.getBaseMapper().getUserListByRoleId(DBHelper.getIPage(dto), dto);
+        return userPage.convert(user -> BeanUtil.copyProperties(user, UserVO.class));
     }
 }
