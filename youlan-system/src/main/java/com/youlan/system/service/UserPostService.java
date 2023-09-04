@@ -50,7 +50,7 @@ public class UserPostService extends BaseServiceImpl<UserPostMapper, UserPost> {
     /**
      * 根据用户ID查询用户关联岗位列表
      */
-    public List<UserPost> getListByUserId(Long userId) {
+    public List<UserPost> getPostListByUserId(Long userId) {
         return this.lambdaQuery().eq(UserPost::getUserId, userId).list();
     }
 
@@ -58,7 +58,7 @@ public class UserPostService extends BaseServiceImpl<UserPostMapper, UserPost> {
      * 根据用户ID查询岗位ID列表
      */
     public List<Long> getPostIdListByUserId(Long userId) {
-        return getListByUserId(userId)
+        return getPostListByUserId(userId)
                 .stream()
                 .map(UserPost::getPostId)
                 .collect(Collectors.toList());

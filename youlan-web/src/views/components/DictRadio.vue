@@ -1,8 +1,11 @@
 <template>
   <el-radio-group v-model="data">
-    <el-radio v-for="item in dict[dictType]" :key="item.value" :label="item.value">
-      {{ item.name }}
-    </el-radio>
+    <template v-for="item in dict[dictType]">
+      <el-radio v-if="!exclude.includes(item.value)" :key="item.value" :label="item.value">
+        {{ item.name }}
+      </el-radio>
+    </template>
+
   </el-radio-group>
 </template>
 
@@ -17,6 +20,10 @@ export default {
     value: {
       type: String,
       default: null
+    },
+    exclude: {
+      type: Array,
+      default: []
     }
   },
   data() {

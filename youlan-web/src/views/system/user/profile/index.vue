@@ -8,7 +8,7 @@
           </div>
           <div>
             <div class="text-center">
-              <userAvatar :user="user" />
+              <user-avatar :user="user" />
             </div>
             <ul class="list-group list-group-striped">
               <li class="list-group-item">
@@ -17,19 +17,19 @@
               </li>
               <li class="list-group-item">
                 <svg-icon icon-class="phone" />手机号码
-                <div class="pull-right">{{ user.phonenumber }}</div>
+                <div class="pull-right">{{ user.userMobile }}</div>
               </li>
               <li class="list-group-item">
                 <svg-icon icon-class="email" />用户邮箱
                 <div class="pull-right">{{ user.email }}</div>
               </li>
               <li class="list-group-item">
-                <svg-icon icon-class="tree" />所属部门
-                <div v-if="user.dept" class="pull-right">{{ user.dept.deptName }} / {{ postGroup }}</div>
+                <svg-icon icon-class="tree" />所属机构
+                <div v-if="user.orgId" class="pull-right">{{ orgDesc }}</div>
               </li>
               <li class="list-group-item">
                 <svg-icon icon-class="peoples" />所属角色
-                <div class="pull-right">{{ roleGroup }}</div>
+                <div class="pull-right">{{ roleDesc }}</div>
               </li>
               <li class="list-group-item">
                 <svg-icon icon-class="date" />创建日期
@@ -45,11 +45,11 @@
             <span>基本资料</span>
           </div>
           <el-tabs v-model="activeTab">
-            <el-tab-pane label="基本资料" name="userinfo">
-              <userInfo :user="user" />
+            <el-tab-pane label="基本资料" name="userInfo">
+              <user-info :user="user" />
             </el-tab-pane>
-            <el-tab-pane label="修改密码" name="resetPwd">
-              <resetPwd />
+            <el-tab-pane label="修改密码" name="updatePasswd">
+              <reset-pwd />
             </el-tab-pane>
           </el-tabs>
         </el-card>
@@ -62,7 +62,7 @@
 import userAvatar from './userAvatar'
 import userInfo from './userInfo'
 import resetPwd from './resetPwd'
-import { getUserProfile } from '@/api/system/user'
+import { loadUserProfile } from '@/api/system/user'
 
 export default {
   name: 'Profile',
@@ -70,9 +70,10 @@ export default {
   data() {
     return {
       user: {},
-      roleGroup: {},
-      postGroup: {},
-      activeTab: 'userinfo'
+      roleDesc: '',
+      postDesc: '',
+      orgDesc: '',
+      activeTab: 'userInfo'
     }
   },
   created() {
@@ -80,10 +81,11 @@ export default {
   },
   methods: {
     getUser() {
-      getUserProfile().then(response => {
-        this.user = response.data
-        this.roleGroup = response.roleGroup
-        this.postGroup = response.postGroup
+      loadUserProfile().then(res => {
+        this.user = res
+        this.roleDesc = res.roleNameList && res.roleNameList.join(',')
+        this.postDesc = res.postNameList && res.postNameList.join(',')
+        this.orgDesc = `${this.user.orgName} / ${this.postDesc}`
       })
     }
   }

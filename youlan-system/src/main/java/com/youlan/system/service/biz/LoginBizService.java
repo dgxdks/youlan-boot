@@ -152,7 +152,7 @@ public class LoginBizService {
         Long userId = SystemAuthHelper.getUserId();
         UserVO user = userService.loadOne(userId, UserVO.class);
         List<String> roleList = SystemAuthHelper.getRoleStrList(userId);
-        List<String> permissionList = SystemAuthHelper.getMenuPermsList(userId);
+        List<String> permissionList = SystemAuthHelper.getUserMenuPerms(userId);
         return new LoginInfoVO().setUser(user)
                 .setRoleList(roleList)
                 .setPermissionList(permissionList);

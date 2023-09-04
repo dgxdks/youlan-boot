@@ -9,7 +9,10 @@ import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.db.helper.DBHelper;
 import com.youlan.system.entity.Org;
 import com.youlan.system.entity.User;
-import com.youlan.system.entity.dto.*;
+import com.youlan.system.entity.dto.UserDTO;
+import com.youlan.system.entity.dto.UserPageDTO;
+import com.youlan.system.entity.dto.UserResetPasswdDTO;
+import com.youlan.system.entity.dto.UserUpdatePasswdDTO;
 import com.youlan.system.entity.vo.UserVO;
 import com.youlan.system.helper.SystemAuthHelper;
 import com.youlan.system.service.OrgService;
@@ -90,6 +93,8 @@ public class UserBizService {
                 .setRemark(dto.getRemark());
         //用户名唯一性校验
         userService.checkUserNameRepeat(user);
+        //用户手机唯一性校验
+        userService.checkUserMobileRepeat(user);
         return user;
     }
 
@@ -150,6 +155,40 @@ public class UserBizService {
     }
 
     /**
+     * 用户个人信息详情
+     */
+    public UserVO loadUserProfile() {
+        Long userId = SystemAuthHelper.getUserId();
+        User user = userService.loadUserIfExist(userId);
+        UserVO userVO = BeanUtil.copyProperties(user, UserVO.class);
+        List<String> roleNameList = userRoleService.getBaseMapper().getRoleNameListByUserId(userId);
+        List<String> postNameList = userPostService.getBaseMapper().getPostNameListByUserId(userId);
+        String orgName = orgService.getOrgNameByOrgId(user.getOrgId());
+        userVO.setPostNameList(postNameList);
+        userVO.setRoleNameList(roleNameList);
+        userVO.setOrgName(orgName);
+        return userVO;
+    }
+
+    /**
+     * 用户个人信息修改
+     */
+    public void updateUserProfile(UserDTO userDTO) {
+        User user = buildAddOrUpdateUser(userDTO);
+        userService.updateById(user);
+    }
+
+    /**
+     * 修改用户头像
+     */
+    public void updateUserAvatar(String avatarUrl) {
+        this.userService.lambdaUpdate()
+                .eq(User::getId, SystemAuthHelper.getUserId())
+                .set(User::getAvatar, avatarUrl)
+                .update();
+    }
+
+    /**
      * 修改用户密码
      */
     public boolean updateUserPasswd(UserUpdatePasswdDTO dto) {
@@ -169,13 +208,5 @@ public class UserBizService {
                 .setId(userId)
                 .setUserPassword(userService.genUserPassword(newPasswd));
         return userService.updateById(user);
-    }
-
-    /**
-     * 已分配角色用户分页
-     */
-    public IPage<UserVO> getRoleAllocatedUserPageList(UserRolePageDTO dto) {
-        IPage<User> userPage = userRoleService.getBaseMapper().getUserListByRoleId(DBHelper.getIPage(dto), dto);
-        return userPage.convert(user -> BeanUtil.copyProperties(user, UserVO.class));
     }
 }

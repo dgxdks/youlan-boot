@@ -147,7 +147,6 @@
 import draggable from 'vuedraggable'
 import beautifier from 'js-beautify'
 import ClipboardJS from 'clipboard'
-import render from '@/utils/generator/render'
 import RightPanel from './RightPanel'
 import { inputComponents, selectComponents, layoutComponents, formConf } from '@/utils/generator/config'
 import { beautifierConf, titleCase } from '@/utils/index'
@@ -283,7 +282,7 @@ export default {
     execDownload(data) {
       const codeStr = this.generateCode()
       const blob = new Blob([codeStr], { type: 'text/plain;charset=utf-8' })
-      this.$download.saveAs(blob, data.fileName)
+      this.$download.saveAsFile(blob, data.fileName)
     },
     execCopy(data) {
       document.getElementById('copyNode').click()

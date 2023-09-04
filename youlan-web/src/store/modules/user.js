@@ -1,5 +1,5 @@
 import { accountLogin, getLoginInfo, logout } from '@/api/system/login'
-import { ArrayUtil, CookieUtil, StrUtil } from '../../framework/tools'
+import { ArrayUtil, CookieUtil, DownloadUtil, EnvUtil, StrUtil } from '../../framework/tools'
 import { tokenValuePrefix } from '@/settings'
 
 function getTokenHeaders() {
@@ -68,7 +68,7 @@ const user = {
           // 设置用户名
           commit('SET_USER_NAME', user.userName)
           // 设置用户头像
-          const avatar = StrUtil.isBlank(user.avatar) ? require('@/assets/images/profile.jpg') : user.avatar
+          const avatar = StrUtil.isBlank(user.avatar) ? require('@/assets/images/profile.png') : DownloadUtil.parseDownloadUrl(user.avatar)
           commit('SET_AVATAR', avatar)
           // 设置用户角色信息
           if (ArrayUtil.isNotEmpty(res.roleList)) {

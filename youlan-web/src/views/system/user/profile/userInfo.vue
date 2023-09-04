@@ -3,17 +3,15 @@
     <el-form-item label="用户昵称" prop="nickName">
       <el-input v-model="user.nickName" maxlength="30" />
     </el-form-item>
-    <el-form-item label="手机号码" prop="phonenumber">
-      <el-input v-model="user.phonenumber" maxlength="11" />
+    <el-form-item label="手机号码" prop="userMobile">
+      <el-input v-model="user.userMobile" maxlength="11" />
     </el-form-item>
     <el-form-item label="邮箱" prop="email">
       <el-input v-model="user.email" maxlength="50" />
     </el-form-item>
     <el-form-item label="性别">
-      <el-radio-group v-model="user.sex">
-        <el-radio label="0">男</el-radio>
-        <el-radio label="1">女</el-radio>
-      </el-radio-group>
+      <!-- 排除掉未知-->
+      <dict-radio v-model="user.sex" dict-type="sys_user_sex" :exclude="['3']" />
     </el-form-item>
     <el-form-item>
       <el-button type="primary" size="mini" @click="submit">保存</el-button>
@@ -28,7 +26,8 @@ import { updateUserProfile } from '@/api/system/user'
 export default {
   props: {
     user: {
-      type: Object
+      type: Object,
+      default: {}
     }
   },
   data() {
@@ -36,23 +35,15 @@ export default {
       // 表单校验
       rules: {
         nickName: [
-          { required: true, message: '用户昵称不能为空', trigger: 'blur' }
+          this.$validator.requiredRule('用户昵称不能为空')
         ],
         email: [
-          { required: true, message: '邮箱地址不能为空', trigger: 'blur' },
-          {
-            type: 'email',
-            message: '请输入正确的邮箱地址',
-            trigger: ['blur', 'change']
-          }
+          this.$validator.requiredRule('邮箱地址不能为空'),
+          this.$validator.emailRule('请输入正确的邮箱地址')
         ],
-        phonenumber: [
-          { required: true, message: '手机号码不能为空', trigger: 'blur' },
-          {
-            pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
-            message: '请输入正确的手机号码',
-            trigger: 'blur'
-          }
+        userMobile: [
+          this.$validator.requiredRule('手机号码不能为空'),
+          this.$validator.mobileRule('请输入正确的手机号码')
         ]
       }
     }
@@ -60,10 +51,18 @@ export default {
 
   methods: {
     submit() {
-      this.$refs['form'].validate(valid => {
+      this.$refs.form.validate(valid => {
         if (valid) {
-          updateUserProfile(this.user).then(response => {
-            this.$modal.msgSuccess('修改成功')
+          const data = {
+            id: this.user.id,
+            nickName: this.user.nickName,
+            userMobile: this.user.userMobile,
+            email: this.user.email,
+            sex: this.user.sex,
+            orgId: this.user.orgId
+          }
+          updateUserProfile(data).then(res => {
+            this.$modal.success('修改成功')
           })
         }
       })

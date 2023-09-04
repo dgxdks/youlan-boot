@@ -1,17 +1,21 @@
 package com.youlan.system.service.biz;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.youlan.common.core.helper.ListHelper;
 import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.db.enums.DBStatus;
+import com.youlan.common.db.helper.DBHelper;
 import com.youlan.system.entity.Menu;
 import com.youlan.system.entity.Role;
+import com.youlan.system.entity.UserRole;
+import com.youlan.system.entity.dto.UserRolePageDTO;
+import com.youlan.system.entity.vo.UserVO;
 import com.youlan.system.enums.MenuType;
 import com.youlan.system.helper.SystemAuthHelper;
-import com.youlan.system.service.MenuService;
-import com.youlan.system.service.RoleMenuService;
-import com.youlan.system.service.RoleOrgService;
-import com.youlan.system.service.RoleService;
+import com.youlan.system.service.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,6 +34,7 @@ public class RoleBizService {
     private final RoleService roleService;
     private final RoleOrgService roleOrgService;
     private final RoleMenuService roleMenuService;
+    private final UserRoleService userRoleService;
     private final MenuService menuService;
 
     /**
@@ -76,7 +81,7 @@ public class RoleBizService {
         //删除角色字符缓存,虽然没有删除与此角色ID关联的用户，但是由于删除角色字符缓存会触发二次查库加载，查不到也就自然没有权限
         //每个用户缓存的角色ID会在token到期后自动清除
         for (String roleStr : roleStrList) {
-            SystemAuthHelper.removeMenuPermsList(roleStr);
+            SystemAuthHelper.cleanUserMenuPerms(roleStr);
         }
         return true;
     }
@@ -90,6 +95,44 @@ public class RoleBizService {
         role.setMenuIdList(roleMenuService.getMenuIdListByRoleId(id));
         role.setOrgIdList(roleOrgService.getOrgIdListByRoleId(id));
         return role;
+    }
+
+    /**
+     * 用户角色授权分页
+     */
+    public IPage<UserVO> getAuthUserPageList(UserRolePageDTO dto) {
+        return userRoleService.getBaseMapper().getAuthUserList(DBHelper.getIPage(dto), dto);
+    }
+
+    /**
+     * 用户角色未授权分页
+     */
+    public IPage<UserVO> getUnAuthUserPageList(UserRolePageDTO dto) {
+        return userRoleService.getBaseMapper().getUnAuthUserList(DBHelper.getIPage(dto), dto);
+    }
+
+    /**
+     * 用户角色授权取消
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void cancelAuthUser(Long roleId, List<Long> userIds) {
+        String roleStr = roleService.getRoleStr(roleId);
+        LambdaQueryWrapper<UserRole> queryWrapper = Wrappers.<UserRole>lambdaQuery()
+                .eq(UserRole::getRoleId, roleId).in(UserRole::getUserId, userIds);
+        userRoleService.remove(queryWrapper);
+        // 删除用户对应的角色信息
+        userIds.forEach(userId -> SystemAuthHelper.removeUserRole(userId, roleStr));
+    }
+
+    /**
+     * 用户角色授权新增
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void addAuthUser(Long roleId, List<Long> userIds) {
+        String roleStr = roleService.getRoleStr(roleId);
+        userRoleService.addUserRoleBatch(userIds, roleId);
+        //
+        userIds.forEach(userId -> SystemAuthHelper.addUserRole(userId, roleStr));
     }
 
     /**

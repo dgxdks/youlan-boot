@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,6 +21,21 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class UserRoleService extends BaseServiceImpl<UserRoleMapper, UserRole> {
+
+    /**
+     * 新增用户关联角色信息
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void addUserRoleBatch(List<Long> userIds, Long roleId) {
+        if (CollectionUtil.isEmpty(userIds)) {
+            return;
+        }
+        List<UserRole> userRoleList = userIds.stream()
+                .map(userId -> toUserRoleList(userId, Collections.singletonList(roleId)))
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+        this.saveBatch(userRoleList);
+    }
 
     /**
      * 新增用户关联角色信息
@@ -50,7 +67,7 @@ public class UserRoleService extends BaseServiceImpl<UserRoleMapper, UserRole> {
     /**
      * 根据用户ID查询用户关联角色列表
      */
-    public List<UserRole> getListByUserId(Long userId) {
+    public List<UserRole> getUserRoleListByUserId(Long userId) {
         return this.lambdaQuery().eq(UserRole::getUserId, userId).list();
     }
 
@@ -58,7 +75,7 @@ public class UserRoleService extends BaseServiceImpl<UserRoleMapper, UserRole> {
      * 根据用户ID查询用户关联角色ID列表
      */
     public List<Long> getRoleIdListByUserId(Long userId) {
-        return getListByUserId(userId)
+        return getUserRoleListByUserId(userId)
                 .stream()
                 .map(UserRole::getRoleId)
                 .collect(Collectors.toList());

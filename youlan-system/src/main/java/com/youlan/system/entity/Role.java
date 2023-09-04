@@ -101,7 +101,7 @@ public class Role extends PageDTO {
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 
-    @Query(type = QueryType.BETWEEN)
+    @Query(column = "create_time", type = QueryType.BETWEEN)
     @Schema(title = DBConstant.DESC_CREATE_TIME)
     @TableField(exist = false)
     private List<Date> createTimeRange;

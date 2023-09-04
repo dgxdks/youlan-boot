@@ -18,8 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
 
 import static com.youlan.common.db.constant.DBConstant.VAL_STATUS_ENABLED;
 
@@ -29,15 +28,15 @@ import static com.youlan.common.db.constant.DBConstant.VAL_STATUS_ENABLED;
 public class OrgService extends BaseServiceImpl<OrgMapper, Org> {
 
     /**
-     * 根据机构ID列表获取机构ID和机构名称映射关系
+     * 根据机构ID获取机构名称
      */
-    public Map<Long, String> getOrgIdOrgNameMap(Collection<Long> orgIdList) {
-        Set<Long> orgIdSet = new HashSet<>(orgIdList);
-        List<Org> orgList = this.lambdaQuery()
+    public String getOrgNameByOrgId(Long ordId) {
+        Org org = this.lambdaQuery()
                 .select(Org::getOrgId, Org::getOrgName)
-                .in(Org::getOrgId, orgIdSet)
-                .list();
-        return orgList.stream().collect(Collectors.toMap(Org::getOrgId, Org::getOrgName));
+                .eq(Org::getOrgId, ordId)
+                .oneOpt()
+                .orElseThrow(ApiResultCode.D0001::getException);
+        return org.getOrgName();
     }
 
     /**
@@ -46,13 +45,6 @@ public class OrgService extends BaseServiceImpl<OrgMapper, Org> {
     public Org loadOrgIfExist(Long orgId) {
         return this.loadOneOpt(orgId)
                 .orElseThrow(ApiResultCode.D0001::getException);
-    }
-
-    /**
-     * 查询机构详情
-     */
-    public Org loadOrgByOrgName(String orgName) {
-        return this.loadOne(Org::getOrgName, orgName);
     }
 
     /**

@@ -71,47 +71,38 @@ export function removeRole(params) {
   })
 }
 
-// 查询角色已授权用户列表
-export function getAllocatedUserPageList(data) {
+// 授权用户分页
+export function getAuthUserPageList(data) {
   return request({
-    url: '/system/role/authUser/getAllocatedUserPageList',
+    url: '/system/role/getAuthUserPageList',
     method: 'post',
     data
   })
 }
 
-// 查询角色未授权用户列表
-export function getUnallocatedUserPageList(data) {
+// 未授权用户分页
+export function getUnAuthUserPageList(data) {
   return request({
-    url: '/system/role/authUser/getUnallocatedUserPageList',
+    url: '/system/role/getUnAuthUserPageList',
     method: 'post',
     data
   })
 }
 
-// 取消用户授权角色
-export function authUserCancel(data) {
+// 授权用户取消
+export function cancelAuthUser(params) {
   return request({
-    url: '/system/role/authUser/cancel',
-    method: 'put',
-    data: data
+    url: '/system/role/cancelAuthUser',
+    method: 'post',
+    params
   })
 }
 
-// 批量取消用户授权角色
-export function authUserCancelAll(data) {
+// 授权用户新增
+export function addAuthUser(params) {
   return request({
-    url: '/system/role/authUser/cancelAll',
-    method: 'put',
-    params: data
-  })
-}
-
-// 授权用户选择
-export function authUserSelectAll(data) {
-  return request({
-    url: '/system/role/authUser/selectAll',
-    method: 'put',
-    params: data
+    url: '/system/role/addAuthUser',
+    method: 'post',
+    params
   })
 }

@@ -4,20 +4,48 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.youlan.system.mapper.UserRoleMapper">
 
-    <select id="getUserListByRoleId" resultType="com.youlan.system.entity.User">
-        select u.*
-        from t_sys_user_role ur
-        left join t_sys_user as u on u.id = ur.user_id
-        where u.sts = '1'
-        and ur.role_id = #{dto.roleId}
+    <select id="getAuthUserList" resultType="com.youlan.system.entity.vo.UserVO">
+        select user.*
+        from t_sys_user_role as user_role
+        left join t_sys_user as user on user.id = user_role.user_id
+        where user.sts = '1'
+        and user_role.role_id = #{dto.roleId}
         <if test="dto.status != null and dto.status != ''">
-            and u.status = #{dto.status}
+            and user.status = #{dto.status}
         </if>
         <if test="dto.userName != null and dto.userName != ''">
-            and u.user_name like concat('%', #{dto.userName} ,'%')
+            and user.user_name like concat('%', #{dto.userName} ,'%')
         </if>
         <if test="dto.userMobile != null and dto.userMobile != ''">
-            and u.user_mobile like concat('%', #{dto.userMobile}, '%')
+            and user.user_mobile like concat('%', #{dto.userMobile}, '%')
         </if>
+    </select>
+
+    <select id="getUnAuthUserList" resultType="com.youlan.system.entity.vo.UserVO">
+        select user.*
+        from t_sys_user_role as user_role
+        left join t_sys_user as user on user.id = user_role.user_id
+        where user.sts = '1'
+        and user_role.role_id != #{dto.roleId}
+        and user_role.user_id not in (select user_id from t_sys_user_role where role_id = #{dto.roleId})
+        <if test="dto.status != null and dto.status != ''">
+            and user.status = #{dto.status}
+        </if>
+        <if test="dto.userName != null and dto.userName != ''">
+            and user.user_name like concat('%', #{dto.userName} ,'%')
+        </if>
+        <if test="dto.userMobile != null and dto.userMobile != ''">
+            and user.user_mobile like concat('%', #{dto.userMobile}, '%')
+        </if>
+    </select>
+
+    <select id="getRoleNameListByUserId" resultType="java.lang.String">
+        select role.role_name
+        from t_sys_user_role as user_role
+                 left join t_sys_role as role on role.id = user_role.role_id
+                 left join t_sys_user as user on user.id = user_role.user_id
+        where user.sts = '1'
+          and role.status = '1'
+          and user_role.user_id = #{userId}
     </select>
 </mapper>

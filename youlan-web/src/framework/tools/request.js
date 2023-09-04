@@ -21,6 +21,16 @@ service.interceptors.request.use(config => {
     // 让每个请求携带自定义token 请根据实际情况自行修改
     config.headers[store.state.tokenName] = tokenValuePrefix + store.state.tokenValue
   }
+  // 格式化GET请求参数
+  if (config.params) {
+    for (const key of Object.keys(config.params)) {
+      const value = config.params[key]
+      // 数组需要格式化
+      if (ObjectUtil.isArray(value)) {
+        config.params[key] = value + ''
+      }
+    }
+  }
   // 如果不允许重复提交则需要判断请求
   if (!requestCanRepeatSubmit && (config.method === 'post' || config.method === 'put')) {
     const submitInfo = {

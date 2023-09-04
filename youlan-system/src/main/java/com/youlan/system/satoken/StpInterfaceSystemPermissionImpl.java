@@ -15,7 +15,7 @@ public class StpInterfaceSystemPermissionImpl implements StpInterface {
     public List<String> getPermissionList(Object loginId, String loginType) {
         List<String> roleStrList = getRoleList(loginId, loginType);
         return roleStrList.stream()
-                .map(SystemAuthHelper::getMenuPermsList)
+                .map(SystemAuthHelper::getUserMenuPerms)
                 .flatMap(Collection::stream)
                 .distinct()
                 .collect(Collectors.toList());

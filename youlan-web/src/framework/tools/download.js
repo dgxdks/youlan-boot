@@ -1,5 +1,5 @@
 import request from '@/framework/tools/request'
-import { ModalUtil, ObjectUtil, StrUtil } from '@/framework/tools/index'
+import { EnvUtil, ModalUtil, ObjectUtil, StrUtil, UrlUtil } from '@/framework/tools/index'
 import saveAs from 'file-saver'
 
 function download(config, fileName) {
@@ -59,8 +59,29 @@ export default {
       data
     }, fileName)
   },
-  saveAs(blob, fileName, opts) {
+  saveAsFile(blob, fileName, opts) {
     saveAs(blob, fileName, opts)
+  },
+  saveFileAsUrl(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = () => {
+        resolve(reader.result)
+      }
+      reader.onerror = (error) => {
+        reject(error)
+      }
+    })
+  },
+  parseDownloadUrl(url) {
+    if (StrUtil.isBlank(url)) {
+      return url
+    }
+    if (UrlUtil.isHttpUrl(url)) {
+      return url
+    }
+    return StrUtil.removeSlashRight(EnvUtil.getBaseApi()) + '/system/storage/download/url/' + StrUtil.removeSlashLeft(url)
   }
 }
 

@@ -1,8 +1,6 @@
 package com.youlan.system.service.biz;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.date.DateTime;
-import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
@@ -47,18 +45,18 @@ public class StorageBizService {
      * 上传文件
      */
     public StorageRecord upload(MultipartFile file, String platform) {
+        UploadPretreatment uploadPretreatment = createUploadPretreatment(file, platform);
+        return doUploadPretreatment(uploadPretreatment);
+    }
+
+    /**
+     * 执行上传预处理
+     */
+    public StorageRecord doUploadPretreatment(UploadPretreatment uploadPretreatment) {
         try {
-            StorageConfig storageConfig;
-            //未指定平台则取默认存储配置
-            if (StrUtil.isNotBlank(platform)) {
-                storageConfig = storageConfigBizService.getStorageConfigIfExist(platform);
-            } else {
-                storageConfig = storageConfigBizService.getDefaultStorageConfigIfExist();
-            }
-            UploadPretreatment uploadPretreatment = StorageHelper.of(file, storageConfig.getPlatform(), () -> createStorageContext(storageConfig));
             //本地存储模式下存储的文件如果较多且都放在同一个目录下则会出现目录”打不开删不掉“的风险，所以在生成存储目录时增加分层目录
             //生成规则按照 年/月/日/时，如果一个小时下还会产生大量文件还是建议走对象存储
-            if (StorageType.LOCAL == storageConfig.getType()) {
+            if (StorageType.LOCAL.getCode().equals(uploadPretreatment.getPlatform())) {
                 String path = DateUtil.format(new Date(), "yyyy/MM/dd/HH/");
                 uploadPretreatment.setPath(path);
             }
@@ -233,5 +231,40 @@ public class StorageBizService {
             fileInfo.setThFileAcl(JSONUtil.parse(storageRecord.getThFileAcl()));
         }
         return fileInfo;
+    }
+
+    /**
+     * 根据平台名称获取对应存储配置
+     */
+    public StorageConfig getStorageConfig(String platform) {
+        //未指定平台则取默认存储配置
+        if (StrUtil.isNotBlank(platform)) {
+            return storageConfigBizService.getStorageConfigIfExist(platform);
+        } else {
+            return storageConfigBizService.getDefaultStorageConfigIfExist();
+        }
+    }
+
+    /**
+     * 创建文件上传预处理对象
+     */
+    public UploadPretreatment createUploadPretreatment(MultipartFile file) {
+        StorageConfig storageConfig = getStorageConfig(null);
+        return createUploadPretreatment(file, storageConfig);
+    }
+
+    /**
+     * 创建文件上传预处理对象
+     */
+    public UploadPretreatment createUploadPretreatment(MultipartFile file, String platform) {
+        StorageConfig storageConfig = getStorageConfig(platform);
+        return createUploadPretreatment(file, storageConfig);
+    }
+
+    /**
+     * 创建文件上传预处理对象
+     */
+    public UploadPretreatment createUploadPretreatment(MultipartFile file, StorageConfig storageConfig) {
+        return StorageHelper.of(file, storageConfig.getPlatform(), () -> createStorageContext(storageConfig));
     }
 }

@@ -50,16 +50,16 @@ create table t_sys_dept
     primary key (id)
 ) auto_increment = 100 comment '部门表';
 insert into t_sys_dept(org_id, leader, phone, email, create_id, create_by, create_time)
-values (100, '幽兰', '1888888888', 'yl@youlan.com', 100, 'admin', sysdate()),
-       (101, '幽兰', '1888888888', 'yl@youlan.com', 100, 'admin', sysdate()),
-       (102, '幽兰', '1888888888', 'yl@youlan.com', 100, 'admin', sysdate()),
-       (103, '幽兰', '1888888888', 'yl@youlan.com', 100, 'admin', sysdate()),
-       (104, '幽兰', '1888888888', 'yl@youlan.com', 100, 'admin', sysdate()),
-       (105, '幽兰', '1888888888', 'yl@youlan.com', 100, 'admin', sysdate()),
-       (106, '幽兰', '1888888888', 'yl@youlan.com', 100, 'admin', sysdate()),
-       (107, '幽兰', '1888888888', 'yl@youlan.com', 100, 'admin', sysdate()),
-       (108, '幽兰', '1888888888', 'yl@youlan.com', 100, 'admin', sysdate()),
-       (109, '幽兰', '1888888888', 'yl@youlan.com', 100, 'admin', sysdate());
+values (100, '幽兰', '18888888888', 'yl@youlan.com', 100, 'admin', sysdate()),
+       (101, '幽兰', '18888888888', 'yl@youlan.com', 100, 'admin', sysdate()),
+       (102, '幽兰', '18888888888', 'yl@youlan.com', 100, 'admin', sysdate()),
+       (103, '幽兰', '18888888888', 'yl@youlan.com', 100, 'admin', sysdate()),
+       (104, '幽兰', '18888888888', 'yl@youlan.com', 100, 'admin', sysdate()),
+       (105, '幽兰', '18888888888', 'yl@youlan.com', 100, 'admin', sysdate()),
+       (106, '幽兰', '18888888888', 'yl@youlan.com', 100, 'admin', sysdate()),
+       (107, '幽兰', '18888888888', 'yl@youlan.com', 100, 'admin', sysdate()),
+       (108, '幽兰', '18888888888', 'yl@youlan.com', 100, 'admin', sysdate()),
+       (109, '幽兰', '18888888888', 'yl@youlan.com', 100, 'admin', sysdate());
 
 -- ----------------------------
 -- 用户表
@@ -91,9 +91,9 @@ create table t_sys_user
 ) auto_increment = 100 comment '用户表';
 insert into t_sys_user(id, org_id, user_name, user_password, user_mobile, nick_name, email, sex, create_id,
                        create_by, create_time)
-values (100, 100, 'admin', '$2a$10$a.PsU/F7gk0OMVj8NJsg3.aPBFrwtxc25T9t9lgMMnuRg00ev7nGK', '1888888888', '超级管理员',
+values (100, 100, 'admin', '$2a$10$a.PsU/F7gk0OMVj8NJsg3.aPBFrwtxc25T9t9lgMMnuRg00ev7nGK', '18888888888', '超级管理员',
         'yl@youlan.com', '1', 100, 'admin', sysdate()),
-       (101, 100, 'youlan', '$2a$10$a.PsU/F7gk0OMVj8NJsg3.aPBFrwtxc25T9t9lgMMnuRg00ev7nGK', '1888888888', '后台用户',
+       (101, 100, 'youlan', '$2a$10$a.PsU/F7gk0OMVj8NJsg3.aPBFrwtxc25T9t9lgMMnuRg00ev7nGK', '18888888888', '普通用户',
         'yl@youlan.com', '1', 100, 'admin', sysdate());
 
 -- ----------------------------
@@ -134,6 +134,8 @@ create table t_sys_user_post
     post_id bigint not null comment '岗位ID',
     primary key (id)
 ) auto_increment = 100 comment '用户关联岗位表';
+insert into t_sys_user_post(user_id, post_id)
+values (100, 100);
 
 -- ----------------------------
 -- 角色表

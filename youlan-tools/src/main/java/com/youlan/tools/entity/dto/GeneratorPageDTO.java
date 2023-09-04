@@ -24,7 +24,7 @@ public class GeneratorPageDTO extends PageDTO {
     @Schema(title = "表描述")
     private String tableComment;
 
-    @Query(type = QueryType.BETWEEN)
+    @Query(column = "create_time", type = QueryType.BETWEEN)
     @Schema(title = "创建时间")
     private List<Date> createTimeRange;
 

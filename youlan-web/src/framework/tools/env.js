@@ -4,5 +4,8 @@ export default {
   },
   isProdEnv() {
     return process.env.NODE_ENV === 'production'
+  },
+  getBaseApi() {
+    return process.env.VUE_APP_BASE_API
   }
 }

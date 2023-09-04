@@ -93,7 +93,12 @@ public class UserVO {
     @Schema(title = "用户角色ID列表")
     private List<Long> roleIdList;
 
-    @Schema(title = "用户关联岗位列表")
+    @Schema(title = "用户关联岗位ID列表")
     private List<Long> postIdList;
 
+    @Schema(title = "用户关联岗位名称列表")
+    private List<String> postNameList;
+
+    @Schema(title = "用户关联角色名称列表")
+    private List<String> roleNameList;
 }

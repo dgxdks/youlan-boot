@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.youlan.common.core.exception.BizRuntimeException;
+import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.db.service.BaseServiceImpl;
 import com.youlan.system.entity.Role;
 import com.youlan.system.mapper.RoleMapper;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,6 +34,17 @@ public class RoleService extends BaseServiceImpl<RoleMapper, Role> {
                 .map(Role::getRoleStr)
                 .distinct()
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * 根据角色ID获取权限字符
+     */
+    public String getRoleStr(Long roleId) {
+        List<String> roleStrList = getRoleStrList(Collections.singletonList(roleId));
+        if (CollectionUtil.isEmpty(roleStrList)) {
+            throw new BizRuntimeException(ApiResultCode.A0017);
+        }
+        return CollectionUtil.getFirst(roleStrList);
     }
 
     /**

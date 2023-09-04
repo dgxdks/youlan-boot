@@ -1,8 +1,10 @@
 package com.youlan.system.service;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.BCrypt;
 import com.youlan.common.core.exception.BizRuntimeException;
+import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.core.servlet.helper.ServletHelper;
 import com.youlan.common.db.constant.DBConstant;
 import com.youlan.common.db.service.BaseServiceImpl;
@@ -37,7 +39,7 @@ public class UserService extends BaseServiceImpl<UserMapper, User> {
      * 如果用户存在返回用户信息
      */
     public User loadUserIfExist(Long userId) {
-        return this.loadOneOpt(userId).orElseThrow(() -> new BizRuntimeException("用户信息不存在"));
+        return this.loadOneOpt(userId).orElseThrow(() -> new BizRuntimeException(ApiResultCode.A0018));
     }
 
     /**
@@ -105,7 +107,29 @@ public class UserService extends BaseServiceImpl<UserMapper, User> {
         }
         for (User retUser : userList) {
             if (!retUser.getId().equals(user.getId())) {
-                throw new BizRuntimeException("用户名已存在");
+                throw new BizRuntimeException(ApiResultCode.A0019);
+            }
+        }
+    }
+
+    /**
+     * 校验手机号是否重复
+     */
+    public void checkUserMobileRepeat(User user) {
+        String userMobile = user.getUserMobile();
+        if (StrUtil.isBlank(userMobile)) {
+            return;
+        }
+        List<User> userList = this.lambdaQuery()
+                .select(User::getId)
+                .eq(User::getUserMobile, userMobile)
+                .list();
+        if (CollectionUtil.isEmpty(userList)) {
+            return;
+        }
+        for (User retUser : userList) {
+            if (!retUser.getId().equals(user.getId())) {
+                throw new BizRuntimeException(ApiResultCode.A0020);
             }
         }
     }

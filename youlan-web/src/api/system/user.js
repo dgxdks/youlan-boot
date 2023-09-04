@@ -64,9 +64,9 @@ export function updateUserStatus(params) {
 }
 
 // 查询用户个人信息
-export function getUserProfile() {
+export function loadUserProfile() {
   return request({
-    url: '/system/user/profile',
+    url: '/system/user/profile/loadUserProfile',
     method: 'get'
   })
 }
@@ -74,9 +74,18 @@ export function getUserProfile() {
 // 修改用户个人信息
 export function updateUserProfile(data) {
   return request({
-    url: '/system/user/profile',
-    method: 'put',
-    data: data
+    url: '/system/user/profile/updateUserProfile',
+    method: 'post',
+    data
+  })
+}
+
+// 修改用户密码
+export function updateUserPasswd(data) {
+  return request({
+    url: '/system/user/profile/updateUserPasswd',
+    method: 'post',
+    data
   })
 }
 
@@ -103,13 +112,5 @@ export function updateAuthRole(data) {
     url: '/system/user/authRole',
     method: 'put',
     params: data
-  })
-}
-
-// 查询部门下拉树结构
-export function deptTreeSelect() {
-  return request({
-    url: '/system/user/deptTree',
-    method: 'get'
   })
 }

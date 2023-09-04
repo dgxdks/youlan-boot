@@ -68,12 +68,12 @@
       :total="pageTotal"
       @pagination="getList"
     />
-    <select-user ref="select" :role-id="queryForm.roleId" @ok="handleQuery" />
+    <select-user ref="select" :role-id="queryForm.roleId" @addUser="handleQuery" />
   </div>
 </template>
 
 <script>
-import { authUserCancel, authUserCancelAll, getAllocatedUserPageList } from '@/api/system/role'
+import { cancelAuthUser, getAuthUserPageList } from '@/api/system/role'
 import selectUser from './selectUser'
 import crud from '@/framework/mixin/crud'
 
@@ -108,7 +108,7 @@ export default {
     // 列表查询
     getList() {
       this.openTableLoading()
-      getAllocatedUserPageList(this.queryForm).then(res => {
+      getAuthUserPageList(this.queryForm).then(res => {
         this.userList = res.rows
         this.pageTotal = res.total
         this.closeTableLoading()
@@ -141,7 +141,7 @@ export default {
     handleCancelAuthUser(row) {
       const roleId = this.queryForm.roleId
       this.$modal.confirm('确认要取消该用户"' + row.userName + '"角色吗？').then(function() {
-        return authUserCancel({ userId: row.userId, roleId: roleId })
+        return cancelAuthUser({ userIds: [row.id], roleId })
       }).then(() => {
         this.getList()
         this.$modal.success('取消授权成功')
@@ -151,14 +151,15 @@ export default {
     },
     // 批量取消授权按钮
     handleCancelAuthUserBatch(row) {
-      const roleId = this.queryParams.roleId
-      const userIds = this.userIds.join(',')
+      const roleId = this.queryForm.roleId
+      const _this = this
       this.$modal.confirm('是否取消选中用户授权数据项？').then(function() {
-        return authUserCancelAll({ roleId: roleId, userIds: userIds })
+        return cancelAuthUser({ roleId, userIds: _this.tableIds })
       }).then(() => {
         this.getList()
         this.$modal.success('取消授权成功')
-      }).catch(() => {
+      }).catch(error => {
+        console.log(error)
       })
     }
   }

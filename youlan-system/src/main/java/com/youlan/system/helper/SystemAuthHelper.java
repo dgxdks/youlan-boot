@@ -6,6 +6,7 @@ import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.core.restful.enums.ApiResultCode;
@@ -13,6 +14,7 @@ import com.youlan.system.entity.auth.SystemAuthInfo;
 import com.youlan.system.service.RoleMenuService;
 import com.youlan.system.service.RoleService;
 import com.youlan.system.service.UserRoleService;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,6 +23,7 @@ import java.util.Set;
 
 import static com.youlan.system.constant.SystemConstant.*;
 
+@Slf4j
 public class SystemAuthHelper {
     public static final String ROLE_STR_PREFIX = "sys-role-";
     private static final RoleService roleService = SpringUtil.getBean(RoleService.class);
@@ -104,6 +107,16 @@ public class SystemAuthHelper {
     }
 
     /**
+     * 根据用户ID获取关联token列表
+     */
+    public static List<String> getTokenValueList(Long userId) {
+        if (ObjectUtil.isNull(userId)) {
+            return new ArrayList<>();
+        }
+        return StpUtil.getTokenValueListByLoginId(userId);
+    }
+
+    /**
      * 判断是否是超级管理员用户
      */
     public static boolean isAdmin() {
@@ -175,6 +188,13 @@ public class SystemAuthHelper {
     }
 
     /**
+     * 校验当前用户是否有此用户数据权限
+     */
+    public static void checkHasUserIds(List<Long> userIds) {
+
+    }
+
+    /**
      * 当前用户是否有此用户数据权限
      */
     public static boolean hasUserId(Long userId) {
@@ -222,17 +242,66 @@ public class SystemAuthHelper {
     }
 
     /**
-     * 根据用户ID删除用户对应角色的缓存字符信息
+     * 根据用户ID清除用户对应角色信息
      */
-    public static void removeRoleStrList(Long userId) {
-        SaSession session = SystemAuthHelper.getTokenSession();
-        session.delete(SaSession.ROLE_LIST);
+    public static void cleanUserRole(Long userId) {
+        List<String> tokenValueList = getTokenValueList(userId);
+        tokenValueList.forEach(tokenValue -> {
+            try {
+                SaSession session = StpUtil.getTokenSessionByToken(tokenValue);
+                session.delete(SaSession.ROLE_LIST);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+        });
+    }
+
+    /**
+     * 根据用户ID删除用户对应角色信息
+     */
+    public static void removeUserRole(Long userId, String roleStr) {
+        if (StrUtil.isBlank(roleStr)) {
+            return;
+        }
+        List<String> tokenValueList = getTokenValueList(userId);
+        tokenValueList.forEach(tokenValue -> {
+            //使用try/catch尽可能清除角色
+            try {
+                SaSession session = StpUtil.getTokenSessionByToken(tokenValue);
+                Object roleListObj = session.get(SaSession.ROLE_LIST);
+                ((List<String>) roleListObj).remove(roleStr);
+                session.set(SaSession.ROLE_LIST, roleListObj);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+        });
+    }
+
+    /**
+     * 根据用户ID新增用户对应角色信息
+     */
+    public static void addUserRole(Long userId, String roleStr) {
+        if (StrUtil.isBlank(roleStr)) {
+            return;
+        }
+        List<String> tokenValueList = getTokenValueList(userId);
+        tokenValueList.forEach(tokenValue -> {
+            //使用try/catch尽可能清除角色
+            try {
+                SaSession session = StpUtil.getTokenSessionByToken(tokenValue);
+                Object roleListObj = session.get(SaSession.ROLE_LIST);
+                ((List<String>) roleListObj).add(roleStr);
+                session.set(SaSession.ROLE_LIST, roleListObj);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+        });
     }
 
     /**
      * 获取菜单权限缓存(如果是超级管理员则返回匹配所有的权限字符)
      */
-    public static List<String> getMenuPermsList(Long userId) {
+    public static List<String> getUserMenuPerms(Long userId) {
         if (isAdmin(userId)) {
             return Collections.singletonList(ADMIN_PERM_STR);
         }
@@ -243,7 +312,7 @@ public class SystemAuthHelper {
     /**
      * 获取菜单权限缓存(如果是超级管理员则返回匹配所有的权限字符)
      */
-    public static List<String> getMenuPermsList(String roleStr) {
+    public static List<String> getUserMenuPerms(String roleStr) {
         SaSession session = SaSessionCustomUtil.getSessionById(ROLE_STR_PREFIX + roleStr);
         return session.get(SaSession.PERMISSION_LIST, () -> {
             if (isAdminRoleStr(roleStr)) {
@@ -256,7 +325,7 @@ public class SystemAuthHelper {
     /**
      * 清除菜单权限缓存
      */
-    public static void removeMenuPermsList(String roleStr) {
+    public static void cleanUserMenuPerms(String roleStr) {
         SaSession session = SaSessionCustomUtil.getSessionById(ROLE_STR_PREFIX + roleStr);
         session.delete(SaSession.PERMISSION_LIST);
     }

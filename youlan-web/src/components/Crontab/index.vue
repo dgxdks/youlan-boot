@@ -166,7 +166,7 @@ export default {
         obj.month +
         ' ' +
         obj.week +
-        (obj.year == '' ? '' : ' ' + obj.year)
+        (obj.year === '' ? '' : ' ' + obj.year)
       return str
     }
   },
@@ -181,8 +181,7 @@ export default {
   },
   methods: {
     shouldHide(key) {
-      if (this.hideComponent && this.hideComponent.includes(key)) return false
-      return true
+      return !(this.hideComponent && this.hideComponent.includes(key))
     },
     resolveExp() {
       // 反解析 表达式

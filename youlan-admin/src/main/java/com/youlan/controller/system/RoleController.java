@@ -17,7 +17,6 @@ import com.youlan.system.helper.SystemAuthHelper;
 import com.youlan.system.service.RoleService;
 import com.youlan.system.service.UserRoleService;
 import com.youlan.system.service.biz.RoleBizService;
-import com.youlan.system.service.biz.UserBizService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -35,7 +34,7 @@ import java.util.List;
 public class RoleController extends BaseController {
     private final RoleService roleService;
     private final RoleBizService roleBizService;
-    private final UserBizService userBizService;
+    private final UserRoleService userRoleService;
 
     @SaCheckPermission("system:role:add")
     @Operation(summary = "角色新增")
@@ -132,24 +131,44 @@ public class RoleController extends BaseController {
     }
 
     @SaCheckPermission("system:role:list")
-    @Operation(summary = "已分配角色用户分页")
-    @PostMapping("/authUser/getAllocatedUserPageList")
-    public ApiResult getAllocatedPageList(@RequestBody UserRolePageDTO dto) {
+    @Operation(summary = "授权用户分页")
+    @PostMapping("/getAuthUserPageList")
+    public ApiResult getAuthUserPageList(@RequestBody UserRolePageDTO dto) {
         if (ObjectUtil.isNull(dto.getRoleId())) {
             return toError(ApiResultCode.A0017);
         }
         SystemAuthHelper.checkHasRoleId(dto.getRoleId());
-        return toSuccess(userBizService.getRoleAllocatedUserPageList(dto));
+        return toSuccess(roleBizService.getAuthUserPageList(dto));
     }
 
     @SaCheckPermission("system:role:list")
-    @Operation(summary = "未分配角色用户分页")
-    @PostMapping("/authUser/getUnallocatedUserPageList")
-    public ApiResult getUnallocatedPageList(@RequestBody UserRolePageDTO dto) {
+    @Operation(summary = "未授权用户分页")
+    @PostMapping("/getUnAuthUserPageList")
+    public ApiResult getUnAuthUserPageList(@RequestBody UserRolePageDTO dto) {
         if (ObjectUtil.isNull(dto.getRoleId())) {
             return toError(ApiResultCode.A0017);
         }
         SystemAuthHelper.checkHasRoleId(dto.getRoleId());
-        return null;
+        return toSuccess(roleBizService.getUnAuthUserPageList(dto));
+    }
+
+    @SaCheckPermission("system:role:update")
+    @Operation(summary = "授权用户取消")
+    @PostMapping("/cancelAuthUser")
+    public ApiResult cancelAuthUser(@RequestParam Long roleId, @RequestParam List<Long> userIds) {
+        SystemAuthHelper.checkHasRoleId(roleId);
+        SystemAuthHelper.checkHasUserIds(userIds);
+        roleBizService.cancelAuthUser(roleId, userIds);
+        return toSuccess();
+    }
+
+    @SaCheckPermission("system:role:update")
+    @Operation(summary = "授权用户新增")
+    @PostMapping("/addAuthUser")
+    public ApiResult addAuthUser(@RequestParam Long roleId, @RequestParam List<Long> userIds) {
+        SystemAuthHelper.checkHasRoleId(roleId);
+        SystemAuthHelper.checkHasUserIds(userIds);
+        roleBizService.addAuthUser(roleId, userIds);
+        return toSuccess();
     }
 }

@@ -3,4 +3,15 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.youlan.system.mapper.UserPostMapper">
+
+    <select id="getPostNameListByUserId" resultType="java.lang.String">
+        select post.post_name
+        from t_sys_user_post as user_post
+                 left join t_sys_post as post on post.id = user_post.post_id
+                 left join t_sys_user as user on user.id = user_post.user_id
+        where user.sts = '1'
+          and post.status = '1'
+          and user_post.user_id = #{userId}
+    </select>
+
 </mapper>

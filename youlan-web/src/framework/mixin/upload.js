@@ -138,12 +138,13 @@ export default {
     },
     httpRequest(context) {
       const { action } = context
-      const formParams = {
-        platform: this.$str.isNotBlank(this.platform) ? this.platform : null,
-        [this.fileName]: context.file,
-        ...this.formData
+      const formData = new FormData()
+      formData.append('platform', this.$str.isNotBlank(this.platform) ? this.platform : null)
+      formData.append(this.fileName, context.file)
+      for (const key of this.formData) {
+        formData.append(key, this.formData[key])
       }
-      this.$upload.upload(action, formParams, this.paramsData, this.headers, { timeout: this.timeout }).then(res => {
+      this.$upload.upload(action, formData, this.paramsData, this.headers, { timeout: this.timeout }).then(res => {
         context.onSuccess(res)
       }).catch(error => {
         console.log(error)

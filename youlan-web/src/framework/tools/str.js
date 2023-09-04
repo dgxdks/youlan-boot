@@ -40,6 +40,16 @@ export default {
     }
     return url
   },
+  // 路径右侧删除/
+  removeSlashRight(url) {
+    if (!ObjectUtil.isString(url)) {
+      return url
+    }
+    if (url.endsWith('/')) {
+      return ''.substring(0, url.length)
+    }
+    return url
+  },
   // 是否包含此字符
   isContains(str, search) {
     if (this.isBlank(str) || this.isBlank(search)) {

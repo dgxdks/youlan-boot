@@ -37,18 +37,18 @@ public class UserDTO {
     @Schema(title = "用户密码")
     private String userPassword;
 
-    @Phone(message = "用户手机号码格式不正确", groups = {Insert.class, Update.class})
+    @Phone(message = "用户手机号码格式不正确")
     @Schema(title = "用户手机")
     private String userMobile;
 
-    @Xss(message = "用户昵称不能包含脚本字符", groups = {Insert.class, Update.class})
-    @NotBlank(message = "用户昵称不能为空", groups = {Insert.class, Update.class})
-    @Size(min = 1, max = 30, message = "用户昵称长度不能超过{max}个字符", groups = {Insert.class, Update.class})
+    @Xss(message = "用户昵称不能包含脚本字符")
+    @NotBlank(message = "用户昵称不能为空")
+    @Size(min = 1, max = 30, message = "用户昵称长度不能超过{max}个字符")
     @Schema(title = "用户昵称")
     private String nickName;
 
-    @Email(message = "用户邮箱格式不正确", groups = {Insert.class, Update.class})
-    @Size(min = 1, max = 50, message = "用户邮箱长度不能超过{max}个字符", groups = {Insert.class, Update.class})
+    @Email(message = "用户邮箱格式不正确")
+    @Size(min = 1, max = 50, message = "用户邮箱长度不能超过{max}个字符")
     @Schema(title = "用户邮箱")
     private String email;
 

@@ -4,36 +4,36 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.youlan.system.mapper.RoleMenuMapper">
     <select id="getMenuPermsListByRoleStr" resultType="string">
-        select m.menu_perms
-        from t_sys_role as r
-                 left join t_sys_role_menu as rm on r.id = rm.role_id
-                 left join t_sys_menu as m on rm.menu_id = m.id
-        where m.status = '1'
-          and r.status = '1'
-          and r.role_str = #{roleStr,jdbcType=VARCHAR}
+        select menu.menu_perms
+        from t_sys_role as role
+                 left join t_sys_role_menu as role_menu on role.id = role_menu.role_id
+                 left join t_sys_menu as menu on role_menu.menu_id = menu.id
+        where menu.status = '1'
+          and role.status = '1'
+          and role.role_str = #{roleStr,jdbcType=VARCHAR}
     </select>
 
     <select id="getMenuPermsListByUserId" resultType="string">
-        select m.menu_perms
-        from t_sys_user as u
-                 left join t_sys_user_role as ur on u.id = ur.user_id
-                 left join t_sys_role as r on r.id = ur.role_id
-                 left join t_sys_role_menu as rm on ur.role_id = rm.role_id
-                 left join t_sys_menu as m on m.id = rm.menu_id
-        where m.status = '1'
-          and r.status = '1'
-          and u.id = #{userId,jdbcType=BIGINT}
+        select menu.menu_perms
+        from t_sys_user as user
+                 left join t_sys_user_role as user_role on user.id = user_role.user_id
+                 left join t_sys_role as role on role.id = user_role.role_id
+                 left join t_sys_role_menu as role_menu on user_role.role_id = role_menu.role_id
+                 left join t_sys_menu as menu on menu.id = role_menu.menu_id
+        where menu.status = '1'
+          and role.status = '1'
+          and user.id = #{userId,jdbcType=BIGINT}
     </select>
 
     <select id="getMenuListByUserId" resultType="com.youlan.system.entity.Menu">
-        select m.*
-        from t_sys_user as u
-                 left join t_sys_user_role as ur on u.id = ur.user_id
-                 left join t_sys_role as r on r.id = ur.role_id
-                 left join t_sys_role_menu as rm on ur.role_id = rm.role_id
-                 left join t_sys_menu as m on m.id = rm.menu_id
-        where m.status = '1'
-          and r.status = '1'
-          and u.id = #{userId,jdbcType=BIGINT}
+        select menu.*
+        from t_sys_user as user
+                 left join t_sys_user_role as user_role on user.id = user_role.user_id
+                 left join t_sys_role as role on role.id = user_role.role_id
+                 left join t_sys_role_menu as role_menu on user_role.role_id = role_menu.role_id
+                 left join t_sys_menu as menu on menu.id = role_menu.menu_id
+        where menu.status = '1'
+          and role.status = '1'
+          and user.id = #{userId,jdbcType=BIGINT}
     </select>
 </mapper>

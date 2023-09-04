@@ -1,4 +1,4 @@
-import { ObjectUtil } from '@/framework/tools/index'
+import { ObjectUtil, StrUtil } from '@/framework/tools/index'
 
 export default {
   objectToQuery(params) {
@@ -21,5 +21,11 @@ export default {
       return url + '?' + this.objectToQuery(params)
     }
     return url + '?' + params
+  },
+  isHttpUrl(url) {
+    if (StrUtil.isBlank(url)) {
+      return false
+    }
+    return url.startsWith('http')
   }
 }

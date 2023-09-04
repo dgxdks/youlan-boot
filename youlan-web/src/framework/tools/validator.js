@@ -23,7 +23,7 @@ export default {
   },
   mobileRule(message, trigger) {
     return {
-      pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
+      pattern: /^1[0-9]\d{9}$/,
       message: message || '手机号码格式不正确',
       trigger: trigger || ['blur']
     }

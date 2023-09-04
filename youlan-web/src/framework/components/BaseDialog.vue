@@ -1,5 +1,12 @@
 <template>
-  <el-dialog :title="title" :visible.sync="visible" oppend-to-body :width="width" :close-on-click-modal="closeOnClickModal">
+  <el-dialog
+    :title="title"
+    :visible.sync="visible"
+    :append-to-body="appendToBody"
+    :top="top"
+    :width="width"
+    :close-on-click-modal="closeOnClickModal"
+  >
     <slot />
     <div slot="footer" class="dialog-footer">
       <el-button type="primary" @click="confirm">确 定</el-button>
@@ -27,6 +34,14 @@ export default {
     closeOnClickModal: {
       type: Boolean,
       default: false
+    },
+    appendToBody: {
+      type: Boolean,
+      default: true
+    },
+    top: {
+      type: String,
+      default: '15vh'
     }
   },
   data() {

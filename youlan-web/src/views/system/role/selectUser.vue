@@ -1,65 +1,58 @@
 <template>
   <!-- 授权用户 -->
-  <el-dialog title="选择用户" :visible.sync="visible" width="800px" top="5vh" append-to-body>
-    <el-form ref="queryForm" :model="queryParams" size="small" :inline="true">
+  <base-dialog title="选择用户" :open.sync="open" width="800px" top="5vh" @confirm="handleAuthUserConfirm">
+    <el-form ref="queryForm" :model="queryForm" size="small" :inline="true">
       <el-form-item label="用户名称" prop="userName">
         <el-input
-          v-model="queryParams.userName"
+          v-model="queryForm.userName"
           placeholder="请输入用户名称"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="手机号码" prop="phonenumber">
+      <el-form-item label="手机号码" prop="userMobile">
         <el-input
-          v-model="queryParams.phonenumber"
+          v-model="queryForm.userMobile"
           placeholder="请输入手机号码"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        <base-search-button @click="handleQuery" />
+        <base-reset-button @click="handleResetQuery" />
       </el-form-item>
     </el-form>
     <el-row>
-      <el-table ref="table" :data="userList" height="260px" @row-click="clickRow" @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="55" />
+      <el-table ref="table" v-loading="tableLoading" :data="userList" height="260px" @row-click="handleRowClick" @selection-change="handleSelectionChange">
+        <el-table-column type="selection" width="55" :selectable="tableSelectEnabled" />
         <el-table-column label="用户名称" prop="userName" :show-overflow-tooltip="true" />
         <el-table-column label="用户昵称" prop="nickName" :show-overflow-tooltip="true" />
         <el-table-column label="邮箱" prop="email" :show-overflow-tooltip="true" />
-        <el-table-column label="手机" prop="phonenumber" :show-overflow-tooltip="true" />
+        <el-table-column label="手机" prop="userMobile" :show-overflow-tooltip="true" />
         <el-table-column label="状态" align="center" prop="status">
           <template slot-scope="scope">
-            <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.status" />
+            <dict-tag v-model="scope.row.status" dict-type="db_status" />
           </template>
         </el-table-column>
-        <el-table-column label="创建时间" align="center" prop="createTime" width="180">
-          <template slot-scope="scope">
-            <span>{{ parseTime(scope.row.createTime) }}</span>
-          </template>
-        </el-table-column>
+        <el-table-column label="创建时间" align="center" prop="createTime" width="180" />
       </el-table>
       <pagination
-        v-show="total>0"
-        :total="total"
-        :page.sync="queryParams.pageNum"
-        :limit.sync="queryParams.pageSize"
+        v-show="pageTotal>0"
+        :total="pageTotal"
+        :page.sync="queryForm.pageNum"
+        :limit.sync="queryForm.pageSize"
         @pagination="getList"
       />
     </el-row>
-    <div slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="handleSelectUser">确 定</el-button>
-      <el-button @click="visible = false">取 消</el-button>
-    </div>
-  </el-dialog>
+  </base-dialog>
 </template>
 
 <script>
-import { unallocatedUserList, authUserSelectAll } from '@/api/system/role'
+import { addAuthUser, getUnAuthUserPageList } from '@/api/system/role'
+import crud from '@/framework/mixin/crud'
 export default {
-  dicts: ['sys_normal_disable'],
+  mixins: [crud],
   props: {
     // 角色编号
     roleId: {
@@ -70,69 +63,70 @@ export default {
   data() {
     return {
       // 遮罩层
-      visible: false,
-      // 选中数组值
-      userIds: [],
-      // 总条数
-      total: 0,
+      open: false,
       // 未授权用户数据
       userList: [],
       // 查询参数
-      queryParams: {
+      queryForm: {
         pageNum: 1,
         pageSize: 10,
-        roleId: undefined,
-        userName: undefined,
-        phonenumber: undefined
+        roleId: null,
+        userName: null,
+        userMobile: null
       }
     }
   },
   methods: {
     // 显示弹框
     show() {
-      this.queryParams.roleId = this.roleId
+      this.queryForm.roleId = this.roleId
       this.getList()
-      this.visible = true
+      this.open = true
     },
-    clickRow(row) {
+    // 表格行选中
+    handleRowClick(row) {
+      if (this.$auth.isAdmin(row.id)) {
+        return
+      }
       this.$refs.table.toggleRowSelection(row)
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.userIds = selection.map(item => item.userId)
+      this.tableIds = selection.map(item => item.id)
     },
     // 查询表数据
     getList() {
-      unallocatedUserList(this.queryParams).then(res => {
+      this.openTableLoading()
+      getUnAuthUserPageList(this.queryForm).then(res => {
         this.userList = res.rows
-        this.total = res.total
+        this.pageTotal = res.total
+        this.closeTableLoading()
       })
     },
-    /** 搜索按钮操作 */
+    // 搜索按钮
     handleQuery() {
-      this.queryParams.pageNum = 1
+      this.queryForm.pageNum = 1
       this.getList()
     },
-    /** 重置按钮操作 */
-    resetQuery() {
-      this.resetForm('queryForm')
+    // 重置按钮
+    handleResetQuery() {
+      this.$refs.queryForm && this.$refs.queryForm.resetFields()
       this.handleQuery()
     },
-    /** 选择授权用户操作 */
-    handleSelectUser() {
-      const roleId = this.queryParams.roleId
-      const userIds = this.userIds.join(',')
-      if (userIds == '') {
-        this.$modal.msgError('请选择要分配的用户')
+    // 授权用户提交
+    handleAuthUserConfirm() {
+      if (this.$array.isEmpty(this.tableIds)) {
+        this.$modal.error('请选择要分配的用户')
         return
       }
-      authUserSelectAll({ roleId: roleId, userIds: userIds }).then(res => {
-        this.$modal.msgSuccess(res.msg)
-        if (res.code === 200) {
-          this.visible = false
-          this.$emit('ok')
-        }
+      addAuthUser({ roleId: this.roleId, userIds: this.tableIds }).then(res => {
+        this.$modal.success('分配用户成功')
+        this.open = false
+        this.$emit('addUser')
       })
+    },
+    tableSelectEnabled(row, index) {
+      return !this.$auth.isAdminRole(row.id)
     }
   }
 }

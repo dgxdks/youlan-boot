@@ -30,7 +30,7 @@ public class OperationLogPageDTO extends PageDTO {
     @Schema(title = "日志状态(1-正常 2-异常)")
     private String logStatus;
 
-    @Query(type = QueryType.BETWEEN)
+    @Query(column = "log_time", type = QueryType.BETWEEN)
     @Schema(title = "日志时间")
     private List<Date> logTimeRange;
 
