@@ -89,28 +89,20 @@ export function updateUserPasswd(data) {
   })
 }
 
-// 用户头像上传
-export function uploadAvatar(data) {
+// 用户授权角色分页
+export function getAuthRolePageList(data) {
   return request({
-    url: '/system/user/profile/avatar',
+    url: '/system/user/getAuthRolePageList',
     method: 'post',
-    data: data
+    data
   })
 }
 
-// 查询授权角色
-export function getAuthRole(userId) {
+// 用户授权角色修改
+export function updateAuthRole(params) {
   return request({
-    url: '/system/user/authRole/' + userId,
-    method: 'get'
-  })
-}
-
-// 保存授权角色
-export function updateAuthRole(data) {
-  return request({
-    url: '/system/user/authRole',
-    method: 'put',
-    params: data
+    url: '/system/user/updateAuthRole',
+    method: 'post',
+    params
   })
 }

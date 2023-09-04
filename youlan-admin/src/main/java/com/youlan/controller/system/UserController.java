@@ -3,16 +3,20 @@ package com.youlan.controller.system;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.db.entity.dto.ListDTO;
+import com.youlan.common.db.helper.DBHelper;
 import com.youlan.common.excel.helper.ExcelHelper;
 import com.youlan.common.validator.Insert;
 import com.youlan.common.validator.Update;
 import com.youlan.framework.anno.SystemLog;
 import com.youlan.framework.constant.SystemLogType;
 import com.youlan.framework.controller.BaseController;
+import com.youlan.system.constant.SystemConstant;
+import com.youlan.system.entity.Role;
 import com.youlan.system.entity.dto.UserDTO;
 import com.youlan.system.entity.dto.UserPageDTO;
 import com.youlan.system.entity.dto.UserResetPasswdDTO;
@@ -20,6 +24,7 @@ import com.youlan.system.entity.vo.UserTemplateVO;
 import com.youlan.system.entity.vo.UserVO;
 import com.youlan.system.excel.listener.UserExcelListener;
 import com.youlan.system.helper.SystemAuthHelper;
+import com.youlan.system.service.RoleService;
 import com.youlan.system.service.UserService;
 import com.youlan.system.service.biz.UserBizService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,6 +37,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Tag(name = "用户管理")
@@ -41,6 +47,7 @@ import java.util.List;
 public class UserController extends BaseController {
     private final UserBizService userBizService;
     private final UserService userService;
+    private final RoleService roleService;
 
     @SaCheckPermission("system:user:add")
     @Operation(summary = "用户新增")
@@ -145,8 +152,29 @@ public class UserController extends BaseController {
         return toSuccess(userService.updateStatus(id, status));
     }
 
+    @SaCheckPermission("system.user.list")
+    @Operation(summary = "授权角色分页")
+    @PostMapping("/getAuthRolePageList")
+    public ApiResult getAuthRolePageList(@RequestBody Role role) {
+        // 此排除管理员角色ID
+        role.setIdExcludes(Collections.singletonList(SystemConstant.ADMIN_ROLE_ID));
+        IPage<Role> roleList = roleService.getBaseMapper().getRoleList(DBHelper.getIPage(role), role);
+        return toSuccess(roleList);
+    }
+
+    @SaCheckPermission("system.user.update")
+    @Operation(summary = "授权角色修改")
+    @PostMapping("/updateAuthRole")
+    public ApiResult updateAuthRole(@RequestParam Long userId, @RequestParam List<Long> roleIds) {
+        SystemAuthHelper.checkHasUserId(userId);
+        SystemAuthHelper.checkHasRoleIds(roleIds);
+        userBizService.updateAuthRole(userId, roleIds);
+        return toSuccess();
+    }
+
     @Operation(summary = "下载用户导入模版")
     @PostMapping("/downloadUserTemplate")
+
     public void downloadUserTemplate() throws IOException {
         toExcel("用户数据", UserTemplateVO.class, new ArrayList<>());
     }

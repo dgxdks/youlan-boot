@@ -12,7 +12,9 @@ export default {
       },
       // 分页总条数
       pageTotal: 0,
-      // 遮罩层
+      // 表格是否全部展开
+      tableExpandAll: false,
+      // 表格遮罩层
       tableLoading: true,
       // 表格选中的ID
       tableIds: [],
@@ -25,8 +27,7 @@ export default {
       // 是否显示弹出层
       editOpen: false,
       // 表单数据
-      editForm: {
-      },
+      editForm: {},
       // 表单校验规则
       editRules: []
     }
@@ -49,8 +50,7 @@ export default {
       return this.tableIds && this.tableIds.length > 1
     }
   },
-  watch: {
-  },
+  watch: {},
   methods: {
     // 重置页码
     resetPageNum() {

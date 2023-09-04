@@ -131,7 +131,7 @@ public class RoleBizService {
     public void addAuthUser(Long roleId, List<Long> userIds) {
         String roleStr = roleService.getRoleStr(roleId);
         userRoleService.addUserRoleBatch(userIds, roleId);
-        //
+        // 添加用户对应的角色信息
         userIds.forEach(userId -> SystemAuthHelper.addUserRole(userId, roleStr));
     }
 

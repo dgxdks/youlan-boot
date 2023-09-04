@@ -15,10 +15,7 @@ import com.youlan.system.entity.dto.UserResetPasswdDTO;
 import com.youlan.system.entity.dto.UserUpdatePasswdDTO;
 import com.youlan.system.entity.vo.UserVO;
 import com.youlan.system.helper.SystemAuthHelper;
-import com.youlan.system.service.OrgService;
-import com.youlan.system.service.UserPostService;
-import com.youlan.system.service.UserRoleService;
-import com.youlan.system.service.UserService;
+import com.youlan.system.service.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +31,7 @@ public class UserBizService {
     private final OrgService orgService;
     private final UserPostService userPostService;
     private final UserRoleService userRoleService;
+    private final RoleService roleService;
 
     /**
      * 新增用户
@@ -208,5 +206,17 @@ public class UserBizService {
                 .setId(userId)
                 .setUserPassword(userService.genUserPassword(newPasswd));
         return userService.updateById(user);
+    }
+
+    /**
+     * 用户授权角色更新
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void updateAuthRole(Long userId, List<Long> roleIds) {
+        userService.loadUserIfExist(userId);
+        List<String> roleStrList = roleService.getRoleStrList(roleIds);
+        userRoleService.updateUserRoleBatch(userId, roleIds);
+        // 重新设置用户角色权限
+        SystemAuthHelper.setUserRole(userId, roleStrList);
     }
 }

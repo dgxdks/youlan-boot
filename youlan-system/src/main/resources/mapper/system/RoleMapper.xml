@@ -4,4 +4,27 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.youlan.system.mapper.RoleMapper">
 
+    <select id="getRoleList" resultType="com.youlan.system.entity.Role">
+        select role.*
+        from t_sys_role as role
+        where role.sts = '1'
+        <if test="role.roleName != null and role.roleName != ''">
+            and role.role_name like concat('%', #{role.roleName}, '%')
+        </if>
+        <if test="role.roleStr != null and role.roleStr != ''">
+            and role.role_str like concat('%', #{role.roleStr}, '%')
+        </if>
+        <if test="role.status != null and role.status">
+            and role.status = #{role.status}
+        </if>
+        <if test="role.createTimeRange != null and role.createTimeRange.size() > 1">
+            and role.create_time between #{role.createTimeRange[0]} and #{role.createTimeRange[1]}
+        </if>
+        <if test="role.idExcludes != null and role.idExcludes.size() > 0">
+            and role.id not in
+            <foreach collection="role.idExcludes" open="(" close=")" separator="," item="id">
+                #{id}
+            </foreach>
+        </if>
+    </select>
 </mapper>

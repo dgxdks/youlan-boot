@@ -30,17 +30,6 @@ export default {
     size: {
       type: String,
       default: 'mini'
-    },
-    color: {
-      type: String,
-      default: null
-    }
-  },
-  computed: {
-    style() {
-      return {
-        color: this.color
-      }
     }
   }
 }

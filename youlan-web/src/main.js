@@ -7,7 +7,6 @@ import '@/assets/styles/ruoyi.scss'
 import App from './App'
 import store from './store'
 import router from './router'
-import './assets/icons'
 import './permission'
 import { addDateRange, handleTree, parseTime, selectDictLabel, selectDictLabels } from '@/utils/ruoyi'
 // 头部标签组件

@@ -5,7 +5,8 @@ export function getDictDataListByTypeKey(params) {
   return request({
     url: '/system/dictData/getDictDataListByTypeKey',
     method: 'post',
-    params
+    params,
+    canRepeatSubmit: true
   })
 }
 // 查询字典数据列表

@@ -94,6 +94,7 @@ public class ListHelper {
                 }
             }
         });
+        treeList.sort(comparator);
         return treeList;
     }
 

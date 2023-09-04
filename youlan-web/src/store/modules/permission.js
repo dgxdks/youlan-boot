@@ -1,6 +1,6 @@
 import router, { constantRoutes, dynamicRoutes } from '@/router'
 import { getMenuTreeList } from '@/api/system/login'
-import { ArrayUtil, AuthUtil, EnvUtil, ObjectUtil, StrUtil } from '../../framework/tools'
+import { ArrayUtil, AuthUtil, EnvUtil, ObjectUtil, StrUtil } from '@/framework/tools'
 import Layout from '@/layout'
 
 const permission = {

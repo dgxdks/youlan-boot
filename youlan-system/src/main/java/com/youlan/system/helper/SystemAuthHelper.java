@@ -215,9 +215,29 @@ public class SystemAuthHelper {
     }
 
     /**
+     * 校验当前用户是否有此角色数据权限
+     */
+    public static void checkHasRoleIds(List<Long> roleIds) {
+        if (!hasRoleIds(roleIds)) {
+            throw new BizRuntimeException(ApiResultCode.A0015);
+        }
+    }
+
+    /**
      * 当前用户是否有此角色数据权限
      */
     public static boolean hasRoleId(Long roleId) {
+        if (isAdmin()) {
+            return true;
+        }
+        // TODO: 2023/8/30 实现数据权限逻辑
+        return true;
+    }
+
+    /**
+     * 当前用户是否有此角色数据权限
+     */
+    public static boolean hasRoleIds(List<Long> roleIds) {
         if (isAdmin()) {
             return true;
         }
@@ -278,6 +298,25 @@ public class SystemAuthHelper {
     }
 
     /**
+     * 根据用ID设置用户对应的角色信息
+     */
+    public static void setUserRole(Long userId, List<String> roleStrList) {
+        if (CollectionUtil.isEmpty(roleStrList)) {
+            return;
+        }
+        List<String> tokenValueList = getTokenValueList(userId);
+        tokenValueList.forEach(tokenValue -> {
+            //使用try/catch尽可能清除角色
+            try {
+                SaSession session = StpUtil.getTokenSessionByToken(tokenValue);
+                session.set(SaSession.ROLE_LIST, roleStrList);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+        });
+    }
+
+    /**
      * 根据用户ID新增用户对应角色信息
      */
     public static void addUserRole(Long userId, String roleStr) {
@@ -290,7 +329,9 @@ public class SystemAuthHelper {
             try {
                 SaSession session = StpUtil.getTokenSessionByToken(tokenValue);
                 Object roleListObj = session.get(SaSession.ROLE_LIST);
-                ((List<String>) roleListObj).add(roleStr);
+                if (!((List<String>) roleListObj).contains(roleStr)) {
+                    ((List<String>) roleListObj).add(roleStr);
+                }
                 session.set(SaSession.ROLE_LIST, roleListObj);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);

@@ -1,14 +1,13 @@
-<!-- @author zhengjie -->
 <template>
   <div class="icon-body">
-    <el-input v-model="name" class="icon-search" clearable placeholder="请输入图标名称" @clear="filterIcons" @input="filterIcons">
+    <el-input v-model="icon" class="icon-search" clearable placeholder="请输入图标名称" @clear="handleFilterIcon" @input="handleFilterIcon">
       <i slot="suffix" class="el-icon-search el-input__icon" />
     </el-input>
     <div class="icon-list">
       <div class="list-container">
-        <div v-for="(item, index) in iconList" class="icon-item-wrapper" :key="index" @click="selectedIcon(item)">
-          <div :class="['icon-item', { active: activeIcon === item }]">
-            <svg-icon :icon-class="item" class-name="icon" style="height: 25px;width: 16px;"/>
+        <div v-for="(item, index) in iconList" :key="index" class="icon-item-wrapper" @click="handleChange(item)">
+          <div :class="['icon-item', { active: icon === item }]">
+            <svg-icon :icon-class="item" class-name="icon" style="height: 25px;width: 16px;" />
             <span>{{ item }}</span>
           </div>
         </div>
@@ -18,33 +17,48 @@
 </template>
 
 <script>
-import icons from './requireIcons'
+import icons from '@/framework/icons'
 export default {
-  name: 'IconSelect',
+  name: 'BaseIconSelect',
   props: {
-    activeIcon: {
-      type: String
+    value: {
+      type: String,
+      default: null
     }
   },
   data() {
     return {
-      name: '',
+      icon: '',
       iconList: icons
     }
   },
+  watch: {
+    value: {
+      handler(newVal) {
+        this.icon = newVal
+      },
+      immediate: true
+    },
+    icon: {
+      handler(newVal) {
+        this.$emit('input', newVal)
+      }
+    }
+  },
   methods: {
-    filterIcons() {
+    handleFilterIcon() {
       this.iconList = icons
-      if (this.name) {
-        this.iconList = this.iconList.filter(item => item.includes(this.name))
+      if (this.icon) {
+        this.iconList = this.iconList.filter(item => item.includes(this.icon))
       }
     },
-    selectedIcon(name) {
-      this.$emit('selected', name)
+    handleChange(name) {
+      this.icon = name
+      this.$emit('change', name)
       document.body.click()
     },
     reset() {
-      this.name = ''
+      this.icon = null
       this.iconList = icons
     }
   }

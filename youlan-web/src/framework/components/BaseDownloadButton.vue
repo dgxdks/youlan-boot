@@ -5,6 +5,7 @@
     :size="size"
     :type="type"
     :disabled="disabled"
+    :style="style"
     @click="handleClick"
   >
     <template v-if="$slots.default && $slots.default.length > 0">

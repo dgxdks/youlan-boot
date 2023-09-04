@@ -1,6 +1,7 @@
 package com.youlan.controller.system;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.youlan.common.core.helper.ListHelper;
@@ -73,10 +74,12 @@ public class MenuController extends BaseController {
         return toSuccess(menuService.loadPage(menu, DBHelper.getQueryWrapper(menu)));
     }
 
-    @SaCheckPermission("system.menu:list")
     @Operation(summary = "菜单树列表")
     @PostMapping("/getMenuTreeList")
     public ApiResult getMenuTreeList(@RequestBody Menu menu) {
+        // 拥有角色编辑、菜单新增、菜单修改权限才能访问此接口
+        String[] permissions = {"system:role:update", "system:menu:add", "system:menu:update"};
+        StpUtil.checkPermissionOr(permissions);
         List<Menu> menus = menuService.loadMore(DBHelper.getQueryWrapper(menu));
         List<Menu> treeList = ListHelper.getTreeList(menus, Menu::getChildren, Menu::getId, Menu::getParentId, Menu::getSort);
         return toSuccess(treeList);

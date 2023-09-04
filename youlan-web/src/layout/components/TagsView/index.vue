@@ -18,12 +18,12 @@
       </router-link>
     </scroll-pane>
     <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
-      <li @click="refreshSelectedTag(selectedTag)"><i class="el-icon-refresh-right"></i> 刷新页面</li>
-      <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)"><i class="el-icon-close"></i> 关闭当前</li>
-      <li @click="closeOthersTags"><i class="el-icon-circle-close"></i> 关闭其他</li>
-      <li v-if="!isFirstView()" @click="closeLeftTags"><i class="el-icon-back"></i> 关闭左侧</li>
-      <li v-if="!isLastView()" @click="closeRightTags"><i class="el-icon-right"></i> 关闭右侧</li>
-      <li @click="closeAllTags(selectedTag)"><i class="el-icon-circle-close"></i> 全部关闭</li>
+      <li @click="refreshSelectedTag(selectedTag)"><i class="el-icon-refresh-right" /> 刷新页面</li>
+      <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)"><i class="el-icon-close" /> 关闭当前</li>
+      <li @click="closeOthersTags"><i class="el-icon-circle-close" /> 关闭其他</li>
+      <li v-if="!isFirstView()" @click="closeLeftTags"><i class="el-icon-back" /> 关闭左侧</li>
+      <li v-if="!isLastView()" @click="closeRightTags"><i class="el-icon-right" /> 关闭右侧</li>
+      <li @click="closeAllTags(selectedTag)"><i class="el-icon-circle-close" /> 全部关闭</li>
     </ul>
   </div>
 </template>
@@ -51,7 +51,7 @@ export default {
       return this.$store.state.permission.routes
     },
     theme() {
-      return this.$store.state.settings.theme;
+      return this.$store.state.settings.theme
     }
   },
   watch: {
@@ -76,11 +76,11 @@ export default {
       return route.path === this.$route.path
     },
     activeStyle(tag) {
-      if (!this.isActive(tag)) return {};
+      if (!this.isActive(tag)) return {}
       return {
-        "background-color": this.theme,
-        "border-color": this.theme
-      };
+        'background-color': this.theme,
+        'border-color': this.theme
+      }
     },
     isAffix(tag) {
       return tag.meta && tag.meta.affix
@@ -155,7 +155,7 @@ export default {
       })
     },
     refreshSelectedTag(view) {
-      this.$tab.refreshPage(view);
+      this.$tab.refreshPage(view)
       if (this.$route.meta.link) {
         this.$store.dispatch('tagsView/delIframeView', this.$route)
       }
@@ -182,7 +182,7 @@ export default {
       })
     },
     closeOthersTags() {
-      this.$router.push(this.selectedTag.fullPath).catch(()=>{});
+      this.$router.push(this.selectedTag.fullPath).catch(() => {})
       this.$tab.closeOtherPage(this.selectedTag).then(() => {
         this.moveToCurrentTag()
       })

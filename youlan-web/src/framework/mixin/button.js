@@ -19,6 +19,17 @@ export default {
     disabled: {
       type: Boolean,
       default: false
+    },
+    color: {
+      type: String,
+      default: null
+    }
+  },
+  computed: {
+    style() {
+      return {
+        color: this.color
+      }
     }
   },
   methods: {

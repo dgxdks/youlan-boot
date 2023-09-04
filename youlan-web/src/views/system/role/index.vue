@@ -61,17 +61,17 @@
       <el-table-column align="center" label="创建时间" prop="createTime" width="180" />
       <el-table-column align="center" class-name="small-padding fixed-width" label="操作">
         <template v-if="!$auth.isAdminRole(scope.row.id)" slot-scope="scope">
-          <base-update-button v-has-perm="['system:role:edit']" type="text" @click="handleUpdate(scope.row)" />
+          <base-update-button v-has-perm="['system:role:update']" type="text" @click="handleUpdate(scope.row)" />
           <base-remove-button v-has-perm="['system:role:remove']" type="text" @click="handleDelete(scope.row)" />
-          <base-column-menu v-has-perm="['system:role:edit']">
+          <base-column-menu v-has-perm="['system:role:update']">
             <base-text-button
-              v-has-perm="['system:role:edit']"
+              v-has-perm="['system:role:update']"
               icon="el-icon-circle-check"
               color="#606266"
               @click="handleDataScope(scope.row)"
             >数据权限</base-text-button>
             <base-text-button
-              v-has-perm="['system:role:edit']"
+              v-has-perm="['system:role:update']"
               icon="el-icon-user"
               color="#606266"
               @click="handleAuthUser(scope.row)"

@@ -22,11 +22,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrgController extends BaseController {
     private final OrgService orgService;
 
-    @SaCheckPermission("system:org:list")
     @Operation(summary = "机构树列表")
     @PostMapping("/getOrgTreeList")
     @SystemLog(name = "机构", type = SystemLogType.OPERATION_LOG_TYPE_LIST)
     public ApiResult getOrgTreeList(@RequestBody OrgPageDTO dto) {
+        // TODO: 2023/9/4 缺少数据权限
         return toSuccess(orgService.getOrgTreeList(dto));
     }
 }

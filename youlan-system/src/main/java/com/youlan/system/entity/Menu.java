@@ -9,7 +9,6 @@ import com.youlan.common.db.entity.dto.PageDTO;
 import com.youlan.common.db.enums.QueryType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
@@ -20,7 +19,6 @@ import java.util.Objects;
 @Data
 @TableName("t_sys_menu")
 @ExcelIgnoreUnannotated
-@EqualsAndHashCode(callSuper = true)
 public class Menu extends PageDTO {
 
     @Schema(title = DBConstant.DESC_ID)

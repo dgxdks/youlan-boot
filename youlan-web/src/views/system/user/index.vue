@@ -426,8 +426,7 @@ export default {
     },
     // 用户角色分配
     handleAuthRole(row) {
-      const userId = row.userId
-      this.$router.push('/system/user-auth/role/' + userId)
+      this.$router.push('/system/user-auth/role/' + row.id)
     },
     // 机构树点击
     handleOrgClick(data) {

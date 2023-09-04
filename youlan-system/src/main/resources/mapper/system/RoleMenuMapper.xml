@@ -28,12 +28,18 @@
     <select id="getMenuListByUserId" resultType="com.youlan.system.entity.Menu">
         select menu.*
         from t_sys_user as user
-                 left join t_sys_user_role as user_role on user.id = user_role.user_id
-                 left join t_sys_role as role on role.id = user_role.role_id
-                 left join t_sys_role_menu as role_menu on user_role.role_id = role_menu.role_id
-                 left join t_sys_menu as menu on menu.id = role_menu.menu_id
+        left join t_sys_user_role as user_role on user.id = user_role.user_id
+        left join t_sys_role as role on role.id = user_role.role_id
+        left join t_sys_role_menu as role_menu on user_role.role_id = role_menu.role_id
+        left join t_sys_menu as menu on menu.id = role_menu.menu_id
         where menu.status = '1'
-          and role.status = '1'
-          and user.id = #{userId,jdbcType=BIGINT}
+        and role.status = '1'
+        and user.id = #{userId,jdbcType=BIGINT}
+        <if test="menuTypeList != null and menuTypeList.size() > 0">
+            and menu.menu_type in
+            <foreach collection="menuTypeList" item="type" open="(" close=")" separator=",">
+                #{type}
+            </foreach>
+        </if>
     </select>
 </mapper>

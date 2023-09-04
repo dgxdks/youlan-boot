@@ -23,7 +23,7 @@ export default {
     },
     exclude: {
       type: Array,
-      default: []
+      default: () => []
     }
   },
   data() {

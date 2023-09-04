@@ -2,10 +2,14 @@
 export default {
   name: 'RowSplit2',
   render(createElement, context) {
-    const vNodes = this.$slots.default
+    let vNodes = this.$slots.default
     if (this.$array.isEmpty(vNodes)) {
       return null
     }
+    // 过滤掉v-if=false的组件
+    vNodes = vNodes.filter(vNode => {
+      return vNode.data
+    })
     const leftNodes = []
     const rightNodes = []
     for (let i = 0; i < vNodes.length; i++) {

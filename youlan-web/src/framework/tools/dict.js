@@ -31,8 +31,6 @@ export default {
     if (StrUtil.isBlank(typeKey)) {
       return []
     }
-    // 尝试初始化字典
-    store.commit('dict/INIT_DICT', typeKey)
     // 如果store中有则直接返回
     const dict = store.getters.dict
     if (ArrayUtil.isNotEmpty(dict[typeKey])) {

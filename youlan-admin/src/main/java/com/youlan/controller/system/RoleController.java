@@ -3,6 +3,7 @@ package com.youlan.controller.system;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.youlan.common.core.helper.ListHelper;
 import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.core.restful.enums.ApiResultCode;
@@ -83,7 +84,7 @@ public class RoleController extends BaseController {
     @SystemLog(name = "角色", type = SystemLogType.OPERATION_LOG_TYPE_LIST)
     public ApiResult getRoleList(@RequestBody Role role) {
         // TODO: 2023/8/23 需要考虑数据权限 只能看当前用户可以看的角色
-        List<Role> roleList = roleService.loadMore(DBHelper.getQueryWrapper(role));
+        List<Role> roleList = roleService.getBaseMapper().getRoleList(role);
         //不显示管理员角色信息
         roleList = ListHelper.filterList(roleList, r -> !SystemAuthHelper.isAdminRole(r.getRoleStr()));
         return toSuccess(roleList);
@@ -95,7 +96,8 @@ public class RoleController extends BaseController {
     @SystemLog(name = "角色", type = SystemLogType.OPERATION_LOG_TYPE_PAGE_LIST)
     public ApiResult getRolePageList(@RequestBody Role role) {
         // TODO: 2023/8/30 缺少数据权限
-        return toSuccess(roleService.loadPage(role, DBHelper.getQueryWrapper(role)));
+        IPage<Role> roleList = roleService.getBaseMapper().getRoleList(DBHelper.getIPage(role), role);
+        return toSuccess(roleList);
     }
 
     @SaCheckPermission("system:role:export")
@@ -104,7 +106,7 @@ public class RoleController extends BaseController {
     @SystemLog(name = "角色", type = SystemLogType.OPERATION_LOG_TYPE_EXPORT)
     public void exportRoleList(@RequestBody Role role, HttpServletResponse response) throws IOException {
         // TODO: 2023/8/30 缺少数据权限
-        List<Role> roleList = roleService.loadMore(DBHelper.getQueryWrapper(role));
+        List<Role> roleList = roleService.getBaseMapper().getRoleList(role);
         toExcel("角色数据.xlsx", Role.class, roleList, response);
     }
 

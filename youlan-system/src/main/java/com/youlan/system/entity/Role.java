@@ -6,12 +6,11 @@ import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.alibaba.excel.annotation.write.style.HeadFontStyle;
 import com.baomidou.mybatisplus.annotation.*;
 import com.youlan.common.db.constant.DBConstant;
-import com.youlan.common.db.anno.Query;
 import com.youlan.common.db.entity.dto.PageDTO;
-import com.youlan.common.db.enums.QueryType;
 import com.youlan.common.validator.anno.StrIn;
 import com.youlan.system.excel.anno.ExcelDictProperty;
 import com.youlan.system.excel.converter.DictConverter;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -37,14 +36,17 @@ public class Role extends PageDTO {
     @TableId(type = IdType.AUTO)
     private Long id;
 
-    @Query(type = QueryType.LIKE)
+    @Hidden
+    @Schema(title = "要排除的角色ID")
+    @TableField(exist = false)
+    private List<Long> idExcludes;
+
     @NotBlank(message = "角色名称不能为空")
     @Size(min = 1, max = 30, message = "角色名称长度不能超过{max}个字符")
     @ExcelProperty(value = "角色名称")
     @Schema(title = "角色名称")
     private String roleName;
 
-    @Query(type = QueryType.LIKE)
     @NotBlank(message = "角色字符不能为空")
     @Size(min = 1, max = 30, message = "角色字符长度不能超过{max}个字符")
     @ExcelProperty(value = "角色字符")
@@ -62,7 +64,6 @@ public class Role extends PageDTO {
     @Schema(title = DBConstant.DESC_SORT)
     private Integer sort;
 
-    @Query(type = QueryType.EQUAL)
     @ExcelProperty(value = "状态", converter = DictConverter.class)
     @ExcelDictProperty(value = "db_status")
     @Schema(title = DBConstant.DESC_STATUS)
@@ -101,7 +102,6 @@ public class Role extends PageDTO {
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 
-    @Query(column = "create_time", type = QueryType.BETWEEN)
     @Schema(title = DBConstant.DESC_CREATE_TIME)
     @TableField(exist = false)
     private List<Date> createTimeRange;

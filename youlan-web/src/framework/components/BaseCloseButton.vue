@@ -4,6 +4,7 @@
     :plain="plain"
     :size="size"
     :type="type"
+    :style="style"
     :disabled="disabled"
     @click="handleClick"
   >

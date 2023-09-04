@@ -1,3 +1,4 @@
+import '@/framework/icons'
 import hasRole from '@/framework/directive/permission/hasRole'
 import hasPerm from '@/framework/directive/permission/hasPerm'
 import clipboard from '@/framework/directive/module/clipboard'
@@ -49,6 +50,7 @@ import BaseColumnMenu from '@/framework/components/BaseColumnMenu.vue'
 import BaseTextButton from '@/framework/components/BaseTextButton.vue'
 import BaseFormLabel from '@/framework/components/BaseFormLabel.vue'
 import BaseCloseButton from '@/framework/components/BaseCloseButton.vue'
+import BaseIconSelect from '@/framework/components/BaseIconSelect.vue'
 
 // 全局组件
 function mountComponent() {
@@ -83,6 +85,7 @@ function mountComponent() {
   Vue.component('BaseColumnMenu', BaseColumnMenu)
   Vue.component('BaseTextButton', BaseTextButton)
   Vue.component('BaseFormLabel', BaseFormLabel)
+  Vue.component('BaseIconSelect', BaseIconSelect)
 }
 
 // 全局指令
