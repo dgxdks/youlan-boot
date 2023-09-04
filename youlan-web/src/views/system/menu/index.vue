@@ -3,7 +3,7 @@
     <el-form v-show="queryShow" ref="queryForm" :inline="true" :model="queryForm" size="small">
       <el-form-item label="菜单名称" prop="menuName">
         <el-input
-          v-model="queryParams.menuName"
+          v-model="queryForm.menuName"
           clearable
           placeholder="请输入菜单名称"
           @keyup.enter.native="handleQuery"
@@ -20,19 +20,18 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <base-add-button v-has-perm="['system:menu:add']" plain @click="handleAdd" />
+        <base-add-button v-has-perm="['system:menu:add']" plain @click="handleAdd(null)" />
       </el-col>
       <el-col :span="1.5">
-        <base-add-button icon="el-icon-sort" type="info" plain @click="toggleExpandAll">展开/折叠</base-add-button>
+        <base-add-button icon="el-icon-sort" type="info" plain @click="handleExpandAll">展开/折叠</base-add-button>
       </el-col>
-      <right-toolbar :query-show.sync="queryShow" @queryTable="getList" />
+      <right-toolbar :query-show.sync="queryShow" @refresh="getList" />
     </el-row>
 
     <el-table
-      v-if="refreshTable"
+      ref="queryTable"
       v-loading="tableLoading"
       :data="menuList"
-      :default-expand-all="tableExpandAll"
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
       row-key="id"
     >
@@ -135,7 +134,7 @@
 </template>
 
 <script>
-import { addMenu, getMenuTreeList, removeMenu, updateMenu } from '@/api/system/menu'
+import { addMenu, getMenuTreeList, loadMenu, removeMenu, updateMenu } from '@/api/system/menu'
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import crud from '@/framework/mixin/crud'
@@ -155,17 +154,6 @@ export default {
       menuList: [],
       // 菜单树选项
       menuOptions: [],
-      // 是否展开，默认全部折叠
-      isExpandAll: false,
-      // 重新渲染表格状态
-      refreshTable: true,
-      // 查询参数
-      queryParams: {
-        menuName: undefined,
-        visible: undefined
-      },
-      // 表单参数
-      form: {},
       // 表单校验
       editRules: {
         menuName: [
@@ -188,10 +176,20 @@ export default {
     // 列表查询
     getList() {
       this.openTableLoading()
+      // 加载表格数据
       getMenuTreeList(this.queryForm).then(res => {
         this.menuList = res
         this.closeTableLoading()
       })
+    },
+    // 搜索按钮
+    handleQuery() {
+      this.getList()
+    },
+    // 搜索重置按钮
+    handleResetQuery() {
+      this.$refs.queryForm && this.$refs.queryForm.resetFields()
+      this.handleQuery()
     },
     // 表单重置
     resetEdit() {
@@ -211,15 +209,6 @@ export default {
       }
       this.$refs.editForm && this.$refs.editForm.resetFields()
     },
-    // 搜索按钮
-    handleQuery() {
-      this.getList()
-    },
-    // 搜索重置按钮
-    handleResetQuery() {
-      this.$refs.queryForm && this.$refs.queryForm.resetFields()
-      this.handleQuery()
-    },
     // 新增按钮
     handleAdd(row) {
       this.openEdit('新增菜单')
@@ -227,22 +216,13 @@ export default {
         this.editForm.parentId = row.id
       }
     },
-    /** 展开/折叠操作 */
-    toggleExpandAll() {
-      this.refreshTable = false
-      this.isExpandAll = !this.isExpandAll
-      this.$nextTick(() => {
-        this.refreshTable = true
-      })
-    },
-    /** 修改按钮操作 */
+    // 修改按钮
     handleUpdate(row) {
-      this.reset()
-      this.getTreeselect()
-      getMenu(row.menuId).then(response => {
-        this.form = response.data
-        this.open = true
-        this.title = '修改菜单'
+      loadMenu({ id: row.id }).then(res => {
+        this.openEdit('修改菜单')
+        this.editForm = {
+          ...res
+        }
       })
     },
     // 删除按钮
@@ -263,14 +243,14 @@ export default {
           if (this.editForm.id) {
             updateMenu(this.editForm).then(res => {
               this.$modal.success('修改成功')
-              this.open = false
               this.getList()
+              this.closeEdit()
             })
           } else {
-            addMenu(this.form).then(res => {
+            addMenu(this.editForm).then(res => {
               this.$modal.success('新增成功')
-              this.open = false
               this.getList()
+              this.closeEdit()
             })
           }
         }
@@ -280,10 +260,11 @@ export default {
     handleEditCancel() {
       this.closeEdit()
     },
-    // 菜单下拉选
-    getMenuTreeList() {
-      getMenuTreeList({}).then(res => {
-        this.menuOptions = [{ id: 0, menuName: '主类目', children: res }]
+    // 展开/折叠按钮
+    handleExpandAll() {
+      this.tableExpandAll = !this.tableExpandAll
+      this.menuList.forEach(menu => {
+        this.$refs.queryTable.toggleRowExpansion(menu, this.tableExpandAll)
       })
     },
     // 菜单数据转换
@@ -296,6 +277,12 @@ export default {
         label: node.menuName,
         children: node.children
       }
+    },
+    // 加载全部菜单
+    getMenuTreeList() {
+      getMenuTreeList({}).then(res => {
+        this.menuOptions = [{ id: 0, menuName: '主类目', children: res }]
+      })
     },
     // 菜单是否目录类型
     isDir(menu) {

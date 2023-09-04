@@ -5,7 +5,7 @@
         <span v-if="$str.isNotBlank(item.cssClass)" :key="item.value" :class="item.cssClass">
           {{ item.name }}
         </span>
-        <el-tag v-else :key="item.value" :disable-transitions="true" :type="item.uiClass" :class="item.cssClass">
+        <el-tag v-else :key="item.value" :disable-transitions="true" :type="item.ui" :class="item.cssClass">
           {{ item.name }}
         </el-tag>
       </template>

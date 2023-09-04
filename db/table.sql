@@ -220,11 +220,11 @@ create table t_sys_menu
 ) auto_increment = 100 comment '菜单表';
 -- 一级菜单(相邻菜单之间间隔100个ID预留给二级菜单)
 insert into t_sys_menu
-values (100, '系统管理', '1', 'system', 0, 'system', 'system', '', '1', '', '2', 0, '1', '1', '', 100, 'admin', 0, '',
+values (100, '系统管理', '99', 'system', 0, 'system', 'system', '', '1', '', '2', 0, '1', '1', '', 100, 'admin', 0, '',
         sysdate(), null),
-       (200, '系统监控', '1', 'monitor', 0, 'monitor', 'monitor', '', '1', '', '2', 0, '1', '1', '', 100, 'admin', 0,
+       (200, '系统监控', '98', 'monitor', 0, 'monitor', 'monitor', '', '1', '', '2', 0, '1', '1', '', 100, 'admin', 0,
         '', sysdate(), null),
-       (300, '系统工具', '1', 'tools', 0, 'tool', 'tools', '', '1', '', '1', 0, '1', '1', '', 100, 'admin', 0, '',
+       (300, '系统工具', '97', 'tools', 0, 'tool', 'tools', '', '1', '', '2', 0, '1', '1', '', 100, 'admin', 0, '',
         sysdate(), null);
 -- 二级菜单(二级菜单ID从父级菜单ID开始递增)
 insert into t_sys_menu
@@ -251,7 +251,9 @@ values (101, '用户管理', '2', 'system:user', 100, 'user', 'user', '', '1', '
        (201, '在线用户', '2', 'monitor:onlineUser', 200, 'online', 'onlineUser' '', '', '1',
         'monitor/onlineUser/index', '2', 0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
        (202, '缓存监控', '2', 'monitor:cacheMonitor', 200, 'redis', 'cacheMonitor' '', '', '1',
-        'monitor/cacheMonitor/index', '2', 0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null);
+        'monitor/cacheMonitor/index', '2', 0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (301, '系统接口', '2', 'tools:swagger', 300, 'swagger', '/doc.html', '', '', '', '1', 0, '1', '1', '', 100,
+        'admin', 0, '', sysdate(), null);
 
 -- 三级菜单(三级菜单ID从10000开始)
 insert into t_sys_menu
@@ -704,8 +706,8 @@ values ('sys_org_type', '平台', '0', '', '', '2', 100, 'admin', sysdate()),
        ('sys_menu_type', '目录', '1', '', '', '1', 100, 'admin', sysdate()),
        ('sys_menu_type', '菜单', '2', '', '', '2', 100, 'admin', sysdate()),
        ('sys_menu_type', '按钮', '3', '', '', '2', 100, 'admin', sysdate()),
-       ('db_status', '正常', '1', '', '', '1', 100, 'admin', sysdate()),
-       ('db_status', '停用', '2', '', '', '2', 100, 'admin', sysdate()),
+       ('db_status', '正常', '1', 'primary', '', '1', 100, 'admin', sysdate()),
+       ('db_status', '停用', '2', 'info', '', '2', 100, 'admin', sysdate()),
        ('db_yes_no', '是', '1', '', '', '2', 100, 'admin', sysdate()),
        ('db_yes_no', '否', '2', '', '', '1', 100, 'admin', sysdate()),
        ('tools_generator_query_type', '等于', 'EQUAL', '', '', '1', 100, 'admin', sysdate()),

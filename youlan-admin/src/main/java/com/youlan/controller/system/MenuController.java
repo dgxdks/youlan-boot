@@ -14,6 +14,7 @@ import com.youlan.framework.constant.SystemLogType;
 import com.youlan.framework.controller.BaseController;
 import com.youlan.system.entity.Menu;
 import com.youlan.system.service.MenuService;
+import com.youlan.system.service.biz.MenuBizService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -28,13 +29,14 @@ import java.util.List;
 @AllArgsConstructor
 public class MenuController extends BaseController {
     private final MenuService menuService;
+    private final MenuBizService menuBizService;
 
     @SaCheckPermission("system:menu:add")
     @Operation(summary = "菜单新增")
     @PostMapping("/addMenu")
     @SystemLog(name = "菜单", type = SystemLogType.OPERATION_LOG_TYPE_ADD)
     public ApiResult addMenu(@Validated @RequestBody Menu menu) {
-        return toSuccess(menuService.save(menu));
+        return toSuccess(menuBizService.addMenu(menu));
     }
 
     @SaCheckPermission("system:menu:update")
@@ -45,7 +47,7 @@ public class MenuController extends BaseController {
         if (ObjectUtil.isNull(menu.getId())) {
             return toError(ApiResultCode.C0001);
         }
-        return toSuccess(menuService.updateById(menu));
+        return toSuccess(menuBizService.updateMenu(menu));
     }
 
     @SaCheckPermission("system:menu:remove")
@@ -56,7 +58,8 @@ public class MenuController extends BaseController {
         if (CollectionUtil.isEmpty(dto.getList())) {
             return toSuccess();
         }
-        return toSuccess(menuService.removeBatchByIds(dto.getList()));
+        menuBizService.removeMenu(dto.getList());
+        return toSuccess();
     }
 
     @SaCheckPermission("system:menu:load")

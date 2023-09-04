@@ -13,6 +13,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.youlan.common.core.helper.ListHelper;
@@ -158,5 +159,9 @@ public class BaseServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M, 
 
     public boolean updateStatus(Serializable id, String status) {
         return updateStatus(id, status, DBConstant.COL_STATUS);
+    }
+
+    public boolean exists(Wrapper<T> wrapper) {
+        return getBaseMapper().exists(wrapper);
     }
 }

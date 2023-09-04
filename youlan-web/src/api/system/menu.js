@@ -46,10 +46,10 @@ export function updateMenu(data) {
 }
 
 // 删除菜单
-export function removeMenu(params) {
+export function removeMenu(data) {
   return request({
     url: '/system/menu/removeMenu',
     method: 'post',
-    params
+    data
   })
 }

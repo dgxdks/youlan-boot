@@ -2,6 +2,7 @@ import router, { constantRoutes, dynamicRoutes } from '@/router'
 import { getMenuTreeList } from '@/api/system/login'
 import { ArrayUtil, AuthUtil, EnvUtil, ObjectUtil, StrUtil } from '@/framework/tools'
 import Layout from '@/layout'
+import InnerLink from '@/layout/components/InnerLink/index.vue'
 
 const permission = {
   state: {
@@ -71,13 +72,14 @@ function getPermissionDynamicRoutes() {
 // 将菜单信息转为路由信息
 function menuListConvertToRoutes(menuList, parentMenu) {
   return menuList.map(menu => {
-    const routePath = menu.routePath
     const menuType = menu.menuType
+    const routePath = menu.routePath
+    const routeQuery = menu.routeQuery
     const visible = menu.visible
     const route = {
-      name: StrUtil.upperFirst(menu.routePath),
+      name: StrUtil.upperFirst(routePath),
       path: isDirectoryMenu(menuType) ? StrUtil.paddingSlashLeft(routePath) : StrUtil.removeSlashLeft(routePath),
-      query: menu.routeQuery,
+      query: routeQuery,
       component: Layout,
       alwaysShow: true,
       hidden: needHiddenMenu(visible),
@@ -92,7 +94,7 @@ function menuListConvertToRoutes(menuList, parentMenu) {
     if (isDirectoryMenu(menuType)) {
       route.redirect = 'noRedirect'
     }
-    // 如果是菜单类型则需要关闭alwaysShow
+    // 如果是菜单类型将不再有下级菜单则需要关闭alwaysShow
     if (isRouteMenu(menuType)) {
       route.alwaysShow = false
     }
@@ -104,6 +106,27 @@ function menuListConvertToRoutes(menuList, parentMenu) {
     if (StrUtil.isNotBlank(menu.componentPath)) {
       route.component = loadComponent(menu.componentPath)
     }
+    // iframe处理逻辑
+    if (isFrame(menu.isFrame)) {
+      // 如果菜单是菜单类型被指定为iframe则需要走内部链接打开
+      if (isRouteMenu(menuType)) {
+        let path = routePath.replace(/http/g, '')
+        path = path.replace(/https/g, '')
+        path = path.replace(/www/g, '')
+        path = path.replace(/\//g, '')
+        route.path = StrUtil.paddingSlashLeft(path)
+        route.component = InnerLink
+        if (routePath.startsWith('http')) {
+          route.meta.link = routePath
+        } else {
+          route.meta.link = StrUtil.removeSlashRight(EnvUtil.getBaseApi()) + '/' + StrUtil.removeSlashLeft(routePath)
+        }
+      }
+      // 如果是目录类型被指定iframe且没有子路
+      if (isDirectoryMenu(menuType) && ArrayUtil.isEmpty(menu.children)) {
+        route.alwaysShow = false
+      }
+    }
     // 如果存在子菜单则递归装换子菜单路由
     if (ArrayUtil.isNotEmpty(menu.children)) {
       route.children = menuListConvertToRoutes(menu.children)
@@ -111,6 +134,11 @@ function menuListConvertToRoutes(menuList, parentMenu) {
     }
     return route
   })
+}
+
+// 是否iframe
+function isFrame(isFrame) {
+  return isFrame === '1'
 }
 
 // 是否是目录菜单
