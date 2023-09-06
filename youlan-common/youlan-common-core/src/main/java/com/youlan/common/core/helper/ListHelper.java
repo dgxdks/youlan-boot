@@ -20,7 +20,7 @@ public class ListHelper {
      * @param pIdFunc      获取元素父ID的方法
      * @return 树列表
      */
-    public static <T, S extends Comparable<S>> List<T> getTreeList(Collection<T> itemList, Function<T, List<T>> childrenFunc, Function<T, ?> idFunc, Function<T, ?> pIdFunc) {
+    public static <T> List<T> getTreeList(Collection<T> itemList, Function<T, List<T>> childrenFunc, Function<T, ?> idFunc, Function<T, ?> pIdFunc) {
         return getTreeList(itemList, childrenFunc, idFunc, pIdFunc, null, false);
     }
 
@@ -34,7 +34,7 @@ public class ListHelper {
      * @param sortFuc      获取元素排序值的方法
      * @return 树列表
      */
-    public static <T, S extends Comparable<S>> List<T> getTreeList(Collection<T> itemList, Function<T, List<T>> childrenFunc, Function<T, ?> idFunc, Function<T, ?> pIdFunc, Function<T, S> sortFuc) {
+    public static <T> List<T> getTreeList(Collection<T> itemList, Function<T, List<T>> childrenFunc, Function<T, ?> idFunc, Function<T, ?> pIdFunc, Function<T, Comparable> sortFuc) {
         return getTreeList(itemList, childrenFunc, idFunc, pIdFunc, sortFuc, false);
     }
 
@@ -49,13 +49,13 @@ public class ListHelper {
      * @param isDesc       是否降序
      * @return 树列表
      */
-    public static <T, S extends Comparable<S>> List<T> getTreeList(Collection<T> itemList, Function<T, List<T>> childrenFunc, Function<T, ?> idFunc, Function<T, ?> pIdFunc, Function<T, S> sortFuc, boolean isDesc) {
+    public static <T> List<T> getTreeList(Collection<T> itemList, Function<T, List<T>> childrenFunc, Function<T, ?> idFunc, Function<T, ?> pIdFunc, Function<T, Comparable> sortFuc, boolean isDesc) {
         if (ObjectUtil.isNull(sortFuc)) {
             return getTreeList(itemList, childrenFunc, idFunc, pIdFunc, (Comparator<T>) null);
         }
         Comparator<T> comparator = (leftItem, rightItem) -> {
-            S leftComparable = Optional.ofNullable(sortFuc.apply(leftItem)).orElseThrow(() -> new BizRuntimeException("排序元素不能是null"));
-            S rightComparable = Optional.ofNullable(sortFuc.apply(rightItem)).orElseThrow(() -> new BizRuntimeException("排序元素不能是null"));
+            Comparable leftComparable = Optional.ofNullable(sortFuc.apply(leftItem)).orElse(0);
+            Comparable rightComparable = Optional.ofNullable(sortFuc.apply(rightItem)).orElse(0);
             return leftComparable.compareTo(rightComparable);
         };
         return getTreeList(itemList, childrenFunc, idFunc, pIdFunc, isDesc ? comparator.reversed() : comparator);

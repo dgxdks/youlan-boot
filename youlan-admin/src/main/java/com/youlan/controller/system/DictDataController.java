@@ -46,7 +46,8 @@ public class DictDataController extends BaseController {
     @Operation(summary = "字典值删除")
     @PostMapping("/removeDictData")
     public ApiResult removeDictData(@RequestBody ListDTO<Long> ids) {
-        return toSuccess(dictBizService.removeDictData(ids.getList()));
+        dictBizService.removeDictData(ids.getList());
+        return toSuccess();
     }
 
     @SaCheckPermission("system:dict:list")

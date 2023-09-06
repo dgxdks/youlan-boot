@@ -27,5 +27,12 @@ export default {
       message: message || '手机号码格式不正确',
       trigger: trigger || ['blur']
     }
+  },
+  patternRule(pattern, message, trigger) {
+    return {
+      pattern,
+      message: message || '格式错误',
+      trigger: trigger || ['blur']
+    }
   }
 }

@@ -23,7 +23,8 @@ public class DBHelper {
     private static final ConcurrentHashMap<Class<?>, Map<Field, Query>> CACHE_FIELD = new ConcurrentHashMap<>();
 
     public static <T> IPage<T> getIPage(PageDTO pageDTO) {
-        boolean needTotal = ObjectUtil.isNotNull(pageDTO.getNeedTotal()) ? pageDTO.getNeedTotal() : true;
+        // 不是true就是不需要统计总数
+        boolean needTotal = ObjectUtil.equal(pageDTO.getIsNeedTotal(), true);
         return getIPage(pageDTO.getPageNum(), pageDTO.getPageSize(), needTotal);
     }
 
@@ -46,7 +47,8 @@ public class DBHelper {
     public static <T> QueryWrapper<T> getQueryWrapper(PageDTO query) {
         QueryWrapper<T> queryWrapper = getQueryWrapper((Object) query);
         List<String> sortList = query.getSortList();
-        boolean isAsc = ObjectUtil.isNotNull(query.getIsAsc()) ? query.getIsAsc() : true;
+        // 不等于降序就是升序
+        boolean isAsc = ObjectUtil.equal(query.getIsDesc(), false);
         queryWrapper.orderBy(CollectionUtil.isNotEmpty(sortList), isAsc, sortList);
         return queryWrapper;
     }

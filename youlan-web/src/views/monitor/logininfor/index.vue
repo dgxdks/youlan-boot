@@ -99,7 +99,7 @@
         >导出
         </el-button>
       </el-col>
-      <right-toolbar :query-show.sync="showSearch" @queryTable="getList" />
+      <right-toolbar :query-show.sync="showSearch" @refresh="getList" />
     </el-row>
 
     <el-table

@@ -88,7 +88,7 @@
             </el-input>
           </el-popover>
         </el-form-item>
-        <row-split2>
+        <base-row-split2>
           <el-form-item label="菜单名称" prop="menuName">
             <el-input v-model="editForm.menuName" placeholder="请输入菜单名称" />
           </el-form-item>
@@ -127,7 +127,7 @@
             <base-form-label slot="label" content="选择停用则路由将不会出现在侧边栏，也不能被访问" label="菜单状态" />
             <dict-radio v-model="editForm.status" dict-type="db_status" />
           </el-form-item>
-        </row-split2>
+        </base-row-split2>
       </el-form>
     </base-dialog>
   </div>
@@ -179,6 +179,10 @@ export default {
       // 加载表格数据
       getMenuTreeList(this.queryForm).then(res => {
         this.menuList = res
+        this.tableExpandAll = false
+        this.$nextTick(() => {
+          this.handleExpandAll()
+        })
         this.closeTableLoading()
       })
     },

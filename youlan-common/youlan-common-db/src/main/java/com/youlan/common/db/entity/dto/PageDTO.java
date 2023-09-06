@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.Getter;
 import lombok.experimental.Accessors;
 
 import java.util.List;
@@ -26,33 +27,17 @@ public class PageDTO {
     @TableField(exist = false)
     private List<String> sortList;
 
+    @Getter
     @Schema(title = "是否降序", defaultValue = "false")
     @TableField(exist = false)
-    private Boolean isAsc;
+    private Boolean isDesc = false;
 
+    @Getter
     @Schema(title = "是否统计总数", defaultValue = "true")
     @TableField(exist = false)
-    private Boolean needTotal;
+    private Boolean isNeedTotal = true;
 
     @Schema(title = "扩展参数", type = "object")
     @TableField(exist = false)
     private Map<String, String> extParams;
-
-    public Boolean getIsAsc() {
-        return isAsc;
-    }
-
-    public PageDTO setIsAsc(Boolean asc) {
-        isAsc = asc;
-        return this;
-    }
-
-    public Boolean getNeedTotal() {
-        return needTotal;
-    }
-
-    public PageDTO setNeedTotal(Boolean needTotal) {
-        this.needTotal = needTotal;
-        return this;
-    }
 }

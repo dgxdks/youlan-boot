@@ -102,7 +102,7 @@
         >关闭
         </el-button>
       </el-col>
-      <right-toolbar :query-show.sync="showSearch" @queryTable="getList" />
+      <right-toolbar :query-show.sync="showSearch" @refresh="getList" />
     </el-row>
 
     <el-table v-loading="loading" :data="jobLogList" @selection-change="handleSelectionChange">

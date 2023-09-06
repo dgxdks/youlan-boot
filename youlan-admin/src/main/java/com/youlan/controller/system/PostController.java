@@ -12,6 +12,7 @@ import com.youlan.framework.constant.SystemLogType;
 import com.youlan.framework.controller.BaseController;
 import com.youlan.system.entity.Post;
 import com.youlan.system.service.PostService;
+import com.youlan.system.service.biz.PostBizService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -28,13 +29,15 @@ import java.util.List;
 @AllArgsConstructor
 public class PostController extends BaseController {
     private final PostService postService;
+    private final PostBizService postBizService;
 
     @SaCheckPermission("system:post:add")
     @Operation(summary = "岗位新增")
     @PostMapping("/addPost")
     @SystemLog(name = "岗位", type = SystemLogType.OPERATION_LOG_TYPE_ADD)
     public ApiResult addPost(@Validated @RequestBody Post post) {
-        return toSuccess(postService.save(post));
+        postBizService.addPost(post);
+        return toSuccess();
     }
 
     @SaCheckPermission("system:post:update")
@@ -45,7 +48,8 @@ public class PostController extends BaseController {
         if (ObjectUtil.isNull(post.getId())) {
             return toError(ApiResultCode.C0001);
         }
-        return toSuccess(postService.updateById(post));
+        postBizService.updatePost(post);
+        return toSuccess();
     }
 
     @SaCheckPermission("system:post:remove")
@@ -56,7 +60,8 @@ public class PostController extends BaseController {
         if (CollectionUtil.isEmpty(dto.getList())) {
             return toSuccess();
         }
-        return toSuccess(postService.removeBatchByIds(dto.getList()));
+        postBizService.removePost(dto.getList());
+        return toSuccess();
     }
 
     @SaCheckPermission("system:post:load")

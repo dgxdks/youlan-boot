@@ -15,10 +15,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -36,7 +33,8 @@ public class DictTypeController extends BaseController {
     @Operation(summary = "字典类型新增")
     @PostMapping("/addDictType")
     public ApiResult addDictType(@Validated @RequestBody DictType dictType) {
-        return toSuccess(dictBizService.addDictType(dictType));
+        dictBizService.addDictType(dictType);
+        return toSuccess();
     }
 
     @SaCheckPermission("system:dict:update")
@@ -46,14 +44,23 @@ public class DictTypeController extends BaseController {
         if (ObjectUtil.isEmpty(dictType.getId())) {
             return toError(ApiResultCode.C0001);
         }
-        return toSuccess(dictBizService.updateDictType(dictType));
+        dictBizService.updateDictType(dictType);
+        return toSuccess();
+    }
+
+    @SaCheckPermission("system:dict:load")
+    @Operation(summary = "字典类型详情")
+    @PostMapping("/loadDictType")
+    public ApiResult loadDictType(@RequestParam Long id) {
+        return toSuccess(dictTypeService.loadOne(id));
     }
 
     @SaCheckPermission("system:dict:remove")
     @Operation(summary = "字典类型删除")
     @PostMapping("/removeDictType")
     public ApiResult removeDictType(@RequestBody ListDTO<Long> ids) {
-        return toSuccess(dictBizService.removeDictType(ids.getList()));
+        dictBizService.removeDictType(ids.getList());
+        return toSuccess();
     }
 
     @SaCheckPermission("system:dict:list")
@@ -65,9 +72,9 @@ public class DictTypeController extends BaseController {
 
     @SaCheckPermission("system:dict:export")
     @Operation(summary = "系统配置导出")
-    @PostMapping("/exportDictList")
+    @PostMapping("/exportDictTypeList")
     public void exportConfigList(@RequestBody DictType dictType, HttpServletResponse response) throws IOException {
-        List<DictType> loginLogList = dictTypeService.loadMore(DBHelper.getQueryWrapper(dictType));
-        toExcel("字典类型.xlsx", "字典类型", LoginLog.class, loginLogList, response);
+        List<DictType> dictTypeList = dictTypeService.loadMore(DBHelper.getQueryWrapper(dictType));
+        toExcel("字典类型.xlsx", "字典类型", DictType.class, dictTypeList, response);
     }
 }

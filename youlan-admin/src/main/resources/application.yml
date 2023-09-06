@@ -88,6 +88,9 @@ spring:
         max-active: 8
         # 连接池最大阻塞等待时间(使用负值表示没有限制)
         max-wait: -1ms
+  arthas:
+    # 是否开启arthas
+    enabled: false
 
 mybatis-plus:
   type-aliases-package: com.youlan.**.entity
@@ -136,6 +139,26 @@ sa-token:
   token-style: uuid
   # 是否输出操作日志
   is-log: true
+
+arthas:
+  # 端口为0则不开启http端口(生产环境请慎重配置)
+  http-port: 18564
+  # 端口为0则不开启telnet端口(生产环境请慎重配置)
+  telnet-port: 18565
+  # 代理ID
+  agent-id: 'arthas-admin'
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+    logfile:
+      external-file: ./logs/info.log
+      enabled: true
 
 youlan:
   # 系统模块

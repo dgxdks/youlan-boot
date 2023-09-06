@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.Date;
+
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class DeptVO extends OrgVO<DeptVO> {
@@ -20,4 +22,22 @@ public class DeptVO extends OrgVO<DeptVO> {
 
     @Schema(title = "邮箱")
     private String email;
+
+    @Schema(title = DBConstant.DESC_CREATE_ID)
+    private Long createId;
+
+    @Schema(title = DBConstant.DESC_CREATE_BY)
+    private String createBy;
+
+    @Schema(title = DBConstant.DESC_UPDATE_ID)
+    private Long updateId;
+
+    @Schema(title = DBConstant.DESC_UPDATE_BY)
+    private String updateBy;
+
+    @Schema(title = DBConstant.DESC_CREATE_TIME)
+    private Date createTime;
+
+    @Schema(title = DBConstant.DESC_UPDATE_TIME)
+    private Date updateTime;
 }

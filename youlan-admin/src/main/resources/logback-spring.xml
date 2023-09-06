@@ -13,9 +13,10 @@
     </appender>
 
     <springProfile name="prod">
-        <appender name="file_info" class="ch.qos.logback.core.rolling.RollingFileAppender">
-            <file>${log.path}/sys-info.log</file>
-            <!-- 循环政策：基于时间创建日志文件 -->
+        <!-- info日志 -->
+        <appender name="log_info" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${log.path}/info.log</file>
+            <!-- 循环策略：基于时间创建日志文件 -->
             <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
                 <!-- 日志文件名格式 -->
                 <fileNamePattern>${log.path}/info.%d{yyyy-MM-dd}.log</fileNamePattern>
@@ -34,9 +35,11 @@
                 <onMismatch>DENY</onMismatch>
             </filter>
         </appender>
-        <appender name="file_error" class="ch.qos.logback.core.rolling.RollingFileAppender">
-            <file>${log.path}/sys-error.log</file>
-            <!-- 循环政策：基于时间创建日志文件 -->
+
+        <!-- error日志 -->
+        <appender name="log_error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${log.path}/error.log</file>
+            <!-- 循环策略：基于时间创建日志文件 -->
             <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
                 <!-- 日志文件名格式 -->
                 <fileNamePattern>${log.path}/error.%d{yyyy-MM-dd}.log</fileNamePattern>
@@ -55,18 +58,16 @@
                 <onMismatch>DENY</onMismatch>
             </filter>
         </appender>
+
+        <root level="info">
+            <appender-ref ref="log_info"/>
+            <appender-ref ref="log_error"/>
+        </root>
     </springProfile>
 
     <springProfile name="dev">
         <root level="info">
             <appender-ref ref="console"/>
-        </root>
-    </springProfile>
-
-    <springProfile name="prod">
-        <root level="info">
-            <appender-ref ref="file_info"/>
-            <appender-ref ref="file_error"/>
         </root>
     </springProfile>
 </configuration>

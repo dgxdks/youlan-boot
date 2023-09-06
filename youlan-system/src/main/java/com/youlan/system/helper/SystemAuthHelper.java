@@ -179,6 +179,17 @@ public class SystemAuthHelper {
     }
 
     /**
+     * 当前用户是否有此用户数据权限
+     */
+    public static boolean hasUserId(Long userId) {
+        if (isAdmin()) {
+            return true;
+        }
+        // TODO: 2023/8/30 实现数据权限逻辑
+        return true;
+    }
+
+    /**
      * 校验当前用户是否有此用户数据权限
      */
     public static void checkHasUserId(Long userId) {
@@ -195,9 +206,20 @@ public class SystemAuthHelper {
     }
 
     /**
-     * 当前用户是否有此用户数据权限
+     * 当前用户是否有此角色数据权限
      */
-    public static boolean hasUserId(Long userId) {
+    public static boolean hasRoleId(Long roleId) {
+        if (isAdmin()) {
+            return true;
+        }
+        // TODO: 2023/8/30 实现数据权限逻辑
+        return true;
+    }
+
+    /**
+     * 当前用户是否有此角色数据权限
+     */
+    public static boolean hasRoleIds(List<Long> roleIds) {
         if (isAdmin()) {
             return true;
         }
@@ -224,26 +246,43 @@ public class SystemAuthHelper {
     }
 
     /**
-     * 当前用户是否有此角色数据权限
+     * 当前用户是否有此机构权限
      */
-    public static boolean hasRoleId(Long roleId) {
+    public static boolean hasOrgId(Long orgId) {
         if (isAdmin()) {
             return true;
         }
-        // TODO: 2023/8/30 实现数据权限逻辑
         return true;
     }
 
     /**
-     * 当前用户是否有此角色数据权限
+     * 当前用户是否有此机构权限
      */
-    public static boolean hasRoleIds(List<Long> roleIds) {
+    public static boolean hasOrgIds(List<Long> orgIds) {
         if (isAdmin()) {
             return true;
         }
-        // TODO: 2023/8/30 实现数据权限逻辑
         return true;
     }
+
+    /**
+     * 校验当前用户是否有此机构权限
+     */
+    public static void checkHasOrgId(Long orgId) {
+        if (!hasOrgId(orgId)) {
+            throw new BizRuntimeException(ApiResultCode.A0021);
+        }
+    }
+
+    /**
+     * 校验当前用户是否有此机构权限
+     */
+    public static void checkHasOrgIds(List<Long> orgIds) {
+        if (!hasOrgIds(orgIds)) {
+            throw new BizRuntimeException(ApiResultCode.A0021);
+        }
+    }
+
 
     /**
      * 根据用户ID获取用户对应角色的权限字符缓存

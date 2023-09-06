@@ -36,7 +36,7 @@
         <base-add-button v-has-perm="['system:role:add']" plain @click="handleAdd" />
       </el-col>
       <el-col :span="1.5">
-        <base-update-button v-has-perm="['system:role:edit']" plain :disabled="!tableSelectOne" @click="handleUpdate" />
+        <base-update-button v-has-perm="['system:role:update']" plain :disabled="!tableSelectOne" @click="handleUpdate" />
       </el-col>
       <el-col :span="1.5">
         <base-remove-button v-has-perm="['system:role:remove']" plain :disabled="tableNoSelected" @click="handleDelete" />
@@ -92,7 +92,7 @@
     <!-- 角色编辑对话框 -->
     <base-dialog :title="editTitle" :open.sync="editOpen" @confirm="handleEditSubmit" @cancel="handleEditCancel">
       <el-form ref="editForm" :model="editForm" :rules="editRules" label-width="100px">
-        <row-split2>
+        <base-row-split2>
           <el-form-item label="角色名称" prop="roleName">
             <el-input v-model="editForm.roleName" placeholder="请输入角色名称" />
           </el-form-item>
@@ -106,7 +106,7 @@
           <el-form-item label="状态">
             <dict-radio v-model="editForm.status" dict-type="db_status" />
           </el-form-item>
-        </row-split2>
+        </base-row-split2>
         <el-form-item label="备注">
           <el-input v-model="editForm.remark" placeholder="请输入内容" type="textarea" />
         </el-form-item>

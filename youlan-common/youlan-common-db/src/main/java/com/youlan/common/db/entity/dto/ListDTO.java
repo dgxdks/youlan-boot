@@ -21,4 +21,9 @@ public class ListDTO<T> {
     public boolean isOne() {
         return !isEmpty() && list.size() == 1;
     }
+
+    @Schema(hidden = true)
+    public T getOne() {
+        return CollectionUtil.getFirst(list);
+    }
 }

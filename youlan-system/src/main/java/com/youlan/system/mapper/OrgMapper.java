@@ -5,9 +5,11 @@ import com.youlan.system.entity.Org;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.Collection;
-
 @Mapper
 public interface OrgMapper extends BaseMapper<Org> {
-    boolean removeByOrgModelTableId(@Param("tableName") String tableName, @Param("idList") Collection<?> idList);
+    /**
+     * 替换指定子机构的祖级
+     */
+    boolean replaceChildOrgAncestors(@Param("orgId") Long orgId, @Param("oldAncestors") String oldAncestors,
+                                     @Param("newAncestors") String newAncestors);
 }

@@ -146,7 +146,7 @@
     <!-- 用户编辑对话框 -->
     <base-dialog :title="editTitle" :open.sync="editOpen" @confirm="handleEditSubmit" @cancel="handleEditCancel">
       <el-form ref="editForm" :model="editForm" :rules="editRules" label-width="80px">
-        <row-split2>
+        <base-row-split2>
           <el-form-item label="用户昵称" prop="nickName">
             <el-input v-model="editForm.nickName" maxlength="30" placeholder="请输入用户昵称" />
           </el-form-item>
@@ -177,7 +177,7 @@
           <el-form-item label="角色">
             <role-select v-model="editForm.roleIdList" multiple />
           </el-form-item>
-        </row-split2>
+        </base-row-split2>
         <el-form-item label="备注">
           <el-input v-model="editForm.remark" placeholder="请输入内容" type="textarea" />
         </el-form-item>

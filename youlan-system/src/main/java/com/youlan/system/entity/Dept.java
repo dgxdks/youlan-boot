@@ -2,23 +2,21 @@ package com.youlan.system.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.youlan.common.db.constant.DBConstant;
-import com.youlan.system.org.entity.AbstractOrgModel;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.util.Date;
 
-import static com.youlan.system.constant.SystemConstant.ORG_TYPE_DEPT;
-
 @Data
 @TableName("t_sys_dept")
-@EqualsAndHashCode(callSuper = true)
-public class Dept extends AbstractOrgModel {
+public class Dept {
 
     @Schema(title = DBConstant.DESC_ID)
     @TableId(type = IdType.AUTO)
     private Long id;
+
+    @Schema(title = "机构ID")
+    private Long orgId;
 
     @Schema(title = "负责人")
     private String leader;
@@ -59,9 +57,4 @@ public class Dept extends AbstractOrgModel {
     @Schema(title = DBConstant.DESC_STS)
     @TableLogic(value = DBConstant.VAL_STS_NO, delval = DBConstant.VAL_STS_YES)
     private String sts;
-
-    @Override
-    public String orgType() {
-        return ORG_TYPE_DEPT;
-    }
 }

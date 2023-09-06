@@ -1,11 +1,10 @@
 import request from '@/framework/tools/request'
 
-// 查询部门列表
-export function listDept(query) {
+export function getDeptTreeList(data) {
   return request({
-    url: '/system/dept/list',
-    method: 'get',
-    params: query
+    url: '/system/dept/getDeptTreeList',
+    method: 'post',
+    data
   })
 }
 
@@ -18,35 +17,37 @@ export function listDeptExcludeChild(deptId) {
 }
 
 // 查询部门详细
-export function getDept(deptId) {
+export function loadDept(params) {
   return request({
-    url: '/system/dept/' + deptId,
-    method: 'get'
+    url: '/system/dept/loadDept',
+    method: 'post',
+    params
   })
 }
 
 // 新增部门
 export function addDept(data) {
   return request({
-    url: '/system/dept',
+    url: '/system/dept/addDept',
     method: 'post',
-    data: data
+    data
   })
 }
 
 // 修改部门
 export function updateDept(data) {
   return request({
-    url: '/system/dept',
-    method: 'put',
-    data: data
+    url: '/system/dept/updateDept',
+    method: 'post',
+    data
   })
 }
 
 // 删除部门
-export function delDept(deptId) {
+export function removeDept(data) {
   return request({
-    url: '/system/dept/' + deptId,
-    method: 'delete'
+    url: '/system/dept/removeDept',
+    method: 'post',
+    data
   })
 }

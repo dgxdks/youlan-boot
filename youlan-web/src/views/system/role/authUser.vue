@@ -35,7 +35,7 @@
       <el-col :span="1.5">
         <base-close-button plain @click="handleClose">关闭</base-close-button>
       </el-col>
-      <right-toolbar :query-show.sync="queryShow" @queryTable="getList" />
+      <right-toolbar :query-show.sync="queryShow" @refresh="getList" />
     </el-row>
 
     <el-table v-loading="tableLoading" :data="userList" @selection-change="handleSelectionChange">

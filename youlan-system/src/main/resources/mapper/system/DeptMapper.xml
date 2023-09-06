@@ -3,7 +3,30 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.youlan.system.mapper.DeptMapper">
-    <insert id="saveTest">
-        INSERT INTO t_sys_dept (create_id, create_by, create_time) VALUES (1, '2023-01-02 12:12:12', '2023-01-02 12:12:12')
-    </insert>
+
+    <select id="getDeptList" resultType="com.youlan.system.entity.vo.DeptVO">
+        select dept.*,
+        org_name,
+        org_type,
+        org_level,
+        org_ancestors,
+        parent_org_id,
+        org_sort,
+        org_remark,
+        org_status,
+        org_sts
+        from t_sys_dept as dept
+        left join t_sys_org as org on org.org_id = dept.org_id
+        where org.org_sts = '1' and dept.sts = '1'
+        <if test="dto.orgName != null and dto.orgName != ''">
+            and org.org_name like concat('%', #{dto.orgName}, '%')
+        </if>
+        <if test="dto.orgStatus != null and dto.orgStatus != ''">
+            and org.org_status = #{dto.orgStatus}
+        </if>
+        <if test="dto.excludeOrgId != null">
+            and (org.org_id != #{dto.excludeOrgId} and find_in_set(#{dto.excludeOrgId}, org.org_ancestors) = 0)
+        </if>
+    </select>
+
 </mapper>

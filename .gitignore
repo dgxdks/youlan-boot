@@ -47,3 +47,4 @@ uploadPath
 !*/build/*.java
 !*/build/*.html
 !*/build/*.xml
+arthas-output

@@ -12,6 +12,7 @@ import com.youlan.system.service.MenuService;
 import com.youlan.system.service.RoleMenuService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -40,6 +41,7 @@ public class MenuBizService {
     /**
      * 菜单删除
      */
+    @Transactional(rollbackFor = Exception.class)
     public void removeMenu(List<Long> ids) {
         for (Long id : ids) {
             if (ObjectUtil.isNull(id)) {
@@ -53,8 +55,8 @@ public class MenuBizService {
             if (hasRole) {
                 throw new BizRuntimeException("菜单已绑定角色时不能删除");
             }
-            menuService.removeById(id);
         }
+        menuService.removeBatchByIds(ids);
     }
 
     /**

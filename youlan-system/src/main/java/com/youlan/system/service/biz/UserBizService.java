@@ -161,7 +161,7 @@ public class UserBizService {
         UserVO userVO = BeanUtil.copyProperties(user, UserVO.class);
         List<String> roleNameList = userRoleService.getBaseMapper().getRoleNameListByUserId(userId);
         List<String> postNameList = userPostService.getBaseMapper().getPostNameListByUserId(userId);
-        String orgName = orgService.getOrgNameByOrgId(user.getOrgId());
+        String orgName = orgService.loadOrgNameByOrgId(user.getOrgId());
         userVO.setPostNameList(postNameList);
         userVO.setRoleNameList(roleNameList);
         userVO.setOrgName(orgName);

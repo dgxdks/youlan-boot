@@ -14,8 +14,9 @@ import DictSelect from '@/views/components/DictSelect.vue'
 import OrgTree from '@/views/components/OrgTree.vue'
 import DictRadio from '@/views/components/DictRadio.vue'
 import BaseDialog from '@/framework/components/BaseDialog.vue'
-import RowSplit2 from '@/framework/components/BaseRowSplit2.vue'
-import RowSplit3 from '@/framework/components/BaseRowSplit3.vue'
+import BaseRowSplit from '@/framework/components/BaseRowSplit.vue'
+import BaseRowSplit2 from '@/framework/components/BaseRowSplit2.vue'
+import BaseRowSplit3 from '@/framework/components/BaseRowSplit3.vue'
 import TableOptions from '@/components/TableOptions/index.vue'
 import DictTag from '@/views/components/DictTag.vue'
 import Pagination from '@/components/Pagination/index.vue'
@@ -62,8 +63,9 @@ function mountComponent() {
   Vue.component('OrgTree', OrgTree)
   Vue.component('DictRadio', DictRadio)
   Vue.component('BaseDialog', BaseDialog)
-  Vue.component('RowSplit2', RowSplit2)
-  Vue.component('RowSplit3', RowSplit3)
+  Vue.component('BaseRowSplit', BaseRowSplit)
+  Vue.component('BaseRowSplit2', BaseRowSplit2)
+  Vue.component('BaseRowSplit3', BaseRowSplit3)
   Vue.component('TableOptions', TableOptions)
   Vue.component('DictTag', DictTag)
   Vue.component('Pagination', Pagination)

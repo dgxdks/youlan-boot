@@ -18,6 +18,9 @@ public class OrgVO<T> {
     @Schema(title = "机构类型")
     private String orgType;
 
+    @Schema(title = "机构祖级")
+    private String orgAncestors;
+
     @Schema(title = "父级机构ID")
     private Long parentOrgId;
 

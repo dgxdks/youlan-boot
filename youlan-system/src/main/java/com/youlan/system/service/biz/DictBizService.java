@@ -3,10 +3,12 @@ package com.youlan.system.service.biz;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.youlan.common.db.constant.DBConstant;
 import com.youlan.common.core.exception.BizRuntimeException;
+import com.youlan.common.core.restful.enums.ApiResultCode;
+import com.youlan.common.db.constant.DBConstant;
 import com.youlan.common.redis.helper.RedisHelper;
 import com.youlan.system.constant.SystemConstant;
 import com.youlan.system.entity.DictData;
@@ -19,10 +21,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -84,8 +86,7 @@ public class DictBizService {
      * 新增字典值
      */
     public boolean addDictData(DictData dictData) {
-        dictTypeCheck(dictData.getTypeKey());
-        dataNameRepeatCheck(dictData);
+        beforeAddOrgUpdateDictData(dictData);
         boolean save = dictDataService.save(dictData);
         if (save) {
             this.removeDictCache(dictData.getTypeKey());
@@ -97,8 +98,9 @@ public class DictBizService {
      * 更新字典值
      */
     public boolean updateDictData(DictData dictData) {
-        dictTypeCheck(dictData.getTypeKey());
-        dataNameRepeatCheck(dictData);
+        beforeAddOrgUpdateDictData(dictData);
+        // 字典类型键名不能修改
+        dictData.setTypeKey(null);
         boolean update = dictDataService.updateById(dictData);
         if (update) {
             this.removeDictCache(dictData.getTypeKey());
@@ -111,92 +113,108 @@ public class DictBizService {
      * 需要删除字典值、对应字典缓存
      */
     @Transactional(rollbackFor = Exception.class)
-    public boolean removeDictData(List<Long> idList) {
+    public void removeDictData(List<Long> idList) {
         List<String> typeKeyList = dictDataService.lambdaQuery().select(DictData::getTypeKey).in(DictData::getId, idList)
                 .list()
                 .stream()
                 .map(DictData::getTypeKey)
                 .collect(Collectors.toList());
-        dictDataService.removeBatchByIds(idList);
-        typeKeyList.forEach(this::removeDictCache);
-        return true;
+        boolean removed = dictDataService.removeBatchByIds(idList);
+        if (removed) {
+            typeKeyList.forEach(this::removeDictCache);
+        }
     }
 
     /**
-     * 批量删除字典类型
-     * 需要删除对应字典类型、关联字典值、字典缓存
+     * 新增获取修改字典值前置操作
      */
-    @Transactional(rollbackFor = Exception.class)
-    public boolean removeDictType(List<Long> idList) {
-        List<String> typeKeyList = dictTypeService.lambdaQuery().select(DictType::getTypeKey).in(DictType::getId, idList)
-                .list()
-                .stream()
-                .map(DictType::getTypeKey)
-                .collect(Collectors.toList());
-        dictTypeService.removeBatchByIds(idList);
-        for (String typeKey : typeKeyList) {
-            dictDataService.remove(Wrappers.<DictData>lambdaQuery().eq(DictData::getTypeKey, typeKey));
-            removeDictCache(typeKey);
+    public void beforeAddOrgUpdateDictData(DictData dictData) {
+        // 必须指定字典类型键名
+        DictType dictType = dictTypeService.loadDictTypeByTypeKeyIfExists(dictData.getTypeKey());
+        // 新增时字典类型不能被禁用
+        if (ObjectUtil.isNull(dictData.getId()) && DBConstant.VAL_STATUS_DISABLED.equals(dictType.getStatus())) {
+            throw new BizRuntimeException(ApiResultCode.B0015);
         }
-        return true;
+        // 字典值+字典类型键名必须唯一
+        String typeKey = dictData.getTypeKey();
+        String dataName = dictData.getDataName();
+        boolean dictDataExists = dictDataService.lambdaQuery()
+                .select(DictData::getId)
+                .eq(DictData::getTypeKey, typeKey)
+                .eq(DictData::getDataName, dataName)
+                .ne(ObjectUtil.isNotNull(dictData.getId()), DictData::getId, dictData.getId())
+                .exists();
+        if (dictDataExists) {
+            throw new BizRuntimeException(StrUtil.format("字典类型下[{}]的字典名称[{}]重复", typeKey, dataName));
+        }
     }
+
 
     /**
      * 新增字典类型
      */
-    public boolean addDictType(DictType dictType) {
-        String typeKey = dictType.getTypeKey();
-        if (dictTypeService.loadByTypeKey(typeKey) != null) {
-            throw new BizRuntimeException("字典类型键名已存在");
-        }
-        return dictTypeService.save(dictType);
+    public void addDictType(DictType dictType) {
+        beforeAddOrgUpdateDictType(dictType);
+        dictTypeService.save(dictType);
     }
 
     /**
      * 修改字典类型
      */
-    public boolean updateDictType(DictType dto) {
-        String typeKey = dto.getTypeKey();
-        DictType dictType = dictTypeService.loadByTypeKey(typeKey);
-        if (ObjectUtil.isNotNull(dictType) && Objects.equals(dictType.getId(), dto.getId())) {
-            throw new BizRuntimeException("字典类型键名已存在");
+    @Transactional(rollbackFor = Exception.class)
+    public void updateDictType(DictType dictType) {
+        beforeAddOrgUpdateDictType(dictType);
+        DictType oldDictType = dictTypeService.loadDictTypeIfExists(dictType.getId());
+        // 如果前后typeKey不一致则字典值表也需要同步
+        if (ObjectUtil.notEqual(oldDictType.getTypeKey(), dictType.getTypeKey())) {
+            // 更新字典值中的typeKey
+            dictDataService.lambdaUpdate()
+                    .eq(DictData::getTypeKey, oldDictType.getTypeKey())
+                    .set(DictData::getTypeKey, dictType.getTypeKey())
+                    .update();
         }
+        // 更新字典类型
         boolean update = dictTypeService.updateById(dictType);
+        // 删除旧缓存
         if (update) {
-            this.removeDictCache(typeKey);
+            this.removeDictCache(oldDictType.getTypeKey());
         }
-        return update;
     }
 
     /**
-     * 字典值名称校验
+     * 删除字典类型
      */
-    public void dataNameRepeatCheck(DictData dictData) {
-        String typeKey = dictData.getTypeKey();
-        String dataName = dictData.getDataName();
-        List<DictData> dictDataList = dictDataService.lambdaQuery()
-                .select(DictData::getId)
-                .eq(DictData::getTypeKey, typeKey)
-                .eq(DictData::getDataName, dataName)
-                .list();
-        if (CollectionUtil.isEmpty(dictDataList)) {
-            return;
+    @Transactional(rollbackFor = Exception.class)
+    public void removeDictType(List<Long> ids) {
+        List<String> typeKeyList = new ArrayList<>();
+        for (Long id : ids) {
+            DictType dictType = dictTypeService.loadDictTypeIfExists(id);
+            boolean dictTypeExists = dictDataService.lambdaQuery()
+                    .eq(DictData::getTypeKey, dictType.getTypeKey())
+                    .exists();
+            if (dictTypeExists) {
+                throw new BizRuntimeException("字典类型绑定字典值时不能删除");
+            }
+            typeKeyList.add(dictType.getTypeKey());
         }
-        for (DictData retDictData : dictDataList) {
-            if (!retDictData.getId().equals(dictData.getId())) {
-                throw new BizRuntimeException(StrUtil.format("字典类型下[{}]字典名称[{}]重复", typeKey, dataName));
+        boolean removed = dictTypeService.removeBatchByIds(ids);
+        if (removed) {
+            for (String typeKey : typeKeyList) {
+                removeDictCache(typeKey);
             }
         }
     }
 
     /**
-     * 字典类型校验
+     * 新增或修改字典类型前置操作
      */
-    public void dictTypeCheck(String typeKey) {
-        DictType dictType = dictTypeService.loadOneOpt(DictType::getTypeKey, typeKey)
-                .orElseThrow(() -> new BizRuntimeException("字典类型不存在"));
-        if (DBConstant.VAL_STATUS_DISABLED.equals(dictType.getStatus())) {
-            throw new BizRuntimeException("字典类型被禁用");
+    public void beforeAddOrgUpdateDictType(DictType dictType) {
+        LambdaQueryWrapper<DictType> typeKeyWrapper = Wrappers.<DictType>lambdaQuery()
+                .eq(DictType::getTypeKey, dictType.getTypeKey())
+                .ne(ObjectUtil.isNotNull(dictType.getId()), DictType::getId, dictType.getId());
+        boolean typeKeyExists = dictTypeService.exists(typeKeyWrapper);
+        if (typeKeyExists) {
+            throw new BizRuntimeException("字典类型已存在");
         }
     }
 

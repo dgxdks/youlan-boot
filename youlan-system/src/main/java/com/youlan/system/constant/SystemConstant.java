@@ -32,25 +32,6 @@ public class SystemConstant {
     public static final String REDIS_PREFIX_STORAGE_FILE_NAME = "system_storage_record:fileName:";
 
 
-    // ******************** 机构常量 ********************
-    public static final String ORG_TABLE = "t_sys_org";
-    public static final String ALIAS_ENTITY_TABLE = "yt";
-    public static final String ALIAS_ORG_TABLE = "yo";
-    public static final String COL_ORG_NAME = "org_name";
-    public static final String COL_ORG_TYPE = "org_type";
-    public static final String COL_ORG_LEVEL = "org_level";
-    public static final String COL_ORG_ANCESTORS = "org_ancestors";
-    public static final String COL_PARENT_ORG_ID = "parent_org_id";
-    public static final String COL_ORG_SORT = "org_sort";
-    public static final String COL_ORG_REMARK = "org_remark";
-    public static final String COL_ORG_STATUS = "org_status";
-    public static final String COL_ORG_ID = "org_id";
-    public static final String COL_ORG_STS = "org_sts";
-
-    // ******************** 机构类型常量 ********************
-    public static final String ORG_TYPE_PLATFORM = "0";
-    public static final String ORG_TYPE_DEPT = "1";
-
     // ******************** 机构类型常量 ********************
     /**
      * 全部数据权限
