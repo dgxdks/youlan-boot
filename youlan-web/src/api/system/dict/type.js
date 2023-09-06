@@ -9,6 +9,15 @@ export function getDictTypePageList(data) {
   })
 }
 
+// 查询字典类型列表
+export function getDictTypeList(data) {
+  return request({
+    url: '/system/dictType/getDictTypeList',
+    method: 'post',
+    data
+  })
+}
+
 // 查询字典类型详细
 export function loadDictType(params) {
   return request({
@@ -46,10 +55,10 @@ export function removeDictType(data) {
 }
 
 // 刷新字典缓存
-export function refreshCache() {
+export function refreshDictCache() {
   return request({
-    url: '/system/dictType/type/refreshCache',
-    method: 'delete'
+    url: '/system/dictType/refreshDictCache',
+    method: 'post'
   })
 }
 

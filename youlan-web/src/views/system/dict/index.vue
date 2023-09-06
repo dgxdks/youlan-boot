@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form v-show="queryShow" ref="queryForm" :inline="true" :model="queryForm" label-width="68px" size="small">
+    <el-form v-show="queryShow" ref="queryForm" :inline="true" :model="queryForm" label-width="80px" size="small">
       <el-form-item label="字典名称" prop="typeName">
         <el-input
           v-model="queryForm.typeName"
@@ -56,7 +56,7 @@
       <el-table-column :show-overflow-tooltip="true" align="center" label="字典名称" prop="typeName" />
       <el-table-column :show-overflow-tooltip="true" align="center" label="字典类型">
         <template slot-scope="scope">
-          <router-link :to="'/system/dict-data/index/' + scope.row.dictId" class="link-type">
+          <router-link :to="'/system/dict-data/type/' + scope.row.typeKey" class="link-type">
             <span>{{ scope.row.typeKey }}</span>
           </router-link>
         </template>
@@ -108,8 +108,11 @@
 <script>
 import {
   addDictType,
-  getDictTypePageList, loadDictType,
-  refreshCache, removeDictType, updateDictType
+  getDictTypePageList,
+  loadDictType,
+  refreshDictCache,
+  removeDictType,
+  updateDictType
 } from '@/api/system/dict/type'
 import crud from '@/framework/mixin/crud'
 
@@ -231,11 +234,16 @@ export default {
     handleExport() {
       this.$download.postAsName('/system/dictType/exportDictTypeList', {}, this.queryForm, `type_${new Date().getTime()}.xlsx`)
     },
-    /** 刷新缓存按钮操作 */
+    // 刷新缓存按钮
     handleRefreshCache() {
-      refreshCache().then(() => {
-        this.$modal.msgSuccess('刷新成功')
-        this.$store.dispatch('dict/cleanDict')
+      this.$modal.loading('正在刷新中，请稍等...')
+      refreshDictCache().then(res => {
+        this.$modal.loadingClose()
+        this.$modal.success('刷新成功')
+        this.$dict.refreshDict()
+      }).catch(error => {
+        this.$modal.loadingClose()
+        console.log(error)
       })
     }
   }

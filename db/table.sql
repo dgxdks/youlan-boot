@@ -685,7 +685,7 @@ create table t_sys_dict_data
     type_key    varchar(64)  not null comment '字典类型键名',
     data_name   varchar(64)  not null comment '字典值名称',
     data_value  varchar(128) not null comment '字典值键值',
-    ui_class    varchar(64)  default '' comment 'UI样式',
+    ui_class    varchar(64)  default 'default' comment 'UI样式',
     css_class   varchar(64)  default '' comment 'CSS样式',
     is_default  varchar(4)   default '2' comment '是否默认(1-是 2-否)',
     sort        int(4)       default 0 comment '排序',

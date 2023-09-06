@@ -21,11 +21,20 @@ const fieldMapping = {
  *   { type: 'web_common_status', value: '2', name: '停用' }
  * ]
  */
-const staticDict = {}
+const staticDict = {
+  // UI样式
+  ui_class: [
+    { type: 'ui_class', value: 'default', name: '默认(default)' },
+    { type: 'ui_class', value: 'primary', name: '主要(primary)' },
+    { type: 'ui_class', value: 'success', name: '成功(success)' },
+    { type: 'ui_class', value: 'info', name: '信息(info)' },
+    { type: 'ui_class', value: 'warning', name: '警告(warning)' },
+    { type: 'ui_class', value: 'danger', name: '危险(danger)' }
+  ]
+}
 // 管理数据字典加载状态
 const loadingStatus = {}
 export default {
-
   // 根据字典类型获取字典
   loadDict(typeKey) {
     if (StrUtil.isBlank(typeKey)) {
@@ -72,6 +81,30 @@ export default {
     for (let i = 0; i < typeKeys.length; i++) {
       this.loadDict(typeKeys[i])
     }
+  },
+  // 刷新字典缓存
+  refreshDict(typeKey) {
+    // 未指定typeKey则刷新所有
+    const dict = typeKey ? [typeKey] : store.getters.dict
+    for (const typeKey in dict) {
+      getDictDataListByTypeKey({ typeKey }).then(res => {
+        if (ArrayUtil.isNotEmpty(res)) {
+          store.commit('dict/SET_DICT', {
+            type: typeKey,
+            values: this.formatDict(res)
+          })
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    }
+  },
+  // 删除字典
+  removeDict(typeKey) {
+    if (StrUtil.isBlank(typeKey)) {
+      return
+    }
+    store.commit('dict/REMOVE_DICT', typeKey)
   },
   // 根据fieldMapping格式化字典值
   formatDict(dictDataList) {

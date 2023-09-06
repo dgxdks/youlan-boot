@@ -18,6 +18,15 @@ export function getDictDataPageList(data) {
   })
 }
 
+// 字典数据详情
+export function loadDictData(params) {
+  return request({
+    url: '/system/dictData/loadDictData',
+    method: 'post',
+    params
+  })
+}
+
 // 新增字典数据
 export function addDictData(data) {
   return request({

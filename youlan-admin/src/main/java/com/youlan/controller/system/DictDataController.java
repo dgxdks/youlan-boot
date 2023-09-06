@@ -42,6 +42,13 @@ public class DictDataController extends BaseController {
         return toSuccess(dictBizService.updateDictData(dictData));
     }
 
+    @SaCheckPermission("system:dict:load")
+    @Operation(summary = "字典值详情")
+    @PostMapping("/loadDictData")
+    public ApiResult loadDictData(@RequestParam Long id) {
+        return toSuccess(dictDataService.loadOne(id));
+    }
+
     @SaCheckPermission("system:dict:remove")
     @Operation(summary = "字典值删除")
     @PostMapping("/removeDictData")
