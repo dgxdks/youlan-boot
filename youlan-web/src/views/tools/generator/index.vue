@@ -37,7 +37,7 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
-          v-hasPerm="['tools:generator:code']"
+          v-has-perm="['tools:generator:code']"
           icon="el-icon-download"
           plain
           size="mini"
@@ -48,7 +48,7 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
-          v-hasPerm="['tools:generator:import']"
+          v-has-perm="['tools:generator:import']"
           icon="el-icon-upload"
           plain
           size="mini"
@@ -59,7 +59,7 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
-          v-hasPerm="['tools:generator:edit']"
+          v-has-perm="['tools:generator:edit']"
           :disabled="single"
           icon="el-icon-edit"
           plain
@@ -71,7 +71,7 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
-          v-hasPerm="['tools:generator:remove']"
+          v-has-perm="['tools:generator:remove']"
           :disabled="multiple"
           icon="el-icon-delete"
           plain
@@ -117,7 +117,7 @@
       <el-table-column align="center" class-name="small-padding fixed-width" label="操作">
         <template slot-scope="scope">
           <el-button
-            v-hasPerm="['tools:generator:preview']"
+            v-has-perm="['tools:generator:preview']"
             icon="el-icon-view"
             size="small"
             type="text"
@@ -125,7 +125,7 @@
           >预览
           </el-button>
           <el-button
-            v-hasPerm="['tools:generator:edit']"
+            v-has-perm="['tools:generator:edit']"
             icon="el-icon-edit"
             size="small"
             type="text"
@@ -133,7 +133,7 @@
           >编辑
           </el-button>
           <el-button
-            v-hasPerm="['tools:generator:remove']"
+            v-has-perm="['tools:generator:remove']"
             icon="el-icon-delete"
             size="small"
             type="text"
@@ -141,7 +141,7 @@
           >删除
           </el-button>
           <el-button
-            v-hasPerm="['tools:generator:edit']"
+            v-has-perm="['tools:generator:edit']"
             icon="el-icon-refresh"
             size="small"
             type="text"
@@ -149,7 +149,7 @@
           >同步
           </el-button>
           <el-button
-            v-hasPerm="['tools:generator:code']"
+            v-has-perm="['tools:generator:code']"
             icon="el-icon-download"
             size="small"
             type="text"

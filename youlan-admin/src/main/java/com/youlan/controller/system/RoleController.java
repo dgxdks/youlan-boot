@@ -9,8 +9,8 @@ import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.db.entity.dto.ListDTO;
 import com.youlan.common.db.helper.DBHelper;
-import com.youlan.framework.anno.SystemLog;
-import com.youlan.framework.constant.SystemLogType;
+import com.youlan.framework.anno.OperationLog;
+import com.youlan.framework.constant.OperationLogType;
 import com.youlan.framework.controller.BaseController;
 import com.youlan.system.entity.Role;
 import com.youlan.system.entity.dto.UserRolePageDTO;
@@ -40,7 +40,7 @@ public class RoleController extends BaseController {
     @SaCheckPermission("system:role:add")
     @Operation(summary = "角色新增")
     @PostMapping("/addRole")
-    @SystemLog(name = "角色", type = SystemLogType.OPERATION_LOG_TYPE_ADD)
+    @OperationLog(name = "角色", type = OperationLogType.OPERATION_LOG_TYPE_ADD)
     public ApiResult addRole(@Validated @RequestBody Role role) {
         return toSuccess(roleBizService.addRole(role));
     }
@@ -48,7 +48,7 @@ public class RoleController extends BaseController {
     @SaCheckPermission("system:role:update")
     @Operation(summary = "角色修改")
     @PostMapping("/updateRole")
-    @SystemLog(name = "角色", type = SystemLogType.OPERATION_LOG_TYPE_UPDATE)
+    @OperationLog(name = "角色", type = OperationLogType.OPERATION_LOG_TYPE_UPDATE)
     public ApiResult updateRole(@Validated @RequestBody Role role) {
         if (ObjectUtil.isNull(role.getId())) {
             return toError(ApiResultCode.C0001);
@@ -61,7 +61,7 @@ public class RoleController extends BaseController {
     @SaCheckPermission("system:role:remove")
     @Operation(summary = "角色删除")
     @PostMapping("/removeRole")
-    @SystemLog(name = "角色", type = SystemLogType.OPERATION_LOG_TYPE_REMOVE)
+    @OperationLog(name = "角色", type = OperationLogType.OPERATION_LOG_TYPE_REMOVE)
     public ApiResult removeRole(@Validated @RequestBody ListDTO<Long> dto) {
         if (CollectionUtil.isEmpty(dto.getList())) {
             return toSuccess();
@@ -81,7 +81,7 @@ public class RoleController extends BaseController {
     @SaCheckPermission("system:role:list")
     @Operation(summary = "角色列表")
     @PostMapping("/getRoleList")
-    @SystemLog(name = "角色", type = SystemLogType.OPERATION_LOG_TYPE_LIST)
+    @OperationLog(name = "角色", type = OperationLogType.OPERATION_LOG_TYPE_LIST)
     public ApiResult getRoleList(@RequestBody Role role) {
         // TODO: 2023/8/23 需要考虑数据权限 只能看当前用户可以看的角色
         List<Role> roleList = roleService.getBaseMapper().getRoleList(role);
@@ -93,17 +93,17 @@ public class RoleController extends BaseController {
     @SaCheckPermission("system:role:list")
     @Operation(summary = "角色分页")
     @PostMapping("/getRolePageList")
-    @SystemLog(name = "角色", type = SystemLogType.OPERATION_LOG_TYPE_PAGE_LIST)
+    @OperationLog(name = "角色", type = OperationLogType.OPERATION_LOG_TYPE_PAGE_LIST)
     public ApiResult getRolePageList(@RequestBody Role role) {
         // TODO: 2023/8/30 缺少数据权限
-        IPage<Role> roleList = roleService.getBaseMapper().getRoleList(DBHelper.getIPage(role), role);
+        IPage<Role> roleList = roleService.getBaseMapper().getRoleList(DBHelper.getPage(role), role);
         return toSuccess(roleList);
     }
 
     @SaCheckPermission("system:role:export")
     @Operation(summary = "角色导出")
     @PostMapping("/exportRoleList")
-    @SystemLog(name = "角色", type = SystemLogType.OPERATION_LOG_TYPE_EXPORT)
+    @OperationLog(name = "角色", type = OperationLogType.OPERATION_LOG_TYPE_EXPORT)
     public void exportRoleList(@RequestBody Role role, HttpServletResponse response) throws IOException {
         // TODO: 2023/8/30 缺少数据权限
         List<Role> roleList = roleService.getBaseMapper().getRoleList(role);
@@ -113,7 +113,7 @@ public class RoleController extends BaseController {
     @SaCheckPermission("system:role:update")
     @Operation(summary = "角色数据权限修改")
     @PostMapping("/updateRoleScope")
-    @SystemLog(name = "角色", type = SystemLogType.OPERATION_LOG_TYPE_UPDATE)
+    @OperationLog(name = "角色", type = OperationLogType.OPERATION_LOG_TYPE_UPDATE)
     public ApiResult updateRoleScope(@RequestBody Role role) {
         if (ObjectUtil.isNull(role.getId())) {
             return toError(ApiResultCode.C0001);

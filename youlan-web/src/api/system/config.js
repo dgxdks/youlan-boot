@@ -28,11 +28,11 @@ export function removeConfig(data) {
 }
 
 // 系统配置详情
-export function loadConfig(data) {
+export function loadConfig(params) {
   return request({
     url: '/system/config/loadConfig',
     method: 'post',
-    data
+    params
   })
 }
 
@@ -60,5 +60,13 @@ export function exportConfigList(data) {
     url: '/system/config/getConfigPageList',
     method: 'post',
     data
+  })
+}
+
+// 系统配置缓存刷新
+export function refreshConfigCache() {
+  return request({
+    url: '/system/config/refreshConfigCache',
+    method: 'post'
   })
 }

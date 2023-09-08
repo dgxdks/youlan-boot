@@ -2,6 +2,9 @@ import request from '@/framework/tools/request'
 import { EnvUtil, ModalUtil, ObjectUtil, StrUtil, UrlUtil } from '@/framework/tools/index'
 import saveAs from 'file-saver'
 
+/**
+ * 通用下载方法
+ */
 function download(config, fileName) {
   return new Promise((resolve, reject) => {
     ModalUtil.loading('正在下载数据, 请稍等')
@@ -38,30 +41,66 @@ function download(config, fileName) {
 }
 
 export default {
-  get(url, params) {
-    return this.getAsName(url, params)
+  /**
+     * GET请求下载
+     * @param url 下载地址
+     * @param params 路径参数
+     * @param config axios配置
+     * @returns {Promise<unknown>}
+     */
+  get(url, params, config) {
+    return this.getAsName(url, params, config)
   },
-  getAsName(url, params, fileName) {
+  /**
+     * GET请求下载
+     * @param url 下载地址
+     * @param params 路径参数
+     * @param config axios配置
+     * @param fileName 文件名称
+     * @returns {Promise<unknown>}
+     */
+  getAsName(url, params, fileName, config = {}) {
     return download({
       url,
       method: 'get',
-      params
+      params,
+      ...config
     }, fileName)
   },
-  post(url, params, data) {
-    return this.postAsName(url, params, data)
+  /**
+     * POST请求下载
+     * @param url 下载地址
+     * @param params 路径参数
+     * @param data body参数
+     * @param config axios配置
+     * @returns {Promise<unknown>}
+     */
+  post(url, params, data, config) {
+    return this.postAsName(url, params, data, config)
   },
-  postAsName(url, params, data, fileName) {
+  /**
+     * POST请求下载
+     * @param url 下载地址
+     * @param params 路径参数
+     * @param data body参数
+     * @param config axios配置
+     * @param fileName 文件名称
+     * @returns {Promise<unknown>}
+     */
+  postAsName(url, params, data, fileName, config = {}) {
     return download({
       url,
       method: 'post',
       params,
-      data
+      data,
+      ...config
     }, fileName)
   },
+  // 保存文件
   saveAsFile(blob, fileName, opts) {
     saveAs(blob, fileName, opts)
   },
+  // 保存文件url
   saveFileAsUrl(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader()
@@ -74,6 +113,7 @@ export default {
       }
     })
   },
+  // 解析文件下载路径
   parseDownloadUrl(url) {
     if (StrUtil.isBlank(url)) {
       return url

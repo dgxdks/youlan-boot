@@ -101,14 +101,14 @@ public class RoleBizService {
      * 用户角色授权分页
      */
     public IPage<UserVO> getAuthUserPageList(UserRolePageDTO dto) {
-        return userRoleService.getBaseMapper().getAuthUserList(DBHelper.getIPage(dto), dto);
+        return userRoleService.getBaseMapper().getAuthUserList(DBHelper.getPage(dto), dto);
     }
 
     /**
      * 用户角色未授权分页
      */
     public IPage<UserVO> getUnAuthUserPageList(UserRolePageDTO dto) {
-        return userRoleService.getBaseMapper().getUnAuthUserList(DBHelper.getIPage(dto), dto);
+        return userRoleService.getBaseMapper().getUnAuthUserList(DBHelper.getPage(dto), dto);
     }
 
     /**

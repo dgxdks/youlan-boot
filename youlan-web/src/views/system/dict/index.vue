@@ -167,10 +167,6 @@ export default {
       this.$refs.queryForm && this.$refs.queryForm.resetFields()
       this.handleQuery()
     },
-    // 多选框选中数据
-    handleSelectionChange(selection) {
-      this.tableIds = selection.map(item => item.id)
-    },
     // 新增按钮
     handleAdd() {
       this.openEdit('添加字典类型')
@@ -240,6 +236,7 @@ export default {
       refreshDictCache().then(res => {
         this.$modal.loadingClose()
         this.$modal.success('刷新成功')
+      }).then(res => {
         this.$dict.refreshDict()
       }).catch(error => {
         this.$modal.loadingClose()

@@ -12,8 +12,8 @@ import com.youlan.common.db.helper.DBHelper;
 import com.youlan.common.excel.helper.ExcelHelper;
 import com.youlan.common.validator.Insert;
 import com.youlan.common.validator.Update;
-import com.youlan.framework.anno.SystemLog;
-import com.youlan.framework.constant.SystemLogType;
+import com.youlan.framework.anno.OperationLog;
+import com.youlan.framework.constant.OperationLogType;
 import com.youlan.framework.controller.BaseController;
 import com.youlan.system.constant.SystemConstant;
 import com.youlan.system.entity.Role;
@@ -52,7 +52,7 @@ public class UserController extends BaseController {
     @SaCheckPermission("system:user:add")
     @Operation(summary = "用户新增")
     @PostMapping("/addUser")
-    @SystemLog(name = "用户", type = SystemLogType.OPERATION_LOG_TYPE_ADD)
+    @OperationLog(name = "用户", type = OperationLogType.OPERATION_LOG_TYPE_ADD)
     public ApiResult addUser(@Validated(Insert.class) @RequestBody UserDTO dto) {
         return toSuccess(userBizService.addUser(dto));
     }
@@ -60,7 +60,7 @@ public class UserController extends BaseController {
     @SaCheckPermission("system:user:update")
     @Operation(summary = "用户修改")
     @PostMapping("/updateUser")
-    @SystemLog(name = "用户", type = SystemLogType.OPERATION_LOG_TYPE_UPDATE)
+    @OperationLog(name = "用户", type = OperationLogType.OPERATION_LOG_TYPE_UPDATE)
     public ApiResult updateUser(@Validated(Update.class) @RequestBody UserDTO dto) {
         // TODO: 2023/8/28 数据权限
         if (ObjectUtil.isNull(dto.getId())) {
@@ -74,7 +74,7 @@ public class UserController extends BaseController {
     @SaCheckPermission("system:user:remove")
     @Operation(summary = "用户删除")
     @PostMapping("/removeUser")
-    @SystemLog(name = "用户", type = SystemLogType.OPERATION_LOG_TYPE_REMOVE)
+    @OperationLog(name = "用户", type = OperationLogType.OPERATION_LOG_TYPE_REMOVE)
     public ApiResult removeUser(@Validated @RequestBody ListDTO<Long> dto) {
         // TODO: 2023/8/28 数据权限
         if (CollectionUtil.isEmpty(dto.getList())) {
@@ -100,7 +100,7 @@ public class UserController extends BaseController {
     @SaCheckPermission("system:user:list")
     @Operation(summary = "用户分页")
     @PostMapping("/getUserPageList")
-    @SystemLog(name = "用户", type = SystemLogType.OPERATION_LOG_TYPE_PAGE_LIST)
+    @OperationLog(name = "用户", type = OperationLogType.OPERATION_LOG_TYPE_PAGE_LIST)
     public ApiResult getUserPageList(@RequestBody UserPageDTO dto) {
         // TODO: 2023/8/30 缺少数据权限
         return toSuccess(userBizService.getUserPageList(dto));
@@ -109,7 +109,7 @@ public class UserController extends BaseController {
     @SaCheckPermission("system:user:export")
     @Operation(summary = "用户导出")
     @PostMapping("/exportUserList")
-    @SystemLog(name = "用户", type = SystemLogType.OPERATION_LOG_TYPE_EXPORT)
+    @OperationLog(name = "用户", type = OperationLogType.OPERATION_LOG_TYPE_EXPORT)
     public void exportUserList(@RequestBody UserPageDTO dto, HttpServletResponse response) throws IOException {
         // TODO: 2023/8/30 缺少数据权限
         List<UserVO> userList = userBizService.exportUserList(dto);
@@ -119,7 +119,7 @@ public class UserController extends BaseController {
     @SaCheckPermission("system:user:import")
     @Operation(summary = "用户导入")
     @PostMapping("/importUserList")
-    @SystemLog(name = "用户", type = SystemLogType.OPERATION_LOG_TYPE_IMPORT)
+    @OperationLog(name = "用户", type = OperationLogType.OPERATION_LOG_TYPE_IMPORT)
     public ApiResult importUserList(@RequestPart("file") MultipartFile file, boolean cover) throws IOException {
         UserExcelListener userExcelListener = new UserExcelListener(cover);
         ExcelHelper.read(file.getInputStream(), UserTemplateVO.class, userExcelListener)
@@ -131,7 +131,7 @@ public class UserController extends BaseController {
     @SaCheckPermission("system:user:resetPasswd")
     @Operation(summary = "用户密码重置")
     @PostMapping("/resetUserPasswd")
-    @SystemLog(name = "用户", type = SystemLogType.OPERATION_LOG_TYPE_UPDATE)
+    @OperationLog(name = "用户", type = OperationLogType.OPERATION_LOG_TYPE_UPDATE)
     public ApiResult resetUserPasswd(@Validated @RequestBody UserResetPasswdDTO dto) {
         // TODO: 2023/8/23 数据权限
         if (ObjectUtil.isNull(dto.getId())) {
@@ -145,7 +145,7 @@ public class UserController extends BaseController {
     @SaCheckPermission("system.user.update")
     @Operation(summary = "用户状态修改")
     @PostMapping("/updateUserStatus")
-    @SystemLog(name = "用户", type = SystemLogType.OPERATION_LOG_TYPE_UPDATE)
+    @OperationLog(name = "用户", type = OperationLogType.OPERATION_LOG_TYPE_UPDATE)
     public ApiResult updateUserStatus(@RequestParam Long id, @RequestParam String status) {
         SystemAuthHelper.checkUserNotAdmin(id);
         SystemAuthHelper.checkHasUserId(id);
@@ -158,7 +158,7 @@ public class UserController extends BaseController {
     public ApiResult getAuthRolePageList(@RequestBody Role role) {
         // 此排除管理员角色ID
         role.setIdExcludes(Collections.singletonList(SystemConstant.ADMIN_ROLE_ID));
-        IPage<Role> roleList = roleService.getBaseMapper().getRoleList(DBHelper.getIPage(role), role);
+        IPage<Role> roleList = roleService.getBaseMapper().getRoleList(DBHelper.getPage(role), role);
         return toSuccess(roleList);
     }
 

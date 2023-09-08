@@ -12,7 +12,7 @@ const fieldMapping = {
   // 组件UI字段名称映射
   uiField: 'uiClass',
   // 组件class字段名称已映射
-  classField: 'classField'
+  cssField: 'cssClass'
 }
 /**
  * 静态数据库字典配置样例
@@ -22,15 +22,7 @@ const fieldMapping = {
  * ]
  */
 const staticDict = {
-  // UI样式
-  ui_class: [
-    { type: 'ui_class', value: 'default', name: '默认(default)' },
-    { type: 'ui_class', value: 'primary', name: '主要(primary)' },
-    { type: 'ui_class', value: 'success', name: '成功(success)' },
-    { type: 'ui_class', value: 'info', name: '信息(info)' },
-    { type: 'ui_class', value: 'warning', name: '警告(warning)' },
-    { type: 'ui_class', value: 'danger', name: '危险(danger)' }
-  ]
+
 }
 // 管理数据字典加载状态
 const loadingStatus = {}
@@ -85,7 +77,7 @@ export default {
   // 刷新字典缓存
   refreshDict(typeKey) {
     // 未指定typeKey则刷新所有
-    const dict = typeKey ? [typeKey] : store.getters.dict
+    const dict = typeKey ? { typeKey: [] } : store.getters.dict
     for (const typeKey in dict) {
       getDictDataListByTypeKey({ typeKey }).then(res => {
         if (ArrayUtil.isNotEmpty(res)) {
@@ -114,7 +106,7 @@ export default {
         value: item[fieldMapping.valueField],
         name: item[fieldMapping.nameField],
         ui: item[fieldMapping.uiField],
-        class: item[fieldMapping.classField]
+        class: item[fieldMapping.cssField]
       }
     })
   }

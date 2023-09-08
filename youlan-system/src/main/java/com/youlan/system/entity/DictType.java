@@ -58,18 +58,23 @@ public class DictType extends PageDTO {
     private String remark;
 
     @Schema(title = DBConstant.DESC_CREATE_ID)
-    private Long create_id;
+    @TableField(fill = FieldFill.INSERT)
+    private Long createId;
 
     @Schema(title = DBConstant.DESC_CREATE_BY)
+    @TableField(fill = FieldFill.INSERT)
     private String createBy;
 
     @Schema(title = DBConstant.DESC_UPDATE_ID)
+    @TableField(fill = FieldFill.UPDATE)
     private Long updateId;
 
     @Schema(title = DBConstant.DESC_UPDATE_BY)
+    @TableField(fill = FieldFill.UPDATE)
     private String updateBy;
 
     @Schema(title = DBConstant.DESC_CREATE_TIME)
+    @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 
     @Query(column = "create_time", type = QueryType.BETWEEN)

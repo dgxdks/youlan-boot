@@ -1,17 +1,3 @@
-<template>
-  <el-row>
-    <el-col :span="8">
-      <slot name="1" />
-    </el-col>
-    <el-col :span="8">
-      <slot name="2" />
-    </el-col>
-    <el-col :span="8">
-      <slot name="3" />
-    </el-col>
-  </el-row>
-</template>
-
 <script>
 export default {
   name: 'RowSplit3',
@@ -29,7 +15,7 @@ export default {
     const rightNodes = []
     for (let i = 0; i < vNodes.length; i++) {
       const vNode = vNodes[i]
-      const index = i % 2
+      const index = i % 3
       if (index === 0) {
         leftNodes.push(vNode)
       } else if (index === 1) {

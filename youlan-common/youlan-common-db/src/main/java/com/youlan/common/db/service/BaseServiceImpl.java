@@ -7,13 +7,11 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.youlan.common.core.helper.ListHelper;
@@ -43,7 +41,7 @@ public class BaseServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M, 
         return BeanUtil.copyProperties(data, clz);
     }
 
-    public <VO> VO loadOne(QueryWrapper<T> queryWrapper, Class<VO> clz) {
+    public <VO> VO loadOne(Wrapper<T> queryWrapper, Class<VO> clz) {
         return CollectionUtil.getFirst(loadMore(queryWrapper, clz));
     }
 
@@ -71,7 +69,7 @@ public class BaseServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M, 
         return CollectionUtil.getFirst(loadMore(sFunction, value, clz));
     }
 
-    public <VO> List<VO> loadMore(QueryWrapper<T> queryWrapper, Class<VO> clz) {
+    public <VO> List<VO> loadMore(Wrapper<T> queryWrapper, Class<VO> clz) {
         List<T> dataList = this.list(queryWrapper);
         if (CollectionUtil.isEmpty(dataList)) {
             return new ArrayList<>();
@@ -79,7 +77,7 @@ public class BaseServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M, 
         return BeanUtil.copyToList(dataList, clz);
     }
 
-    public List<T> loadMore(QueryWrapper<T> queryWrapper) {
+    public List<T> loadMore(Wrapper<T> queryWrapper) {
         return this.list(queryWrapper);
     }
 
@@ -103,27 +101,40 @@ public class BaseServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M, 
         return BeanUtil.copyToList(dataList, clz);
     }
 
-    public IPage<T> loadPage(PageDTO dto, QueryWrapper<T> queryWrapper) {
-        return loadPage(DBHelper.getIPage(dto), queryWrapper);
+    public IPage<T> loadPage(PageDTO dto, Wrapper<T> queryWrapper) {
+        return loadPage(DBHelper.getPage(dto), queryWrapper);
+    }
+
+    public IPage<T> loadPage(PageDTO dto, List<String> sortColumns, Wrapper<T> queryWrapper) {
+        return loadPage(DBHelper.getPage(dto, sortColumns), queryWrapper);
     }
 
     public IPage<T> loadPage(PageDTO dto, Object queryObj) {
-        return loadPage(DBHelper.getIPage(dto), DBHelper.getQueryWrapper(queryObj));
+        return loadPage(DBHelper.getPage(dto), DBHelper.getQueryWrapper(queryObj));
     }
 
-    public <VO> IPage<VO> loadPage(PageDTO dto, QueryWrapper<T> queryWrapper, Class<VO> clz) {
+    public IPage<T> loadPage(PageDTO dto, List<String> sortColumns, Object queryObj) {
+        return loadPage(DBHelper.getPage(dto, sortColumns), DBHelper.getQueryWrapper(queryObj));
+    }
+
+    public <VO> IPage<VO> loadPage(PageDTO dto, Wrapper<T> queryWrapper, Class<VO> clz) {
         IPage<T> pageRes = loadPage(dto, queryWrapper);
         return pageRes.convert(t -> BeanUtil.copyProperties(t, clz));
     }
 
-    public IPage<T> loadPage(IPage<T> page, QueryWrapper<T> queryWrapper) {
+    public <VO> IPage<VO> loadPage(PageDTO dto, List<String> sortColumns, Wrapper<T> queryWrapper, Class<VO> clz) {
+        IPage<T> pageRes = loadPage(dto, sortColumns, queryWrapper);
+        return pageRes.convert(t -> BeanUtil.copyProperties(t, clz));
+    }
+
+    public IPage<T> loadPage(IPage<T> page, Wrapper<T> queryWrapper) {
         if (queryWrapper == null) {
             return this.page(page);
         }
         return this.page(page, queryWrapper);
     }
 
-    public <VO> IPage<VO> loadPage(IPage<T> page, QueryWrapper<T> queryWrapper, Class<VO> clz) {
+    public <VO> IPage<VO> loadPage(IPage<T> page, Wrapper<T> queryWrapper, Class<VO> clz) {
         return this.loadPage(page, queryWrapper).convert(t -> BeanUtil.copyProperties(t, clz));
     }
 

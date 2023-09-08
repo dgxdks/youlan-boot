@@ -1,7 +1,7 @@
 <template>
   <el-radio-group v-model="data">
     <template v-for="item in dict[dictType]">
-      <el-radio v-if="!exclude.includes(item.value)" :key="item.value" :label="item.value">
+      <el-radio v-if="!exclude.includes(item.value)" :key="item.value" disable-transitions :label="item.value">
         {{ item.name }}
       </el-radio>
     </template>

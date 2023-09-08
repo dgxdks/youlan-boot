@@ -36,7 +36,7 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
-          v-hasPerm="['system:notice:add']"
+          v-has-perm="['system:notice:add']"
           icon="el-icon-plus"
           plain
           size="mini"
@@ -47,7 +47,7 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
-          v-hasPerm="['system:notice:edit']"
+          v-has-perm="['system:notice:edit']"
           :disabled="single"
           icon="el-icon-edit"
           plain
@@ -59,7 +59,7 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
-          v-hasPerm="['system:notice:remove']"
+          v-has-perm="['system:notice:remove']"
           :disabled="multiple"
           icon="el-icon-delete"
           plain
@@ -100,7 +100,7 @@
       <el-table-column align="center" class-name="small-padding fixed-width" label="操作">
         <template slot-scope="scope">
           <el-button
-            v-hasPerm="['system:notice:edit']"
+            v-has-perm="['system:notice:edit']"
             icon="el-icon-edit"
             size="mini"
             type="text"
@@ -108,7 +108,7 @@
           >修改
           </el-button>
           <el-button
-            v-hasPerm="['system:notice:remove']"
+            v-has-perm="['system:notice:remove']"
             icon="el-icon-delete"
             size="mini"
             type="text"

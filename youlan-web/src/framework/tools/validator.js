@@ -34,5 +34,19 @@ export default {
       message: message || '格式错误',
       trigger: trigger || ['blur']
     }
+  },
+  upperCaseRule(message, trigger) {
+    return {
+      pattern: /^[A-Z]+$/,
+      message: message || '必须是大写',
+      trigger: trigger || ['blur']
+    }
+  },
+  lowerCaseRule(message, trigger) {
+    return {
+      pattern: /^[a-z]+$/,
+      message: message || '必须是小写',
+      trigger: trigger || ['blur']
+    }
   }
 }

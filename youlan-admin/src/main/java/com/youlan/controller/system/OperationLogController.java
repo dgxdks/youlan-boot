@@ -2,8 +2,8 @@ package com.youlan.controller.system;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.collection.CollectionUtil;
-import com.youlan.common.db.entity.dto.ListDTO;
 import com.youlan.common.core.restful.ApiResult;
+import com.youlan.common.db.entity.dto.ListDTO;
 import com.youlan.common.db.helper.DBHelper;
 import com.youlan.framework.controller.BaseController;
 import com.youlan.system.entity.OperationLog;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -48,14 +49,23 @@ public class OperationLogController extends BaseController {
     @Operation(summary = "操作日志分页")
     @PostMapping("/getOperationLogPageList")
     public ApiResult getOperationLogPageList(@RequestBody OperationLogPageDTO dto) {
-        return toSuccess(operationLogService.loadPage(dto, DBHelper.getQueryWrapper(dto)));
+        List<String> sortColumns = Arrays.asList("log_by", "log_time");
+        return toSuccess(operationLogService.loadPage(dto, sortColumns, DBHelper.getQueryWrapper(dto)));
     }
 
     @SaCheckPermission("system:operationLog:export")
     @Operation(summary = "操作日志导出")
-    @PostMapping("/exportOperationLog")
+    @PostMapping("/exportOperationLogList")
     public void exportOperationLog(@RequestBody OperationLogPageDTO dto, HttpServletResponse response) throws IOException {
         List<OperationLog> operationLogList = operationLogService.loadMore(DBHelper.getQueryWrapper(dto));
         toExcel("操作日志.xlsx", "操作日志", OperationLog.class, operationLogList, response);
+    }
+
+    @SaCheckPermission("system:operationLog:clean")
+    @Operation(summary = "操作日志清除")
+    @PostMapping("/cleanOperationLogList")
+    public ApiResult cleanOperationLogList() {
+        operationLogService.getBaseMapper().cleanOperationLogList();
+        return toSuccess();
     }
 }

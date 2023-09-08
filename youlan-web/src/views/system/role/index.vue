@@ -20,7 +20,7 @@
         />
       </el-form-item>
       <el-form-item label="状态" prop="status">
-        <dict-select v-model="queryForm.status" dict-type="db_status" placeholder="角色状态" />
+        <dict-select v-model="queryForm.status" dict-type="db_status" placeholder="角色状态" style="width: 240px" />
       </el-form-item>
       <el-form-item label="创建时间" prop="createTimeRange">
         <base-date-range-picker v-model="queryForm.createTimeRange" style="width: 240px" />
@@ -134,7 +134,7 @@
           <el-input v-model="editForm.roleStr" :disabled="true" />
         </el-form-item>
         <el-form-item label="权限范围">
-          <dict-select v-model="editForm.roleScope" dict-type="sys_data_scope" @change="handleDataScopeChange" />
+          <dict-select v-model="editForm.roleScope" dict-type="sys_data_scope" style="width: 240px" @change="handleDataScopeChange" />
         </el-form-item>
         <!--自定义数据权限展示-->
         <el-form-item v-show="editForm.roleScope === '2'" label="数据权限">

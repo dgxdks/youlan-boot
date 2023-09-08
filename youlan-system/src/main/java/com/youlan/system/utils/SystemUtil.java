@@ -1,11 +1,11 @@
 package com.youlan.system.utils;
 
+import cn.hutool.core.text.StrPool;
 import cn.hutool.core.util.RandomUtil;
 import com.youlan.common.storage.enums.StorageType;
 import com.youlan.system.constant.SystemConstant;
 
-import static com.youlan.system.constant.SystemConstant.REDIS_PREFIX_STORAGE_FILE_NAME;
-import static com.youlan.system.constant.SystemConstant.REDIS_PREFIX_STORAGE_OBJECT_ID;
+import static com.youlan.system.constant.SystemConstant.*;
 
 public class SystemUtil {
     public static String getStorageObjectIdRedisKey(String objectId) {
@@ -14,6 +14,14 @@ public class SystemUtil {
 
     public static String getStorageFileNameRedisKey(String fileName) {
         return REDIS_PREFIX_STORAGE_FILE_NAME + fileName;
+    }
+
+    public static String getLoginRetryRedisKey(String userName) {
+        return REDIS_PREFIX_LOGIN_RETRY + userName;
+    }
+
+    public static String getLoginRetryRedisKey(String userName, String clientIp) {
+        return REDIS_PREFIX_LOGIN_RETRY + userName + StrPool.COLON + clientIp;
     }
 
     /**

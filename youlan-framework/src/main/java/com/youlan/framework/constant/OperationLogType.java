@@ -1,6 +1,6 @@
 package com.youlan.framework.constant;
 
-public class SystemLogType {
+public class OperationLogType {
     /**
      * 新增
      */
@@ -33,6 +33,10 @@ public class SystemLogType {
      * 上传
      */
     public static final String OPERATION_LOG_TYPE_UPLOAD = "8";
+    /**
+     * 解锁
+     */
+    public static final String OPERATION_LOG_TYPE_UNLOCK = "9";
     /**
      * 其它
      */

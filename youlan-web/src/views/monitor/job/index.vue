@@ -38,7 +38,7 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
-          v-hasPerm="['monitor:job:add']"
+          v-has-perm="['monitor:job:add']"
           icon="el-icon-plus"
           plain
           size="mini"
@@ -49,7 +49,7 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
-          v-hasPerm="['monitor:job:edit']"
+          v-has-perm="['monitor:job:edit']"
           :disabled="single"
           icon="el-icon-edit"
           plain
@@ -61,7 +61,7 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
-          v-hasPerm="['monitor:job:remove']"
+          v-has-perm="['monitor:job:remove']"
           :disabled="multiple"
           icon="el-icon-delete"
           plain
@@ -73,7 +73,7 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
-          v-hasPerm="['monitor:job:export']"
+          v-has-perm="['monitor:job:export']"
           icon="el-icon-download"
           plain
           size="mini"
@@ -84,7 +84,7 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
-          v-hasPerm="['monitor:job:query']"
+          v-has-perm="['monitor:job:query']"
           icon="el-icon-s-operation"
           plain
           size="mini"
@@ -120,7 +120,7 @@
       <el-table-column align="center" class-name="small-padding fixed-width" label="操作">
         <template slot-scope="scope">
           <el-button
-            v-hasPerm="['monitor:job:edit']"
+            v-has-perm="['monitor:job:edit']"
             icon="el-icon-edit"
             size="mini"
             type="text"
@@ -128,7 +128,7 @@
           >修改
           </el-button>
           <el-button
-            v-hasPerm="['monitor:job:remove']"
+            v-has-perm="['monitor:job:remove']"
             icon="el-icon-delete"
             size="mini"
             type="text"
@@ -136,26 +136,26 @@
           >删除
           </el-button>
           <el-dropdown
-            v-hasPerm="['monitor:job:changeStatus', 'monitor:job:query']"
+            v-has-perm="['monitor:job:changeStatus', 'monitor:job:query']"
             size="mini"
             @command="(command) => handleCommand(command, scope.row)"
           >
             <el-button icon="el-icon-d-arrow-right" size="mini" type="text">更多</el-button>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item
-                v-hasPerm="['monitor:job:changeStatus']"
+                v-has-perm="['monitor:job:changeStatus']"
                 command="handleRun"
                 icon="el-icon-caret-right"
               >执行一次
               </el-dropdown-item>
               <el-dropdown-item
-                v-hasPerm="['monitor:job:query']"
+                v-has-perm="['monitor:job:query']"
                 command="handleView"
                 icon="el-icon-view"
               >任务详细
               </el-dropdown-item>
               <el-dropdown-item
-                v-hasPerm="['monitor:job:query']"
+                v-has-perm="['monitor:job:query']"
                 command="handleJobLog"
                 icon="el-icon-s-operation"
               >调度日志

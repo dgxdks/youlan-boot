@@ -87,6 +87,22 @@ export default {
     // 表格行是否允许被选中
     tableSelectEnabled(row, index) {
       return true
+    },
+    // 多选框选中数据
+    handleSelectionChange(selection) {
+      this.tableIds = selection.map(item => item.id)
+    },
+    // 表排序变化
+    handleSortChange({ column, prop, order }) {
+
+    },
+    // 排序字符是否是升序
+    orderStrIsAsc(order) {
+      return !order || order === 'ascending'
+    },
+    // 排序字符是否是降序
+    orderStrIsDesc(order) {
+      return order && order === 'descending'
     }
   }
 }

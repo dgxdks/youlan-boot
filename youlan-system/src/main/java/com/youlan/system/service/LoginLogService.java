@@ -11,6 +11,7 @@ import com.youlan.plugin.region.helper.RegionHelper;
 import com.youlan.system.entity.LoginLog;
 import com.youlan.system.enums.LoginStatus;
 import com.youlan.system.enums.SourceType;
+import com.youlan.system.helper.SystemConfigHelper;
 import com.youlan.system.mapper.LoginLogMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,9 @@ public class LoginLogService extends BaseServiceImpl<LoginLogMapper, LoginLog> {
      * 新增登录日志(异步)
      */
     public void addAsync(String userName, String sourceType, String loginStatus, String loginMsg) {
+        if (!SystemConfigHelper.loginLogEnabled()) {
+            return;
+        }
         String userAgent = ServletHelper.getUserAgent();
         String loginIp = ServletHelper.getClientIp();
         String loginLocation = RegionHelper.ip2Region(loginIp);

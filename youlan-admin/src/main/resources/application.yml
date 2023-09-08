@@ -182,7 +182,7 @@ youlan:
   # 框架模块
   framework:
     # 操作日志
-    system-log:
+    operation-log:
       # 是否开启操作日志
       enabled: true
       # 是否开启位置查询

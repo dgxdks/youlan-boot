@@ -6,8 +6,8 @@ import cn.hutool.core.util.ObjectUtil;
 import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.db.entity.dto.ListDTO;
-import com.youlan.framework.anno.SystemLog;
-import com.youlan.framework.constant.SystemLogType;
+import com.youlan.framework.anno.OperationLog;
+import com.youlan.framework.constant.OperationLogType;
 import com.youlan.framework.controller.BaseController;
 import com.youlan.system.entity.dto.DeptDTO;
 import com.youlan.system.entity.dto.OrgPageDTO;
@@ -32,7 +32,7 @@ public class DeptController extends BaseController {
     @SaCheckPermission("system:dept:add")
     @Operation(summary = "部门新增")
     @PostMapping("/addDept")
-    @SystemLog(name = "部门管理", type = SystemLogType.OPERATION_LOG_TYPE_ADD)
+    @OperationLog(name = "部门管理", type = OperationLogType.OPERATION_LOG_TYPE_ADD)
     public ApiResult addDept(@Validated @RequestBody DeptDTO dto) {
         deptBizService.addDept(dto);
         return toSuccess();
@@ -41,7 +41,7 @@ public class DeptController extends BaseController {
     @SaCheckPermission("system:dept:update")
     @Operation(summary = "部门修改")
     @PostMapping("/updateDept")
-    @SystemLog(name = "部门管理", type = SystemLogType.OPERATION_LOG_TYPE_UPDATE)
+    @OperationLog(name = "部门管理", type = OperationLogType.OPERATION_LOG_TYPE_UPDATE)
     public ApiResult updateDept(@Validated @RequestBody DeptDTO dto) {
         if (ObjectUtil.isNull(dto.getOrgId())) {
             return toError(ApiResultCode.C0001);
@@ -54,7 +54,7 @@ public class DeptController extends BaseController {
     @SaCheckPermission("system:dept:remove")
     @Operation(summary = "部门删除")
     @PostMapping("/removeDept")
-    @SystemLog(name = "部门管理", type = SystemLogType.OPERATION_LOG_TYPE_REMOVE)
+    @OperationLog(name = "部门管理", type = OperationLogType.OPERATION_LOG_TYPE_REMOVE)
     public ApiResult removeDept(@Validated @RequestBody ListDTO<Long> dto) {
         if (CollectionUtil.isEmpty(dto.getList())) {
             return toSuccess();
@@ -73,7 +73,7 @@ public class DeptController extends BaseController {
     @SaCheckPermission("system:dept:list")
     @Operation(summary = "部门分页")
     @PostMapping("/getDeptPageList")
-    @SystemLog(name = "部门管理", type = SystemLogType.OPERATION_LOG_TYPE_PAGE_LIST)
+    @OperationLog(name = "部门管理", type = OperationLogType.OPERATION_LOG_TYPE_PAGE_LIST)
     public ApiResult getDeptPageList(@RequestBody OrgPageDTO dto) {
         return toSuccess(deptBizService.getDeptPageList(dto));
     }

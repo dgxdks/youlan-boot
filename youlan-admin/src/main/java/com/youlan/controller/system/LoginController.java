@@ -25,7 +25,7 @@ public class LoginController extends BaseController {
     @Operation(summary = "用户账号登录")
     @PostMapping("/accountLogin")
     public ApiResult accountLogin(@Validated @RequestBody AccountLoginDTO dto) {
-        return toSuccess(loginBizService.login(dto));
+        return toSuccess(loginBizService.accountLogin(dto));
     }
 
     @SaIgnore

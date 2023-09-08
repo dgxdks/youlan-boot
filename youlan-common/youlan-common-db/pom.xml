@@ -22,6 +22,10 @@
             <artifactId>youlan-common-core</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.youlan</groupId>
+            <artifactId>youlan-common-validator</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>

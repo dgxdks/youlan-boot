@@ -7,8 +7,8 @@ import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.db.entity.dto.ListDTO;
 import com.youlan.common.db.helper.DBHelper;
-import com.youlan.framework.anno.SystemLog;
-import com.youlan.framework.constant.SystemLogType;
+import com.youlan.framework.anno.OperationLog;
+import com.youlan.framework.constant.OperationLogType;
 import com.youlan.framework.controller.BaseController;
 import com.youlan.system.entity.Post;
 import com.youlan.system.service.PostService;
@@ -34,7 +34,7 @@ public class PostController extends BaseController {
     @SaCheckPermission("system:post:add")
     @Operation(summary = "岗位新增")
     @PostMapping("/addPost")
-    @SystemLog(name = "岗位", type = SystemLogType.OPERATION_LOG_TYPE_ADD)
+    @OperationLog(name = "岗位", type = OperationLogType.OPERATION_LOG_TYPE_ADD)
     public ApiResult addPost(@Validated @RequestBody Post post) {
         postBizService.addPost(post);
         return toSuccess();
@@ -43,7 +43,7 @@ public class PostController extends BaseController {
     @SaCheckPermission("system:post:update")
     @Operation(summary = "岗位修改")
     @PostMapping("/updatePost")
-    @SystemLog(name = "岗位", type = SystemLogType.OPERATION_LOG_TYPE_UPDATE)
+    @OperationLog(name = "岗位", type = OperationLogType.OPERATION_LOG_TYPE_UPDATE)
     public ApiResult updatePost(@Validated @RequestBody Post post) {
         if (ObjectUtil.isNull(post.getId())) {
             return toError(ApiResultCode.C0001);
@@ -55,7 +55,7 @@ public class PostController extends BaseController {
     @SaCheckPermission("system:post:remove")
     @Operation(summary = "岗位删除")
     @PostMapping("/removePost")
-    @SystemLog(name = "岗位", type = SystemLogType.OPERATION_LOG_TYPE_REMOVE)
+    @OperationLog(name = "岗位", type = OperationLogType.OPERATION_LOG_TYPE_REMOVE)
     public ApiResult removePost(@Validated @RequestBody ListDTO<Long> dto) {
         if (CollectionUtil.isEmpty(dto.getList())) {
             return toSuccess();
@@ -74,7 +74,7 @@ public class PostController extends BaseController {
     @SaCheckPermission("system:post:list")
     @Operation(summary = "岗位分页")
     @PostMapping("/getPostPageList")
-    @SystemLog(name = "岗位", type = SystemLogType.OPERATION_LOG_TYPE_PAGE_LIST)
+    @OperationLog(name = "岗位", type = OperationLogType.OPERATION_LOG_TYPE_PAGE_LIST)
     public ApiResult getPostPageList(@RequestBody Post post) {
         return toSuccess(postService.loadPage(post, DBHelper.getQueryWrapper(post)));
     }
@@ -82,7 +82,7 @@ public class PostController extends BaseController {
     @SaCheckPermission("system:post:list")
     @Operation(summary = "岗位列表")
     @PostMapping("/getPostList")
-    @SystemLog(name = "岗位", type = SystemLogType.OPERATION_LOG_TYPE_LIST)
+    @OperationLog(name = "岗位", type = OperationLogType.OPERATION_LOG_TYPE_LIST)
     public ApiResult getPostList(@RequestBody Post post) {
         return toSuccess(postService.loadMore(DBHelper.getQueryWrapper(post)));
     }
@@ -90,7 +90,7 @@ public class PostController extends BaseController {
     @SaCheckPermission("system:post:export")
     @Operation(summary = "岗位导出")
     @PostMapping("/exportPostList")
-    @SystemLog(name = "岗位", type = SystemLogType.OPERATION_LOG_TYPE_EXPORT)
+    @OperationLog(name = "岗位", type = OperationLogType.OPERATION_LOG_TYPE_EXPORT)
     public void exportPostList(@RequestBody Post dto, HttpServletResponse response) throws IOException {
         List<Post> postList = postService.loadMore(DBHelper.getQueryWrapper(dto));
         toExcel("岗位.xlsx", "岗位", Post.class, postList, response);

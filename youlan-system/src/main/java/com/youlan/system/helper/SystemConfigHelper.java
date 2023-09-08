@@ -18,6 +18,13 @@ public class SystemConfigHelper {
     private static final ConfigBizService CONFIG_BIZ_SERVICE = SpringUtil.getBean(ConfigBizService.class);
 
     /**
+     * 用户登录日志
+     */
+    public static boolean loginLogEnabled() {
+        return getConfigValueBoolean(CONFIG_KEY_LOGIN_LOG_ENABLED);
+    }
+
+    /**
      * 用户初始密码
      */
     public static String userInitPassword() {
@@ -59,7 +66,7 @@ public class SystemConfigHelper {
      * 获取boolean类型配置值
      */
     public static boolean getConfigValueBoolean(String configKey) {
-        Config config = CONFIG_BIZ_SERVICE.getConfigByConfigKeyIfExist(configKey);
+        Config config = CONFIG_BIZ_SERVICE.loadConfigCacheByConfigKeyIfExist(configKey);
         String configValue = config.getConfigValue();
         Boolean configValueBoolean = Convert.toBool(configValue, null);
         if (ObjectUtil.isNull(configValueBoolean)) {
@@ -72,7 +79,7 @@ public class SystemConfigHelper {
      * 获取数字类型配置值
      */
     public static Number getConfigValueNumber(String configKey) {
-        Config config = CONFIG_BIZ_SERVICE.getConfigByConfigKeyIfExist(configKey);
+        Config config = CONFIG_BIZ_SERVICE.loadConfigCacheByConfigKeyIfExist(configKey);
         String configValue = config.getConfigValue();
         Number configValueNumber = Convert.toNumber(configValue, null);
         if (ObjectUtil.isNull(configValueNumber)) {
@@ -85,7 +92,7 @@ public class SystemConfigHelper {
      * 获取字符类型配置值
      */
     public static String getConfigValueString(String configKey) {
-        Config config = CONFIG_BIZ_SERVICE.getConfigByConfigKeyIfExist(configKey);
+        Config config = CONFIG_BIZ_SERVICE.loadConfigCacheByConfigKeyIfExist(configKey);
         String configValue = config.getConfigValue();
         if (StrUtil.isBlank(configValue)) {
             throw new BizRuntimeException(StrUtil.format("获取配置键值为[{}]的字符配置值失败", configKey));

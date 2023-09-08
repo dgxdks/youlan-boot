@@ -19,7 +19,7 @@ public class OperationLogPageDTO extends PageDTO {
     private String logName;
 
     @Query(type = QueryType.EQUAL)
-    @Schema(title = "日志类型(字典类型[tools_generator_query_type])")
+    @Schema(title = "日志类型[sys_operation_log_type]")
     private String logType;
 
     @Query(type = QueryType.LIKE)
@@ -27,7 +27,7 @@ public class OperationLogPageDTO extends PageDTO {
     private String logBy;
 
     @Query(type = QueryType.LIKE)
-    @Schema(title = "日志状态(1-正常 2-异常)")
+    @Schema(title = "日志状态[sys_operation_log_status]")
     private String logStatus;
 
     @Query(column = "log_time", type = QueryType.BETWEEN)

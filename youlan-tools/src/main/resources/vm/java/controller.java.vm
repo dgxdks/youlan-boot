@@ -7,8 +7,8 @@ import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.db.entity.dto.ListDTO;
 import com.youlan.common.db.utils.QueryWrapperUtil;
 import com.youlan.framework.controller.BaseController;
-import com.youlan.framework.constant.SystemLogType;
-import com.youlan.framework.anno.SystemLog;
+import com.youlan.framework.constant.OperationLogType;
+import com.youlan.framework.anno.OperationLog;
 import ${packageName}.entity.${EntityName};
 import ${packageName}.service.${EntityName}Service;
 #if(${needDto})

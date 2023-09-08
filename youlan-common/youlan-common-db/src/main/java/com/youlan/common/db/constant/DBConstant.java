@@ -166,6 +166,8 @@ public class DBConstant {
     // ******************** 是否 ********************
     public static final String VAL_YES = "1";
     public static final String VAL_NO = "2";
+    public static final String DESC_YES = "是";
+    public static final String DESC_NO = "否";
     public static final String DESC_YES_NO = "(1-是 2-否)";
 
     // ******************** 排序 ********************

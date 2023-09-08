@@ -39,29 +39,21 @@ public class DictBizService {
      */
     @PostConstruct
     public void initDictCache() {
-        this.setAllDictCache();
+        this.setDictCache();
     }
 
     /**
-     * 获取字典数据(支持缓存)
+     * 获取字典数据
      */
-    public List<DictData> getDictDataList(String typeKey) {
-        List<DictData> dictDataList = redisHelper.get(SystemUtil.getDictRedisKey(typeKey));
-        if (CollectionUtil.isNotEmpty(dictDataList)) {
-            return dictDataList;
-        }
-        dictDataList = dictDataService.loadMore(DictData::getTypeKey, typeKey);
-        if (CollectionUtil.isNotEmpty(dictDataList)) {
-            this.setDictCache(typeKey, dictDataList);
-        }
-        return dictDataList;
+    public List<DictData> getDict(String typeKey) {
+        return dictDataService.loadMore(DictData::getTypeKey, typeKey);
     }
 
     /**
-     * 获取数据字典Map(支持缓存)
+     * 获取数据字典Map
      */
     public Map<String, DictData> getDictDataValueMap(String typeKey) {
-        List<DictData> dictDataList = getDictDataList(typeKey);
+        List<DictData> dictDataList = getDict(typeKey);
         if (CollectionUtil.isEmpty(dictDataList)) {
             return new HashMap<>();
         }
@@ -70,10 +62,10 @@ public class DictBizService {
     }
 
     /**
-     * 获取数据字典Map(支持缓存)
+     * 获取数据字典Map
      */
     public Map<String, DictData> getDictDataNameMap(String typeKey) {
-        List<DictData> dictDataList = getDictDataList(typeKey);
+        List<DictData> dictDataList = getDict(typeKey);
         if (CollectionUtil.isEmpty(dictDataList)) {
             return new HashMap<>();
         }
@@ -99,11 +91,12 @@ public class DictBizService {
      */
     public boolean updateDictData(DictData dictData) {
         beforeAddOrgUpdateDictData(dictData);
+        String typeKey = dictData.getTypeKey();
         // 字典类型键名不能修改
         dictData.setTypeKey(null);
         boolean update = dictDataService.updateById(dictData);
         if (update) {
-            this.removeDictCache(dictData.getTypeKey());
+            this.removeDictCache(typeKey);
         }
         return update;
     }
@@ -138,14 +131,24 @@ public class DictBizService {
         // 字典值+字典类型键名必须唯一
         String typeKey = dictData.getTypeKey();
         String dataName = dictData.getDataName();
-        boolean dictDataExists = dictDataService.lambdaQuery()
-                .select(DictData::getId)
+        String dataValue = dictData.getDataValue();
+        // 相同字典类型下字典值名称必须唯一
+        boolean dataNameExists = dictDataService.lambdaQuery()
                 .eq(DictData::getTypeKey, typeKey)
                 .eq(DictData::getDataName, dataName)
                 .ne(ObjectUtil.isNotNull(dictData.getId()), DictData::getId, dictData.getId())
                 .exists();
-        if (dictDataExists) {
-            throw new BizRuntimeException(StrUtil.format("字典类型下[{}]的字典名称[{}]重复", typeKey, dataName));
+        if (dataNameExists) {
+            throw new BizRuntimeException(StrUtil.format("字典名称{}重复", dataName));
+        }
+        // 相同字典类型下字典键值必须唯一
+        boolean dataValueExists = dictDataService.lambdaQuery()
+                .eq(DictData::getTypeKey, typeKey)
+                .eq(DictData::getDataValue, dataValue)
+                .ne(ObjectUtil.isNotNull(dictData.getId()), DictData::getId, dictData.getId())
+                .exists();
+        if (dataValueExists) {
+            throw new BizRuntimeException(StrUtil.format("字典键值{}重复", dataValue));
         }
     }
 
@@ -221,11 +224,26 @@ public class DictBizService {
     /**
      * 设置所有字典缓存
      */
-    public void setAllDictCache() {
+    public void setDictCache() {
         List<DictData> cacheList = dictDataService.getBaseMapper().getCacheList();
         Map<String, List<DictData>> dictDataGroup = cacheList.stream()
                 .collect(Collectors.groupingBy(DictData::getTypeKey));
         dictDataGroup.forEach(this::setDictCache);
+    }
+
+    /**
+     * 获取字典数据(支持缓存)
+     */
+    public List<DictData> getDictCache(String typeKey) {
+        List<DictData> dictDataList = redisHelper.get(SystemUtil.getDictRedisKey(typeKey));
+        if (CollectionUtil.isNotEmpty(dictDataList)) {
+            return dictDataList;
+        }
+        dictDataList = getDict(typeKey);
+        if (CollectionUtil.isNotEmpty(dictDataList)) {
+            this.setDictCache(typeKey, dictDataList);
+        }
+        return dictDataList;
     }
 
     /**
@@ -245,15 +263,15 @@ public class DictBizService {
     /**
      * 删除所有字典缓存
      */
-    public void removeAllDictCache() {
+    public void removeDictCache() {
         redisHelper.deleteByPattern(SystemConstant.REDIS_PREFIX_DICT + StringPool.ASTERISK);
     }
 
     /**
      * 刷新所有字典缓存
      */
-    public void refreshAllDictCache() {
-        this.removeAllDictCache();
-        this.setAllDictCache();
+    public void refreshDictCache() {
+        this.removeDictCache();
+        this.setDictCache();
     }
 }

@@ -154,50 +154,6 @@ export function html2Text(val) {
 }
 
 /**
- * Merges two objects, giving the last one precedence
- * @param {Object} target
- * @param {(Object|Array)} source
- * @returns {Object}
- */
-export function objectMerge(target, source) {
-  if (typeof target !== 'object') {
-    target = {}
-  }
-  if (Array.isArray(source)) {
-    return source.slice()
-  }
-  Object.keys(source).forEach(property => {
-    const sourceProperty = source[property]
-    if (typeof sourceProperty === 'object') {
-      target[property] = objectMerge(target[property], sourceProperty)
-    } else {
-      target[property] = sourceProperty
-    }
-  })
-  return target
-}
-
-/**
- * @param {HTMLElement} element
- * @param {string} className
- */
-export function toggleClass(element, className) {
-  if (!element || !className) {
-    return
-  }
-  let classString = element.className
-  const nameIndex = classString.indexOf(className)
-  if (nameIndex === -1) {
-    classString += '' + className
-  } else {
-    classString =
-      classString.substr(0, nameIndex) +
-      classString.substr(nameIndex + className.length)
-  }
-  element.className = classString
-}
-
-/**
  * @param {string} type
  * @returns {Date}
  */
@@ -270,23 +226,6 @@ export function deepClone(source) {
     }
   })
   return targetObj
-}
-
-/**
- * @param {Array} arr
- * @returns {Array}
- */
-export function uniqueArr(arr) {
-  return Array.from(new Set(arr))
-}
-
-/**
- * @returns {string}
- */
-export function createUniqueString() {
-  const timestamp = +new Date() + ''
-  const randomNum = parseInt((1 + Math.random()) * 65536) + ''
-  return (+(randomNum + timestamp)).toString(32)
 }
 
 /**

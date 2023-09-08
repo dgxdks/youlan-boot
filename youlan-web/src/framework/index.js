@@ -10,20 +10,20 @@ import OrgSelect from '@/views/components/OrgSelect.vue'
 import PostSelect from '@/views/components/PostSelect.vue'
 import RoleSelect from '@/views/components/RoleSelect.vue'
 import BaseSwitch from '@/framework/components/BaseSwitch.vue'
-import DictSelect from '@/views/components/DictSelect.vue'
+import DictSelect from '@/framework/components/DictSelect.vue'
 import OrgTree from '@/views/components/OrgTree.vue'
-import DictRadio from '@/views/components/DictRadio.vue'
+import DictRadio from '@/framework/components/DictRadio.vue'
 import BaseDialog from '@/framework/components/BaseDialog.vue'
 import BaseRowSplit from '@/framework/components/BaseRowSplit.vue'
 import BaseRowSplit2 from '@/framework/components/BaseRowSplit2.vue'
 import BaseRowSplit3 from '@/framework/components/BaseRowSplit3.vue'
 import TableOptions from '@/components/TableOptions/index.vue'
-import DictTag from '@/views/components/DictTag.vue'
+import DictTag from '@/framework/components/DictTag.vue'
 import Pagination from '@/components/Pagination/index.vue'
 import BaseTableToolbar from '@/framework/components/BaseTableToolbar.vue'
 import Editor from '@/components/Editor/index.vue'
-import FileUpload from '@/views/components/FileUpload.vue'
-import FileUploadDrag from '@/views/components/FileUploadDrag.vue'
+import FileUpload from '@/framework/components/FileUpload.vue'
+import FileUploadDrag from '@/framework/components/FileUploadDrag.vue'
 import ImageUpload from '@/components/ImageUpload/index.vue'
 import ImagePreview from '@/components/ImagePreview/index.vue'
 import BaseDateRangePicker from '@/framework/components/BaseDateRangePicker.vue'
@@ -52,6 +52,8 @@ import BaseTextButton from '@/framework/components/BaseTextButton.vue'
 import BaseFormLabel from '@/framework/components/BaseFormLabel.vue'
 import BaseCloseButton from '@/framework/components/BaseCloseButton.vue'
 import BaseIconSelect from '@/framework/components/BaseIconSelect.vue'
+import BaseDateTimeRangePicker from '@/framework/components/BaseDateTimeRangePicker.vue'
+import BaseDetailButton from '@/framework/components/BaseDetailButton.vue'
 
 // 全局组件
 function mountComponent() {
@@ -60,6 +62,7 @@ function mountComponent() {
   Vue.component('RoleSelect', RoleSelect)
   Vue.component('BaseSwitch', BaseSwitch)
   Vue.component('DictSelect', DictSelect)
+  Vue.component('DictTag', DictTag)
   Vue.component('OrgTree', OrgTree)
   Vue.component('DictRadio', DictRadio)
   Vue.component('BaseDialog', BaseDialog)
@@ -67,7 +70,6 @@ function mountComponent() {
   Vue.component('BaseRowSplit2', BaseRowSplit2)
   Vue.component('BaseRowSplit3', BaseRowSplit3)
   Vue.component('TableOptions', TableOptions)
-  Vue.component('DictTag', DictTag)
   Vue.component('Pagination', Pagination)
   Vue.component('RightToolbar', BaseTableToolbar)
   Vue.component('Editor', Editor)
@@ -76,8 +78,10 @@ function mountComponent() {
   Vue.component('ImageUpload', ImageUpload)
   Vue.component('ImagePreview', ImagePreview)
   Vue.component('BaseDateRangePicker', BaseDateRangePicker)
+  Vue.component('BaseDateTimeRangePicker', BaseDateTimeRangePicker)
   Vue.component('BaseDownloadButton', BaseDownloadButton)
   Vue.component('BaseUploadButton', BaseUploadButton)
+  Vue.component('BaseDetailButton', BaseDetailButton)
   Vue.component('BaseRemoveButton', BaseRemoveButton)
   Vue.component('BaseUpdateButton', BaseUpdateButton)
   Vue.component('BaseAddButton', BaseAddButton)

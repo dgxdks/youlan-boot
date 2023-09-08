@@ -6,13 +6,15 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.youlan.common.db.anno.Query;
 import com.youlan.common.db.constant.MybatisConstant;
 import com.youlan.common.db.entity.dto.PageDTO;
+import com.youlan.common.db.entity.dto.PageSortDTO;
 import com.youlan.common.db.enums.QueryType;
 import com.youlan.common.db.exception.QueryException;
+import com.youlan.common.validator.helper.ValidatorHelper;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -22,17 +24,74 @@ import java.util.stream.Collectors;
 public class DBHelper {
     private static final ConcurrentHashMap<Class<?>, Map<Field, Query>> CACHE_FIELD = new ConcurrentHashMap<>();
 
-    public static <T> IPage<T> getIPage(PageDTO pageDTO) {
+    /**
+     * 获取分页对象
+     *
+     * @param pageDTO 分页参数
+     * @param <T>     数据库实体
+     * @return 分页对象
+     */
+    public static <T> Page<T> getPage(PageDTO pageDTO) {
         // 不是true就是不需要统计总数
         boolean needTotal = ObjectUtil.equal(pageDTO.getIsNeedTotal(), true);
-        return getIPage(pageDTO.getPageNum(), pageDTO.getPageSize(), needTotal);
+        return getPage(pageDTO.getPageNum(), pageDTO.getPageSize(), needTotal);
     }
 
-    public static <T> IPage<T> getIPage(Long pageNum, Long pageSize) {
-        return getIPage(pageNum, pageSize, true);
+    /**
+     * 获取分页对象(为了安全只有指定了排序列的情况下才会在分页对象中注入排序参数)
+     *
+     * @param pageDTO     分页参数
+     * @param sortColumns 排序列
+     * @param <T>         数据库实体
+     * @return 分页对象
+     */
+    public static <T> Page<T> getPage(PageDTO pageDTO, final List<String> sortColumns) {
+        Page<T> page = getPage(pageDTO);
+        List<PageSortDTO> sortList = pageDTO.getSortList();
+        if (CollectionUtil.isNotEmpty(sortList) && CollectionUtil.isNotEmpty(sortColumns)) {
+            //强制转下划线
+            List<String> underlineSortColumns = sortColumns.stream()
+                    .map(StrUtil::toUnderlineCase)
+                    .collect(Collectors.toList());
+            //转排序元素
+            List<OrderItem> orderItems = sortList.stream()
+                    .map(sort -> {
+                        // 强制校验
+                        ValidatorHelper.validateWithThrow(sort);
+                        OrderItem orderItem = new OrderItem();
+                        orderItem.setColumn(StrUtil.toUnderlineCase(sort.getColumn()));
+                        orderItem.setAsc(sort.getAsc());
+                        return orderItem;
+                    })
+                    .filter(item -> underlineSortColumns.contains(item.getColumn()))
+                    .collect(Collectors.toList());
+            page.addOrder(orderItems);
+        }
+        return page;
     }
 
-    public static <T> IPage<T> getIPage(Long pageNum, Long pageSize, boolean needTotal) {
+    /**
+     * 获取分页对象
+     *
+     * @param pageNum  页码
+     * @param pageSize 分页条数
+     * @param <T>      数据库实体
+     * @return 分页对象
+     */
+    public static <T> Page<T> getPage(Long pageNum, Long pageSize) {
+        return getPage(pageNum, pageSize, true);
+    }
+
+    /**
+     * 获取分页对象
+     *
+     * @param pageNum   页码
+     * @param pageSize  分页条数
+     * @param needTotal 是否需要统计总数
+     * @param <T>       数据库实体
+     * @return 分页对象
+     */
+    public static <T> Page<T> getPage(Long pageNum, Long pageSize, boolean needTotal) {
         //如果页码小于1则指定为1
         if (pageNum == null || pageNum < 1) {
             pageNum = 1L;
@@ -44,15 +103,13 @@ public class DBHelper {
         return new Page<>(pageNum, pageSize, needTotal);
     }
 
-    public static <T> QueryWrapper<T> getQueryWrapper(PageDTO query) {
-        QueryWrapper<T> queryWrapper = getQueryWrapper((Object) query);
-        List<String> sortList = query.getSortList();
-        // 不等于降序就是升序
-        boolean isAsc = ObjectUtil.equal(query.getIsDesc(), false);
-        queryWrapper.orderBy(CollectionUtil.isNotEmpty(sortList), isAsc, sortList);
-        return queryWrapper;
-    }
-
+    /**
+     * 根据对象中的注解获取QueryWrapper
+     *
+     * @param query 查询参数
+     * @param <T>   数据库实体
+     * @return 查询对象
+     */
     public static <T> QueryWrapper<T> getQueryWrapper(Object query) {
         QueryWrapper<T> queryWrapper = new QueryWrapper<>();
         if (query == null) {
@@ -67,7 +124,7 @@ public class DBHelper {
         return queryWrapper;
     }
 
-    public static void addQueryWrapper(Object query, Field field, Query anno, QueryWrapper<?> queryWrapper) {
+    private static void addQueryWrapper(Object query, Field field, Query anno, QueryWrapper<?> queryWrapper) {
         try {
             Object queryValue = field.get(query);
             String fieldName = field.getName();

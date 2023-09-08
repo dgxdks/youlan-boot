@@ -7,8 +7,8 @@ import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.db.entity.dto.ListDTO;
 import com.youlan.common.db.helper.DBHelper;
-import com.youlan.framework.anno.SystemLog;
-import com.youlan.framework.constant.SystemLogType;
+import com.youlan.framework.anno.OperationLog;
+import com.youlan.framework.constant.OperationLogType;
 import com.youlan.framework.controller.BaseController;
 import com.youlan.system.entity.StorageConfig;
 import com.youlan.system.service.StorageConfigService;
@@ -29,7 +29,7 @@ public class StorageConfigController extends BaseController {
 
     @SaCheckPermission("system:storageConfig:add")
     @Operation(summary = "存储配置新增")
-    @SystemLog(name = "存储配置", type = SystemLogType.OPERATION_LOG_TYPE_ADD)
+    @OperationLog(name = "存储配置", type = OperationLogType.OPERATION_LOG_TYPE_ADD)
     @PostMapping("/addStorageConfig")
     public ApiResult addConfig(@Validated @RequestBody StorageConfig storageConfig) {
         return toSuccess(storageConfigBizService.addStorageConfig(storageConfig));
@@ -38,7 +38,7 @@ public class StorageConfigController extends BaseController {
     @SaCheckPermission("system:storageConfig:update")
     @Operation(summary = "存储配置修改")
     @PostMapping("/updateStorageConfig")
-    @SystemLog(name = "存储配置", type = SystemLogType.OPERATION_LOG_TYPE_UPDATE)
+    @OperationLog(name = "存储配置", type = OperationLogType.OPERATION_LOG_TYPE_UPDATE)
     public ApiResult updateConfig(@Validated @RequestBody StorageConfig storageConfig) {
         if (ObjectUtil.isNull(storageConfig.getId())) {
             return toError(ApiResultCode.C0001);
@@ -49,7 +49,7 @@ public class StorageConfigController extends BaseController {
     @SaCheckPermission("system:storageConfig:remove")
     @Operation(summary = "存储配置删除")
     @PostMapping("/removeStorageConfig")
-    @SystemLog(name = "存储配置", type = SystemLogType.OPERATION_LOG_TYPE_REMOVE)
+    @OperationLog(name = "存储配置", type = OperationLogType.OPERATION_LOG_TYPE_REMOVE)
     public ApiResult removeConfig(@Validated @RequestBody ListDTO<Long> dto) {
         if (CollectionUtil.isEmpty(dto.getList())) {
             return toSuccess();
@@ -67,7 +67,7 @@ public class StorageConfigController extends BaseController {
     @SaCheckPermission("system:storageConfig:list")
     @Operation(summary = "存储配置分页")
     @PostMapping("/getStorageConfigPageList")
-    @SystemLog(name = "存储配置", type = SystemLogType.OPERATION_LOG_TYPE_PAGE_LIST)
+    @OperationLog(name = "存储配置", type = OperationLogType.OPERATION_LOG_TYPE_PAGE_LIST)
     public ApiResult getConfigPageList(@RequestBody StorageConfig storageConfig) {
         return toSuccess(storageConfigService.loadPage(storageConfig, DBHelper.getQueryWrapper(storageConfig)));
     }

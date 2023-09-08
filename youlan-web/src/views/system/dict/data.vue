@@ -20,7 +20,7 @@
         />
       </el-form-item>
       <el-form-item label="状态" prop="status">
-        <dict-select v-model="queryForm.status" placeholder="数据状态" dict-type="db_status" clearable />
+        <dict-select v-model="queryForm.status" placeholder="数据状态" dict-type="db_status" clearable style="width: 240px" />
       </el-form-item>
       <el-form-item>
         <base-search-button @click="handleQuery" />
@@ -36,7 +36,7 @@
         <base-update-button v-has-perm="['system:dict:update']" plain :disabled="!tableSelectOne" @click="handleUpdate" />
       </el-col>
       <el-col :span="1.5">
-        <base-remove-button v-has-perm="['system:dict:remove']" plain :disabled="tableNoSelected" @clcik="handleDelete" />
+        <base-remove-button v-has-perm="['system:dict:remove']" plain :disabled="tableNoSelected" @click="handleDelete" />
       </el-col>
       <el-col :span="1.5">
         <base-download-button v-has-perm="['system:dict:export']" plain @click="handleExport">导出</base-download-button>
@@ -83,29 +83,34 @@
     />
 
     <!-- 字典值编辑对话框 -->
-    <base-dialog :title="editTitle" :open.sync="editOpen" width="500px" @confirm="handleEditSubmit" @cancel="handleEditCancel">
+    <base-dialog :title="editTitle" :open.sync="editOpen" width="680px" @confirm="handleEditSubmit" @cancel="handleEditCancel">
       <el-form ref="editForm" :model="editForm" :rules="editRules" label-width="80px">
-        <el-form-item label="字典类型">
-          <el-input v-model="editForm.typeKey" :disabled="true" />
-        </el-form-item>
-        <el-form-item label="数据标签" prop="dataName">
-          <el-input v-model="editForm.dataName" placeholder="请输入数据标签" />
-        </el-form-item>
-        <el-form-item label="数据键值" prop="dataValue">
-          <el-input v-model="editForm.dataValue" placeholder="请输入数据键值" />
-        </el-form-item>
-        <el-form-item label="样式属性" prop="cssClass">
-          <el-input v-model="editForm.cssClass" placeholder="请输入样式属性" />
-        </el-form-item>
-        <el-form-item label="显示排序" prop="sort">
-          <el-input-number v-model="editForm.sort" :min="0" controls-position="right" />
-        </el-form-item>
-        <el-form-item label="UI样式" prop="uiClass">
-          <dict-select v-model="editForm.uiClass" dict-type="ui_class" />
-        </el-form-item>
-        <el-form-item label="状态" prop="status">
-          <dict-radio v-model="editForm.status" dict-type="db_status" />
-        </el-form-item>
+        <base-row-split2>
+          <el-form-item label="字典类型">
+            <el-input v-model="editForm.typeKey" :disabled="true" />
+          </el-form-item>
+          <el-form-item label="UI样式" prop="uiClass">
+            <dict-select v-model="editForm.uiClass" dict-type="ui_class" />
+          </el-form-item>
+          <el-form-item label="字典标签" prop="dataName">
+            <el-input v-model="editForm.dataName" placeholder="请输入数据标签" />
+          </el-form-item>
+          <el-form-item label="字典键值" prop="dataValue">
+            <el-input v-model="editForm.dataValue" placeholder="请输入数据键值" />
+          </el-form-item>
+          <el-form-item label="样式属性" prop="cssClass">
+            <el-input v-model="editForm.cssClass" placeholder="请输入样式属性" />
+          </el-form-item>
+          <el-form-item label="显示排序" prop="sort">
+            <el-input-number v-model="editForm.sort" :min="0" controls-position="right" />
+          </el-form-item>
+          <el-form-item label="状态" prop="status">
+            <dict-radio v-model="editForm.status" dict-type="db_status" />
+          </el-form-item>
+          <el-form-item label="是否默认" prop="isDefault">
+            <dict-radio v-model="editForm.isDefault" dict-type="db_yes_no" />
+          </el-form-item>
+        </base-row-split2>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="editForm.remark" placeholder="请输入内容" type="textarea" />
         </el-form-item>
@@ -231,6 +236,7 @@ export default {
         uiClass: 'default',
         sort: 0,
         status: '1',
+        isDefault: '2',
         remark: null
       }
       this.$refs.editForm && this.$refs.editForm.resetFields()
@@ -240,18 +246,20 @@ export default {
       this.$refs.editForm.validate(valid => {
         if (valid) {
           if (this.editForm.id) {
-            updateDictData(this.form).then(res => {
-              this.$dict.refreshDict(this.queryForm.typeKey)
+            updateDictData(this.editForm).then(res => {
               this.$modal.success('修改成功')
               this.closeEdit()
               this.getList()
+            }).then(res => {
+              this.$dict.refreshDict(this.editForm.typeKey)
             })
           } else {
             addDictData(this.editForm).then(res => {
-              this.$dict.refreshDict(this.queryForm.typeKey)
               this.$modal.success('新增成功')
               this.closeEdit()
               this.getList()
+            }).then(res => {
+              this.$dict.refreshDict(this.editForm.typeKey)
             })
           }
         }

@@ -9,8 +9,8 @@ import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.db.entity.dto.ListDTO;
 import com.youlan.common.db.helper.DBHelper;
-import com.youlan.framework.anno.SystemLog;
-import com.youlan.framework.constant.SystemLogType;
+import com.youlan.framework.anno.OperationLog;
+import com.youlan.framework.constant.OperationLogType;
 import com.youlan.framework.controller.BaseController;
 import com.youlan.system.entity.Menu;
 import com.youlan.system.service.MenuService;
@@ -34,7 +34,7 @@ public class MenuController extends BaseController {
     @SaCheckPermission("system:menu:add")
     @Operation(summary = "菜单新增")
     @PostMapping("/addMenu")
-    @SystemLog(name = "菜单", type = SystemLogType.OPERATION_LOG_TYPE_ADD)
+    @OperationLog(name = "菜单", type = OperationLogType.OPERATION_LOG_TYPE_ADD)
     public ApiResult addMenu(@Validated @RequestBody Menu menu) {
         return toSuccess(menuBizService.addMenu(menu));
     }
@@ -42,7 +42,7 @@ public class MenuController extends BaseController {
     @SaCheckPermission("system:menu:update")
     @Operation(summary = "菜单修改")
     @PostMapping("/updateMenu")
-    @SystemLog(name = "菜单", type = SystemLogType.OPERATION_LOG_TYPE_UPDATE)
+    @OperationLog(name = "菜单", type = OperationLogType.OPERATION_LOG_TYPE_UPDATE)
     public ApiResult updateMenu(@Validated @RequestBody Menu menu) {
         if (ObjectUtil.isNull(menu.getId())) {
             return toError(ApiResultCode.C0001);
@@ -53,7 +53,7 @@ public class MenuController extends BaseController {
     @SaCheckPermission("system:menu:remove")
     @Operation(summary = "菜单删除")
     @PostMapping("/removeMenu")
-    @SystemLog(name = "菜单", type = SystemLogType.OPERATION_LOG_TYPE_REMOVE)
+    @OperationLog(name = "菜单", type = OperationLogType.OPERATION_LOG_TYPE_REMOVE)
     public ApiResult removeMenu(@Validated @RequestBody ListDTO<Long> dto) {
         if (CollectionUtil.isEmpty(dto.getList())) {
             return toSuccess();
@@ -72,7 +72,7 @@ public class MenuController extends BaseController {
     @SaCheckPermission("system:menu:list")
     @Operation(summary = "菜单分页")
     @PostMapping("/getMenuPageList")
-    @SystemLog(name = "菜单", type = SystemLogType.OPERATION_LOG_TYPE_PAGE_LIST)
+    @OperationLog(name = "菜单", type = OperationLogType.OPERATION_LOG_TYPE_PAGE_LIST)
     public ApiResult getMenuPageList(@RequestBody Menu menu) {
         return toSuccess(menuService.loadPage(menu, DBHelper.getQueryWrapper(menu)));
     }

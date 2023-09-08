@@ -69,7 +69,7 @@ public class SystemConstant {
 
     // ******************** 系统配置常量 ********************
     /**
-     * 用户初始Miami
+     * 用户初始密码
      */
     public static final String CONFIG_KEY_USER_INIT_PASSWORD = "sys.user.initPassword";
     /**
@@ -96,6 +96,7 @@ public class SystemConstant {
      * 用户登录锁定时间(秒)
      */
     public static final String CONFIG_KEY_LOGIN_LOCK_TIME = "sys.login.lock.time";
+    public static final String CONFIG_KEY_LOGIN_LOG_ENABLED = "sys.login.log.enabled";
 
     // ******************** 来源类型常量 ********************
     /**

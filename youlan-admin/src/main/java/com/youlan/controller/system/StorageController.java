@@ -7,8 +7,8 @@ import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.core.servlet.helper.ServletHelper;
-import com.youlan.framework.anno.SystemLog;
-import com.youlan.framework.constant.SystemLogType;
+import com.youlan.framework.anno.OperationLog;
+import com.youlan.framework.constant.OperationLogType;
 import com.youlan.framework.controller.BaseController;
 import com.youlan.system.entity.StorageRecord;
 import com.youlan.system.service.biz.StorageBizService;
@@ -31,7 +31,7 @@ public class StorageController extends BaseController {
     private final StorageBizService storageBizService;
 
     @Operation(summary = "文件上传")
-    @SystemLog(name = "文件上传", type = SystemLogType.OPERATION_LOG_TYPE_UPLOAD)
+    @OperationLog(name = "文件上传", type = OperationLogType.OPERATION_LOG_TYPE_UPLOAD)
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResult upload(@RequestPart("file") MultipartFile file, @RequestPart(value = "platform", required = false) String platform) {
         if (ObjectUtil.isNull(file)) {

@@ -96,7 +96,7 @@ public class DeptBizService {
      * 部门分页
      */
     public IPage<DeptVO> getDeptPageList(OrgPageDTO dto) {
-        return deptService.getBaseMapper().getDeptList(DBHelper.getIPage(dto), dto);
+        return deptService.getBaseMapper().getDeptList(DBHelper.getPage(dto), dto);
     }
 
     /**

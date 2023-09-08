@@ -6,4 +6,8 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface OperationLogMapper extends BaseMapper<OperationLog> {
+    /**
+     * 操作日志清除
+     */
+    void cleanOperationLogList();
 }

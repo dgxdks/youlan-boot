@@ -220,11 +220,11 @@ create table t_sys_menu
 ) auto_increment = 100 comment '菜单表';
 -- 一级菜单(相邻菜单之间间隔100个ID预留给二级菜单)
 insert into t_sys_menu
-values (100, '系统管理', '99', 'system', 0, 'system', 'system', '', '1', '', '2', 0, '1', '1', '', 100, 'admin', 0, '',
+values (100, '系统管理', '1', 'system', 0, 'system', 'system', '', '1', '', '2', 0, '1', '1', '', 100, 'admin', 0, '',
         sysdate(), null),
-       (200, '系统监控', '98', 'monitor', 0, 'monitor', 'monitor', '', '1', '', '2', 0, '1', '1', '', 100, 'admin', 0,
+       (200, '系统监控', '1', 'monitor', 0, 'monitor', 'monitor', '', '1', '', '2', 0, '1', '1', '', 100, 'admin', 0,
         '', sysdate(), null),
-       (300, '系统工具', '97', 'tools', 0, 'tool', 'tools', '', '1', '', '2', 0, '1', '1', '', 100, 'admin', 0, '',
+       (300, '系统工具', '1', 'tools', 0, 'tool', 'tools', '', '1', '', '2', 0, '1', '1', '', 100, 'admin', 0, '',
         sysdate(), null);
 -- 二级菜单(二级菜单ID从父级菜单ID开始递增)
 insert into t_sys_menu
@@ -257,14 +257,14 @@ values (101, '用户管理', '2', 'system:user', 100, 'user', 'user', '', '1', '
 
 -- 三级菜单(三级菜单ID从10000开始)
 insert into t_sys_menu
-values (10000, '操作日志', '2', 'monitor:log:operationLog', 109, 'log', 'operationLog', '', '',
-        'system/operationLog/index', '2', 0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (10001, '登录日志', '2', 'monitor:log:loginLog', 109, 'log', 'loginLog', '', '', 'system/loginLog/index', '2', 0,
-        '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (10002, '存储配置', '2', 'system:storage:storageConfig', 110, 'config', 'storageConfig', '', '',
-        'system/storageConfig/index', '2', 0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (10003, '存储记录', '2', 'system:storage:storageRecord', 110, 'upload', 'storageRecord', '', '',
-        'system/storageRecord/index', '2', 0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null);
+values (10000, '操作日志', '2', 'system:log:operationLog', 109, 'log', 'log/operation', '', '1',
+        'system/log/operation/index', '2', 0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (10001, '登录日志', '2', 'system:log:loginLog', 109, 'log', 'log/login', '', '1', 'system/log/login/index', '2',
+        0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (10002, '存储配置', '2', 'system:storage:storageConfig', 110, 'config', 'storage/config', '', '',
+        'system/storage/config/index', '2', 0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (10003, '存储记录', '2', 'system:storage:storageRecord', 110, 'upload', 'storage/record', '', '',
+        'system/storage/record/index', '2', 0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null);
 -- 按钮菜单(按钮菜单ID从20000开始)
 -- 用户管理按钮
 insert
@@ -396,38 +396,40 @@ values (20450, '日志删除', '3', 'system:loginLog:remove', 10001, '', '', '',
        (20452, '日志分页', '3', 'system:loginLog:list', 10001, '', '', '', '1', '', '2', 3, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null),
        (20453, '日志导出', '3', 'system:loginLog:export', 10001, '', '', '', '1', '', '2', 4, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (20454, '用户解锁', '3', 'system:loginLog:unlockUser', 10001, '', '', '', '1', '', '2', 5, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null);
 -- 在线用户按钮
 insert into t_sys_menu
-values (20500, '在线分页', '3', 'system:onlineUser:list', 201, '', '', '', '1', '', '2', 1, '1', '1',
-        '', 100, 'admin', 0, '', sysdate(), null),
+values (20500, '在线分页', '3', 'system:onlineUser:list', 201, '', '', '', '1', '', '2', 1, '1', '1', '', 100, 'admin',
+        0, '', sysdate(), null),
        (20501, '批量强退', '3', 'system:onlineUser:logoutBatch', 201, '', '', '', '1', '', '2', 2, '1', '1',
         '', 100, 'admin', 0, '', sysdate(), null),
        (20502, '单条强退', '3', 'system:onlineUser:logout', 201, '', '', '', '1', '', '2', 3, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null);
 -- 存储配置按钮
 insert into t_sys_menu
-values (20550, '存储新增', '3', 'system:storageConfig:add', 10002, '', '', '', '1', '', '2', 1, '1', '1',
+values (20550, '配置新增', '3', 'system:storageConfig:add', 10002, '', '', '', '1', '', '2', 1, '1', '1',
         '', 100, 'admin', 0, '', sysdate(), null),
-       (20551, '存储修改', '3', 'system:storageConfig:update', 10002, '', '', '', '1', '', '2', 2, '1', '1',
+       (20551, '配置修改', '3', 'system:storageConfig:update', 10002, '', '', '', '1', '', '2', 2, '1', '1',
         '', 100, 'admin', 0, '', sysdate(), null),
-       (20552, '存储删除', '3', 'system:storageConfig:remove', 10002, '', '', '', '1', '', '2', 3, '1',
+       (20552, '配置删除', '3', 'system:storageConfig:remove', 10002, '', '', '', '1', '', '2', 3, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (20553, '存储详情', '3', 'system:storageConfig:load', 10002, '', '', '', '1', '', '2', 4, '1',
+       (20553, '配置详情', '3', 'system:storageConfig:load', 10002, '', '', '', '1', '', '2', 4, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (20554, '存储分页', '3', 'system:storageConfig:list', 10002, '', '', '', '1', '', '2', 5, '1',
+       (20554, '配置分页', '3', 'system:storageConfig:list', 10002, '', '', '', '1', '', '2', 5, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null);
 -- 存储记录按钮
 insert into t_sys_menu
-values (20600, '存储新增', '3', 'system:storageRecord:add', 10003, '', '', '', '1', '', '2', 1, '1', '1',
+values (20600, '记录新增', '3', 'system:storageRecord:add', 10003, '', '', '', '1', '', '2', 1, '1', '1',
         '', 100, 'admin', 0, '', sysdate(), null),
-       (20601, '存储修改', '3', 'system:storageRecord:update', 10003, '', '', '', '1', '', '2', 2, '1', '1',
+       (20601, '记录修改', '3', 'system:storageRecord:update', 10003, '', '', '', '1', '', '2', 2, '1', '1',
         '', 100, 'admin', 0, '', sysdate(), null),
-       (20602, '存储删除', '3', 'system:storageRecord:remove', 10003, '', '', '', '1', '', '2', 3, '1',
+       (20602, '记录删除', '3', 'system:storageRecord:remove', 10003, '', '', '', '1', '', '2', 3, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (20603, '存储详情', '3', 'system:storageRecord:load', 10003, '', '', '', '1', '', '2', 4, '1',
+       (20603, '记录详情', '3', 'system:storageRecord:load', 10003, '', '', '', '1', '', '2', 4, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (20604, '存储分页', '3', 'system:storageRecord:list', 10003, '', '', '', '1', '', '2', 5, '1',
+       (20604, '记录分页', '3', 'system:storageRecord:list', 10003, '', '', '', '1', '', '2', 5, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null);
 
 
@@ -451,13 +453,14 @@ create table t_sys_operation_log
 (
     id              bigint not null auto_increment comment '主键ID',
     log_name        varchar(64)  default '' comment '日志名称',
-    log_type        varchar(4)   default '99' comment '日志类型(字典类型[tools_generator_query_type])',
+    log_type        varchar(4)   default '99' comment '日志类型[sys_operation_log_type]',
     log_user        bigint       default 100 comment '日志用户ID',
     log_by          varchar(64)  default '' comment '日志用户',
     log_time        datetime comment '日志时间',
-    log_status      char(1)      default '1' comment '日志状态(1-正常 2-异常)',
+    log_status      char(1)      default '1' comment '日志状态[sys_operation_log_status]',
     error_msg       varchar(256) default '' comment '错误信息',
     method          varchar(64)  default '' comment '调用方法',
+    cost_time       bigint       default -1 comment '消耗时间(ms)',
     source_ip       varchar(32)  default '' comment '来源IP',
     source_location varchar(32)  default '' comment '来源位置',
     http_method     varchar(16)  default '' comment 'HTTP请求方法',
@@ -479,7 +482,7 @@ create table t_sys_login_log
     source_type    varchar(4)   default '99' comment '来源类型(1-后台端 2-移动端 99-其它)',
     login_ip       varchar(32)  default '' comment '登录IP',
     login_location varchar(32)  default '' comment '登录位置',
-    login_status   char(1)      default '1' comment '登录状态(1-成功 2-失败)',
+    login_status   char(1)      default '1' comment '登录状态[sys_login_log_status]',
     login_time     datetime comment '登录时间',
     login_msg      varchar(256) default '' comment '登录消息',
     user_agent     varchar(128) default '' comment '用户浏览器代理',
@@ -517,6 +520,8 @@ values ('用户初始密码', 'sys.user.initPassword', '123456', '1', '用户初
        ('用户登录重试策略', 'sys.login.retry.strategy', 'USERNAME', '1',
         'USERNAME-按用户名记录重试次数 USERNAME_IP-按用户名和IP记录重试次数', 100, 'admin', sysdate()),
        ('用户登录锁定时间', 'sys.login.lock.time', '60', '1', '用户登录失败超过重试次数后锁定时间(秒)', 100,
+        'admin', sysdate()),
+       ('用户登录日志', 'sys.login.log.enabled', 'true', '1', '是否允许开启用户登录日志(true-允许 false-不允许)', 100,
         'admin', sysdate());
 
 -- ----------------------------
@@ -665,14 +670,18 @@ create table t_sys_dict_type
 insert into t_sys_dict_type(type_name, type_key, remark, create_id, create_by, create_time)
 values ('机构类型', 'sys_org_type', '机构类型列表', 100, 'admin', sysdate()),
        ('菜单类型', 'sys_menu_type', '菜单类型列表', 100, 'admin', sysdate()),
+       ('UI样式', 'ui_class', 'UI样式列表', 100, 'admin', sysdate()),
        ('状态', 'db_status', '状态列表', 100, 'admin', sysdate()),
        ('是否', 'db_yes_no', '是或者否', 100, 'admin', sysdate()),
        ('查询类型', 'tools_generator_query_type', '查询类型列表', 100, 'admin', sysdate()),
        ('组件类型', 'tools_generator_component_type', '组件类型列表', 100, 'admin', sysdate()),
        ('Java类型', 'tools_generator_java_type', 'Java类型列表', 100, 'admin', sysdate()),
        ('操作日志类型', 'sys_operation_log_type', '操作日志类型列表', 100, 'admin', sysdate()),
+       ('操作日志状态', 'sys_operation_log_status', '操作日志状态列表', 100, 'admin', sysdate()),
+       ('登录日志状态', 'sys_login_log_status', '登录日志状态列表', 100, 'admin', sysdate()),
        ('数据权限范围', 'sys_data_scope', '数据权限范围列表', 100, 'admin', sysdate()),
        ('用户性别', 'sys_user_sex', '用户性别列表', 100, 'admin', sysdate()),
+       ('存储类型', 'sys_storage_type', '存储类型列表', 100, 'admin', sysdate()),
        ('存储类型', 'sys_storage_type', '存储类型列表', 100, 'admin', sysdate());
 
 -- ----------------------------
@@ -697,6 +706,7 @@ create table t_sys_dict_data
     update_by   varchar(64)  default '' comment '修改用户',
     create_time datetime comment '创建时间',
     update_time datetime comment '修改时间',
+    sts         varchar(4)   default '1' comment '逻辑删除(1-未删除 2-已删除)',
     primary key (id)
 ) auto_increment = 100 comment '字典值表';
 insert into t_sys_dict_data(type_key, data_name, data_value, ui_class, css_class, is_default, create_id, create_by,
@@ -706,6 +716,12 @@ values ('sys_org_type', '平台', '0', '', '', '2', 100, 'admin', sysdate()),
        ('sys_menu_type', '目录', '1', '', '', '1', 100, 'admin', sysdate()),
        ('sys_menu_type', '菜单', '2', '', '', '2', 100, 'admin', sysdate()),
        ('sys_menu_type', '按钮', '3', '', '', '2', 100, 'admin', sysdate()),
+       ('ui_class', '默认(default)', 'default', '', '', '1', 100, 'admin', sysdate()),
+       ('ui_class', '主要(primary)', 'primary', '', '', '2', 100, 'admin', sysdate()),
+       ('ui_class', '成功(success)', 'success', '', '', '2', 100, 'admin', sysdate()),
+       ('ui_class', '信息(info)', 'info', '', '', '2', 100, 'admin', sysdate()),
+       ('ui_class', '警告(warning)', 'warning', '', '', '2', 100, 'admin', sysdate()),
+       ('ui_class', '危险(danger)', 'danger', '', '', '2', 100, 'admin', sysdate()),
        ('db_status', '正常', '1', 'primary', '', '1', 100, 'admin', sysdate()),
        ('db_status', '停用', '2', 'info', '', '2', 100, 'admin', sysdate()),
        ('db_yes_no', '是', '1', '', '', '2', 100, 'admin', sysdate()),
@@ -752,6 +768,10 @@ values ('sys_org_type', '平台', '0', '', '', '2', 100, 'admin', sysdate()),
        ('sys_operation_log_type', '导出', '7', '', '', '2', 100, 'admin', sysdate()),
        ('sys_operation_log_type', '文件上传', '8', '', '', '2', 100, 'admin', sysdate()),
        ('sys_operation_log_type', '其它', '99', '', '', '1', 100, 'admin', sysdate()),
+       ('sys_operation_log_status', '正常', '1', 'success', '', '1', 100, 'admin', sysdate()),
+       ('sys_operation_log_status', '异常', '2', 'danger', '', '2', 100, 'admin', sysdate()),
+       ('sys_login_log_status', '成功', '1', 'success', '', '1', 100, 'admin', sysdate()),
+       ('sys_login_log_status', '失败', '2', 'danger', '', '2', 100, 'admin', sysdate()),
        ('sys_data_scope', '全部数据权限', '1', '', '', '1', 100, 'admin', sysdate()),
        ('sys_data_scope', '自定义数据权限', '2', '', '', '2', 100, 'admin', sysdate()),
        ('sys_data_scope', '本机构数据权限', '3', '', '', '2', 100, 'admin', sysdate()),

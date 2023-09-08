@@ -1,14 +1,13 @@
 package com.youlan.controller.system;
 
-import cn.hutool.core.io.FileTypeUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.xuyanwu.spring.file.storage.UploadPretreatment;
 import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.core.helper.FileHelper;
 import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.core.restful.enums.ApiResultCode;
-import com.youlan.framework.anno.SystemLog;
-import com.youlan.framework.constant.SystemLogType;
+import com.youlan.framework.anno.OperationLog;
+import com.youlan.framework.constant.OperationLogType;
 import com.youlan.framework.controller.BaseController;
 import com.youlan.system.entity.StorageRecord;
 import com.youlan.system.entity.dto.UserDTO;
@@ -37,7 +36,7 @@ public class UserProfileController extends BaseController {
     }
 
     @Operation(summary = "个人信息修改")
-    @SystemLog(name = "个人信息", type = SystemLogType.OPERATION_LOG_TYPE_UPDATE)
+    @OperationLog(name = "个人信息", type = OperationLogType.OPERATION_LOG_TYPE_UPDATE)
     @PostMapping("/updateUserProfile")
     public ApiResult updateUserProfile(@RequestBody @Validated UserDTO dto) {
         if (ObjectUtil.isNull(dto.getId())) {
@@ -48,14 +47,14 @@ public class UserProfileController extends BaseController {
     }
 
     @Operation(summary = "个人密码修改")
-    @SystemLog(name = "个人信息", type = SystemLogType.OPERATION_LOG_TYPE_UPDATE)
+    @OperationLog(name = "个人信息", type = OperationLogType.OPERATION_LOG_TYPE_UPDATE)
     @PostMapping("/updateUserPasswd")
     public ApiResult updateUserPasswd(@RequestBody @Validated UserUpdatePasswdDTO dto) {
         return toSuccess(userBizService.updateUserPasswd(dto));
     }
 
     @Operation(summary = "个人头像上传")
-    @SystemLog(name = "个人信息", type = SystemLogType.OPERATION_LOG_TYPE_UPLOAD)
+    @OperationLog(name = "个人信息", type = OperationLogType.OPERATION_LOG_TYPE_UPLOAD)
     @PostMapping("/uploadUserAvatar")
     public ApiResult uploadUserAvatar(@RequestPart("file") MultipartFile file) {
         if (!FileHelper.isImageExtName(file)) {

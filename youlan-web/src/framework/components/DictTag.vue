@@ -5,7 +5,7 @@
         <span v-if="!item.ui || item.ui === 'default'" :key="item.value" :class="item.class">
           {{ item.name }}
         </span>
-        <el-tag v-else :key="item.value" :type="item.ui" :class="item.class">
+        <el-tag v-else :key="item.value" :type="item.ui" disable-transitions :class="item.class">
           {{ item.name }}
         </el-tag>
       </template>

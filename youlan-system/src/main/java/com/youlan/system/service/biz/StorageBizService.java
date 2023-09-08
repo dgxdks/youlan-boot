@@ -96,7 +96,7 @@ public class StorageBizService {
      * 根据文件名称获取文件
      */
     public StorageRecord downloadByFileName(String fileName) {
-        StorageRecord storageRecord = getStorageRecordByFileName(fileName);
+        StorageRecord storageRecord = loadStorageRecordCacheByFileName(fileName);
         return downloadByRecord(storageRecord);
     }
 
@@ -104,7 +104,7 @@ public class StorageBizService {
      * 根据存储对象ID获取文件
      */
     public StorageRecord downloadByObjectId(String objectId) {
-        StorageRecord storageRecord = getStorageRecordByObjectId(objectId);
+        StorageRecord storageRecord = loadStorageRecordCacheByObjectId(objectId);
         return downloadByRecord(storageRecord);
     }
 
@@ -115,7 +115,7 @@ public class StorageBizService {
         String platform = storageRecord.getPlatform();
         //下载时有可能动态FileStorage是没有被初始化的
         StorageHelper.getFileStorageIfNotExist(platform, () -> {
-            StorageConfig storageConfig = storageConfigBizService.getStorageConfigIfExist(platform);
+            StorageConfig storageConfig = storageConfigBizService.loadStorageConfigCacheIfExist(platform);
             return createStorageContext(storageConfig);
         });
         FileStorage fileStorage = StorageHelper.getFileStorage(platform);
@@ -130,7 +130,7 @@ public class StorageBizService {
     /**
      * 根据文件名称获取存储记录(支持缓存)
      */
-    public StorageRecord getStorageRecordByFileName(String fileName) {
+    public StorageRecord loadStorageRecordCacheByFileName(String fileName) {
         String fileNameRedisKey = SystemUtil.getStorageFileNameRedisKey(fileName);
         StorageRecord storageRecord = redisHelper.get(fileNameRedisKey);
         if (ObjectUtil.isNotNull(storageRecord)) {
@@ -146,7 +146,7 @@ public class StorageBizService {
     /**
      * 根据对象ID获取存储记录(支持缓存)
      */
-    public StorageRecord getStorageRecordByObjectId(String objectId) {
+    public StorageRecord loadStorageRecordCacheByObjectId(String objectId) {
         String objectIdRedisKey = SystemUtil.getStorageObjectIdRedisKey(objectId);
         StorageRecord storageRecord = redisHelper.get(objectIdRedisKey);
         if (ObjectUtil.isNotNull(storageRecord)) {
@@ -239,9 +239,9 @@ public class StorageBizService {
     public StorageConfig getStorageConfig(String platform) {
         //未指定平台则取默认存储配置
         if (StrUtil.isNotBlank(platform)) {
-            return storageConfigBizService.getStorageConfigIfExist(platform);
+            return storageConfigBizService.loadStorageConfigCacheIfExist(platform);
         } else {
-            return storageConfigBizService.getDefaultStorageConfigIfExist();
+            return storageConfigBizService.loadDefaultStorageConfigCacheIfExist();
         }
     }
 

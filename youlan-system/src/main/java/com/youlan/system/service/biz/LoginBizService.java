@@ -1,9 +1,9 @@
 package com.youlan.system.service.biz;
 
 import cn.dev33.satoken.stp.SaTokenInfo;
-import cn.hutool.core.text.StrPool;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.youlan.common.captcha.helper.CaptchaHelper;
 import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.core.restful.enums.ApiResultCode;
@@ -21,6 +21,7 @@ import com.youlan.system.helper.SystemConfigHelper;
 import com.youlan.system.service.LoginLogService;
 import com.youlan.system.service.OrgService;
 import com.youlan.system.service.UserService;
+import com.youlan.system.utils.SystemUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +31,6 @@ import java.util.function.Supplier;
 
 import static com.youlan.common.core.restful.enums.ApiResultCode.A0002;
 import static com.youlan.system.constant.SystemConstant.CONFIG_VALUE_LOGIN_RETRY_STRATEGY_USERNAME_IP;
-import static com.youlan.system.constant.SystemConstant.REDIS_PREFIX_LOGIN_RETRY;
 
 @Service
 @AllArgsConstructor
@@ -44,11 +44,11 @@ public class LoginBizService {
     /**
      * 用户登录
      */
-    public SaTokenInfo login(AccountLoginDTO dto) {
+    public SaTokenInfo accountLogin(AccountLoginDTO dto) {
         //优先处理验证码逻辑,前提是系统开启的验证码功能
         boolean captchaEnabled = SystemConfigHelper.captchaImageEnabled();
         if (captchaEnabled) {
-            doImageCaptchaCheck(dto.getCaptchaId(), dto.getCaptchaCode());
+            doImageCaptchaCheck(dto.getUserName(), dto.getCaptchaId(), dto.getCaptchaCode());
         }
         String userName = dto.getUserName();
         String plainTextPassword = dto.getUserPassword();
@@ -59,7 +59,10 @@ public class LoginBizService {
             throw new BizRuntimeException(ApiResultCode.A0009);
         }
         Supplier<Boolean> passwordMatch = () -> userService.validUserPassword(plainTextPassword, user.getUserPassword());
-        doLoginCheck(user, passwordMatch);
+        //用户登录检查
+        doAccountLoginCheck(user, passwordMatch);
+        //更新用户登录信息
+        userService.updateUserLoginInfo(user.getId());
         //发起用户登录并返回Token信息
         SystemAuthInfo systemAuthInfo = createSystemAuthInfo(user);
         SystemAuthHelper.login(user.getId());
@@ -70,12 +73,13 @@ public class LoginBizService {
     /**
      * 图片验证码校验
      */
-    public void doImageCaptchaCheck(String captchaId, String captchaCode) {
+    public void doImageCaptchaCheck(String userName, String captchaId, String captchaCode) {
         if (!StrUtil.isAllNotBlank(captchaId, captchaCode)) {
             throw new BizRuntimeException(ApiResultCode.A0010);
         }
         boolean verifyCaptcha = CaptchaHelper.verifyCaptcha(captchaId, captchaCode);
         if (!verifyCaptcha) {
+            loginLogService.addAsync(userName, LoginStatus.FAILED, ApiResultCode.A0007.getErrorMsg());
             throw new BizRuntimeException(ApiResultCode.A0007);
         }
     }
@@ -83,7 +87,7 @@ public class LoginBizService {
     /**
      * 登录校验
      */
-    public void doLoginCheck(User user, Supplier<Boolean> passwordMatch) {
+    public void doAccountLoginCheck(User user, Supplier<Boolean> passwordMatch) {
         //校验登录重试次数,小于等于0则不判断登录重试次数
         int loginMaxRetryTimes = SystemConfigHelper.loginMaxRetryTimes();
         if (loginMaxRetryTimes <= 0) {
@@ -98,9 +102,11 @@ public class LoginBizService {
         }
         //根据登录重试策略生成redisKey
         String loginRetryStrategy = SystemConfigHelper.loginRetryStrategy();
-        String loginRetryKey = REDIS_PREFIX_LOGIN_RETRY + user.getUserName();
+        String loginRetryKey;
         if (CONFIG_VALUE_LOGIN_RETRY_STRATEGY_USERNAME_IP.equals(loginRetryStrategy)) {
-            loginRetryKey = loginRetryKey + StrPool.COLON + ServletHelper.getClientIp();
+            loginRetryKey = SystemUtil.getLoginRetryRedisKey(user.getUserName(), ServletHelper.getClientIp());
+        } else {
+            loginRetryKey = SystemUtil.getLoginRetryRedisKey(user.getUserName());
         }
         Integer retryCount = ObjectUtil.defaultIfNull(redisHelper.get(loginRetryKey), 0);
         //超出重试次数则不允许登录
@@ -121,8 +127,6 @@ public class LoginBizService {
                 throw new BizRuntimeException(A0002);
             }
         }
-        //更新用户登录信息
-        userService.updateUserLoginInfo(user.getId());
         redisHelper.delete(loginRetryKey);
     }
 
@@ -156,5 +160,12 @@ public class LoginBizService {
         return new LoginInfoVO().setUser(user)
                 .setRoleList(roleList)
                 .setPermissionList(permissionList);
+    }
+
+    /**
+     * 解锁用户登录
+     */
+    public void unlockLoginUser(String userName) {
+        redisHelper.deleteByPattern(SystemUtil.getLoginRetryRedisKey(userName) + StringPool.ASTERISK);
     }
 }

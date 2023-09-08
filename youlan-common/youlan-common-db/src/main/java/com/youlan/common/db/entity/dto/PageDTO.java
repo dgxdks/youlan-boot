@@ -23,9 +23,9 @@ public class PageDTO {
     @TableField(exist = false)
     private Long pageSize;
 
-    @Schema(title = "排序字段集合")
+    @Schema(title = "分页排序字段列表")
     @TableField(exist = false)
-    private List<String> sortList;
+    private List<PageSortDTO> sortList;
 
     @Getter
     @Schema(title = "是否降序", defaultValue = "false")

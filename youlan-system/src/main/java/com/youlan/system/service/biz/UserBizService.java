@@ -132,7 +132,7 @@ public class UserBizService {
      * 用户分页
      */
     public IPage<UserVO> getUserPageList(UserPageDTO dto) {
-        return userService.getBaseMapper().getList(DBHelper.getIPage(dto), dto);
+        return userService.getBaseMapper().getList(DBHelper.getPage(dto), dto);
     }
 
     /**

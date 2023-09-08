@@ -6,6 +6,8 @@ import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.db.entity.dto.ListDTO;
 import com.youlan.common.db.helper.DBHelper;
+import com.youlan.framework.anno.OperationLog;
+import com.youlan.framework.constant.OperationLogType;
 import com.youlan.framework.controller.BaseController;
 import com.youlan.system.entity.DictType;
 import com.youlan.system.service.DictTypeService;
@@ -31,6 +33,7 @@ public class DictTypeController extends BaseController {
     @SaCheckPermission("system:dict:add")
     @Operation(summary = "字典类型新增")
     @PostMapping("/addDictType")
+    @OperationLog(name = "字典类型", type = OperationLogType.OPERATION_LOG_TYPE_ADD)
     public ApiResult addDictType(@Validated @RequestBody DictType dictType) {
         dictBizService.addDictType(dictType);
         return toSuccess();
@@ -39,6 +42,7 @@ public class DictTypeController extends BaseController {
     @SaCheckPermission("system:dict:update")
     @Operation(summary = "字典类型修改")
     @PostMapping("/updateDictType")
+    @OperationLog(name = "字典类型", type = OperationLogType.OPERATION_LOG_TYPE_UPDATE)
     public ApiResult updateDictType(@Validated @RequestBody DictType dictType) {
         if (ObjectUtil.isEmpty(dictType.getId())) {
             return toError(ApiResultCode.C0001);
@@ -57,6 +61,7 @@ public class DictTypeController extends BaseController {
     @SaCheckPermission("system:dict:remove")
     @Operation(summary = "字典类型删除")
     @PostMapping("/removeDictType")
+    @OperationLog(name = "字典类型", type = OperationLogType.OPERATION_LOG_TYPE_REMOVE)
     public ApiResult removeDictType(@RequestBody ListDTO<Long> ids) {
         dictBizService.removeDictType(ids.getList());
         return toSuccess();
@@ -65,13 +70,15 @@ public class DictTypeController extends BaseController {
     @SaCheckPermission("system:dict:list")
     @Operation(summary = "字典类型分页")
     @PostMapping("/getDictTypePageList")
+    @OperationLog(name = "字典类型", type = OperationLogType.OPERATION_LOG_TYPE_PAGE_LIST)
     public ApiResult getDictTypePageList(@RequestBody DictType dictType) {
         return toSuccess(dictTypeService.loadPage(dictType, DBHelper.getQueryWrapper(dictType)));
     }
 
     @SaCheckPermission("system:dict:list")
-    @Operation(summary = "字典类型分页")
+    @Operation(summary = "字典类型列表")
     @PostMapping("/getDictTypeList")
+    @OperationLog(name = "字典类型", type = OperationLogType.OPERATION_LOG_TYPE_LIST)
     public ApiResult getDictTypeList(@RequestBody DictType dictType) {
         return toSuccess(dictTypeService.loadMore(DBHelper.getQueryWrapper(dictType)));
     }
@@ -79,6 +86,7 @@ public class DictTypeController extends BaseController {
     @SaCheckPermission("system:dict:export")
     @Operation(summary = "系统配置导出")
     @PostMapping("/exportDictTypeList")
+    @OperationLog(name = "字典类型", type = OperationLogType.OPERATION_LOG_TYPE_EXPORT)
     public void exportConfigList(@RequestBody DictType dictType, HttpServletResponse response) throws IOException {
         List<DictType> dictTypeList = dictTypeService.loadMore(DBHelper.getQueryWrapper(dictType));
         toExcel("字典类型.xlsx", "字典类型", DictType.class, dictTypeList, response);
@@ -87,8 +95,9 @@ public class DictTypeController extends BaseController {
     @SaCheckPermission("system:dict:remove")
     @Operation(summary = "字典缓存刷新")
     @PostMapping("/refreshDictCache")
+    @OperationLog(name = "字典类型", type = OperationLogType.OPERATION_LOG_TYPE_REMOVE)
     public ApiResult refreshDictCache() {
-        dictBizService.removeAllDictCache();
+        dictBizService.refreshDictCache();
         return toSuccess();
     }
 }

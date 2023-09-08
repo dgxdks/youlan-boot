@@ -101,7 +101,7 @@ public class StorageConfigBizService {
      * 获取默认存储配置(支持缓存)
      */
     @Transactional(rollbackFor = Exception.class)
-    public StorageConfig getDefaultStorageConfigIfExist() {
+    public StorageConfig loadDefaultStorageConfigCacheIfExist() {
         try {
             StorageConfig storageConfig = redisHelper.get(SystemUtil.getDefaultStorageConfigRedisKey());
             if (ObjectUtil.isNotNull(storageConfig)) {
@@ -122,7 +122,7 @@ public class StorageConfigBizService {
      * 获取存储配置(支持缓存)
      */
     @Transactional(rollbackFor = Exception.class)
-    public StorageConfig getStorageConfigIfExist(String platform) {
+    public StorageConfig loadStorageConfigCacheIfExist(String platform) {
         try {
             StorageConfig storageConfig = redisHelper.get(SystemUtil.getStorageConfigRedisKey(platform));
             if (ObjectUtil.isNotNull(storageConfig)) {

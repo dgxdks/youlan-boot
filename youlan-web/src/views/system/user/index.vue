@@ -45,8 +45,10 @@
           <el-form-item label="创建时间" prop="createTimeRange">
             <base-date-range-picker v-model="queryForm.createTimeRange" style="width: 240px" />
           </el-form-item>
-          <base-search-button @click="handleQuery" />
-          <base-reset-button @click="handleResetQuery" />
+          <el-form-item>
+            <base-search-button @click="handleQuery" />
+            <base-reset-button @click="handleResetQuery" />
+          </el-form-item>
         </el-form>
         <el-row :gutter="10" class="mb8">
           <el-col :span="1.5">
@@ -217,7 +219,7 @@ import {
   getUserPageList, loadUser, removeUser, resetUserPasswd,
   updateUser, updateUserStatus
 } from '@/api/system/user'
-import FileUploadDrag from '@/views/components/FileUploadDrag.vue'
+import FileUploadDrag from '@/framework/components/FileUploadDrag.vue'
 import crud from '@/framework/mixin/crud'
 
 export default {

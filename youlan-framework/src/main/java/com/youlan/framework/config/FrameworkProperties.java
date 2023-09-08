@@ -11,7 +11,7 @@ public class FrameworkProperties {
     /**
      * 操作日志
      */
-    private SystemLogProperties systemLog;
+    private OperationLogProperties operationLog;
 
     /**
      * sa-token配置

@@ -1,6 +1,8 @@
 package com.youlan.common.validator.helper;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.extra.spring.SpringUtil;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -10,7 +12,16 @@ import java.util.Set;
 
 public class ValidatorHelper {
 
-    private static final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+    private static Validator validator;
+
+    static {
+        try {
+            Validator validator = SpringUtil.getBean(Validator.class);
+            ValidatorHelper.validator = ObjectUtil.isNull(validator) ? createValidator() : validator;
+        } catch (Exception ignore) {
+            ValidatorHelper.validator = createValidator();
+        }
+    }
 
     public static <T> Set<ConstraintViolation<T>> validate(T t) {
         return validator.validate(t);
@@ -34,7 +45,7 @@ public class ValidatorHelper {
         }
     }
 
-    public Validator validator() {
-        return validator;
+    public static Validator createValidator() {
+        return Validation.buildDefaultValidatorFactory().getValidator();
     }
 }

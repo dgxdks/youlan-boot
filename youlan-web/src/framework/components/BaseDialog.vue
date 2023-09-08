@@ -9,8 +9,8 @@
   >
     <slot />
     <div slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="confirm">确 定</el-button>
-      <el-button @click="cancel">取 消</el-button>
+      <el-button v-if="!confirmBtnDisabled" type="primary" @click="confirm">确 定</el-button>
+      <el-button v-if="!cancelBtnDisabled" @click="cancel">取 消</el-button>
     </div>
   </el-dialog>
 </template>
@@ -42,6 +42,14 @@ export default {
     top: {
       type: String,
       default: '15vh'
+    },
+    confirmBtnDisabled: {
+      type: Boolean,
+      default: false
+    },
+    cancelBtnDisabled: {
+      type: Boolean,
+      default: false
     }
   },
   data() {

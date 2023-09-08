@@ -10,7 +10,7 @@
         />
       </el-form-item>
       <el-form-item label="状态" prop="orgStatus">
-        <dict-select v-model="queryForm.orgStatus" dict-type="db_status" />
+        <dict-select v-model="queryForm.orgStatus" dict-type="db_status" style="width: 240px" />
       </el-form-item>
       <el-form-item>
         <base-search-button @click="handleQuery" />

@@ -1,8 +1,9 @@
 import router, { constantRoutes, dynamicRoutes } from '@/router'
 import { getMenuTreeList } from '@/api/system/login'
-import { ArrayUtil, AuthUtil, EnvUtil, ObjectUtil, StrUtil } from '@/framework/tools'
+import { ArrayUtil, AuthUtil, EnvUtil, StrUtil } from '@/framework/tools'
 import Layout from '@/layout'
 import InnerLink from '@/layout/components/InnerLink/index.vue'
+import ParentView from '@/components/ParentView/index.vue'
 
 const permission = {
   state: {
@@ -78,9 +79,10 @@ function menuListConvertToRoutes(menuList, parentMenu) {
     const visible = menu.visible
     const route = {
       name: StrUtil.upperFirst(routePath),
-      path: isDirectoryMenu(menuType) ? StrUtil.paddingSlashLeft(routePath) : StrUtil.removeSlashLeft(routePath),
+      path: isDirectoryMenu(menuType) && !parentMenu ? StrUtil.paddingSlashLeft(routePath) : StrUtil.removeSlashLeft(routePath),
       query: routeQuery,
-      component: Layout,
+      // 一级菜单使用Layout
+      component: !parentMenu ? Layout : null,
       alwaysShow: true,
       hidden: needHiddenMenu(visible),
       children: [],
@@ -90,17 +92,13 @@ function menuListConvertToRoutes(menuList, parentMenu) {
         noCache: isDirectoryMenu(menuType) || menu.routeCache !== '1'
       }
     }
-    // 目录类型不允许面包屑导航处进行点击
-    if (isDirectoryMenu(menuType)) {
+    // 不是菜单类型不允许面包屑导航处进行点击
+    if (!isRouteMenu(menuType)) {
       route.redirect = 'noRedirect'
     }
     // 如果是菜单类型将不再有下级菜单则需要关闭alwaysShow
     if (isRouteMenu(menuType)) {
       route.alwaysShow = false
-    }
-    // 如果有父级菜单则生成路由名称时需要与父级组合生成
-    if (ObjectUtil.isNotEmpty(parentMenu)) {
-      route.name = StrUtil.upperFirst(parentMenu.routePath) + route.name
     }
     // 如果指定了组件路径则加载组件路径
     if (StrUtil.isNotBlank(menu.componentPath)) {
@@ -129,7 +127,11 @@ function menuListConvertToRoutes(menuList, parentMenu) {
     }
     // 如果存在子菜单则递归装换子菜单路由
     if (ArrayUtil.isNotEmpty(menu.children)) {
-      route.children = menuListConvertToRoutes(menu.children)
+      // 有父级菜单也有子菜单则当前菜单再加一级 route-view
+      if (parentMenu) {
+        route.component = ParentView
+      }
+      route.children = menuListConvertToRoutes(menu.children, menu)
       route.alwaysShow = true
     }
     return route
@@ -161,7 +163,7 @@ function loadComponent(component) {
     return (resolve) => require([`@/views/${component}`], resolve)
   } else {
     // 使用 import 实现生产环境的路由懒加载
-    return () => import(`@/views/${component}`)
+    return () => Promise.resolve(require(`@/views/${component}`))
   }
 }
 
