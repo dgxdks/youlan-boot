@@ -10,7 +10,7 @@
 
 <script>
 export default {
-  name: 'StatusSwitch',
+  name: 'BaseSwitch',
   props: {
     value: {
       type: String,
@@ -49,7 +49,9 @@ export default {
   },
   methods: {
     change(value) {
-      this.$emit('change', value)
+      this.$nextTick(() => {
+        this.$emit('change', value)
+      })
     }
   }
 }

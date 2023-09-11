@@ -106,3 +106,12 @@ export function addAuthUser(params) {
     params
   })
 }
+
+// 角色缓存刷新
+export function refreshRoleCache(params) {
+  return request({
+    url: '/system/role/refreshRoleCache',
+    method: 'post',
+    params
+  })
+}

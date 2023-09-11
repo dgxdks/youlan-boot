@@ -1,7 +1,6 @@
 package com.youlan.controller.system;
 
 import cn.hutool.core.util.ObjectUtil;
-import cn.xuyanwu.spring.file.storage.UploadPretreatment;
 import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.core.helper.FileHelper;
 import com.youlan.common.core.restful.ApiResult;
@@ -60,10 +59,10 @@ public class UserProfileController extends BaseController {
         if (!FileHelper.isImageExtName(file)) {
             throw new BizRuntimeException(ApiResultCode.B0013);
         }
-        UploadPretreatment uploadPretreatment = storageBizService.createUploadPretreatment(file);
-        uploadPretreatment.image(200, 200);
-        StorageRecord storageRecord = storageBizService.doUploadPretreatment(uploadPretreatment);
-        userBizService.updateUserAvatar(storageRecord.getUrl());
+        StorageRecord storageRecord = storageBizService.upload(file, null, uploadPretreatment -> {
+            uploadPretreatment.image(200, 200);
+        });
+        userBizService.updateUserAvatar(storageRecord.getFullUrl());
         return toSuccess(storageRecord.getUrl());
     }
 }

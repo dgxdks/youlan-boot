@@ -75,7 +75,6 @@ public class DictDataController extends BaseController {
         return toSuccess(pageRes);
     }
 
-    @SaCheckPermission("system:dict:list")
     @Operation(summary = "字典值列表(typeKey)")
     @PostMapping("/getDictDataListByTypeKey")
     @OperationLog(name = "字典值", type = OperationLogType.OPERATION_LOG_TYPE_LIST)
@@ -86,7 +85,7 @@ public class DictDataController extends BaseController {
     @SaCheckPermission("system:dict:export")
     @Operation(summary = "字典值导出")
     @PostMapping("/exportDictDataList")
-    @OperationLog(name = "字典值", type = OperationLogType.OPERATION_LOG_TYPE_LIST)
+    @OperationLog(name = "字典值", type = OperationLogType.OPERATION_LOG_TYPE_EXPORT)
     public void exportDictDataList(@RequestBody DictData dictData, HttpServletResponse response) throws IOException {
         List<DictData> dictDataList = dictDataService.loadMore(DBHelper.getQueryWrapper(dictData));
         toExcel("字典值.xlsx", "字典值", DictData.class, dictDataList, response);

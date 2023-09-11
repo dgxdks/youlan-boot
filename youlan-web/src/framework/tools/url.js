@@ -22,10 +22,10 @@ export default {
     }
     return url + '?' + params
   },
-  isHttpUrl(url) {
+  isExternalUrl(url) {
     if (StrUtil.isBlank(url)) {
       return false
     }
-    return url.startsWith('http')
+    return /^(https?:|mailto:|tel:)/.test(url)
   }
 }

@@ -68,7 +68,7 @@ const user = {
           // 设置用户名
           commit('SET_USER_NAME', user.userName)
           // 设置用户头像
-          const avatar = StrUtil.isBlank(user.avatar) ? require('@/assets/images/profile.png') : DownloadUtil.parseDownloadUrl(user.avatar)
+          const avatar = StrUtil.isBlank(user.avatar) ? require('@/assets/images/profile.png') : DownloadUtil.parseSrcUrl(user.avatar)
           commit('SET_AVATAR', avatar)
           // 设置用户角色信息
           if (ArrayUtil.isNotEmpty(res.roleList)) {

@@ -22,6 +22,15 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class RoleService extends BaseServiceImpl<RoleMapper, Role> {
 
+
+    /**
+     * 如果存在获取角色信息
+     */
+    public Role loadRoleIfExists(Long id) {
+        return this.loadOneOpt(id)
+                .orElseThrow(ApiResultCode.A0017::getException);
+    }
+
     /**
      * 根据角色ID获取权限字符列表
      */

@@ -21,4 +21,8 @@ public enum DBYesNo {
     private final String code;
 
     private final String text;
+
+    public static boolean isYes(String code) {
+        return YES.code.equals(code);
+    }
 }

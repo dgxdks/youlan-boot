@@ -25,7 +25,7 @@ import Editor from '@/components/Editor/index.vue'
 import FileUpload from '@/framework/components/FileUpload.vue'
 import FileUploadDrag from '@/framework/components/FileUploadDrag.vue'
 import ImageUpload from '@/components/ImageUpload/index.vue'
-import ImagePreview from '@/components/ImagePreview/index.vue'
+import ImagePreview from '@/framework/components/ImagePreview.vue'
 import BaseDateRangePicker from '@/framework/components/BaseDateRangePicker.vue'
 import Vue from 'vue'
 import tab from '@/framework/tools/tab'
@@ -54,6 +54,7 @@ import BaseCloseButton from '@/framework/components/BaseCloseButton.vue'
 import BaseIconSelect from '@/framework/components/BaseIconSelect.vue'
 import BaseDateTimeRangePicker from '@/framework/components/BaseDateTimeRangePicker.vue'
 import BaseDetailButton from '@/framework/components/BaseDetailButton.vue'
+import BaseDrawer from '@/framework/components/BaseDrawer.vue'
 
 // 全局组件
 function mountComponent() {
@@ -66,6 +67,7 @@ function mountComponent() {
   Vue.component('OrgTree', OrgTree)
   Vue.component('DictRadio', DictRadio)
   Vue.component('BaseDialog', BaseDialog)
+  Vue.component('BaseDrawer', BaseDrawer)
   Vue.component('BaseRowSplit', BaseRowSplit)
   Vue.component('BaseRowSplit2', BaseRowSplit2)
   Vue.component('BaseRowSplit3', BaseRowSplit3)

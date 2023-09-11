@@ -12,7 +12,6 @@
 </template>
 
 <script>
-import { isExternal } from '@/utils/validate'
 
 export default {
   name: 'ImagePreview',
@@ -36,24 +35,15 @@ export default {
         return
       }
       const real_src = this.src.split(',')[0]
-      if (isExternal(real_src)) {
-        return real_src
-      }
-      return process.env.VUE_APP_BASE_API + real_src
+      return this.$download.parseSrcUrl(real_src)
     },
     realSrcList() {
       if (!this.src) {
         return
       }
-      const real_src_list = this.src.split(',')
-      const srcList = []
-      real_src_list.forEach(item => {
-        if (isExternal(item)) {
-          return srcList.push(item)
-        }
-        return srcList.push(process.env.VUE_APP_BASE_API + item)
+      return this.src.split(',').map(item => {
+        return this.$download.parseSrcUrl(item)
       })
-      return srcList
     },
     realWidth() {
       return typeof this.width === 'string' ? this.width : `${this.width}px`

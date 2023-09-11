@@ -59,7 +59,7 @@ export default {
      * @param fileName 文件名称
      * @returns {Promise<unknown>}
      */
-  getAsName(url, params, fileName, config = {}) {
+  getAsName(url, params, fileName, config = { timeout: 30 * 1000 }) {
     return download({
       url,
       method: 'get',
@@ -87,7 +87,7 @@ export default {
      * @param fileName 文件名称
      * @returns {Promise<unknown>}
      */
-  postAsName(url, params, data, fileName, config = {}) {
+  postAsName(url, params, data, fileName, config = { tiemout: 30 * 1000 }) {
     return download({
       url,
       method: 'post',
@@ -95,6 +95,18 @@ export default {
       data,
       ...config
     }, fileName)
+  },
+  // 保存文件
+  saveUrlAsFile(url, fileName, opts) {
+    console.log(url)
+    if (StrUtil.isBlank(url)) {
+      return
+    }
+    if (UrlUtil.isExternalUrl(url)) {
+      saveAs(url, fileName, opts)
+    } else {
+      return this.getAsName(this.parseDownloadUrl(url), {}, fileName, { timeout: 30 * 1000 })
+    }
   },
   // 保存文件
   saveAsFile(blob, fileName, opts) {
@@ -113,15 +125,25 @@ export default {
       }
     })
   },
+  // 解析文件src路径
+  parseSrcUrl(url) {
+    if (StrUtil.isBlank(url)) {
+      return url
+    }
+    if (UrlUtil.isExternalUrl(url)) {
+      return url
+    }
+    return StrUtil.removeSlashRight(EnvUtil.getBaseApi()) + '/system/storage/download/url/' + StrUtil.removeSlashLeft(url)
+  },
   // 解析文件下载路径
   parseDownloadUrl(url) {
     if (StrUtil.isBlank(url)) {
       return url
     }
-    if (UrlUtil.isHttpUrl(url)) {
+    if (UrlUtil.isExternalUrl(url)) {
       return url
     }
-    return StrUtil.removeSlashRight(EnvUtil.getBaseApi()) + '/system/storage/download/url/' + StrUtil.removeSlashLeft(url)
+    return '/system/storage/download/url/' + StrUtil.removeSlashLeft(url)
   }
 }
 

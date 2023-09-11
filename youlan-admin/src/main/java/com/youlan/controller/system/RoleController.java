@@ -126,10 +126,23 @@ public class RoleController extends BaseController {
     @SaCheckPermission("system:role:update")
     @Operation(summary = "角色状态修改")
     @PostMapping("/updateRoleStatus")
+    @OperationLog(name = "角色", type = OperationLogType.OPERATION_LOG_TYPE_UPDATE)
     public ApiResult updateRoleStatus(@RequestParam Long id, @RequestParam String status) {
         SystemAuthHelper.checkRoleNotAdmin(id);
         SystemAuthHelper.checkHasRoleId(id);
-        return toSuccess(roleService.updateStatus(id, status));
+        roleBizService.updateRoleStatus(id, status);
+        return toSuccess();
+    }
+
+    @SaCheckPermission("system:role:remove")
+    @Operation(summary = "角色缓存刷新")
+    @PostMapping("/refreshRoleCache")
+    @OperationLog(name = "角色", type = OperationLogType.OPERATION_LOG_TYPE_UPDATE)
+    public ApiResult refreshRoleCache(@RequestParam Long id) {
+        SystemAuthHelper.checkRoleNotAdmin(id);
+        SystemAuthHelper.checkHasRoleId(id);
+        roleBizService.refreshRoleCache(id);
+        return toSuccess();
     }
 
     @SaCheckPermission("system:role:list")

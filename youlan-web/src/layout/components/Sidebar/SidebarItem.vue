@@ -28,7 +28,6 @@
 
 <script>
 import path from 'path'
-import { isExternal } from '@/utils/validate'
 import Item from './Item'
 import AppLink from './Link'
 import FixiOSBug from './FixiOSBug'
@@ -85,10 +84,10 @@ export default {
       return false
     },
     resolvePath(routePath, routeQuery) {
-      if (isExternal(routePath)) {
+      if (this.$url.isExternalUrl(routePath)) {
         return routePath
       }
-      if (isExternal(this.basePath)) {
+      if (this.$url.isExternalUrl(this.basePath)) {
         return this.basePath
       }
       if (routeQuery) {

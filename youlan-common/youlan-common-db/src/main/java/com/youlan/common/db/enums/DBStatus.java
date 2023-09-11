@@ -21,4 +21,8 @@ public enum DBStatus {
     private final String code;
 
     private final String text;
+
+    public static boolean isDisabled(String code) {
+        return DISABLED.code.equals(code);
+    }
 }

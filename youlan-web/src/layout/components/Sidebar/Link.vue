@@ -5,7 +5,6 @@
 </template>
 
 <script>
-import { isExternal } from '@/utils/validate'
 
 export default {
   props: {
@@ -16,7 +15,7 @@ export default {
   },
   computed: {
     isExternal() {
-      return isExternal(this.to)
+      return this.$url.isExternalUrl(this.to)
     },
     type() {
       if (this.isExternal) {

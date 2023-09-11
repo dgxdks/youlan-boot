@@ -98,6 +98,7 @@ public class ConfigController extends BaseController {
     @SaCheckPermission("system:config:remove")
     @Operation(summary = "系统配置缓存刷新")
     @PostMapping("/refreshConfigCache")
+    @OperationLog(name = "系统配置", type = OperationLogType.OPERATION_LOG_TYPE_REMOVE)
     public ApiResult refreshConfigCache() {
         configBizService.refreshConfigCache();
         return toSuccess();

@@ -124,7 +124,6 @@ export default {
     onError(error, file, fileList) {
       this.$modal.loadingClose()
       this.$emit('onError', error, file, fileList)
-      this.$modal.error(error)
     },
     onExceed(files, fileList) {
       this.$modal.loadingClose()
@@ -139,9 +138,9 @@ export default {
     httpRequest(context) {
       const { action } = context
       const formData = new FormData()
-      formData.append('platform', this.$str.isNotBlank(this.platform) ? this.platform : null)
+      formData.append('platform', this.$str.isNotBlank(this.platform) ? this.platform : '')
       formData.append(this.fileName, context.file)
-      for (const key of this.formData) {
+      for (const key in this.formData) {
         formData.append(key, this.formData[key])
       }
       this.$upload.upload(action, formData, this.paramsData, this.headers, { timeout: this.timeout }).then(res => {

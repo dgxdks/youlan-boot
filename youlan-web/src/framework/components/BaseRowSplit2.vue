@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: 'RowSplit2',
+  name: 'BaseRowSplit2',
   render(createElement, context) {
     let vNodes = this.$slots.default
     if (this.$array.isEmpty(vNodes)) {

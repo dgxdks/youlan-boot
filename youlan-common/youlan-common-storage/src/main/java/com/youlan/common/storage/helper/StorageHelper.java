@@ -13,155 +13,92 @@ import cn.xuyanwu.spring.file.storage.platform.FileStorage;
 import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.storage.entity.StorageContext;
 import com.youlan.common.storage.enums.StorageType;
+import com.youlan.common.storage.proxy.FileStorageServiceProxy;
+import lombok.Getter;
 import org.springframework.util.ResourceUtils;
 
 import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Supplier;
 
+import static com.youlan.common.storage.enums.StorageType.LOCAL;
+
+@Getter
 public class StorageHelper {
-    private static final FileStorageService FILE_STORAGE_SERVICE = SpringUtil.getBean(FileStorageService.class);
-    private static final ReentrantLock LOCK = new ReentrantLock();
+    private static final FileStorageService fileStorageService = SpringUtil.getBean(FileStorageService.class);
 
-    /**
-     * 创建上传预处理器
-     */
+
     public static UploadPretreatment of() {
-        return getFileStorageService().of();
+        return fileStorageService.of();
     }
 
-    /**
-     * 创建上传预处理器
-     */
-    public static UploadPretreatment of(String platform, Supplier<StorageContext> supplier) {
-        getFileStorageIfNotExist(platform, supplier);
-        return of().setPlatform(platform);
+    public static UploadPretreatment of(FileStorage fileStorage) {
+        return fileStorageService.of()
+                .setPlatform(fileStorage.getPlatform())
+                .setFileStorageService(new FileStorageServiceProxy(fileStorageService, fileStorage));
     }
 
-    /**
-     * 创建上传预处理器
-     */
-    public static UploadPretreatment of(Object source) {
-        return getFileStorageService().of(source);
+    public static UploadPretreatment of(StorageContext storageContext) {
+        return of(createFileStorage(storageContext));
     }
 
-    /**
-     * 创建上传预处理器
-     */
-    public static UploadPretreatment of(Object source, String platform, Supplier<StorageContext> supplier) {
-        getFileStorageIfNotExist(platform, supplier);
-        return of(source).setPlatform(platform);
+    public UploadPretreatment of(Object source) {
+        return fileStorageService.of(source);
     }
 
-    /**
-     * 创建上传预处理器
-     */
+    public static UploadPretreatment of(Object source, FileStorage fileStorage) {
+        return fileStorageService.of(source)
+                .setPlatform(fileStorage.getPlatform())
+                .setFileStorageService(new FileStorageServiceProxy(fileStorageService, fileStorage));
+    }
+
+    public static UploadPretreatment of(Object source, StorageContext storageContext) {
+        return of(source, createFileStorage(storageContext));
+    }
+
     public static UploadPretreatment of(Object source, String name) {
-        return getFileStorageService().of(source, name);
+        return fileStorageService.of(source, name);
     }
 
-    /**
-     * 创建上传预处理器
-     */
-    public static UploadPretreatment of(Object source, String name, String platform, Supplier<StorageContext> supplier) {
-        getFileStorageIfNotExist(platform, supplier);
-        return of(source, name).setPlatform(platform);
+    public static UploadPretreatment of(Object source, String name, FileStorage fileStorage) {
+        return fileStorageService.of(source, name)
+                .setPlatform(fileStorage.getPlatform())
+                .setFileStorageService(new FileStorageServiceProxy(fileStorageService, fileStorage));
     }
 
-    /**
-     * 创建上传预处理器
-     */
+    public static UploadPretreatment of(Object source, String name, StorageContext storageContext) {
+        return of(source, name, createFileStorage(storageContext));
+    }
+
     public static UploadPretreatment of(Object source, String name, String contentType) {
-        return getFileStorageService().of(source, name, contentType);
+        return fileStorageService.of(source, name, contentType);
     }
 
-    /**
-     * 创建上传预处理器
-     */
-    public static UploadPretreatment of(Object source, String name, String contentType, String platform, Supplier<StorageContext> supplier) {
-        getFileStorageIfNotExist(platform, supplier);
-        return of(source, name, contentType).setPlatform(platform);
+    public static UploadPretreatment of(Object source, String name, String contentType, FileStorage fileStorage) {
+        return fileStorageService.of(source, name, contentType)
+                .setPlatform(fileStorage.getPlatform())
+                .setFileStorageService(new FileStorageServiceProxy(fileStorageService, fileStorage));
     }
 
-    /**
-     * 创建上传预处理器
-     */
+    public static UploadPretreatment of(Object source, String name, String contentType, StorageContext storageContext) {
+        return of(source, name, contentType, createFileStorage(storageContext));
+    }
+
     public static UploadPretreatment of(Object source, String name, String contentType, Long size) {
-        return getFileStorageService().of(source, name, contentType, size);
+        return fileStorageService.of(source, name, contentType, size);
+    }
+
+    public static UploadPretreatment of(Object source, String name, String contentType, Long size, FileStorage fileStorage) {
+        return fileStorageService.of(source, name, contentType, size)
+                .setPlatform(fileStorage.getPlatform())
+                .setFileStorageService(new FileStorageServiceProxy(fileStorageService, fileStorage));
+    }
+
+    public static UploadPretreatment of(Object source, String name, String contentType, Long size, StorageContext storageContext) {
+        return of(source, name, contentType, size, createFileStorage(storageContext));
     }
 
     /**
-     * 创建上传预处理器
+     * 根据存储上下文创建文件存储对象
      */
-    public static UploadPretreatment of(Object source, String name, String contentType, Long size, String platform, Supplier<StorageContext> supplier) {
-        getFileStorageIfNotExist(platform, supplier);
-        return getFileStorageService().of(source, name, contentType, size).setPlatform(platform);
-    }
-
-    /**
-     * 删除文件存储
-     */
-    public static void removeFileStorage(String platform) {
-        FileStorage fileStorage = getFileStorage(platform);
-        if (ObjectUtil.isNotNull(fileStorage)) {
-            removeFileStorage(fileStorage);
-        }
-    }
-
-    public static void removeFileStorage(FileStorage fileStorage) {
-        getFileStorageService().getFileStorageList().remove(fileStorage);
-    }
-
-    /**
-     * 新增文件存储
-     */
-    public static void addFileStorage(FileStorage fileStorage) {
-        getFileStorageService().getFileStorageList().add(fileStorage);
-    }
-
-    /**
-     * 新增文件存储
-     */
-    public static void addFileStorage(List<FileStorage> fileStorageList) {
-        getFileStorageService().getFileStorageList().addAll(fileStorageList);
-    }
-
-    /**
-     * 根据平台名称获取文件存储
-     */
-    public static FileStorage getFileStorage(String platform) {
-        return getFileStorageService().getFileStorage(platform);
-    }
-
-    /**
-     * 获取默认文件存储
-     */
-    public static FileStorage getFileStorage() {
-        return getFileStorageService().getFileStorage();
-    }
-
-    /**
-     * 获取或创建文件存储
-     *
-     * @return
-     */
-    public static FileStorage getFileStorageIfNotExist(String platform, Supplier<StorageContext> supplier) {
-        //多线程下避免重复创建
-        try {
-            LOCK.lock();
-            FileStorage fileStorage = getFileStorage(platform);
-            if (ObjectUtil.isNotNull(fileStorage)) {
-                return fileStorage;
-            }
-            fileStorage = createFileStorage(supplier.get());
-            addFileStorage(fileStorage);
-            return fileStorage;
-        } finally {
-            LOCK.unlock();
-        }
-    }
-
     public static FileStorage createFileStorage(StorageContext context) {
         StorageType type = context.getType();
         if (ObjectUtil.isNull(type)) {
@@ -180,7 +117,7 @@ public class StorageHelper {
             Assert.isTrue(ResourceUtils.isUrl(context.getDomain()), () -> new BizRuntimeException("domain不符合规则"));
         }
         //本地模式
-        if (type == StorageType.LOCAL) {
+        if (type == LOCAL) {
             FileStorageProperties.LocalPlusConfig config = new FileStorageProperties.LocalPlusConfig();
             BeanUtil.copyProperties(context, config);
             return FileStorageServiceBuilder.buildLocalPlusFileStorage(Collections.singletonList(config)).get(0);
@@ -280,9 +217,5 @@ public class StorageHelper {
             storagePath = storagePath + "/";
         }
         return storagePath;
-    }
-
-    public static FileStorageService getFileStorageService() {
-        return FILE_STORAGE_SERVICE;
     }
 }

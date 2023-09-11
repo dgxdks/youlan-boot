@@ -2,10 +2,10 @@ package com.youlan.controller.system;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.collection.CollectionUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.db.entity.dto.ListDTO;
 import com.youlan.common.db.helper.DBHelper;
+import com.youlan.common.redis.helper.RedisHelper;
 import com.youlan.framework.anno.OperationLog;
 import com.youlan.framework.constant.OperationLogType;
 import com.youlan.framework.controller.BaseController;
@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,6 +30,7 @@ import java.util.List;
 public class LoginLogController extends BaseController {
     private final LoginLogService loginLogService;
     private final LoginBizService loginBizService;
+    private final RedisHelper redisHelper;
 
     @SaCheckPermission("system:loginLog:remove")
     @Operation(summary = "登录日志删除")

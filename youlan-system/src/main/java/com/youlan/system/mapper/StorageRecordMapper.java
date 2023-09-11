@@ -6,4 +6,8 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface StorageRecordMapper extends BaseMapper<StorageRecord> {
+    /**
+     * 清空存储记录
+     */
+    boolean cleanStorageRecordList();
 }

@@ -311,7 +311,7 @@ export default {
       this.resetPageNum()
       this.getList()
     },
-    // 查询充值按钮
+    // 查询重置按钮
     handleResetQuery() {
       this.$refs.queryForm && this.$refs.queryForm.resetFields()
       this.queryForm.orgId = null
@@ -390,7 +390,7 @@ export default {
     },
     // 用户状态修改
     handleStatusChange(row) {
-      const confirmAction = row.status === '1' ? '停用' : '启用'
+      const confirmAction = row.status === '1' ? '启用' : '停用'
       const confirmText = `确认要${confirmAction}"${row.userName}"用户吗？`
       this.$modal.confirm(confirmText).then(() => {
         const params = {
@@ -459,9 +459,9 @@ export default {
       this.$refs.upload.submit()
     },
     handleImportError() {
+      this.$refs.upload.clear()
       this.$modal.error('用户导入失败')
       this.upload.open = false
-      this.$refs.upload.clear()
     },
     handleImportSuccess(res) {
       this.$refs.upload.clear()

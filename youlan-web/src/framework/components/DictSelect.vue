@@ -1,5 +1,5 @@
 <template>
-  <el-select v-model="data" :placeholder="placeholder" @change="handleChange">
+  <el-select v-model="data" :placeholder="placeholder" style="width: 100%" :disabled="disabled" @change="handleChange">
     <el-option v-for="item in dict[dictType]" :key="item.value" :label="item.name" :value="item.value">
       {{ item.name }}
     </el-option>
@@ -25,6 +25,10 @@ export default {
       default: ''
     },
     clearable: {
+      type: Boolean,
+      default: false
+    },
+    disabled: {
       type: Boolean,
       default: false
     }

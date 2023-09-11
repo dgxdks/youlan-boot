@@ -54,10 +54,12 @@ public class RoleBizService {
      */
     @Transactional(rollbackFor = Exception.class)
     public boolean updateRole(Role role) {
+        Role oldRole = roleService.loadRoleIfExists(role.getId());
         roleService.checkRoleNameRepeat(role);
         roleService.checkRoleStrRepeat(role);
         boolean update = roleService.updateById(role);
         roleMenuService.updateRoleMenuBatch(role.getId(), role.getMenuIdList());
+        SystemAuthHelper.cleanUserMenuPerms(oldRole.getRoleStr());
         return update;
     }
 
@@ -173,5 +175,23 @@ public class RoleBizService {
         }
         roleOrgService.updateRoleOrgBatch(roleId, role.getOrgIdList());
         return true;
+    }
+
+    /**
+     * 角色缓存刷新
+     */
+    public void refreshRoleCache(Long id) {
+        Role role = roleService.loadRoleIfExists(id);
+        SystemAuthHelper.cleanUserMenuPerms(role.getRoleStr());
+    }
+
+    /**
+     * 角色状态修改
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void updateRoleStatus(Long id, String status) {
+        Role role = roleService.loadRoleIfExists(id);
+        roleService.updateStatus(id, status);
+        SystemAuthHelper.cleanUserMenuPerms(role.getRoleStr());
     }
 }

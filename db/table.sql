@@ -240,7 +240,7 @@ values (101, '用户管理', '2', 'system:user', 100, 'user', 'user', '', '1', '
         '1', '', 100, 'admin', 0, '', sysdate(), null),
        (106, '字典管理', '2', 'system:dict', 100, 'dict', 'dict', '', '1', 'system/dict/index', '2', 0, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (107, '系统参数', '2', 'system:config', 100, 'edit', 'config', '', '1', 'system/config/index', '2', 0,
+       (107, '系统参数', '2', 'system:config', 100, 'config', 'config', '', '1', 'system/config/index', '2', 0,
         '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
        (108, '通知公告', '2', 'system:notice', 100, 'message', 'notice', '', '1', 'system/notice/index', '2',
         0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
@@ -418,6 +418,8 @@ values (20550, '配置新增', '3', 'system:storageConfig:add', 10002, '', '', '
        (20553, '配置详情', '3', 'system:storageConfig:load', 10002, '', '', '', '1', '', '2', 4, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null),
        (20554, '配置分页', '3', 'system:storageConfig:list', 10002, '', '', '', '1', '', '2', 5, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (20555, '配置导出', '3', 'system:storageConfig:export', 10002, '', '', '', '1', '', '2', 6, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null);
 -- 存储记录按钮
 insert into t_sys_menu
@@ -621,7 +623,8 @@ drop table if exists t_sys_storage_config;
 create table t_sys_storage_config
 (
     id          bigint      not null auto_increment comment '主键ID',
-    type        varchar(32) not null comment '存储类型',
+    name        varchar(32) not null comment '存储配置名称',
+    type        varchar(32) not null comment '存储类型(字典类型[sys_storage_type])',
     platform    varchar(64) not null comment '存储平台名称',
     domain      varchar(256) default '' comment '存储域名',
     base_path   varchar(128) default '' comment '基础路径',
@@ -631,6 +634,8 @@ create table t_sys_storage_config
     end_point   varchar(128) default '' comment '端点(endPoint)',
     region      varchar(128) default '' comment '域名称(region)',
     is_default  varchar(4)   default '2' comment '是否默认(1-是 2-否)',
+    file_acl    varchar(32)  default 'default' comment '访问控制(数据字典[storage_acl_type])',
+    is_https    varchar(4)   default '1' comment '是否HTTPS(1-是 2-否)',
     status      varchar(4)   default '1' comment '状态(1-正常 2-停用)',
     remark      varchar(128) default '' comment '备注',
     create_id   bigint       default 0 comment '创建用户ID',
@@ -641,11 +646,11 @@ create table t_sys_storage_config
     update_time datetime comment '修改时间',
     primary key (id)
 ) auto_increment = 100 comment '存储配置表';
-insert into t_sys_storage_config(id, type, platform, domain, base_path, access_key, secret_key,
-                                 bucket_name,
-                                 end_point, region, is_default, status, remark, create_id, create_by, create_time)
-values (100, 'LOCAL', 'LOCAL', '', 'youlan/upload/', '', '', '', '', '', '1', '1', '本地默认存储', 100, 'admin',
-        sysdate());
+insert into t_sys_storage_config(id, name, type, platform, domain, base_path, access_key, secret_key,
+                                 bucket_name, end_point, region, is_default, file_acl, is_https, status, remark,
+                                 create_id, create_by, create_time)
+values (100, '默认本地存储', 'LOCAL', 'LOCAL', '', 'youlan/upload/', '', '', '', '', '', '1', 'default', '1', '1',
+        '本地默认存储', 100, 'admin', sysdate());
 
 -- ----------------------------
 -- 字典类型表
@@ -682,7 +687,7 @@ values ('机构类型', 'sys_org_type', '机构类型列表', 100, 'admin', sysd
        ('数据权限范围', 'sys_data_scope', '数据权限范围列表', 100, 'admin', sysdate()),
        ('用户性别', 'sys_user_sex', '用户性别列表', 100, 'admin', sysdate()),
        ('存储类型', 'sys_storage_type', '存储类型列表', 100, 'admin', sysdate()),
-       ('存储类型', 'sys_storage_type', '存储类型列表', 100, 'admin', sysdate());
+       ('存储访问控制', 'sys_storage_acl_type', '存储访问控制类型', 100, 'admin', sysdate());
 
 -- ----------------------------
 -- 字典值表
@@ -787,4 +792,8 @@ values ('sys_org_type', '平台', '0', '', '', '2', 100, 'admin', sysdate()),
        ('sys_storage_type', '腾讯COS', 'TENCENT_COS', '', '', '2', 100, 'admin', sysdate()),
        ('sys_storage_type', '百度BOS', 'BAIDU_BOS', '', '', '2', 100, 'admin', sysdate()),
        ('sys_storage_type', 'MINIO', 'MINIO', '', '', '2', 100, 'admin', sysdate()),
-       ('sys_storage_type', 'AmazonS3', 'AMAZON_S3', '', '', '2', 100, 'admin', sysdate());
+       ('sys_storage_type', 'AmazonS3', 'AMAZON_S3', '', '', '2', 100, 'admin', sysdate()),
+       ('sys_storage_acl_type', '默认', 'default', '', '', '1', 100, 'admin', sysdate()),
+       ('sys_storage_acl_type', '私有', 'private', '', '', '2', 100, 'admin', sysdate()),
+       ('sys_storage_acl_type', '公共读', 'public-read', '', '', '2', 100, 'admin', sysdate()),
+       ('sys_storage_acl_type', '公共读写', 'public-read-write', '', '', '2', 100, 'admin', sysdate());

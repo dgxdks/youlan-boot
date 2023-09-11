@@ -76,6 +76,12 @@
               color="#606266"
               @click="handleAuthUser(scope.row)"
             >分配用户</base-text-button>
+            <base-text-button
+              v-has-perm="['system:role:remove']"
+              icon="el-icon-delete"
+              color="#606266"
+              @click="handleRefreshRole(scope.row)"
+            >刷新缓存</base-text-button>
           </base-column-menu>
         </template>
       </el-table-column>
@@ -157,7 +163,7 @@
 <script>
 import {
   addRole,
-  getRolePageList, loadRole, removeRole,
+  getRolePageList, loadRole, refreshRoleCache, removeRole,
   updateRole, updateRoleScope, updateRoleStatus
 } from '@/api/system/role'
 import crud from '@/framework/mixin/crud'
@@ -334,7 +340,7 @@ export default {
     },
     // 角色状态修改
     handleStatusChange(row) {
-      const confirmAction = row.status === '1' ? '停用' : '启用'
+      const confirmAction = row.status === '1' ? '启用' : '停用'
       const confirmText = `确认要${confirmAction}"${row.roleName}"吗？`
       this.$modal.confirm(confirmText).then(() => {
         const params = {
@@ -392,6 +398,12 @@ export default {
     // 分配用户按钮
     handleAuthUser(row) {
       this.$router.push('/system/role-auth/user/' + row.id)
+    },
+    // 刷新缓存
+    handleRefreshRole(row) {
+      refreshRoleCache({ id: row.id }).then(res => {
+        this.$modal.success('刷新成功')
+      })
     },
     // 导出按钮
     handleExport() {
