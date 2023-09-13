@@ -117,25 +117,30 @@ export default {
   computed: {
     // 计算两个周期值
     cycleTotal: function() {
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       this.cycle01 = this.checkNum(this.cycle01, 1, 7)
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       this.cycle02 = this.checkNum(this.cycle02, 1, 7)
       return this.cycle01 + '-' + this.cycle02
     },
     // 计算平均用到的值
     averageTotal: function() {
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       this.average01 = this.checkNum(this.average01, 1, 4)
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       this.average02 = this.checkNum(this.average02, 1, 7)
       return this.average02 + '#' + this.average01
     },
     // 最近的工作日（格式）
     weekdayCheck: function() {
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       this.weekday = this.checkNum(this.weekday, 1, 7)
       return this.weekday
     },
     // 计算勾选的checkbox值合集
     checkboxString: function() {
       const str = this.checkboxList.join()
-      return str == '' ? '*' : str
+      return str === '' ? '*' : str
     }
   },
   watch: {
@@ -175,25 +180,25 @@ export default {
 
     // 周期两个值变化时
     cycleChange() {
-      if (this.radioValue == '3') {
+      if (this.radioValue === '3') {
         this.$emit('update', 'week', this.cycleTotal)
       }
     },
     // 平均两个值变化时
     averageChange() {
-      if (this.radioValue == '4') {
+      if (this.radioValue === '4') {
         this.$emit('update', 'week', this.averageTotal)
       }
     },
     // 最近工作日值变化时
     weekdayChange() {
-      if (this.radioValue == '5') {
+      if (this.radioValue === '5') {
         this.$emit('update', 'week', this.weekday + 'L')
       }
     },
     // checkbox值变化时
     checkboxChange() {
-      if (this.radioValue == '6') {
+      if (this.radioValue === '6') {
         this.$emit('update', 'week', this.checkboxString)
       }
     }

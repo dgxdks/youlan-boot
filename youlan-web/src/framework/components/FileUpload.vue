@@ -27,7 +27,7 @@
 
     <!-- 文件列表 -->
     <transition-group class="upload-file-list el-upload-list el-upload-list--text" name="el-fade-in-linear" tag="ul">
-      <li v-for="(file, index) in fileList" :key="file.url" class="el-upload-list__item ele-upload-list__item-content">
+      <li v-for="(file) in fileList" :key="file.url" class="el-upload-list__item ele-upload-list__item-content">
         <el-link :href="`${baseUrl}${file.url}`" :underline="false" target="_blank">
           <span class="el-icon-document"> {{ getFileName(file.name) }} </span>
         </el-link>
@@ -45,7 +45,10 @@ export default {
   name: 'FileUpload',
   props: {
     // 值
-    value: [String, Object, Array],
+    value: {
+      type: [String, Object, Array],
+      default: null
+    },
     // 数量限制
     limit: {
       type: Number,
@@ -136,11 +139,11 @@ export default {
     },
     // 文件个数超出
     handleExceed() {
-      this.$modal.msgError(`上传文件数量不能超过 ${this.limit} 个!`)
+      this.$modal.error(`上传文件数量不能超过 ${this.limit} 个!`)
     },
     // 上传失败
-    handleUploadError(err) {
-      this.$modal.msgError('上传文件失败，请重试')
+    handleUploadError() {
+      this.$modal.error('上传文件失败，请重试')
       this.$modal.closeLoading()
     },
     // 上传成功回调
@@ -158,7 +161,7 @@ export default {
     },
     // 删除文件
     handleDelete(index) {
-      this.fileList.splice(FileUpload, 1)
+      // this.fileList.splice(FileUpload, 1)
       this.$emit('input', this.listToString(this.fileList))
     },
     // 上传结束处理
@@ -186,7 +189,7 @@ export default {
       for (const i in list) {
         strs += list[i].url + separator
       }
-      return strs != '' ? strs.substr(0, strs.length - 1) : ''
+      return strs !== '' ? strs.substr(0, strs.length - 1) : ''
     }
   }
 }

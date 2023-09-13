@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Layout from '@/layout'
-import OperationLog from '@/views/system/log/operation/index.vue'
 
 Vue.use(Router)
 
@@ -148,7 +147,7 @@ export const dynamicRoutes = [
     ]
   },
   {
-    path: '/tools/generator-edit',
+    path: '/tools/gen-edit',
     component: Layout,
     hidden: true,
     permissions: ['tools:generator:update'],

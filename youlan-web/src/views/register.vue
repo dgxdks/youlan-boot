@@ -4,7 +4,7 @@
       <h3 class="title">若依后台管理系统</h3>
       <el-form-item prop="username">
         <el-input v-model="registerForm.username" type="text" auto-complete="off" placeholder="账号">
-          <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon"/>
+          <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
         </el-input>
       </el-form-item>
       <el-form-item prop="password">
@@ -15,7 +15,7 @@
           placeholder="密码"
           @keyup.enter.native="handleRegister"
         >
-          <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon"/>
+          <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
         </el-input>
       </el-form-item>
       <el-form-item prop="confirmPassword">
@@ -26,10 +26,10 @@
           placeholder="确认密码"
           @keyup.enter.native="handleRegister"
         >
-          <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon"/>
+          <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
         </el-input>
       </el-form-item>
-      <el-form-item prop="code" v-if="captchaEnabled">
+      <el-form-item v-if="captchaEnabled" prop="code">
         <el-input
           v-model="registerForm.code"
           auto-complete="off"
@@ -37,10 +37,10 @@
           style="width: 63%"
           @keyup.enter.native="handleRegister"
         >
-          <svg-icon slot="prefix" icon-class="validCode" class="el-input__icon input-icon"/>
+          <svg-icon slot="prefix" icon-class="validCode" class="el-input__icon input-icon" />
         </el-input>
         <div class="register-code">
-          <img :src="codeUrl" @click="getCode" class="register-code-img"/>
+          <img :src="codeUrl" class="register-code-img" @click="getCode">
         </div>
       </el-form-item>
       <el-form-item style="width:100%;">

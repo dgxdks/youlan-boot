@@ -1,5 +1,5 @@
 import { accountLogin, getLoginInfo, logout } from '@/api/system/login'
-import { ArrayUtil, CookieUtil, DownloadUtil, EnvUtil, StrUtil } from '../../framework/tools'
+import { ArrayUtil, CookieUtil, DownloadUtil, StrUtil } from '@/framework/tools'
 import { tokenValuePrefix } from '@/settings'
 
 function getTokenHeaders() {

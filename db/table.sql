@@ -252,8 +252,10 @@ values (101, '用户管理', '2', 'system:user', 100, 'user', 'user', '', '1', '
         'monitor/onlineUser/index', '2', 0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
        (202, '缓存监控', '2', 'monitor:cacheMonitor', 200, 'redis', 'cacheMonitor' '', '', '1',
         'monitor/cacheMonitor/index', '2', 0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (301, '系统接口', '2', 'tools:swagger', 300, 'swagger', '/doc.html', '', '', '', '1', 0, '1', '1', '', 100,
-        'admin', 0, '', sysdate(), null);
+       (301, '系统接口', '2', 'tools:swagger', 300, 'swagger', '/doc.html', '', '1', '', '1', 0, '1', '1', '', 100,
+        'admin', 0, '', sysdate(), null),
+       (302, '代码生成', '2', 'tools:generator', 300, 'code', 'generator', '', '1', 'tools/generator/index', '2', 0,
+        '1', '1', '', 100, 'admin', 0, '', sysdate(), null);
 
 -- 三级菜单(三级菜单ID从10000开始)
 insert into t_sys_menu
@@ -433,6 +435,20 @@ values (20600, '记录新增', '3', 'system:storageRecord:add', 10003, '', '', '
         '1', '', 100, 'admin', 0, '', sysdate(), null),
        (20604, '记录分页', '3', 'system:storageRecord:list', 10003, '', '', '', '1', '', '2', 5, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null);
+-- 代码生成按钮
+insert into t_sys_menu
+values (20650, '库表分页', '3', 'tools:generator:list', 302, '', '', '', '1', '', '2', 1, '1', '1',
+        '', 100, 'admin', 0, '', sysdate(), null),
+       (20651, '库表修改', '3', 'tools:generator:update', 302, '', '', '', '1', '', '2', 2, '1', '1',
+        '', 100, 'admin', 0, '', sysdate(), null),
+       (20652, '库表删除', '3', 'tools:generator:remove', 302, '', '', '', '1', '', '2', 3, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (20653, '代码生成', '3', 'tools:generator:code', 302, '', '', '', '1', '', '2', 4, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (20654, '代码预览', '3', 'tools:generator:preview', 302, '', '', '', '1', '', '2', 5, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (20655, '库表详情', '3', 'tools:generator:load', 302, '', '', '', '1', '', '2', 6, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null);
 
 
 -- ----------------------------
@@ -532,25 +548,31 @@ values ('用户初始密码', 'sys.user.initPassword', '123456', '1', '用户初
 drop table if exists t_tools_generator_table;
 create table t_tools_generator_table
 (
-    id              bigint      not null auto_increment comment '主键ID',
-    table_name      varchar(64) not null comment '表名称',
-    table_comment   varchar(128) default '' comment '表描述',
-    feature_name    varchar(128) default '' comment '功能名称',
-    module_name     varchar(32) not null comment '模块名称',
-    biz_name        varchar(32) not null comment '业务名称',
-    entity_name     varchar(32)  default '' comment '实体类名称',
-    entity_dto      char(1)      default '1' comment '是否需要实体类DTO(1-是 2-否)',
-    entity_page_dto char(1)      default '1' comment '是否需要实体类分页DTO(1-是 2-否)',
-    entity_vo       char(1)      default '1' comment '是否需要实体类VO(1-是 2-否)',
-    package_name    varchar(128) comment '包路径',
-    generator_type  char(1)      default '1' comment '生成类型(1-zip包 2-指定路径)',
-    generator_path  varchar(128) default '' comment '生成路径(不填默认为项目路径)',
-    create_id       bigint       default 0 comment '创建用户ID',
-    create_by       varchar(64)  default '' comment '创建用户',
-    update_id       bigint       default 0 comment '修改用户ID',
-    update_by       varchar(64)  default '' comment '修改用户',
-    create_time     datetime comment '创建时间',
-    update_time     datetime comment '修改时间',
+    id                 bigint      not null auto_increment comment '主键ID',
+    table_name         varchar(64) not null comment '表名称',
+    table_comment      varchar(128) default '' comment '表描述',
+    feature_name       varchar(128) default '' comment '功能名称',
+    module_name        varchar(32) not null comment '模块名称',
+    biz_name           varchar(32) not null comment '业务名称',
+    entity_name        varchar(32)  default '' comment '实体类名称',
+    entity_dto         char(1)      default '1' comment '是否需要实体类DTO(1-是 2-否)',
+    entity_page_dto    char(1)      default '1' comment '是否需要实体类分页DTO(1-是 2-否)',
+    entity_vo          char(1)      default '1' comment '是否需要实体类VO(1-是 2-否)',
+    package_name       varchar(128) comment '包路径',
+    template_type      char(1)      default '1' comment '模版类型(1-单表(增删改查) 2-树表(增删改查))',
+    generator_type     char(1)      default '1' comment '生成类型(1-zip包 2-指定路径)',
+    generator_path     varchar(128) default '' comment '生成路径(不填默认为项目路径)',
+    author_name        varchar(32)  default null comment '作者名称',
+    column_name        varchar(32)  default null comment '树表列名',
+    parent_column_name varchar(32)  default null comment '树表父列名',
+    parent_menu_id     bigint       default null comment '父级菜单ID',
+    remark             varchar(128) default '' comment '备注',
+    create_id          bigint       default 0 comment '创建用户ID',
+    create_by          varchar(64)  default '' comment '创建用户',
+    update_id          bigint       default 0 comment '修改用户ID',
+    update_by          varchar(64)  default '' comment '修改用户',
+    create_time        datetime comment '创建时间',
+    update_time        datetime comment '修改时间',
     primary key (id)
 ) auto_increment = 100 comment '代码生成数据库表信息';
 

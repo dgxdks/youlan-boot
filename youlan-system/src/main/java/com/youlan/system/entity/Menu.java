@@ -25,7 +25,6 @@ public class Menu extends PageDTO {
     @TableId(type = IdType.AUTO)
     private Long id;
 
-    @Query(type = QueryType.LIKE)
     @NotBlank(message = "菜单名称不能为空")
     @Schema(title = "菜单名称")
     private String menuName;
@@ -63,12 +62,10 @@ public class Menu extends PageDTO {
     @Schema(title = "显示状态(1-显示 2-不显示)")
     private String visible;
 
-    @Query(type = QueryType.EQUAL)
     @Schema(title = DBConstant.DESC_STATUS)
     @TableField(fill = FieldFill.INSERT)
     private String status;
 
-    @Query(type = QueryType.EQUAL)
     @Schema(title = DBConstant.DESC_REMARK)
     private String remark;
 
@@ -95,6 +92,10 @@ public class Menu extends PageDTO {
     @Schema(title = DBConstant.DESC_UPDATE_TIME)
     @TableField(fill = FieldFill.UPDATE)
     private Date updateTime;
+
+    @Schema(title = "菜单类型列表")
+    @TableField(exist = false)
+    private List<String> menuTypeList;
 
     @TableField(exist = false)
     private List<Menu> children = new ArrayList<>();

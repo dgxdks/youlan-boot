@@ -421,7 +421,7 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.jobId)
-      this.single = selection.length != 1
+      this.single = selection.length !== 1
       this.multiple = !selection.length
     },
     // 更多操作触发
@@ -501,15 +501,15 @@ export default {
     submitForm: function() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          if (this.form.jobId != undefined) {
+          if (this.form.jobId !== undefined) {
             updateJob(this.form).then(response => {
-              this.$modal.msgSuccess('修改成功')
+              this.$modal.success('修改成功')
               this.open = false
               this.getList()
             })
           } else {
             addJob(this.form).then(response => {
-              this.$modal.msgSuccess('新增成功')
+              this.$modal.success('新增成功')
               this.open = false
               this.getList()
             })
@@ -524,7 +524,7 @@ export default {
         return delJob(jobIds)
       }).then(() => {
         this.getList()
-        this.$modal.msgSuccess('删除成功')
+        this.$modal.success('删除成功')
       }).catch(() => {
       })
     },

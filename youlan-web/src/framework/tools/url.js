@@ -1,4 +1,4 @@
-import { ObjectUtil, StrUtil } from '@/framework/tools/index'
+import { JSONUtil, ObjectUtil, StrUtil } from '@/framework/tools/index'
 
 export default {
   objectToQuery(params) {
@@ -26,6 +26,6 @@ export default {
     if (StrUtil.isBlank(url)) {
       return false
     }
-    return /^(https?:|mailto:|tel:)/.test(url)
+    return /^(https?:|mailto:|tel:|blob:)/.test(url)
   }
 }

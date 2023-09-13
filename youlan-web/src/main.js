@@ -12,8 +12,10 @@ import './permission'
 import VueMeta from 'vue-meta'
 import framework from '@/framework'
 import { CookieUtil } from '@/framework/tools'
+import VueClipboard from 'vue-clipboard2'
 
 Vue.use(framework)
+Vue.use(VueClipboard)
 Vue.use(VueMeta)
 
 Vue.use(ElementUI, {

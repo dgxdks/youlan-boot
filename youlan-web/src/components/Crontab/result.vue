@@ -133,7 +133,7 @@ export default {
           // 如果到达最大值时
           if (nDay > DDate[DDate.length - 1]) {
             resetDay()
-            if (Mi == MDate.length - 1) {
+            if (Mi === MDate.length - 1) {
               resetMonth()
               continue goYear
             }
@@ -333,7 +333,7 @@ export default {
         }// goMonth
       }
       // 判断100年内的结果条数
-      if (resultArr.length == 0) {
+      if (resultArr.length === 0) {
         this.resultList = ['没有达到条件的结果！']
       } else {
         this.resultList = resultArr
@@ -383,7 +383,7 @@ export default {
     // 获取"日"数组-主要为日期规则
     getWeekArr(rule) {
       // 只有当日期规则的两个值均为“”时则表达日期是有选项的
-      if (this.dayRule == '' && this.dayRuleSup == '') {
+      if (this.dayRule === '' && this.dayRuleSup === '') {
         if (rule.indexOf('-') >= 0) {
           this.dayRule = 'weekDay'
           this.dayRuleSup = this.getCycleArr(rule, 7, false)
@@ -392,14 +392,14 @@ export default {
           const matchRule = rule.match(/[0-9]{1}/g)
           this.dayRuleSup = [Number(matchRule[1]), Number(matchRule[0])]
           this.dateArr[3] = [1]
-          if (this.dayRuleSup[1] == 7) {
+          if (this.dayRuleSup[1] === 7) {
             this.dayRuleSup[1] = 0
           }
         } else if (rule.indexOf('L') >= 0) {
           this.dayRule = 'lastWeek'
           this.dayRuleSup = Number(rule.match(/[0-9]{1,2}/g)[0])
           this.dateArr[3] = [31]
-          if (this.dayRuleSup == 7) {
+          if (this.dayRuleSup === 7) {
             this.dayRuleSup = 0
           }
         } else if (rule !== '*' && rule !== '?') {
@@ -430,7 +430,7 @@ export default {
       } else if (rule !== '*' && rule !== '?') {
         this.dateArr[3] = this.getAssignArr(rule)
         this.dayRuleSup = 'null'
-      } else if (rule == '*') {
+      } else if (rule === '*') {
         this.dayRuleSup = 'null'
       }
     },
@@ -509,7 +509,7 @@ export default {
       }
       for (let i = min; i <= max; i++) {
         let add = 0
-        if (status == false && i % limit == 0) {
+        if (status === false && i % limit === 0) {
           add = limit
         }
         arr.push(Math.round(i % limit + add))
@@ -537,9 +537,9 @@ export default {
       const s = time.getSeconds()
       const week = time.getDay()
       // 如果传递了type的话
-      if (type == undefined) {
+      if (type === undefined) {
         return Y + '-' + (M < 10 ? '0' + M : M) + '-' + (D < 10 ? '0' + D : D) + ' ' + (h < 10 ? '0' + h : h) + ':' + (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s)
-      } else if (type == 'week') {
+      } else if (type === 'week') {
         // 在quartz中 1为星期日
         return week + 1
       }

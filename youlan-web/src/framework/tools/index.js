@@ -16,6 +16,7 @@ import modal from '@/framework/tools/modal'
 import date from '@/framework/tools/date'
 import config from '@/framework/tools/config'
 import tab from '@/framework/tools/tab'
+import highlight from '@/framework/tools/highlight'
 
 export default {
   StrUtil: str,
@@ -35,7 +36,8 @@ export default {
   ModalUtil: modal,
   DateUtil: date,
   ConfigUtil: config,
-  TabUtil: tab
+  TabUtil: tab,
+  HighLightUtil: highlight
 }
 
 export const StrUtil = str
@@ -56,3 +58,4 @@ export const ModalUtil = modal
 export const DateUtil = date
 export const ConfigUtil = config
 export const TabUtil = tab
+export const HighLightUtil = highlight

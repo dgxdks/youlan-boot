@@ -11,6 +11,7 @@
     :on-error="onError"
     :on-success="onSuccess"
     :on-exceed="onExceed"
+    :on-change="onChange"
     :file-list="fileList"
     :limit="limit"
     :before-upload="beforeUpload"

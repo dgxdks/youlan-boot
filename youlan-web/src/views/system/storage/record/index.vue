@@ -51,6 +51,9 @@
         <base-upload-button type="primary" plain @click="handleFileUpload">文件上传</base-upload-button>
       </el-col>
       <el-col :span="1.5">
+        <base-upload-button type="primary" plain @click="handleImageUpload">图片上传</base-upload-button>
+      </el-col>
+      <el-col :span="1.5">
         <base-remove-button v-has-perm="['system:storageRecord:remove']" plain :disabled="tableNoSelected" @click="handleDelete" />
       </el-col>
       <el-col :span="1.5">
@@ -164,8 +167,17 @@
       <file-upload-drag
         ref="fileUpload"
         :limit="1"
-        @onError="handleFileUploadError"
         @onSuccess="handleFileUploadSuccess"
+        @onError="handleFileUploadError"
+      />
+    </base-dialog>
+    <base-dialog :title="imageUpload.title" :open.sync="imageUpload.open" width="600px" @confirm="handleUploadImageSubmit" @cancel="handleUploadImageCancel">
+      <image-upload
+        ref="imageUpload"
+        :limit="3"
+        :file-size="5"
+        @onSuccess="handleImageUploadSuccess"
+        @onError="handleImageUploadError"
       />
     </base-dialog>
   </div>
@@ -199,10 +211,12 @@ export default {
       },
       // 默认排序
       defaultSort,
+      // 图片上传
       imageUpload: {
         open: false,
         title: '图片上传'
       },
+      // 文件上传
       fileUpload: {
         open: false,
         title: '文件上传'
@@ -271,7 +285,35 @@ export default {
     },
     // 下载文件
     handleDownload(row) {
-      this.$download.saveUrlAsFile(row.url)
+      this.$download.saveUrlAsFile(row.fullUrl).then(() => {
+      }).catch(() => {
+        this.$modal.error('文件下载失败')
+      })
+    },
+    // 图片上传
+    handleImageUpload() {
+      this.imageUpload.open = true
+    },
+    // 图片上传成功
+    handleImageUploadSuccess() {
+      this.$refs.imageUpload.clear()
+      this.$modal.success('图片上传成功')
+      this.imageUpload.open = false
+      this.getList()
+    },
+    // 图片上传失败
+    handleImageUploadError() {
+      this.$refs.imageUpload.clear()
+      this.$modal.error('图片上传失败')
+      this.imageUpload.open = false
+    },
+    // 图片上传确认
+    handleUploadImageSubmit() {
+      this.$refs.imageUpload.submit()
+    },
+    // 图片上传取消
+    handleUploadImageCancel() {
+      this.$refs.imageUpload.clear()
     },
     // 文件上传
     handleFileUpload() {
@@ -298,7 +340,7 @@ export default {
     handleUploadFileCancel() {
       this.$refs.fileUpload.clear()
     },
-    // 是否图片文件
+    // 是否图片格式文件
     hasImageContentType(row) {
       return row.contentType && row.contentType.includes('image')
     }

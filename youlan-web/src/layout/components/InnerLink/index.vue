@@ -17,7 +17,8 @@ export default {
       default: '/'
     },
     iframeId: {
-      type: String
+      type: String,
+      default: null
     }
   },
   data() {

@@ -35,6 +35,8 @@
 - 机构名称可以重复
 - 机构导入使用机构ID
 - @SystemLog改为@OperationLog
+- FileUpload组件没有改
+- ImageUpload组件没有改
 
 # 规范
 

@@ -47,11 +47,29 @@ public class GeneratorTable {
     @Schema(title = "包路径")
     private String packageName;
 
+    @Schema(title = "模版类型(1-单表(增删改查) 2-树表(增删改查))")
+    private String templateType;
+
     @Schema(title = "生成类型(1-zip包 2-指定路径)")
     private String generatorType;
 
     @Schema(title = "生成路径(不填默认为项目路径)")
     private String generatorPath;
+
+    @Schema(title = "作者名称")
+    private String authorName;
+
+    @Schema(title = "树表列名")
+    private String columnName;
+
+    @Schema(title = "树表父列名")
+    private String parentColumnName;
+
+    @Schema(title = "父级菜单ID")
+    private String parentMenuId;
+
+    @Schema(title = DBConstant.DESC_REMARK)
+    private String remark;
 
     @Schema(title = DBConstant.DESC_CREATE_ID)
     @TableField(fill = FieldFill.INSERT)

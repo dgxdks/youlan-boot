@@ -184,7 +184,7 @@ export default {
     resetSetting() {
       this.$modal.loading('正在清除设置缓存并刷新，请稍候...')
       this.$cache.local.remove('layout-setting')
-      setTimeout('window.location.reload()', 1000)
+      setTimeout(() => 'window.location.reload()', 1000)
     }
   }
 }

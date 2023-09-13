@@ -1,7 +1,8 @@
 package com.youlan.controller.tools;
 
-import com.youlan.common.db.entity.dto.ListDTO;
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.youlan.common.core.restful.ApiResult;
+import com.youlan.common.db.entity.dto.ListDTO;
 import com.youlan.common.db.helper.DBHelper;
 import com.youlan.framework.controller.BaseController;
 import com.youlan.tools.constant.GeneratorConstant;
@@ -27,12 +28,14 @@ public class GeneratorController extends BaseController {
     private final GeneratorBizService generatorBizService;
     private final GeneratorTableService generatorTableService;
 
-    @Operation(summary = "数据库表列表")
-    @PostMapping("/getDbTableList")
-    public ApiResult getDbTableList(@RequestBody DBTable dbTable) {
-        return toSuccess(generatorBizService.getDbTableList(dbTable));
+    @SaCheckPermission("tools:generator:list")
+    @Operation(summary = "数据库表分页")
+    @PostMapping("/getDbTablePageList")
+    public ApiResult getDbTablePageList(@RequestBody DBTable dbTable) {
+        return toSuccess(generatorBizService.getDbTablePageList(dbTable));
     }
 
+    @SaCheckPermission("tools:generator:update")
     @Operation(summary = "数据库表导入")
     @PostMapping("/importDbTableList")
     public ApiResult importDbTableList(@RequestBody ListDTO<String> tableNames) {
@@ -40,12 +43,14 @@ public class GeneratorController extends BaseController {
         return toSuccess();
     }
 
+    @SaCheckPermission("tools:generator:update")
     @Operation(summary = "数据库表同步")
     @PostMapping("/syncDbTable")
     public ApiResult syncDbTable(@RequestParam Long id) {
         return toSuccess(generatorBizService.syncDbTable(id));
     }
 
+    @SaCheckPermission("tools:generator:code")
     @Operation(summary = "代码下载")
     @PostMapping("/downloadCode")
     public void downloadCode(@RequestBody ListDTO<Long> dto, HttpServletResponse response) throws IOException {
@@ -53,6 +58,7 @@ public class GeneratorController extends BaseController {
         toDownload(GeneratorConstant.FILE_NAME_CODE_ZIP, codeBytes, response);
     }
 
+    @SaCheckPermission("tools:generator:code")
     @Operation(summary = "代码写入")
     @PostMapping("/writeCode")
     public ApiResult writeCode(@Validated @RequestBody ListDTO<Long> dto) throws IOException {
@@ -60,18 +66,21 @@ public class GeneratorController extends BaseController {
         return toSuccess();
     }
 
+    @SaCheckPermission("tools:generator:preview")
     @Operation(summary = "代码预览")
-    @PostMapping(value = "viewCode")
+    @PostMapping(value = "previewCode")
     public ApiResult viewCode(@RequestParam Long id) {
         return toSuccess(generatorBizService.viewCode(id));
     }
 
+    @SaCheckPermission("tools:generator:load")
     @Operation(summary = "生成表详情")
     @PostMapping("/loadTable")
     public ApiResult loadTable(@RequestParam Long id) {
         return toSuccess(generatorBizService.load(id));
     }
 
+    @SaCheckPermission("tools:generator:remove")
     @Operation(summary = "生成表删除")
     @PostMapping("/removeTable")
     public ApiResult removeTable(@Validated @RequestBody ListDTO<Long> dto) {
@@ -79,6 +88,7 @@ public class GeneratorController extends BaseController {
         return toSuccess();
     }
 
+    @SaCheckPermission("tools:generator:update")
     @Operation(summary = "生成表修改")
     @PostMapping("/updateTable")
     public ApiResult updateTable(@Validated @RequestBody GeneratorDTO dto) {
@@ -86,6 +96,7 @@ public class GeneratorController extends BaseController {
         return toSuccess();
     }
 
+    @SaCheckPermission("tools:generator:list")
     @Operation(summary = "生成表分页")
     @PostMapping("/getTablePageList")
     public ApiResult getTablePageList(@RequestBody GeneratorPageDTO dto) {

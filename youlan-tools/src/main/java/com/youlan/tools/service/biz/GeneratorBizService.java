@@ -4,13 +4,14 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.text.NamingCase;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.core.util.ZipUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.db.constant.DBConstant;
 import com.youlan.common.db.enums.QueryType;
+import com.youlan.common.db.helper.DBHelper;
 import com.youlan.tools.config.GeneratorProperties;
 import com.youlan.tools.config.ToolsProperties;
 import com.youlan.tools.constant.GeneratorConstant;
@@ -26,18 +27,19 @@ import com.youlan.tools.service.DBTableService;
 import com.youlan.tools.service.GeneratorColumnService;
 import com.youlan.tools.service.GeneratorTableService;
 import com.youlan.tools.utils.GeneratorUtil;
-import com.youlan.tools.utils.VelocityUtil;
 import lombok.AllArgsConstructor;
 import org.apache.velocity.VelocityContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.zip.ZipOutputStream;
 
 import static com.youlan.common.db.constant.DBConstant.*;
 import static com.youlan.tools.constant.GeneratorConstant.*;
@@ -64,13 +66,12 @@ public class GeneratorBizService {
     }
 
     /**
-     * 查询数据库表
+     * 查询数据库表分页
      */
-    public List<DBTable> getDbTableList(DBTable dbTable) {
-        List<DBTable> dbTableList = generatorTableService.getBaseMapper().getDbTableList(dbTable);
-        return dbTableList.stream()
-                .filter(table -> !generatorProperties().getTableExclude().contains(table.getTableName()))
-                .collect(Collectors.toList());
+    public IPage<DBTable> getDbTablePageList(DBTable dbTable) {
+        dbTable.setTableExclude(generatorProperties().getTableExclude());
+        return generatorTableService.getBaseMapper()
+                .getDbTableList(DBHelper.getPage(dbTable), dbTable);
     }
 
     /**
@@ -169,7 +170,9 @@ public class GeneratorBizService {
                             .setIsPk(DBConstant.boolean2YesNo(GeneratorUtil.columnIsPk(dbColumn.getColumnKey())))
                             .setIsIncrement(DBConstant.boolean2YesNo(GeneratorUtil.columnIsIncrement(dbColumn.getExtra())))
                             .setIsRequired(DBConstant.boolean2YesNo(GeneratorUtil.columnIsRequired(dbColumn.getIsNullable())));
-                }).collect(Collectors.toList());
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
         generatorColumnService.remove(Wrappers.<GeneratorColumn>lambdaQuery().eq(GeneratorColumn::getTableId, generatorTable.getId()));
         return generatorColumnService.saveBatch(newGeneratorColumns);
     }
@@ -215,7 +218,7 @@ public class GeneratorBizService {
     /**
      * 预览代码
      */
-    public GeneratorCodeVO viewCode(Long tableId) {
+    public List<GeneratorCodeVO> viewCode(Long tableId) {
         GeneratorVO generatorInfo = load(tableId);
         GeneratorTable generatorTable = generatorInfo.getGeneratorTable();
         List<GeneratorColumn> generatorColumnList = generatorInfo.getGeneratorColumnList();
@@ -237,14 +240,21 @@ public class GeneratorBizService {
         }
         //生成临时写入目录
         String homePath = GeneratorUtil.generateTempHomePath();
+        final ByteArrayOutputStream zipBos = new ByteArrayOutputStream();
+        final ZipOutputStream zipOs = new ZipOutputStream(zipBos);
         tableIdList.forEach(tableId -> {
             GeneratorVO generatorInfo = load(tableId);
             GeneratorTable generatorTable = generatorInfo.getGeneratorTable();
             List<GeneratorColumn> generatorColumnList = generatorInfo.getGeneratorColumnList();
-            renderCode(homePath, generatorTable, generatorColumnList);
+            List<GeneratorCodeVO> generatorCodes = renderCode(homePath, generatorTable, generatorColumnList);
+            generatorCodes.forEach(generatorCode -> {
+                String packageName = generatorCode.getPackageName();
+                String codeName = generatorCode.getCodeName();
+                String codeContent = generatorCode.getCodeContent();
+                GeneratorUtil.writeToZip(packageName, codeName, codeContent, zipOs);
+            });
         });
-        File zipFile = ZipUtil.zip(homePath);
-        return FileUtil.readBytes(zipFile);
+        return zipBos.toByteArray();
     }
 
     /**
@@ -256,78 +266,71 @@ public class GeneratorBizService {
             GeneratorTable generatorTable = generatorInfo.getGeneratorTable();
             List<GeneratorColumn> generatorColumnList = generatorInfo.getGeneratorColumnList();
             String homePath = FileUtil.getAbsolutePath(generatorTable.getGeneratorPath());
-            renderCode(homePath, generatorTable, generatorColumnList);
+            List<GeneratorCodeVO> generatorCodes = renderCode(homePath, generatorTable, generatorColumnList);
+            generatorCodes.forEach(generatorCode -> {
+                String packageName = generatorCode.getPackageName();
+                String codeName = generatorCode.getCodeName();
+                String codeContent = generatorCode.getCodeContent();
+                GeneratorUtil.writeToPath(homePath, packageName, codeName, codeContent);
+            });
         });
     }
 
     /**
      * 渲染代码
      */
-    public GeneratorCodeVO renderCode(String homePath, GeneratorTable generatorTable, List<GeneratorColumn> generatorColumnList) {
+    public List<GeneratorCodeVO> renderCode(String homePath, GeneratorTable generatorTable, List<GeneratorColumn> generatorColumnList) {
+        List<GeneratorCodeVO> generatorCodes = new ArrayList<>();
         //生成模版上下文
         VelocityContext velocityContext = generateContext(generatorTable, generatorColumnList);
         String packageName = generatorTable.getPackageName();
         String entityName = generatorTable.getEntityName();
-        //生成controller
-        String controller = VelocityUtil.mergeTemplate(GeneratorConstant.TPL_JAVA_CONTROLLER, velocityContext);
-        String controllerPackageName = packageName + PACKAGE_NAME_SUFFIX_CONTROLLER;
-        String controllerName = entityName + FILE_NAME_SUFFIX_CONTROLLER;
-        VelocityUtil.writeTemplate(homePath, controllerPackageName, controllerName, controller);
-        //生成service
-        String service = VelocityUtil.mergeTemplate(GeneratorConstant.TPL_JAVA_SERVICE, velocityContext);
-        String servicePackageName = packageName + PACKAGE_NAME_SUFFIX_SERVICE;
-        String serviceName = entityName + FILE_NAME_SUFFIX_SERVICE;
-        VelocityUtil.writeTemplate(homePath, servicePackageName, serviceName, service);
-        //生成mapper
-        String mapper = VelocityUtil.mergeTemplate(GeneratorConstant.TPL_JAVA_MAPPER, velocityContext);
-        String mapperPackageName = packageName + PACKAGE_NAME_SUFFIX_MAPPER;
-        String mapperName = entityName + FILE_NAME_SUFFIX_MAPPER;
-        VelocityUtil.writeTemplate(homePath, mapperPackageName, mapperName, mapper);
-        //生成xml
-        String mapperXml = VelocityUtil.mergeTemplate(GeneratorConstant.TPL_XML_MAPPER, velocityContext);
-        String mapperXmlPackageName = packageName + PACKAGE_NAME_SUFFIX_XML;
-        String mapperXmlName = entityName + FILE_NAME_SUFFIX_MAPPER_XML;
-        VelocityUtil.writeTemplate(homePath, mapperXmlPackageName, mapperXmlName, mapperXml);
         //生成entity
-        String entity = VelocityUtil.mergeTemplate(GeneratorConstant.TPL_JAVA_ENTITY, velocityContext);
+        String entity = GeneratorUtil.mergeTemplate(TPL_JAVA_ENTITY, velocityContext);
         String entityPackage = packageName + PACKAGE_NAME_SUFFIX_ENTITY;
-        VelocityUtil.writeTemplate(homePath, entityPackage, entityName + FILE_NAME_SUFFIX_ENTITY, entity);
+        generatorCodes.add(new GeneratorCodeVO(entity, entityPackage, TPL_JAVA_ENTITY, entityName + FILE_NAME_SUFFIX_ENTITY));
         //生成dto
-        String entityDto = null;
         if (yesNo2Boolean(generatorTable.getEntityDto())) {
-            entityDto = VelocityUtil.mergeTemplate(TPL_JAVA_ENTITY_DTO, velocityContext);
+            String entityDto = GeneratorUtil.mergeTemplate(TPL_JAVA_ENTITY_DTO, velocityContext);
             String entityDtoPackageName = packageName + PACKAGE_NAME_SUFFIX_ENTITY_DTO;
             String entityDtoName = entityName + FILE_NAME_SUFFIX_DTO;
-            VelocityUtil.writeTemplate(homePath, entityDtoPackageName, entityDtoName, entityDto);
+            generatorCodes.add(new GeneratorCodeVO(entityDto, entityDtoPackageName, TPL_JAVA_ENTITY_DTO, entityDtoName));
         }
         //生成page dto
-        String entityPageDto = null;
         if (yesNo2Boolean(generatorTable.getEntityPageDto())) {
-            entityPageDto = VelocityUtil.mergeTemplate(TPL_JAVA_ENTITY_PAGE_DTO, velocityContext);
+            String entityPageDto = GeneratorUtil.mergeTemplate(TPL_JAVA_ENTITY_PAGE_DTO, velocityContext);
             String entityPageDtoPackageName = packageName + PACKAGE_NAME_SUFFIX_ENTITY_DTO;
             String entityPageDtoName = entityName + FILE_NAME_SUFFIX_PAGE_DTO;
-            VelocityUtil.writeTemplate(homePath, entityPageDtoPackageName, entityPageDtoName, entityPageDto);
+            generatorCodes.add(new GeneratorCodeVO(entityPageDto, entityPageDtoPackageName, TPL_JAVA_ENTITY_PAGE_DTO, entityPageDtoName));
         }
         //生成vo
-        String entityVo = null;
         if (yesNo2Boolean(generatorTable.getEntityVo())) {
-            entityVo = VelocityUtil.mergeTemplate(TPL_JAVA_ENTITY_VO, velocityContext);
+            String entityVo = GeneratorUtil.mergeTemplate(TPL_JAVA_ENTITY_VO, velocityContext);
             String entityVoPackageName = packageName + PACKAGE_NAME_SUFFIX_ENTITY_VO;
             String entityVoName = entityName + FILE_NAME_SUFFIX_VO;
-            VelocityUtil.writeTemplate(homePath, entityVoPackageName, entityVoName, entityVo);
+            generatorCodes.add(new GeneratorCodeVO(entityVo, entityVoPackageName, TPL_JAVA_ENTITY_VO, entityVoName));
         }
-        return new GeneratorCodeVO()
-                .setController(controller)
-                .setService(service)
-                .setMapper(mapper)
-                .setMapperXml(mapperXml)
-                .setEntity(entity)
-                .setEntityDto(entityDto)
-                .setEntityPageDto(entityPageDto)
-                .setEntityVo(entityVo)
-                .setBizName(generatorTable.getBizName())
-                .setModuleName(generatorTable.getModuleName())
-                .setPackageName(generatorTable.getPackageName());
+        //生成mapper
+        String mapper = GeneratorUtil.mergeTemplate(TPL_JAVA_MAPPER, velocityContext);
+        String mapperPackageName = packageName + PACKAGE_NAME_SUFFIX_MAPPER;
+        String mapperName = entityName + FILE_NAME_SUFFIX_MAPPER;
+        generatorCodes.add(new GeneratorCodeVO(mapper, mapperPackageName, TPL_JAVA_MAPPER, mapperName));
+        //生成service
+        String service = GeneratorUtil.mergeTemplate(TPL_JAVA_SERVICE, velocityContext);
+        String servicePackageName = packageName + PACKAGE_NAME_SUFFIX_SERVICE;
+        String serviceName = entityName + FILE_NAME_SUFFIX_SERVICE;
+        generatorCodes.add(new GeneratorCodeVO(service, servicePackageName, TPL_JAVA_SERVICE, serviceName));
+        //生成controller
+        String controller = GeneratorUtil.mergeTemplate(TPL_JAVA_CONTROLLER, velocityContext);
+        String controllerPackageName = packageName + PACKAGE_NAME_SUFFIX_CONTROLLER;
+        String controllerName = entityName + FILE_NAME_SUFFIX_CONTROLLER;
+        generatorCodes.add(new GeneratorCodeVO(controller, controllerPackageName, TPL_JAVA_CONTROLLER, controllerName));
+        //生成mapperXml
+        String mapperXml = GeneratorUtil.mergeTemplate(TPL_XML_MAPPER, velocityContext);
+        String mapperXmlPackageName = packageName + PACKAGE_NAME_SUFFIX_XML;
+        String mapperXmlName = entityName + FILE_NAME_SUFFIX_MAPPER_XML;
+        generatorCodes.add(new GeneratorCodeVO(mapperXml, mapperXmlPackageName, TPL_XML_MAPPER, mapperXmlName));
+        return generatorCodes;
     }
 
 

@@ -81,9 +81,9 @@ public class MenuController extends BaseController {
     @PostMapping("/getMenuTreeList")
     public ApiResult getMenuTreeList(@RequestBody Menu menu) {
         // 拥有角色编辑、菜单新增、菜单修改权限才能访问此接口
-        String[] permissions = {"system:role:update", "system:menu:add", "system:menu:update"};
+        String[] permissions = {"system:role:update", "system:menu:add", "system:menu:update", "tools:generator:update"};
         StpUtil.checkPermissionOr(permissions);
-        List<Menu> menus = menuService.loadMore(DBHelper.getQueryWrapper(menu));
+        List<Menu> menus = menuService.getBaseMapper().getMenuList(menu);
         List<Menu> treeList = ListHelper.getTreeList(menus, Menu::getChildren, Menu::getId, Menu::getParentId, Menu::getSort);
         return toSuccess(treeList);
     }

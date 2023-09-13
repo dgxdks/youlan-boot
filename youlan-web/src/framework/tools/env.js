@@ -1,3 +1,5 @@
+import { StrUtil } from '@/framework/tools/index'
+
 export default {
   isDevEnv() {
     return process.env.NODE_ENV === 'development'
@@ -6,6 +8,6 @@ export default {
     return process.env.NODE_ENV === 'production'
   },
   getBaseApi() {
-    return process.env.VUE_APP_BASE_API
+    return StrUtil.removeSlashRight(process.env.VUE_APP_BASE_API)
   }
 }

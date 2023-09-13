@@ -579,8 +579,7 @@ import { isNumberStr } from '@/utils/index'
 import IconsDialog from './IconsDialog'
 import {
   inputComponents,
-  selectComponents,
-  layoutComponents
+  selectComponents
 } from '@/utils/generator/config'
 
 const dateTimeFormat = {

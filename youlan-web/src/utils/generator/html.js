@@ -109,6 +109,7 @@ const layouts = {
 const tags = {
   'el-button': el => {
     const {
+      // eslint-disable-next-line no-unused-vars
       tag, disabled
     } = attrBuilder(el)
     const type = el.type ? `type="${el.type}"` : ''
@@ -241,6 +242,7 @@ const tags = {
   },
   'el-rate': el => {
     const { disabled, vModel } = attrBuilder(el)
+    // eslint-disable-next-line no-unused-vars
     const max = el.max ? `:max='${el.max}'` : ''
     const allowHalf = el['allow-half'] ? 'allow-half' : ''
     const showText = el['show-text'] ? 'show-text' : ''

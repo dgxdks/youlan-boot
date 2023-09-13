@@ -9,21 +9,21 @@
         from information_schema.tables as tables
         left join t_tools_generator_table as gen_table on tables.table_name = gen_table.table_name
         where gen_table.table_name is null and table_schema = (select database())
-        <if test="tableName != null and tableName != ''">
-            and lower(tables.table_name) like lower(concat('%', #{tableName}, '%'))
+        <if test="dt.tableName != null and dt.tableName != ''">
+            and lower(tables.table_name) like lower(concat('%', #{dt.tableName}, '%'))
         </if>
-        <if test="tableComment != null and tableComment != ''">
-            and lower(tables.table_comment) like lower(concat('%', #{tableComment}, '%'))
+        <if test="dt.tableComment != null and dt.tableComment != ''">
+            and lower(tables.table_comment) like lower(concat('%', #{dt.tableComment}, '%'))
         </if>
-        <if test="createTime != null">
-            and tables.create_time &gt;= #{createTime}
+        <if test="dt.createTime != null">
+            and tables.create_time &gt;= #{dt.createTime}
         </if>
-        <if test="updateTime != null">
-            and tables.update_time &lt;= #{updateTime}
+        <if test="dt.updateTime != null">
+            and tables.update_time &lt;= #{dt.updateTime}
         </if>
-        <if test="tableNames != null">
-            and tables.table_name in
-            <foreach collection="tableNames" item="name" open="(" close=")" separator=",">
+        <if test="dt.tableExclude != null">
+            and tables.table_name not in
+            <foreach collection="dt.tableExclude" item="name" open="(" close=")" separator=",">
                 #{name}
             </foreach>
         </if>

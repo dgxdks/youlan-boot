@@ -10,7 +10,7 @@
         from information_schema.tables
         where table_schema = (select database())
         <if test="tableName != null and tableName != ''">
-            and lower(table_name) like lower(concat('%', #{tableName}, '%'))
+            and lower(table_name) = lower(#{tableName})
         </if>
         <if test="tableComment != null and tableComment != ''">
             and lower(table_comment) like lower(concat('%', #{tableComment}, '%'))
@@ -20,12 +20,6 @@
         </if>
         <if test="updateTime != null">
             and update_time &lt;= #{updateTime}
-        </if>
-        <if test="tableNames != null">
-            and table_name in
-            <foreach collection="tableNames" item="name" open="(" close=")" separator=",">
-                #{name}
-            </foreach>
         </if>
     </select>
 </mapper>

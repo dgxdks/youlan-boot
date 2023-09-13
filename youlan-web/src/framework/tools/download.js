@@ -98,12 +98,14 @@ export default {
   },
   // 保存文件
   saveUrlAsFile(url, fileName, opts) {
-    console.log(url)
     if (StrUtil.isBlank(url)) {
-      return
+      return Promise.reject()
     }
+    // 兼容blob:前缀url
     if (UrlUtil.isExternalUrl(url)) {
-      saveAs(url, fileName, opts)
+      return new Promise((resolve, reject) => {
+        saveAs(url, fileName, resolve)
+      })
     } else {
       return this.getAsName(this.parseDownloadUrl(url), {}, fileName, { timeout: 30 * 1000 })
     }

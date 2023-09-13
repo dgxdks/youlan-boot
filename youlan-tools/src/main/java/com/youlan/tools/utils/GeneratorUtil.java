@@ -2,19 +2,28 @@ package com.youlan.tools.utils;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
+import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.db.constant.DBConstant;
 import com.youlan.tools.constant.GeneratorConstant;
 import com.youlan.tools.entity.GeneratorColumn;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
 
 import java.io.File;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @Slf4j
 public class GeneratorUtil {
@@ -100,10 +109,16 @@ public class GeneratorUtil {
         return tableName;
     }
 
+    /**
+     * 生成临时目录
+     */
     public static String generateTempHomePath() {
         return FileUtil.getTmpDirPath() + File.separator + IdUtil.simpleUUID();
     }
 
+    /**
+     * 包名转模块名
+     */
     public static String packageName2ModuleName(String packageName) {
         String[] split = packageName.split("\\.");
         return split[split.length - 1];
@@ -151,6 +166,43 @@ public class GeneratorUtil {
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             return tableComment;
+        }
+    }
+
+    /**
+     * 生成指定模版内容
+     */
+    public static String mergeTemplate(String templateClassPath, VelocityContext velocityContext) {
+        Template template = Velocity.getTemplate(templateClassPath);
+        StringWriter stringWriter = new StringWriter();
+        template.merge(velocityContext, stringWriter);
+        return stringWriter.toString();
+    }
+
+    /**
+     * 写入模版内容至指定目录
+     */
+    public static void writeToPath(String homePath, String packageName, String fileName, String fileContent) {
+        String packagePath = packageName2Path(packageName);
+        String writePath = homePath + File.separator + packagePath + File.separator + fileName;
+        FileUtil.writeString(fileContent, writePath, StandardCharsets.UTF_8);
+        log.info("写入模板文件: {homePath: {}, packageName: {}, fileName: {}}", homePath, packageName, fileName);
+    }
+
+    /**
+     * 写入模版内容至zip文件
+     */
+    public static void writeToZip(String packageName, String fileName, String fileContent, ZipOutputStream zipOs) {
+        String packagePath = packageName2Path(packageName);
+        String zipPath = packagePath + File.separator + fileName;
+        ZipEntry zipEntry = new ZipEntry(zipPath);
+        try {
+            zipOs.putNextEntry(zipEntry);
+            IoUtil.write(zipOs, StandardCharsets.UTF_8, false, fileContent);
+            zipOs.flush();
+            zipOs.closeEntry();
+        } catch (Exception e) {
+            throw new BizRuntimeException(e);
         }
     }
 

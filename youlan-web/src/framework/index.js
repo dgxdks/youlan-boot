@@ -1,7 +1,6 @@
 import '@/framework/icons'
 import hasRole from '@/framework/directive/permission/hasRole'
 import hasPerm from '@/framework/directive/permission/hasPerm'
-import clipboard from '@/framework/directive/module/clipboard'
 import dialogDrag from '@/framework/directive/dialog/drag'
 import dialogDragWidth from '@/framework/directive/dialog/dragWidth'
 import dialogDragHeight from '@/framework/directive/dialog/dragHeight'
@@ -24,22 +23,29 @@ import BaseTableToolbar from '@/framework/components/BaseTableToolbar.vue'
 import Editor from '@/components/Editor/index.vue'
 import FileUpload from '@/framework/components/FileUpload.vue'
 import FileUploadDrag from '@/framework/components/FileUploadDrag.vue'
-import ImageUpload from '@/components/ImageUpload/index.vue'
-import ImagePreview from '@/framework/components/ImagePreview.vue'
+import ImageUpload from '@/framework/components/ImageUpload.vue'
 import BaseDateRangePicker from '@/framework/components/BaseDateRangePicker.vue'
 import Vue from 'vue'
 import tab from '@/framework/tools/tab'
 import BaseDownloadButton from '@/framework/components/BaseDownloadButton.vue'
 import Tools, {
   ArrayUtil,
-  AuthUtil, ConfigUtil,
+  AuthUtil,
+  ConfigUtil,
   CookieUtil,
-  CryptoUtil, DateUtil,
-  DictUtil, DownloadUtil, ModalUtil,
-  ObjectUtil, StorageUtil,
-  StrUtil, TabUtil,
+  CryptoUtil,
+  DateUtil,
+  DictUtil,
+  DownloadUtil,
+  EnvUtil, HighLightUtil,
+  ModalUtil,
+  ObjectUtil,
+  StorageUtil,
+  StrUtil,
+  TabUtil,
   UploadUtil,
-  UrlUtil, ValidatorUtil
+  UrlUtil,
+  ValidatorUtil
 } from '@/framework/tools'
 import BaseUploadButton from '@/framework/components/BaseUploadButton.vue'
 import BaseRemoveButton from '@/framework/components/BaseRemoveButton.vue'
@@ -55,6 +61,9 @@ import BaseIconSelect from '@/framework/components/BaseIconSelect.vue'
 import BaseDateTimeRangePicker from '@/framework/components/BaseDateTimeRangePicker.vue'
 import BaseDetailButton from '@/framework/components/BaseDetailButton.vue'
 import BaseDrawer from '@/framework/components/BaseDrawer.vue'
+import ImagePreview from '@/framework/components/ImagePreview.vue'
+import BaseCopyIcon from '@/framework/components/BaseCopyIcon.vue'
+import BaseHighLightCode from '@/framework/components/BaseHighLightCode.vue'
 
 // 全局组件
 function mountComponent() {
@@ -94,13 +103,14 @@ function mountComponent() {
   Vue.component('BaseTextButton', BaseTextButton)
   Vue.component('BaseFormLabel', BaseFormLabel)
   Vue.component('BaseIconSelect', BaseIconSelect)
+  Vue.component('BaseCopyIcon', BaseCopyIcon)
+  Vue.component('BaseHighLightCode', BaseHighLightCode)
 }
 
 // 全局指令
 function mountDirective() {
   Vue.directive('hasRole', hasRole)
   Vue.directive('hasPerm', hasPerm)
-  Vue.directive('clipboard', clipboard)
   Vue.directive('dialogDrag', dialogDrag)
   Vue.directive('dialogDragWidth', dialogDragWidth)
   Vue.directive('dialogDragHeight', dialogDragHeight)
@@ -146,6 +156,10 @@ function mountPrototype() {
   Vue.prototype.$tab = TabUtil
   // 系统参数
   Vue.prototype.$config = ConfigUtil
+  // 环境参数
+  Vue.prototype.$env = EnvUtil
+  // 高亮
+  Vue.prototype.$highlight = HighLightUtil
   // 全量工具包
   Vue.prototype.$tools = Tools
 }

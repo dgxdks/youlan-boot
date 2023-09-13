@@ -38,7 +38,7 @@ nbdist/
 
 ######################################################################
 # Others
-.DS_Store
+#.DS_Store
 *.log
 logs
 *.xml.versionsBackup

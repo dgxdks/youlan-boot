@@ -19,7 +19,6 @@ import tree from '@/framework/mixin/tree'
 export default {
   name: 'MenuTree',
   mixins: [tree],
-
   data() {
     return {
       checkedKeys: [],
