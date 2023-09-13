@@ -81,7 +81,7 @@
           </el-table-column>
           <el-table-column label="字典类型" min-width="12%">
             <template slot-scope="scope">
-              <el-select v-model="scope.row.typeKey">
+              <el-select v-model="scope.row.typeKey" clearable>
                 <el-option
                   v-for="item in typeList"
                   :key="item.id"
@@ -98,7 +98,7 @@
           <base-row-split2>
             <el-form-item prop="templateType">
               <span slot="label">生成模板</span>
-              <el-select v-model="generatorTable.templateType" @change="handleTemplateChange">
+              <el-select v-model="generatorTable.templateType" style="width: 100%" @change="handleTemplateChange">
                 <el-option label="单表（增删改查）" value="1" />
                 <el-option label="树表（增删改查）" value="2" />
               </el-select>
@@ -151,6 +151,33 @@
               </el-dropdown>
             </el-input>
           </el-form-item>
+          <template v-if="generatorTable.templateType === '2'">
+            <h4 class="form-header">树表信息</h4>
+            <base-row-split2>
+              <el-form-item>
+                <base-form-label slot="label" content="树结构表列名，一般都是主键或者能够保证唯一的列， 如：org_id" label="树表列名" />
+                <el-select v-model="generatorTable.columnName" placeholder="请选择树表列名" style="width: 100%;">
+                  <el-option
+                    v-for="column in generatorColumnList"
+                    :key="column.columnName"
+                    :label="column.columnName + '：' + column.columnComment"
+                    :value="column.columnName"
+                  />
+                </el-select>
+              </el-form-item>
+              <el-form-item>
+                <base-form-label slot="label" content="树结构表指向父级的列名称， 如：子parent_org_id -> 父org_id" label="树表父列名" />
+                <el-select v-model="generatorTable.parentColumnName" placeholder="请选择树表父列名" style="width: 100%;">
+                  <el-option
+                    v-for="column in generatorColumnList"
+                    :key="column.columnName"
+                    :label="column.columnName + '：' + column.columnComment"
+                    :value="column.columnName"
+                  />
+                </el-select>
+              </el-form-item>
+            </base-row-split2>
+          </template>
         </el-form>
       </el-tab-pane>
     </el-tabs>
@@ -164,7 +191,7 @@
 </template>
 
 <script>
-import { loadTable } from '@/api/tools/generator'
+import { loadTable, updateTale } from '@/api/tools/generator'
 import Sortable from 'sortablejs'
 import { getDictTypeList } from '@/api/system/dict/type'
 import { getMenuTreeList } from '@/api/system/menu'
@@ -173,6 +200,8 @@ export default {
   name: 'GenEdit',
   data() {
     return {
+      // 表ID
+      tableId: null,
       // 选中选项卡的 name
       activeName: 'columnInfo',
       // 表格的高度
@@ -201,7 +230,9 @@ export default {
         packageName: null,
         moduleName: null,
         bizName: null,
-        generatorPath: null
+        generatorPath: null,
+        columnName: null,
+        parentColumnName: null
       },
       // 基础信息校验规则
       basicTableRules: {
@@ -243,73 +274,83 @@ export default {
     }
   },
   created() {
-    const tableId = this.$route.params && this.$route.params.tableId
-    if (tableId) {
-      // 获取表详细信息
-      loadTable({ id: tableId }).then(res => {
-        this.generatorColumnList = res.generatorColumnList
-        this.generatorTable = res.generatorTable
-      })
-      // 查询字典类型列表
-      getDictTypeList({}).then(res => {
-        this.typeList = res
-      })
-      // 查询菜单下拉列表
-      getMenuTreeList({ menuTypeList: ['1'] }).then(res => {
-        this.menuOptions = this.formatMenuOptions(res)
-      })
+    this.tableId = this.$route.params && this.$route.params.tableId
+    if (this.tableId) {
+      this.getTable()
+      this.getDictList()
+      this.getMenuList()
     }
   },
   mounted() {
-    const el = this.$refs.dragTable.$el.querySelectorAll('.el-table__body-wrapper > table > tbody')[0]
+    const el = this.$refs.dragTable.$el.querySelectorAll('.el-table__body-wrapper tbody')[0]
+    const _this = this
     Sortable.create(el, {
-      handle: '.allowDrag',
-      onEnd: evt => {
-        const targetRow = this.columns.splice(evt.oldIndex, 1)[0]
-        this.columns.splice(evt.newIndex, 0, targetRow)
-        for (const index in this.columns) {
-          this.columns[index].sort = parseInt(index) + 1
-        }
+      animation: 150,
+      sort: true,
+      draggable: '.el-table__row', // 设置可拖拽行的类名(el-table自带的类名)
+      forceFallback: true,
+      onEnd({ newIndex, oldIndex }) {
+        const currRow = _this.generatorColumnList.splice(oldIndex, 1)[0]
+        _this.generatorColumnList.splice(newIndex, 0, currRow)
       }
     })
   },
   methods: {
-    /** 提交按钮 */
-    submitForm() {
-      const basicForm = this.$refs.basicInfo.$refs.basicInfoForm
-      const genForm = this.$refs.genInfo.$refs.genInfoForm
-      Promise.all([basicForm, genForm].map(this.getFormPromise)).then(res => {
-        const validateResult = res.every(item => !!item)
-        if (validateResult) {
-          const genTable = Object.assign({}, basicForm.model, genForm.model)
-          genTable.columns = this.columns
-          genTable.params = {
-            treeCode: genTable.treeCode,
-            treeName: genTable.treeName,
-            treeParentCode: genTable.treeParentCode,
-            parentMenuId: genTable.parentMenuId
-          }
-          updateGenTable(genTable).then(res => {
-            this.$modal.msgSuccess(res.msg)
-            if (res.code === 200) {
-              this.close()
-            }
-          })
-        } else {
-          this.$modal.msgError('表单校验未通过，请重新检查提交内容')
-        }
+    // 获取表详细信息
+    getTable() {
+      loadTable({ id: this.tableId }).then(res => {
+        this.generatorColumnList = res.generatorColumnList
+        this.generatorTable = res.generatorTable
       })
     },
-    getFormPromise(form) {
-      return new Promise(resolve => {
-        form.validate(res => {
-          resolve(res)
+    // 查询字典类型列表
+    getDictList() {
+      getDictTypeList({}).then(res => {
+        this.typeList = res
+      })
+    },
+    // 查询菜单下拉列表
+    getMenuList() {
+      getMenuTreeList({ menuTypeList: ['1'] }).then(res => {
+        this.menuOptions = this.formatMenuOptions(res)
+      })
+    },
+    // 提交按钮
+    handleSubmitForm() {
+      const validateAll = [this.$refs.basicTableForm, this.$refs.generatorForm].map(form => {
+        return new Promise(resolve => {
+          form.validate(res => {
+            resolve(res)
+          })
+        })
+      })
+      Promise.all(validateAll).then(res => {
+        const validateResult = res.every(item => item === true)
+        if (!validateResult) {
+          this.$modal.error('表单校验未通过，请重新检查提交内容')
+          return
+        }
+        this.$modal.loading('更新表信息中，请稍等...')
+        const data = {
+          generatorTable: this.generatorTable,
+          generatorColumnList: this.generatorColumnList
+        }
+        updateTale(data).then(res => {
+          this.$modal.loadingClose()
+          this.getTable()
+        }).catch(error => {
+          this.$modal.loadingClose()
+          console.log(error)
         })
       })
     },
     // 模版类型变更
     handleTemplateChange(value) {
-
+      // 如果选回单表则清空树表已选结果
+      if (value === '1') {
+        this.generatorTable.columnName = null
+        this.generatorTable.parentColumnName = null
+      }
     },
     // 关闭按钮
     handleClose() {

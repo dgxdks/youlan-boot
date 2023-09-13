@@ -37,7 +37,10 @@
 - @SystemLog改为@OperationLog
 - FileUpload组件没有改
 - ImageUpload组件没有改
-
+- 内置字段可以自动配置dict或者常量
+- 只有勾选了查询时查询方式才能编辑
+- 后端也需要校验表字段是否合法
+- 支持生成树表
 # 规范
 
 - 默认生成的service尽量只参与底层数据库查询逻辑，且尽量不注入其他内容，例如其他Service或Spring受管Bean或缓存工具

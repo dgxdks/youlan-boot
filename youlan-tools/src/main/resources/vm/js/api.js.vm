@@ -1,0 +1,65 @@
+import request from '@/framework/tools/request'
+
+
+// ${featureName}新增
+export function add${BizName}(data) {
+  return request({
+    url: '${}',
+    method: 'post',
+    data
+  })
+}
+
+// ${featureName}新增
+export function update${BizName}(data) {
+  return request({
+    url: '${}',
+    method: 'post',
+    data
+  })
+}
+
+// ${featureName}详情
+export function load${BizName}(params) {
+  return request({
+    url: '${}',
+    method: 'post',
+    params
+  })
+}
+
+// ${featureName}删除
+export function load${BizName}(data) {
+  return request({
+    url: '${}',
+    method: 'post',
+    data
+  })
+}
+
+// 查询${featureName}分页列表
+export function get${BizName}PageList(data) {
+  return request({
+    url: '${}',
+    method: 'post',
+    data
+  })
+}
+
+// 查询${featureName}列表
+export function get${BizName}List(data) {
+ return request({
+   url: '${}',
+   method: 'post',
+   data
+ })
+}
+
+// 查询${featureName}树列表
+export function get${BizName}TreeList(data) {
+  return request({
+    url: '${}',
+    method: 'post',
+    data
+  })
+}

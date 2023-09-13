@@ -163,10 +163,22 @@ export default {
         title: '代码预览',
         codes: {},
         activeVm: null
+      },
+      // 当前路由路径
+      currentPath: null
+    }
+  },
+  watch: {
+    $route(to, from) {
+      // 返回当前组件时刷新表格
+      if (to.path === this.currentPath) {
+        this.getList()
       }
     }
   },
   created() {
+    this.currentPath = this.$route.path
+    console.log(this.currentPath)
     this.getList()
   },
   methods: {
