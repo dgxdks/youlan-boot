@@ -30,62 +30,62 @@ public class DictType extends PageDTO {
 
     @ExcelProperty(value = "字典序号")
     @TableId(type = IdType.AUTO)
-    @Schema(title = DBConstant.DESC_ID)
+    @Schema(description = DBConstant.DESC_ID)
     private Long id;
 
     @ExcelProperty(value = "字典名称")
     @Query(type = QueryType.LIKE)
     @NotBlank(message = "字典类型名称不能为空")
-    @Schema(title = "字典类型名称")
+    @Schema(description = "字典类型名称")
     private String typeName;
 
     @ExcelProperty(value = "字典类型")
     @Query(type = QueryType.LIKE)
     @NotBlank(message = "字典类型键名不能为空")
     @Pattern(regexp = "^[a-z][a-z0-9_]*$", message = "字典类型键名必须以字母开头，且只能为（小写字母，数字，下滑线）")
-    @Schema(title = "字典类型键名")
+    @Schema(description = "字典类型键名")
     private String typeKey;
 
     @ExcelProperty(value = "字典状态", converter = EnumConverter.class)
     @ExcelEnumProperty(value = DBStatus.class)
     @Query(type = QueryType.EQUAL)
     @NotBlank(message = DBConstant.DESC_STATUS_REQUIRED)
-    @Schema(title = DBConstant.DESC_STATUS)
+    @Schema(description = DBConstant.DESC_STATUS)
     private String status;
 
     @ExcelProperty(value = "备注")
-    @Schema(title = DBConstant.DESC_REMARK)
+    @Schema(description = DBConstant.DESC_REMARK)
     private String remark;
 
-    @Schema(title = DBConstant.DESC_CREATE_ID)
+    @Schema(description = DBConstant.DESC_CREATE_ID)
     @TableField(fill = FieldFill.INSERT)
     private Long createId;
 
-    @Schema(title = DBConstant.DESC_CREATE_BY)
+    @Schema(description = DBConstant.DESC_CREATE_BY)
     @TableField(fill = FieldFill.INSERT)
     private String createBy;
 
-    @Schema(title = DBConstant.DESC_UPDATE_ID)
+    @Schema(description = DBConstant.DESC_UPDATE_ID)
     @TableField(fill = FieldFill.UPDATE)
     private Long updateId;
 
-    @Schema(title = DBConstant.DESC_UPDATE_BY)
+    @Schema(description = DBConstant.DESC_UPDATE_BY)
     @TableField(fill = FieldFill.UPDATE)
     private String updateBy;
 
-    @Schema(title = DBConstant.DESC_CREATE_TIME)
+    @Schema(description = DBConstant.DESC_CREATE_TIME)
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 
     @Query(column = "create_time", type = QueryType.BETWEEN)
-    @Schema(title = DBConstant.DESC_CREATE_TIME)
+    @Schema(description = DBConstant.DESC_CREATE_TIME)
     @TableField(exist = false)
     private List<Date> createTimeRange;
 
-    @Schema(title = DBConstant.DESC_UPDATE_TIME)
+    @Schema(description = DBConstant.DESC_UPDATE_TIME)
     private Date updateTime;
 
-    @Schema(title = DBConstant.DESC_STS)
+    @Schema(description = DBConstant.DESC_STS)
     @TableLogic(value = DBConstant.VAL_STS_NO, delval = DBConstant.VAL_STS_YES)
     private String sts;
 

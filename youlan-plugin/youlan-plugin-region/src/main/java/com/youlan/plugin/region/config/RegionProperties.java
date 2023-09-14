@@ -2,11 +2,9 @@ package com.youlan.plugin.region.config;
 
 import com.youlan.plugin.region.enums.SearcherModel;
 import lombok.Data;
-import lombok.experimental.Accessors;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
-@Accessors(chain = true)
 @ConfigurationProperties(prefix = "youlan.plugin.region")
 public class RegionProperties {
     /**

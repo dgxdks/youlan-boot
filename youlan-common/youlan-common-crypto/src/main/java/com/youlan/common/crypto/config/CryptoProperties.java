@@ -1,11 +1,9 @@
 package com.youlan.common.crypto.config;
 
 import lombok.Data;
-import lombok.experimental.Accessors;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
-@Accessors(chain = true)
 @ConfigurationProperties(prefix = "youlan.common.crypto")
 public class CryptoProperties {
     /**

@@ -565,6 +565,7 @@ create table t_tools_generator_table
     author_name        varchar(32)  default null comment '作者名称',
     column_name        varchar(32)  default null comment '树表列名',
     parent_column_name varchar(32)  default null comment '树表父列名',
+    sort_column_name   varchar(32)  default null comment '树表排序列名',
     parent_menu_id     bigint       default null comment '父级菜单ID',
     remark             varchar(128) default '' comment '备注',
     create_id          bigint       default 0 comment '创建用户ID',

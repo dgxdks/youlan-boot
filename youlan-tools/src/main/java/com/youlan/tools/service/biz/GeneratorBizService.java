@@ -3,12 +3,14 @@ package com.youlan.tools.service.biz;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.text.NamingCase;
+import cn.hutool.core.text.StrPool;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.youlan.common.core.exception.BizRuntimeException;
+import com.youlan.common.core.helper.ListHelper;
 import com.youlan.common.db.constant.DBConstant;
 import com.youlan.common.db.enums.QueryType;
 import com.youlan.common.db.helper.DBHelper;
@@ -222,7 +224,7 @@ public class GeneratorBizService {
         GeneratorVO generatorInfo = load(tableId);
         GeneratorTable generatorTable = generatorInfo.getGeneratorTable();
         List<GeneratorColumn> generatorColumnList = generatorInfo.getGeneratorColumnList();
-        return renderCode(GeneratorUtil.generateTempHomePath(), generatorTable, generatorColumnList);
+        return renderCode(generatorTable, generatorColumnList);
     }
 
     /**
@@ -238,15 +240,13 @@ public class GeneratorBizService {
                     .map(GeneratorTable::getId)
                     .collect(Collectors.toList());
         }
-        //生成临时写入目录
-        String homePath = GeneratorUtil.generateTempHomePath();
         final ByteArrayOutputStream zipBos = new ByteArrayOutputStream();
         final ZipOutputStream zipOs = new ZipOutputStream(zipBos);
         tableIdList.forEach(tableId -> {
             GeneratorVO generatorInfo = load(tableId);
             GeneratorTable generatorTable = generatorInfo.getGeneratorTable();
             List<GeneratorColumn> generatorColumnList = generatorInfo.getGeneratorColumnList();
-            List<GeneratorCodeVO> generatorCodes = renderCode(homePath, generatorTable, generatorColumnList);
+            List<GeneratorCodeVO> generatorCodes = renderCode(generatorTable, generatorColumnList);
             generatorCodes.forEach(generatorCode -> {
                 String packageName = generatorCode.getPackageName();
                 String codeName = generatorCode.getCodeName();
@@ -266,7 +266,7 @@ public class GeneratorBizService {
             GeneratorTable generatorTable = generatorInfo.getGeneratorTable();
             List<GeneratorColumn> generatorColumnList = generatorInfo.getGeneratorColumnList();
             String homePath = FileUtil.getAbsolutePath(generatorTable.getGeneratorPath());
-            List<GeneratorCodeVO> generatorCodes = renderCode(homePath, generatorTable, generatorColumnList);
+            List<GeneratorCodeVO> generatorCodes = renderCode(generatorTable, generatorColumnList);
             generatorCodes.forEach(generatorCode -> {
                 String packageName = generatorCode.getPackageName();
                 String codeName = generatorCode.getCodeName();
@@ -279,10 +279,12 @@ public class GeneratorBizService {
     /**
      * 渲染代码
      */
-    public List<GeneratorCodeVO> renderCode(String homePath, GeneratorTable generatorTable, List<GeneratorColumn> generatorColumnList) {
+    public List<GeneratorCodeVO> renderCode(GeneratorTable generatorTable, List<GeneratorColumn> generatorColumnList) {
         List<GeneratorCodeVO> generatorCodes = new ArrayList<>();
         //生成模版上下文
         VelocityContext velocityContext = generateContext(generatorTable, generatorColumnList);
+        String moduleName = generatorTable.getModuleName();
+        String bizName = generatorTable.getBizName();
         String packageName = generatorTable.getPackageName();
         String entityName = generatorTable.getEntityName();
         //生成entity
@@ -330,12 +332,22 @@ public class GeneratorBizService {
         String mapperXmlPackageName = packageName + PACKAGE_NAME_SUFFIX_XML;
         String mapperXmlName = entityName + FILE_NAME_SUFFIX_MAPPER_XML;
         generatorCodes.add(new GeneratorCodeVO(mapperXml, mapperXmlPackageName, TPL_XML_MAPPER, mapperXmlName));
+        //生成api.js
+        String jsApi = GeneratorUtil.mergeTemplate(TPL_JS_API, velocityContext);
+        String jsApiPackageName = PACKAGE_NAME_PREFIX_VUE_API + moduleName + StrPool.DOT + bizName;
+        String jsApiName = bizName + FILE_NAME_SUFFIX_JS;
+        generatorCodes.add(new GeneratorCodeVO(jsApi, jsApiPackageName, TPL_JS_API, jsApiName));
+        //生成index.vue
+        String vueIndex = GeneratorUtil.mergeTemplate(TPL_VUE_INDEX, velocityContext);
+        String vueIndexPackageName = PACKAGE_NAME_PREFIX_VUE_INDEX + moduleName + StrPool.DOT + bizName;
+        generatorCodes.add(new GeneratorCodeVO(vueIndex, vueIndexPackageName, TPL_VUE_INDEX, FILE_NAME_VUE_INDEX));
         return generatorCodes;
     }
 
 
     public VelocityContext generateContext(GeneratorTable generatorTable, List<GeneratorColumn> generatorColumnList) {
         VelocityContext velocityContext = new VelocityContext();
+        velocityContext.put("templateType", generatorTable.getTemplateType());
         velocityContext.put("tableName", generatorTable.getTableName());
         velocityContext.put("tableComment", generatorTable.getTableComment());
         velocityContext.put("EntityName", generatorTable.getEntityName());
@@ -351,7 +363,8 @@ public class GeneratorBizService {
         //查找主键列
         GeneratorColumn pkGeneratorColumn = GeneratorUtil.getPkGeneratorColumn(generatorColumnList);
         velocityContext.put("pkColumn", pkGeneratorColumn);
-        velocityContext.put("pkJavaField", NamingCase.toPascalCase(pkGeneratorColumn.getColumnName()));
+        velocityContext.put("pkColumnComment", pkGeneratorColumn.getColumnComment());
+        velocityContext.put("pkJavaField", StrUtil.toCamelCase(pkGeneratorColumn.getColumnName()));
         //判断是否需要DTO
         velocityContext.put("needDto", yesNo2Boolean(generatorTable.getEntityDto()));
         //判断是否需要VO
@@ -363,9 +376,20 @@ public class GeneratorBizService {
         //设置DTO里面要生成的列
         velocityContext.put("dtoColumns", generatorDtoColumnList(generatorTable, generatorColumnList));
         //设置PageDTO里面要生成的列
-        velocityContext.put("pageDtoColumns", generatorPageDtoColumnList(generatorTable, generatorColumnList));
+        List<GeneratorColumn> pageDtoColumns = generatorPageDtoColumnList(generatorTable, generatorColumnList);
+        velocityContext.put("pageDtoColumns", pageDtoColumns);
+        //设置搜索框里面要生成的列
+        velocityContext.put("queryColumns", ListHelper.filterList(pageDtoColumns, column -> VAL_YES.equals(column.getIsQuery())));
         //设置VO里面要生成的列
         velocityContext.put("voColumns", generatorVoColumnList(generatorTable, generatorColumnList));
+        //树表列首字母大写驼峰Java字段
+        velocityContext.put("TreeField", NamingCase.toPascalCase(generatorTable.getColumnName()));
+        //树表父列首字母大写驼峰Java字段
+        velocityContext.put("ParentTreeField", NamingCase.toPascalCase(generatorTable.getParentColumnName()));
+        //树表排序列首字母大写驼峰Java字段
+        if (StrUtil.isNotBlank(generatorTable.getSortColumnName())) {
+            velocityContext.put("SortTreeField", NamingCase.toPascalCase(generatorTable.getSortColumnName()));
+        }
         return velocityContext;
     }
 
@@ -477,8 +501,9 @@ public class GeneratorBizService {
                 extendColumn.setQueryAnno(GeneratorUtil.getQueryTypeAnnoWithColumn(extendColumn.getColumnName(), queryType.name()));
                 setValidatorAnno(extendColumn);
                 extendColumnList.add(extendColumn);
-                //将原列的验证注解设为空
+                //将原列的验证注解设为空，isQuery设置为否
                 generatorColumn.setQueryAnno(null);
+                generatorColumn.setIsQuery(VAL_NO);
                 break;
             default:
                 generatorColumn.setQueryAnno(GeneratorUtil.getQueryTypeAnno(queryType.name()));

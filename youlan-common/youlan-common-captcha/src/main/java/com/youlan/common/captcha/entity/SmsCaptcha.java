@@ -7,12 +7,12 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 public class SmsCaptcha {
-    @Schema(title = "验证码ID")
+    @Schema(description = "验证码ID")
     private String captchaId;
 
-    @Schema(title = "手机号")
+    @Schema(description = "手机号")
     private String mobile;
 
-    @Schema(title = "验证码超时时间")
+    @Schema(description = "验证码超时时间")
     private Long codeTimeout;
 }

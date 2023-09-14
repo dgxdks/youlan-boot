@@ -17,15 +17,15 @@ import java.util.List;
 public class GeneratorPageDTO extends PageDTO {
 
     @Query(type = QueryType.LIKE)
-    @Schema(title = "表名称")
+    @Schema(description = "表名称")
     private String tableName;
 
     @Query(type = QueryType.LIKE)
-    @Schema(title = "表描述")
+    @Schema(description = "表描述")
     private String tableComment;
 
     @Query(column = "create_time", type = QueryType.BETWEEN)
-    @Schema(title = "创建时间")
+    @Schema(description = "创建时间")
     private List<Date> createTimeRange;
 
 }

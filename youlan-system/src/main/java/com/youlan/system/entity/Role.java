@@ -32,85 +32,85 @@ import static com.youlan.system.constant.SystemConstant.*;
 public class Role extends PageDTO {
 
     @ExcelProperty(value = "角色编号")
-    @Schema(title = DBConstant.DESC_ID)
+    @Schema(description = DBConstant.DESC_ID)
     @TableId(type = IdType.AUTO)
     private Long id;
 
     @Hidden
-    @Schema(title = "要排除的角色ID")
+    @Schema(description = "要排除的角色ID")
     @TableField(exist = false)
     private List<Long> idExcludes;
 
     @NotBlank(message = "角色名称不能为空")
     @Size(min = 1, max = 30, message = "角色名称长度不能超过{max}个字符")
     @ExcelProperty(value = "角色名称")
-    @Schema(title = "角色名称")
+    @Schema(description = "角色名称")
     private String roleName;
 
     @NotBlank(message = "角色字符不能为空")
     @Size(min = 1, max = 30, message = "角色字符长度不能超过{max}个字符")
     @ExcelProperty(value = "角色字符")
-    @Schema(title = "角色字符")
+    @Schema(description = "角色字符")
     private String roleStr;
 
     @StrIn(value = {ROLE_SCOPE_ALL, ROLE_SCOPE_CUSTOM, ROLE_SCOPE_ORG, ROLE_SCOPE_ORG_CHILDREN, ROLE_SCOPE_USER})
     @ExcelProperty(value = "权限范围", converter = DictConverter.class)
     @ExcelDictProperty(value = "sys_data_scope")
-    @Schema(title = "角色数据权限范围(1-全部数据权限 2-自定义数据权限 3-本机构数据权限 4-本机构及以下数据权限 5-仅本人数据权限)")
+    @Schema(description = "角色数据权限范围(1-全部数据权限 2-自定义数据权限 3-本机构数据权限 4-本机构及以下数据权限 5-仅本人数据权限)")
     private String roleScope;
 
     @NotNull(message = DBConstant.DESC_SORT_REQUIRED)
     @ExcelProperty(value = "排序")
-    @Schema(title = DBConstant.DESC_SORT)
+    @Schema(description = DBConstant.DESC_SORT)
     private Integer sort;
 
     @ExcelProperty(value = "状态", converter = DictConverter.class)
     @ExcelDictProperty(value = "db_status")
-    @Schema(title = DBConstant.DESC_STATUS)
+    @Schema(description = DBConstant.DESC_STATUS)
     @TableField(fill = FieldFill.INSERT)
     private String status;
 
     @ExcelDictProperty(value = "备注")
-    @Schema(title = DBConstant.DESC_REMARK)
+    @Schema(description = DBConstant.DESC_REMARK)
     private String remark;
 
     @TableField(exist = false)
-    @Schema(title = "关联菜单ID列表")
+    @Schema(description = "关联菜单ID列表")
     private List<Long> menuIdList;
 
-    @Schema(title = "关联机构ID列表")
+    @Schema(description = "关联机构ID列表")
     @TableField(exist = false)
     private List<Long> orgIdList;
 
-    @Schema(title = DBConstant.DESC_CREATE_ID)
+    @Schema(description = DBConstant.DESC_CREATE_ID)
     @TableField(fill = FieldFill.INSERT)
     private Long createId;
 
-    @Schema(title = DBConstant.DESC_CREATE_BY)
+    @Schema(description = DBConstant.DESC_CREATE_BY)
     @TableField(fill = FieldFill.INSERT)
     private String createBy;
 
-    @Schema(title = DBConstant.DESC_UPDATE_ID)
+    @Schema(description = DBConstant.DESC_UPDATE_ID)
     @TableField(fill = FieldFill.UPDATE)
     private Long updateId;
 
-    @Schema(title = DBConstant.DESC_UPDATE_BY)
+    @Schema(description = DBConstant.DESC_UPDATE_BY)
     @TableField(fill = FieldFill.UPDATE)
     private String updateBy;
 
-    @Schema(title = DBConstant.DESC_CREATE_TIME)
+    @Schema(description = DBConstant.DESC_CREATE_TIME)
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 
-    @Schema(title = DBConstant.DESC_CREATE_TIME)
+    @Schema(description = DBConstant.DESC_CREATE_TIME)
     @TableField(exist = false)
     private List<Date> createTimeRange;
 
-    @Schema(title = DBConstant.DESC_UPDATE_TIME)
+    @Schema(description = DBConstant.DESC_UPDATE_TIME)
     @TableField(fill = FieldFill.UPDATE)
     private Date updateTime;
 
-    @Schema(title = DBConstant.DESC_STS)
+    @Schema(description = DBConstant.DESC_STS)
     @TableLogic(value = DBConstant.VAL_STS_NO, delval = DBConstant.VAL_STS_YES)
     private String sts;
 

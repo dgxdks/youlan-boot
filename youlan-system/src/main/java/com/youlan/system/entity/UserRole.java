@@ -13,14 +13,14 @@ import lombok.experimental.Accessors;
 @TableName("t_sys_user_role")
 public class UserRole {
 
-    @Schema(title = DBConstant.DESC_ID)
+    @Schema(description = DBConstant.DESC_ID)
     @TableId(type = IdType.AUTO)
     private Long id;
 
-    @Schema(title = "用户ID")
+    @Schema(description = "用户ID")
     private Long userId;
 
-    @Schema(title = "角色ID")
+    @Schema(description = "角色ID")
     private Long roleId;
 
 }

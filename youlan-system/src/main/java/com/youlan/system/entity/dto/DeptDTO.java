@@ -12,17 +12,17 @@ import javax.validation.constraints.Email;
 @EqualsAndHashCode(callSuper = true)
 public class DeptDTO extends OrgDTO {
 
-    @Schema(title = DBConstant.DESC_ID)
+    @Schema(description = DBConstant.DESC_ID)
     private Long id;
 
-    @Schema(title = "负责人")
+    @Schema(description = "负责人")
     private String leader;
 
     @Phone
-    @Schema(title = "联系电话")
+    @Schema(description = "联系电话")
     private String phone;
 
     @Email
-    @Schema(title = "邮箱")
+    @Schema(description = "邮箱")
     private String email;
 }

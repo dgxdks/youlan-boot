@@ -15,16 +15,16 @@ import javax.validation.constraints.NotNull;
 @TableName("t_sys_role_org")
 public class RoleOrg {
 
-    @Schema(title = DBConstant.DESC_ID)
+    @Schema(description = DBConstant.DESC_ID)
     @TableId(type = IdType.AUTO)
     private Long id;
 
     @NotNull(message = "角色ID不能为空")
-    @Schema(title = "角色ID")
+    @Schema(description = "角色ID")
     private Long roleId;
 
     @NotNull(message = "机构ID不能为空")
-    @Schema(title = "机构ID")
+    @Schema(description = "机构ID")
     private Long orgId;
 
 }

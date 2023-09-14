@@ -1,10 +1,9 @@
 import request from '@/framework/tools/request'
 
-
 // ${featureName}新增
 export function add${BizName}(data) {
   return request({
-    url: '${}',
+    url: '/${moduleName}/${bizName}/add${BizName}',
     method: 'post',
     data
   })
@@ -13,7 +12,7 @@ export function add${BizName}(data) {
 // ${featureName}新增
 export function update${BizName}(data) {
   return request({
-    url: '${}',
+    url: '/${moduleName}/${bizName}/update${BizName}',
     method: 'post',
     data
   })
@@ -22,16 +21,16 @@ export function update${BizName}(data) {
 // ${featureName}详情
 export function load${BizName}(params) {
   return request({
-    url: '${}',
+    url: '/${moduleName}/${bizName}/load${BizName}',
     method: 'post',
     params
   })
 }
 
 // ${featureName}删除
-export function load${BizName}(data) {
+export function remove${BizName}(data) {
   return request({
-    url: '${}',
+    url: '/${moduleName}/${bizName}/remove${BizName}',
     method: 'post',
     data
   })
@@ -40,7 +39,7 @@ export function load${BizName}(data) {
 // 查询${featureName}分页列表
 export function get${BizName}PageList(data) {
   return request({
-    url: '${}',
+    url: '/${moduleName}/${bizName}/get${BizName}PageList',
     method: 'post',
     data
   })
@@ -49,17 +48,19 @@ export function get${BizName}PageList(data) {
 // 查询${featureName}列表
 export function get${BizName}List(data) {
  return request({
-   url: '${}',
+   url: '/${moduleName}/${bizName}/get${BizName}List',
    method: 'post',
    data
  })
 }
 
+#if(${templateType} == "2")
 // 查询${featureName}树列表
 export function get${BizName}TreeList(data) {
   return request({
-    url: '${}',
+    url: '/${moduleName}/${bizName}/get${BizName}TreeList',
     method: 'post',
     data
   })
 }
+#end

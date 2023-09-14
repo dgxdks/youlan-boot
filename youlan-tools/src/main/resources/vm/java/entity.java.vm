@@ -59,4 +59,9 @@ public class ${EntityName} extends PageDTO {
     #end
 
 #end
+#if(${templateType} == "2")
+    @Schema(description = "${featureName}子集")
+    private List<${EntityName}VO> children;
+
+#end
 }

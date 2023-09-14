@@ -1,20 +1,21 @@
 package com.youlan.framework.config;
 
 import lombok.Data;
-import lombok.experimental.Accessors;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 @Data
-@Accessors(chain = true)
 @ConfigurationProperties(prefix = "youlan.framework")
 public class FrameworkProperties {
     /**
      * 操作日志
      */
+    @NestedConfigurationProperty
     private OperationLogProperties operationLog;
 
     /**
      * sa-token配置
      */
+    @NestedConfigurationProperty
     private SaTokenProperties saToken;
 }

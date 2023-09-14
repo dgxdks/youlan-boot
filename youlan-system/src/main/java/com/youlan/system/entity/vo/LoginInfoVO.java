@@ -10,12 +10,12 @@ import java.util.List;
 @Accessors(chain = true)
 public class LoginInfoVO {
 
-    @Schema(title = "用户信息")
+    @Schema(description = "用户信息")
     private UserVO user;
 
-    @Schema(title = "角色信息")
+    @Schema(description = "角色信息")
     private List<String> roleList;
 
-    @Schema(title = "权限信息")
+    @Schema(description = "权限信息")
     private List<String> permissionList;
 }

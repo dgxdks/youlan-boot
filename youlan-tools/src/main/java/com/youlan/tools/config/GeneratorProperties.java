@@ -12,37 +12,37 @@ import java.util.Set;
 @Accessors(chain = true)
 public class GeneratorProperties {
 
-    @Schema(title = "包路径")
+    @Schema(description = "包路径")
     private String packageName;
 
-    @Schema(title = "是否去除表前缀")
+    @Schema(description = "是否去除表前缀")
     private Boolean tableRemovePrefix;
 
-    @Schema(title = "可匹配的表前缀列表")
+    @Schema(description = "可匹配的表前缀列表")
     private List<String> tableMatchPrefix;
 
-    @Schema(title = "要排除的表名称")
+    @Schema(description = "要排除的表名称")
     private Set<String> tableExclude;
 
-    @Schema(title = "编辑时要排除的列字段")
+    @Schema(description = "编辑时要排除的列字段")
     private Set<String> editColumnExclude;
 
-    @Schema(title = "查询时要排除的列字段")
+    @Schema(description = "查询时要排除的列字段")
     private Set<String> queryColumnExclude;
 
-    @Schema(title = "显示时要排除的列字段")
+    @Schema(description = "显示时要排除的列字段")
     private Set<String> viewColumnExclude;
 
-    @Schema(title = "默认是否生成DTO")
+    @Schema(description = "默认是否生成DTO")
     private boolean needEntityDto = true;
 
-    @Schema(title = "默认是否生成PageDTO")
+    @Schema(description = "默认是否生成PageDTO")
     private boolean needEntityPageDto = true;
 
-    @Schema(title = "默认是否生成VO")
+    @Schema(description = "默认是否生成VO")
     private boolean needEntityVo = true;
 
-    @Schema(title = "表描述转功能名称替换正则")
+    @Schema(description = "表描述转功能名称替换正则")
     private String tableFeatureRegex;
 
     public boolean inQueryColumnExclude(String columnName) {

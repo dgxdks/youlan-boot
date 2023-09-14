@@ -12,36 +12,36 @@ import javax.validation.constraints.Size;
 @Data
 public class OrgDTO {
 
-    @Schema(title = "机构ID")
+    @Schema(description = "机构ID")
     @TableField(exist = false)
     private Long orgId;
 
     @NotBlank(message = "机构名称不能为空")
     @Size(min = 1, max = 30, message = "机构名称长度不能超过{max}个字符")
-    @Schema(title = "机构名称")
+    @Schema(description = "机构名称")
     @TableField(exist = false)
     private String orgName;
 
     @NotBlank(message = "机构类型不能为空")
-    @Schema(title = "机构类型")
+    @Schema(description = "机构类型")
     @TableField(exist = false)
     private String orgType;
 
     @NotNull(message = "父级机构ID不能为空")
-    @Schema(title = "父级机构ID")
+    @Schema(description = "父级机构ID")
     @TableField(exist = false)
     private Long parentOrgId;
 
     @NotNull(message = DBConstant.DESC_SORT_REQUIRED)
-    @Schema(title = "机构排序")
+    @Schema(description = "机构排序")
     @TableField(exist = false)
     private Integer orgSort;
 
-    @Schema(title = "机构备注")
+    @Schema(description = "机构备注")
     @TableField(exist = false)
     private String orgRemark;
 
-    @Schema(title = "机构状态(1-正常 2-禁用)")
+    @Schema(description = "机构状态(1-正常 2-禁用)")
     @TableField(exist = false)
     private String orgStatus;
 }

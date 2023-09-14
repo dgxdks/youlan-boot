@@ -14,11 +14,11 @@ public class SmsCaptchaDTO {
 
     @Phone
     @NotBlank(message = "手机号码不能为空")
-    @Schema(title = "手机号码")
+    @Schema(description = "手机号码")
     private String mobile;
 
 
     @NotNull(message = "时间戳不能为空")
-    @Schema(title = "时间戳")
+    @Schema(description = "时间戳")
     private Long timestamp;
 }

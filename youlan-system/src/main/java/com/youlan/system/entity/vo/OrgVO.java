@@ -9,30 +9,30 @@ import java.util.List;
 @Data
 public class OrgVO<T> {
 
-    @Schema(title = "机构ID")
+    @Schema(description = "机构ID")
     private Long orgId;
 
-    @Schema(title = "机构名称")
+    @Schema(description = "机构名称")
     private String orgName;
 
-    @Schema(title = "机构类型")
+    @Schema(description = "机构类型")
     private String orgType;
 
-    @Schema(title = "机构祖级")
+    @Schema(description = "机构祖级")
     private String orgAncestors;
 
-    @Schema(title = "父级机构ID")
+    @Schema(description = "父级机构ID")
     private Long parentOrgId;
 
-    @Schema(title = "机构排序")
+    @Schema(description = "机构排序")
     private Integer orgSort;
 
-    @Schema(title = "机构备注")
+    @Schema(description = "机构备注")
     private String orgRemark;
 
-    @Schema(title = "机构状态")
+    @Schema(description = "机构状态")
     private String orgStatus;
 
-    @Schema(title = "下级机构")
+    @Schema(description = "下级机构")
     private List<T> children = new ArrayList<>();
 }

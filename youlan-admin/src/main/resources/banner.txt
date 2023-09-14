@@ -1,0 +1,10 @@
+${AnsiColor.BRIGHT_GREEN}
+Application Name: ${artifactId}
+Application Version: ${youlan.version}
+Spring Boot Version: ${spring-boot.formatted-version}
+___  _ ____  _     _     ____  _            ____  ____  ____  _____
+\  \///  _ \/ \ /\/ \   /  _ \/ \  /|      /  _ \/  _ \/  _ \/__ __\
+ \  / | / \|| | ||| |   | / \|| |\ ||_____ | | //| / \|| / \|  / \
+ / /  | \_/|| \_/|| |_/\| |-||| | \||\____\| |_\\| \_/|| \_/|  | |
+/_/   \____/\____/\____/\_/ \|\_/  \|      \____/\____/\____/  \_/
+${AnsiColor.DEFAULT}

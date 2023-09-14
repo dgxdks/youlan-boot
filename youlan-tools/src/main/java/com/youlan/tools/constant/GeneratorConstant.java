@@ -109,9 +109,13 @@ public class GeneratorConstant {
     public static final String FILE_NAME_SUFFIX_VO = "VO.java";
     public static final String FILE_NAME_SUFFIX_SERVICE = "Service.java";
     public static final String FILE_NAME_SUFFIX_ENTITY = ".java";
+    public static final String FILE_NAME_SUFFIX_JS = ".js";
+    public static final String FILE_NAME_VUE_INDEX = "index.vue";
     public static final String FILE_NAME_CODE_ZIP = "youlan.zip";
 
     // ******************** 包名称 ********************
+    public static final String PACKAGE_NAME_PREFIX_VUE_API = "vue.api.";
+    public static final String PACKAGE_NAME_PREFIX_VUE_INDEX = "vue.views.";
     public static final String PACKAGE_NAME_SUFFIX_CONTROLLER = ".controller";
     public static final String PACKAGE_NAME_SUFFIX_SERVICE = ".service";
     public static final String PACKAGE_NAME_SUFFIX_MAPPER = ".mapper";

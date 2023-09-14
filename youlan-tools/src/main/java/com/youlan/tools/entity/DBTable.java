@@ -18,16 +18,16 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = true)
 public class DBTable extends PageDTO {
 
-    @Schema(title = "表名称")
+    @Schema(description = "表名称")
     private String tableName;
 
-    @Schema(title = "表描述")
+    @Schema(description = "表描述")
     private String tableComment;
 
-    @Schema(title = DBConstant.DESC_CREATE_TIME)
+    @Schema(description = DBConstant.DESC_CREATE_TIME)
     private Date createTime;
 
-    @Schema(title = DBConstant.DESC_UPDATE_TIME)
+    @Schema(description = DBConstant.DESC_UPDATE_TIME)
     private Date updateTime;
 
     @Hidden

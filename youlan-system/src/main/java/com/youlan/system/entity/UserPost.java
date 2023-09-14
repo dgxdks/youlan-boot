@@ -13,14 +13,14 @@ import lombok.experimental.Accessors;
 @TableName("t_sys_user_post")
 public class UserPost {
 
-    @Schema(title = DBConstant.DESC_ID)
+    @Schema(description = DBConstant.DESC_ID)
     @TableId(type = IdType.AUTO)
     private Long id;
 
-    @Schema(title = "用户ID")
+    @Schema(description = "用户ID")
     private Long userId;
 
-    @Schema(title = "岗位ID")
+    @Schema(description = "岗位ID")
     private Long postId;
 
 }

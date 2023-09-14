@@ -12,15 +12,15 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 public class ImageCaptcha {
 
-    @Schema(title = "验证码ID")
+    @Schema(description = "验证码ID")
     private String captchaId;
 
-    @Schema(title = "验证码图片(Base64)")
+    @Schema(description = "验证码图片(Base64)")
     private String captchaImg;
 
-    @Schema(title = "验证码超时时间")
+    @Schema(description = "验证码超时时间")
     private Long codeTimeout;
 
-    @Schema(title = "是否开启验证码")
+    @Schema(description = "是否开启验证码")
     private Boolean captchaEnabled;
 }

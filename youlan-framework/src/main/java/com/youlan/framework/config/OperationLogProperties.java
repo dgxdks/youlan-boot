@@ -1,10 +1,8 @@
 package com.youlan.framework.config;
 
 import lombok.Data;
-import lombok.experimental.Accessors;
 
 @Data
-@Accessors(chain = true)
 public class OperationLogProperties {
     /**
      * 是否开启操作日志

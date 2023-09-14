@@ -15,18 +15,18 @@ public class UserUpdatePasswdDTO {
 
     @NotBlank(message = "旧密码不能为空")
     @DecryptField(algorithm = AlgorithmType.AES)
-    @Schema(title = "旧密码")
+    @Schema(description = "旧密码")
     private String oldPasswd;
 
     @NotBlank(message = "新密码不能为空")
     @DecryptField(algorithm = AlgorithmType.AES)
-    @Schema(title = "新密码")
+    @Schema(description = "新密码")
     @Size(min = 6, max = 20, message = "用户密码长度必须介于5和20之间")
     private String newPasswd;
 
     @NotBlank(message = "确认密码不能为空")
     @DecryptField(algorithm = AlgorithmType.AES)
-    @Schema(title = "确认密码")
+    @Schema(description = "确认密码")
     @Size(min = 6, max = 20, message = "用户密码长度必须介于5和20之间")
     private String confirmPasswd;
 

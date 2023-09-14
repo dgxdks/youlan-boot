@@ -1,0 +1,210 @@
+<template>
+  <div class="app-container">
+    <el-form v-show="queryShow" ref="queryForm" inline :model="queryForm" size="small">
+      #foreach($column in ${queryColumns})
+      <el-form-item label="${column.columnComment}" prop="${column.javaField}">
+        #if(${column.typeKey})
+        <dict-select
+          v-model="queryForm.${column.javaField}"
+          dict-type="${column.typeKey}"
+          placeholder="请选择${column.columnComment}"
+          clearable
+          style="width: 240px"
+        />
+        #if(${column.componentType} == "SELECT" || ${column.componentType} == "CHECKBOX" || ${column.componentType} == "RADIO")
+        <el-select
+          v-model="queryForm.${column.javaField}"
+          placeholder="请选择${column.columnComment}"
+          clearable
+          style="width: 240px"
+        />
+        #end
+        #elseif(${column.componentType} == "DATE")
+        <base-date-range-picker v-model="queryForm.${column.javaField}" style="width: 240px" />
+        #elseif(${column.componentType} == "DATE_RANGE")
+        <base-date-range-picker v-model="queryForm.${column.javaField}" type="date" style="width: 240px" />
+        #elseif(${column.componentType} == "DATETIME")
+        <base-date-range-picker v-model="queryForm.${column.javaField}" style="width: 340px" />
+        #elseif(${column.componentType}  == "DATETIME_RANGE")
+        <base-date-range-picker v-model="queryForm.${column.javaField}" type="datetime" style="width: 340px" />
+        #else
+        <el-input
+          v-model="queryForm.${column.javaField}"
+          placeholder="请输入${column.columnComment}"
+          clearable
+          style="width: 240px"
+          @keyup.enter.native="handleQuery"
+        />
+        #end
+      </el-form-item>
+      #end
+      <el-form-item>
+        <base-search-button @click="handleQuery" />
+        <base-reset-button @click="handleResetQuery" />
+      </el-form-item>
+    </el-form>
+
+    <el-row :gutter="10" class="mb8">
+      <el-col :span="1.5">
+        <base-add-button v-has-perm="['']" plain @click="handleAdd" />
+      </el-col>
+      <el-col :span="1.5">
+        <base-update-button v-has-perm="['']" plain :disabled="!tableSelectOne" @click="handleUpdate" />
+      </el-col>
+      <el-col :span="1.5">
+        <base-remove-button v-has-perm="['']" plain :disabled="tableNoSelected" @click="handleDelete" />
+      </el-col>
+      <el-col :span="1.5">
+        <base-download-button v-has-perm="['']" plain :disabled="tableNoSelected" @click="handleExport">导出</base-download-button>
+      </el-col>
+      <right-toolbar :query-show.sync="queryShow" @refresh="getList" />
+    </el-row>
+
+    <el-table v-loading="tableLoading" :data="${bizName}List" @selection-change="handleSelectionChange">
+      <el-table-column align="center" type="selection" width="55" />
+      // 实现组件渲染逻辑
+    </el-table>
+
+    #if(${templateType} != "2")
+    <pagination
+      v-show="pageTotal>0"
+      :limit.sync="queryForm.pageSize"
+      :page.sync="queryForm.pageNum"
+      :total="pageTotal"
+      @pagination="getList"
+    />
+    #end
+
+    <!-- ${featureName}编辑对话框 -->
+    <base-dialog :title="editTitle" :open.sync="editOpen" @confirm="handleEditSubmit" @cancel="handleEditCancel">
+      <el-form ref="editForm" :model="editForm" :rules="editRules" label-width="100px">
+        <base-row-split2>
+          // 实现组件渲染
+        </base-row-split2>
+      </el-form>
+    </base-dialog>
+  </div>
+</template>
+
+<script>
+import {
+  add${BizName},
+  update${BizName},
+  load${BizName},
+  remove${BizName},
+  get${BizName}PageList,
+  get${BizName}List
+} from '@/api/${moduleName}/${bizName}'
+import crud from '@/framework/mixin/crud'
+
+export default {
+  name: '${BizName}',
+  mixins: [crud],
+  data() {
+    return {
+      // ${featureName}表格数据
+      ${bizName}List: [],
+      // ${featureName}查询参数
+      queryForm: {
+        pageSize: 1,
+        pageNum: 10,
+        //实现组件渲染
+      },
+      // ${featureName}编辑校验
+      editRules: {
+        //实现组件渲染
+      }
+    }
+  },
+  created() {
+    this.getList()
+  },
+  methods: {
+    #set ($refs = "$refs")
+    #set ($modal = "$modal")
+    #set ($getTime = "${" + "new Date().getTime()" + "}")
+    #set ($download = "$download")
+    // ${featureName}列表查询
+    getList() {
+      this.openTableLoading()
+      get${BizName}PageList(this.queryForm).then(res => {
+        this.${bizName}List = res.rows
+        this.pageTotal = res.total
+        this.closeTableLoading()
+      })
+    },
+    // 查询按钮
+    handleQuery() {
+      this.resetPageNum()
+      this.getList()
+    },
+    // 查询重置按钮
+    handleResetQuery() {
+      this.${refs}.queryForm && this.$refs.queryForm.resetFields()
+      this.handleQuery()
+    },
+    // 新增按钮
+    handleAdd() {
+      this.openEdit('新增${featureName}')
+    },
+    // 修改按钮
+    handleUpdate() {
+      const id = row.id || this.tableIds[0]
+      load${BizName}({ id }).then(res => {
+        this.openEdit('修改${featureName}')
+        this.editForm = res
+      })
+    },
+    // 删除按钮
+    handleDelete(row) {
+      const list = (row.id && [row.id]) || this.tableIds
+      this.${modal}.confirm('是否确认删除${pkColumnComment}为"' + list + '"的数据项？').then(res => {
+        return remove${BizName}
+      }).then(() => {
+        this.getList()
+        this.${modal}.success('删除成功')
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    // 编辑提交按钮
+    handleEditSubmit() {
+      this.${refs}.editForm.validate(valid => {
+        if (valid) {
+          if (this.editForm.${pkJavaField}) {
+            update${BizName}.then(res => {
+              this.${modal}.success('修改成功')
+              this.closeEdit()
+              this.getList()
+            })
+          } else {
+            add${BizName}.then(res => {
+              this.${modal}.success('新增成功')
+              this.closeEdit()
+              this.getList()
+            })
+          }
+        }
+      })
+    },
+    // 编辑取消按钮
+    handleEditCancel() {
+      this.closeEdit()
+    },
+    // 重置编辑数据
+    resetEditForm() {
+      this.editForm = {
+
+      }
+    },
+    // 导出按钮
+    handleExport() {
+      this.${download}('/${moduleName}/${bizName}/export${BizName}List', {}, this.queryForm, `${bizName}_${getTime}.xlsx`)
+    },
+    // 多选框选中数据
+    handleSelectionChange(selection) {
+      this.tableIds = selection.map(item => item.${pkJavaField})
+    }
+  }
+}
+</script>

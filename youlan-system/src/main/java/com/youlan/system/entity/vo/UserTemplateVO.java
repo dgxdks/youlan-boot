@@ -34,7 +34,7 @@ public class UserTemplateVO {
 
     @Phone(message = "用户手机格式不正确")
     @ExcelProperty(value = "用户手机")
-    @Schema(title = "用户手机")
+    @Schema(description = "用户手机")
     private String userMobile;
 
     @NotBlank(message = "用户昵称必须填写")

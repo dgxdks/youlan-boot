@@ -8,15 +8,15 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class SystemAuthInfo {
 
-    @Schema(title = "用户ID")
+    @Schema(description = "用户ID")
     private Long userId;
 
-    @Schema(title = "用户名")
+    @Schema(description = "用户名")
     private String userName;
 
-    @Schema(title = "机构ID")
+    @Schema(description = "机构ID")
     private Long orgId;
 
-    @Schema(title = "机构类型")
+    @Schema(description = "机构类型")
     private String orgType;
 }

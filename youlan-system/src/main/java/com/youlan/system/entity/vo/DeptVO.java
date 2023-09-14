@@ -11,33 +11,33 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 public class DeptVO extends OrgVO<DeptVO> {
 
-    @Schema(title = DBConstant.DESC_ID)
+    @Schema(description = DBConstant.DESC_ID)
     private Long id;
 
-    @Schema(title = "负责人")
+    @Schema(description = "负责人")
     private String leader;
 
-    @Schema(title = "联系电话")
+    @Schema(description = "联系电话")
     private String phone;
 
-    @Schema(title = "邮箱")
+    @Schema(description = "邮箱")
     private String email;
 
-    @Schema(title = DBConstant.DESC_CREATE_ID)
+    @Schema(description = DBConstant.DESC_CREATE_ID)
     private Long createId;
 
-    @Schema(title = DBConstant.DESC_CREATE_BY)
+    @Schema(description = DBConstant.DESC_CREATE_BY)
     private String createBy;
 
-    @Schema(title = DBConstant.DESC_UPDATE_ID)
+    @Schema(description = DBConstant.DESC_UPDATE_ID)
     private Long updateId;
 
-    @Schema(title = DBConstant.DESC_UPDATE_BY)
+    @Schema(description = DBConstant.DESC_UPDATE_BY)
     private String updateBy;
 
-    @Schema(title = DBConstant.DESC_CREATE_TIME)
+    @Schema(description = DBConstant.DESC_CREATE_TIME)
     private Date createTime;
 
-    @Schema(title = DBConstant.DESC_UPDATE_TIME)
+    @Schema(description = DBConstant.DESC_UPDATE_TIME)
     private Date updateTime;
 }

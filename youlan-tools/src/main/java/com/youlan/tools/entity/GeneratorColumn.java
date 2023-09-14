@@ -16,75 +16,75 @@ import java.util.List;
 public class GeneratorColumn {
 
     @TableId(type = IdType.AUTO)
-    @Schema(title = DBConstant.DESC_ID)
+    @Schema(description = DBConstant.DESC_ID)
     private Long id;
 
-    @Schema(title = "生成表ID")
+    @Schema(description = "生成表ID")
     private Long tableId;
 
-    @Schema(title = "生成表列名称")
+    @Schema(description = "生成表列名称")
     private String columnName;
 
-    @Schema(title = "生成表列描述")
+    @Schema(description = "生成表列描述")
     private String columnComment;
 
-    @Schema(title = "生成表列类型")
+    @Schema(description = "生成表列类型")
     private String columnType;
 
-    @Schema(title = "生成表列Java类型")
+    @Schema(description = "生成表列Java类型")
     private String javaType;
 
-    @Schema(title = "生成表列Java字段名")
+    @Schema(description = "生成表列Java字段名")
     private String javaField;
 
-    @Schema(title = "是否主键" + DBConstant.DESC_YES_NO)
+    @Schema(description = "是否主键" + DBConstant.DESC_YES_NO)
     private String isPk;
 
-    @Schema(title = "是否自增" + DBConstant.DESC_YES_NO)
+    @Schema(description = "是否自增" + DBConstant.DESC_YES_NO)
     private String isIncrement;
 
-    @Schema(title = "是否必填" + DBConstant.DESC_YES_NO)
+    @Schema(description = "是否必填" + DBConstant.DESC_YES_NO)
     private String isRequired;
 
-    @Schema(title = "编辑时字段" + DBConstant.DESC_YES_NO)
+    @Schema(description = "编辑时字段" + DBConstant.DESC_YES_NO)
     private String isEdit;
 
-    @Schema(title = "表格时字段" + DBConstant.DESC_YES_NO)
+    @Schema(description = "表格时字段" + DBConstant.DESC_YES_NO)
     private String isTable;
 
-    @Schema(title = "查询时字段" + DBConstant.DESC_YES_NO)
+    @Schema(description = "查询时字段" + DBConstant.DESC_YES_NO)
     private String isQuery;
 
-    @Schema(title = "查询类型(字典类型[tools_generator_query_type])")
+    @Schema(description = "查询类型(字典类型[tools_generator_query_type])")
     private String queryType;
 
-    @Schema(title = "组件类型(字典类型[tools_generator_component_type])")
+    @Schema(description = "组件类型(字典类型[tools_generator_component_type])")
     private String componentType;
 
-    @Schema(title = "字典类型键名")
+    @Schema(description = "字典类型键名")
     private String typeKey;
 
-    @Schema(title = DBConstant.DESC_CREATE_ID)
+    @Schema(description = DBConstant.DESC_CREATE_ID)
     @TableField(fill = FieldFill.INSERT)
     private Long create_id;
 
-    @Schema(title = DBConstant.DESC_CREATE_BY)
+    @Schema(description = DBConstant.DESC_CREATE_BY)
     @TableField(fill = FieldFill.INSERT)
     private String createBy;
 
-    @Schema(title = DBConstant.DESC_UPDATE_ID)
+    @Schema(description = DBConstant.DESC_UPDATE_ID)
     @TableField(fill = FieldFill.UPDATE)
     private Long updateId;
 
-    @Schema(title = DBConstant.DESC_UPDATE_BY)
+    @Schema(description = DBConstant.DESC_UPDATE_BY)
     @TableField(fill = FieldFill.UPDATE)
     private String updateBy;
 
-    @Schema(title = DBConstant.DESC_CREATE_TIME)
+    @Schema(description = DBConstant.DESC_CREATE_TIME)
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 
-    @Schema(title = DBConstant.DESC_UPDATE_TIME)
+    @Schema(description = DBConstant.DESC_UPDATE_TIME)
     @TableField(fill = FieldFill.UPDATE)
     private Date updateTime;
 

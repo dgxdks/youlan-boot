@@ -21,82 +21,82 @@ import static com.youlan.common.db.constant.DBConstant.DESC_ID;
 @TableName("t_sys_storage_record")
 @EqualsAndHashCode(callSuper = true)
 public class StorageRecord extends PageDTO {
-    @Schema(title = DESC_ID)
+    @Schema(description = DESC_ID)
     @TableId(type = IdType.AUTO)
     private Long id;
 
-    @Schema(title = "文件访问地址")
+    @Schema(description = "文件访问地址")
     private String url;
 
-    @Schema(title = "文件大小")
+    @Schema(description = "文件大小")
     private Long size;
 
     @Query(type = QueryType.LIKE_RIGHT)
-    @Schema(title = "文件名称")
+    @Schema(description = "文件名称")
     private String fileName;
 
-    @Schema(title = "原始文件名称")
+    @Schema(description = "原始文件名称")
     private String originalFileName;
 
-    @Schema(title = "基础存储路径")
+    @Schema(description = "基础存储路径")
     private String basePath;
 
-    @Schema(title = "存储路径")
+    @Schema(description = "存储路径")
     private String path;
 
     @Query
-    @Schema(title = "文件扩展名")
+    @Schema(description = "文件扩展名")
     private String ext;
 
-    @Schema(title = "MIME类型")
+    @Schema(description = "MIME类型")
     private String contentType;
 
     @Query(type = QueryType.LIKE_RIGHT)
-    @Schema(title = "存储平台名称")
+    @Schema(description = "存储平台名称")
     private String platform;
 
-    @Schema(title = "缩略图访问路径")
+    @Schema(description = "缩略图访问路径")
     private String thUrl;
 
-    @Schema(title = "缩略图文件名称")
+    @Schema(description = "缩略图文件名称")
     private String thFileName;
 
-    @Schema(title = "缩略图大小")
+    @Schema(description = "缩略图大小")
     private Long thSize;
 
-    @Schema(title = "缩略图MIME类型")
+    @Schema(description = "缩略图MIME类型")
     private String thContentType;
 
     @Query(type = QueryType.LIKE_RIGHT)
-    @Schema(title = "文件所属对象ID")
+    @Schema(description = "文件所属对象ID")
     private String objectId;
 
-    @Schema(title = "文件所属对象类型")
+    @Schema(description = "文件所属对象类型")
     private String objectType;
 
-    @Schema(title = "附加属性")
+    @Schema(description = "附加属性")
     private String attr;
 
-    @Schema(title = "文件ACL")
+    @Schema(description = "文件ACL")
     private String fileAcl;
 
-    @Schema(title = "缩略图文件ACL")
+    @Schema(description = "缩略图文件ACL")
     private String thFileAcl;
 
-    @Schema(title = DBConstant.DESC_CREATE_ID)
+    @Schema(description = DBConstant.DESC_CREATE_ID)
     @TableField(fill = FieldFill.INSERT)
     private Long createId;
 
-    @Schema(title = DBConstant.DESC_CREATE_BY)
+    @Schema(description = DBConstant.DESC_CREATE_BY)
     @TableField(fill = FieldFill.INSERT)
     private String createBy;
 
-    @Schema(title = DBConstant.DESC_CREATE_TIME)
+    @Schema(description = DBConstant.DESC_CREATE_TIME)
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 
     @Query(column = "create_time", type = QueryType.BETWEEN)
-    @Schema(title = DBConstant.DESC_CREATE_TIME)
+    @Schema(description = DBConstant.DESC_CREATE_TIME)
     @TableField(exist = false)
     private List<Date> createTimeRange;
 
@@ -104,11 +104,11 @@ public class StorageRecord extends PageDTO {
     @TableField(exist = false)
     private byte[] data;
 
-    @Schema(title = "文件完整访问地址")
+    @Schema(description = "文件完整访问地址")
     @TableField(exist = false)
     private String fullUrl;
 
-    @Schema(title = "缩略图完整访问地址")
+    @Schema(description = "缩略图完整访问地址")
     @TableField(exist = false)
     private String thFullUrl;
 }

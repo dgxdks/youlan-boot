@@ -11,50 +11,50 @@ import java.util.Date;
 @TableName("t_sys_dept")
 public class Dept {
 
-    @Schema(title = DBConstant.DESC_ID)
+    @Schema(description = DBConstant.DESC_ID)
     @TableId(type = IdType.AUTO)
     private Long id;
 
-    @Schema(title = "机构ID")
+    @Schema(description = "机构ID")
     private Long orgId;
 
-    @Schema(title = "负责人")
+    @Schema(description = "负责人")
     private String leader;
 
-    @Schema(title = "联系电话")
+    @Schema(description = "联系电话")
     private String phone;
 
-    @Schema(title = "邮箱")
+    @Schema(description = "邮箱")
     private String email;
 
-    @Schema(title = DBConstant.DESC_STATUS)
+    @Schema(description = DBConstant.DESC_STATUS)
     private String status;
 
-    @Schema(title = DBConstant.DESC_CREATE_ID)
+    @Schema(description = DBConstant.DESC_CREATE_ID)
     @TableField(fill = FieldFill.INSERT)
     private Long createId;
 
-    @Schema(title = DBConstant.DESC_CREATE_BY)
+    @Schema(description = DBConstant.DESC_CREATE_BY)
     @TableField(fill = FieldFill.INSERT)
     private String createBy;
 
-    @Schema(title = DBConstant.DESC_UPDATE_ID)
+    @Schema(description = DBConstant.DESC_UPDATE_ID)
     @TableField(fill = FieldFill.UPDATE)
     private Long updateId;
 
-    @Schema(title = DBConstant.DESC_UPDATE_BY)
+    @Schema(description = DBConstant.DESC_UPDATE_BY)
     @TableField(fill = FieldFill.UPDATE)
     private String updateBy;
 
-    @Schema(title = DBConstant.DESC_CREATE_TIME)
+    @Schema(description = DBConstant.DESC_CREATE_TIME)
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 
-    @Schema(title = DBConstant.DESC_UPDATE_TIME)
+    @Schema(description = DBConstant.DESC_UPDATE_TIME)
     @TableField(fill = FieldFill.UPDATE)
     private Date updateTime;
 
-    @Schema(title = DBConstant.DESC_STS)
+    @Schema(description = DBConstant.DESC_STS)
     @TableLogic(value = DBConstant.VAL_STS_NO, delval = DBConstant.VAL_STS_YES)
     private String sts;
 }

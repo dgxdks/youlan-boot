@@ -1,7 +1,7 @@
 export default {
   props: {
     value: {
-      type: Array,
+      type: [Array, String],
       default: () => null
     },
     startPlaceholder: {
@@ -19,10 +19,6 @@ export default {
     valueFormat: {
       type: String,
       default: 'yyyy-MM-dd HH:mm:ss'
-    },
-    defaultTime: {
-      type: Array,
-      default: () => ['00:00:00', '23:59:59']
     },
     startDate: {
       type: Date,
@@ -54,11 +50,7 @@ export default {
   watch: {
     value: {
       handler(newVal) {
-        if (this.$obj.isArray(newVal) && newVal.length === 2) {
-          this.range = newVal
-        } else {
-          this.range = null
-        }
+        this.range = newVal
       },
       immediate: true,
       deep: true

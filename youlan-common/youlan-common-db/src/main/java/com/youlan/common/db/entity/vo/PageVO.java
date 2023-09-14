@@ -10,16 +10,16 @@ import java.util.List;
 @Data
 @Accessors(chain = true)
 public class PageVO<T> {
-    @Schema(title = "页码")
+    @Schema(description = "页码")
     private Long pageNum;
 
-    @Schema(title = "每页条数")
+    @Schema(description = "每页条数")
     private Long pageSize;
 
-    @Schema(title = "总数")
+    @Schema(description = "总数")
     private Long total;
 
-    @Schema(title = "分页数据")
+    @Schema(description = "分页数据")
     private List<T> rows;
 
     public PageVO(IPage<T> page) {

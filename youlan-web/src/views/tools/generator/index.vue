@@ -18,7 +18,7 @@
         />
       </el-form-item>
       <el-form-item label="创建时间" prop="createTimeRange">
-        <base-date-range-picker v-model="queryForm.createTimeRange" style="width: 240px" />
+        <base-date-time-range-picker v-model="queryForm.createTimeRange" style="width: 240px" />
       </el-form-item>
       <el-form-item>
         <base-search-button @click="handleQuery" />
@@ -178,7 +178,6 @@ export default {
   },
   created() {
     this.currentPath = this.$route.path
-    console.log(this.currentPath)
     this.getList()
   },
   methods: {

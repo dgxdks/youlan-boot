@@ -2,6 +2,8 @@ package com.youlan.config;
 
 import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.exception.SaTokenException;
+import cn.hutool.core.exceptions.ExceptionUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.youlan.common.core.exception.BizException;
 import com.youlan.common.core.exception.BizRuntimeException;
@@ -50,6 +52,10 @@ public class ExceptionHandlerConfig {
 
     @ExceptionHandler(RuntimeException.class)
     public ApiResult handleRuntimeException(RuntimeException exception, HttpServletRequest request) {
+        BizRuntimeException bizRuntimeException = (BizRuntimeException) ExceptionUtil.getCausedBy(exception, BizRuntimeException.class);
+        if (ObjectUtil.isNotNull(bizRuntimeException)) {
+            return handleBizRuntimeException(bizRuntimeException, request);
+        }
         return toApiResult(null, null, exception, request);
     }
 

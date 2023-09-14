@@ -15,23 +15,23 @@ import java.util.List;
 public class OperationLogPageDTO extends PageDTO {
 
     @Query(type = QueryType.LIKE)
-    @Schema(title = "日志名称")
+    @Schema(description = "日志名称")
     private String logName;
 
     @Query(type = QueryType.EQUAL)
-    @Schema(title = "日志类型[sys_operation_log_type]")
+    @Schema(description = "日志类型[sys_operation_log_type]")
     private String logType;
 
     @Query(type = QueryType.LIKE)
-    @Schema(title = "日志用户")
+    @Schema(description = "日志用户")
     private String logBy;
 
     @Query(type = QueryType.LIKE)
-    @Schema(title = "日志状态[sys_operation_log_status]")
+    @Schema(description = "日志状态[sys_operation_log_status]")
     private String logStatus;
 
     @Query(column = "log_time", type = QueryType.BETWEEN)
-    @Schema(title = "日志时间")
+    @Schema(description = "日志时间")
     private List<Date> logTimeRange;
 
 }

@@ -1,165 +1,4 @@
-server:
-  # 服务器的HTTP端口
-  port: 4085
-  servlet:
-    # 应用的访问路径
-    context-path: /
-  tomcat:
-    # tomcat的URI编码
-    uri-encoding: UTF-8
-    # 连接数满后的排队数，默认为100
-    accept-count: 1000
-    threads:
-      # tomcat最大线程数，默认为200
-      max: 800
-      # tomcat启动初始化的线程数，默认值10
-      min-spare: 100
-
-spring:
-  profiles:
-    active: "dev"
-  servlet:
-    # 文件上传
-    multipart:
-      # 单个文件大小
-      max-file-size: 10MB
-      # 设置总上传的文件大小
-      max-request-size: 20MB
-  messages:
-    encoding: UTF-8
-    basename: i18n/messages
-  jackson:
-    date-format: yyyy-MM-dd HH:mm:ss
-    time-zone: GMT+8
-    default-property-inclusion: non_null
-  datasource:
-    type: com.alibaba.druid.pool.DruidDataSource
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    druid:
-      # 初始连接数
-      initial-size: 5
-      # 最小连接池数量
-      min-idle: 10
-      # 最大连接池数量
-      max-active: 20
-      # 配置获取连接等待超时的时间
-      max-wait: 60000
-      # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
-      time-between-eviction-runs-millis: 60000
-      # 配置一个连接在池中最小生存的时间，单位是毫秒
-      min-evictable-idle-time-millis: 300000
-      # 配置一个连接在池中最大生存的时间，单位是毫秒
-      max-evictable-idle-time-millis: 900000
-      # 配置检测连接是否有效
-      validation-query: SELECT 1 FROM DUAL
-      test-while-idle: true
-      test-on-borrow: false
-      test-on-return: false
-      web-stat-filter:
-        enabled: true
-      stat-view-servlet:
-        enabled: true
-        # 设置白名单，不填则允许所有访问
-        allow:
-        url-pattern: /druid/*
-        # 控制台管理用户名和密码
-        login-username: youlan
-        login-password: youlan@123
-      filter:
-        stat:
-          enabled: true
-          # 慢SQL记录
-          log-slow-sql: true
-          slow-sql-millis: 1000
-          merge-sql: true
-        wall:
-          config:
-            multi-statement-allow: true
-  redis:
-    # 链接超时时间
-    timeout: 10s
-    lettuce:
-      pool:
-        # 连接池中最小空闲连接
-        min-idle: 0
-        # 连接池中最大空闲连接
-        max-idle: 8
-        # 连接池中最大连接数
-        max-active: 8
-        # 连接池最大阻塞等待时间(使用负值表示没有限制)
-        max-wait: -1ms
-  arthas:
-    # 是否开启arthas
-    enabled: false
-
-mybatis-plus:
-  type-aliases-package: com.youlan.**.entity
-  mapper-locations: classpath*:/mapper/**/*.xml
-  configuration:
-    cache-enabled: true
-    use-generated-keys: true
-    default-executor-type: simple
-    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
-  global-config:
-    db-config:
-      logic-delete-field: sts
-      logic-not-delete-value: '1'
-      logic-delete-value: '2'
-
-springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
-    tags-sorter: alpha
-    operations-sorter: alpha
-  api-docs:
-    path: /v3/api-docs
-  group-configs:
-    - group: '后台管理系统文档'
-      paths-to-match: '/**'
-      packages-to-scan: 'com.youlan'
-
-knife4j:
-  enable: true
-  setting:
-    language: zh_cn
-    swagger-model-name: "实体类列表"
-
-sa-token:
-  # token 名称
-  token-name: token
-  # token 有效期(s)
-  timeout: 259200
-  # token 最低活跃频率(s)
-  active-timeout: -1
-  # 是否允许统一账号多地同时登录
-  is-concurrent: true
-  # 在多人登录同一账号时, 是否公共一个token
-  is-share: true
-  # token 风格
-  token-style: uuid
-  # 是否输出操作日志
-  is-log: true
-
-arthas:
-  # 端口为0则不开启http端口(生产环境请慎重配置)
-  http-port: 18564
-  # 端口为0则不开启telnet端口(生产环境请慎重配置)
-  telnet-port: 18565
-  # 代理ID
-  agent-id: 'arthas-admin'
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: '*'
-  endpoint:
-    health:
-      show-details: always
-    logfile:
-      external-file: ./logs/info.log
-      enabled: true
-
+# 项目配置
 youlan:
   # 系统模块
   system:
@@ -227,3 +66,168 @@ youlan:
       searcher-model: MEMORY
       # ip2region.xdb文件路径,类路径文件需添加classpath:前缀，如classpath:ip2region/ip2region.xdb
       xdb-path: classpath:ip2region/ip2region.xdb
+
+# 服务配置
+server:
+  # 服务器的HTTP端口
+  port: 4085
+  # servlet配置
+  servlet:
+    # 应用的访问路径
+    context-path: /
+  # undertow配置
+  undertow:
+    # POST请求内容的最大大小，当值为-1时，默认值是无限的
+    max-http-post-size: -1
+    # 每个缓冲区的大小，越小的空间被利用越充分，默认值来源于JVM可用的最大内存量
+    buffer-size: 1024
+    # 是否在Java堆之外分配缓冲区，默认值来源于JVM可用的最大内存量。
+    direct-buffers: true
+    threads:
+      # 执行非阻塞的任务线程数，它们会负责多个连接，默认设置每个CPU核心一个线程，不可设置过大，否则启动项目会报错：打开文件数过多
+      io: 8
+      # 阻塞任务线程池，当执行类似servlet请求阻塞IO操作，undertow会从这个线程池中取得线程，它的值取决于系统的负载
+      worker: 256
+
+# spring配置
+spring:
+  application:
+    name: 'youlan-admin'
+  # 环境描述
+  profiles:
+    active: "dev"
+  # servlet配置
+  servlet:
+    # 文件上传
+    multipart:
+      # 单个文件大小
+      max-file-size: 10MB
+      # 设置总上传的文件大小
+      max-request-size: 20MB
+  # 国际化配置
+  messages:
+    # 国际化编码
+    encoding: UTF-8
+    # 国际化资源文件路径
+    basename: i18n/messages
+  # jackson配置
+  jackson:
+    # 日期格式化格式
+    date-format: yyyy-MM-dd HH:mm:ss
+    # 日期时
+    time-zone: GMT+8
+    # 序列化时忽略空值属性
+    default-property-inclusion: non_null
+    # 序列化配置
+    serialization:
+      # 是否格式化输出
+      indent-output: true
+      # 忽略不能转换的对象
+      fail-on-empty-beans: false
+    # 反序列化配置
+    deserialization:
+      # json中有对象里不存在的属性是否失败
+      fail-on-ignored-properties: false
+  arthas:
+    # 是否开启arthas
+    enabled: false
+
+# MyBatisPlus配置
+mybatis-plus:
+  # 实体扫描，多个package用逗号或者分号分隔
+  type-aliases-package: com.youlan.**.entity
+  # 对应的XML文件位置
+  mapper-locations: classpath*:/mapper/**/*.xml
+  # 是否检查XML文件是否存在，默认不检查
+  check-config-location: false
+  # 基础配置
+  configuration:
+    # 是否开启Mybatis二级缓存，默认为true
+    cache-enabled: true
+    # 详细日志输出 org.apache.ibatis.logging.stdout.StdOutImpl
+    # 关闭日志输出 org.apache.ibatis.logging.nologging.NoLoggingImpl
+    # 默认日志输出 org.apache.ibatis.logging.slf4j.Slf4jImpl
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+  # 全局配置
+  global-config:
+    db-config:
+      # 全局主键类型
+      id-type: assign_id
+      # 全局逻辑删除字段
+      logic-delete-field: sts
+      # 全局未逻辑删除值
+      logic-not-delete-value: '1'
+      # 全局已逻辑删除值
+      logic-delete-value: '2'
+
+# 接口文档配置
+springdoc:
+  # 文档配置
+  api-docs:
+    # 是否开启接口文档
+    enabled: true
+    # 接口文档路径
+    path: /v3/api-docs
+  # swagger配置
+  swagger-ui:
+    # swagger地址
+    path: /swagger-ui.html
+    # tag排序
+    tags-sorter: alpha
+    # operation排序
+    operations-sorter: alpha
+  group-configs:
+    - group: '1.系统管理模块'
+      paths-to-match: '/**'
+      packages-to-scan: 'com.youlan.controller.system'
+    - group: '2.系统工具模块'
+      paths-to-match: '/**'
+      packages-to-scan: 'com.youlan.controller.tools'
+
+# Knife4j配置
+knife4j:
+  # 是否开启
+  enable: true
+  # 基础设置
+  setting:
+    language: zh_cn
+    swagger-model-name: "实体类列表"
+
+# SaToken配置
+sa-token:
+  # token 名称
+  token-name: token
+  # token 有效期(s)
+  timeout: 259200
+  # token 最低活跃频率(s)
+  active-timeout: -1
+  # 是否允许统一账号多地同时登录
+  is-concurrent: true
+  # 在多人登录同一账号时, 是否公共一个token
+  is-share: true
+  # token 风格
+  token-style: uuid
+  # 是否输出操作日志
+  is-log: true
+
+# Arthas配置
+arthas:
+  # 端口为0则不开启http端口(生产环境请慎重配置)
+  http-port: 18564
+  # 端口为0则不开启telnet端口(生产环境请慎重配置)
+  telnet-port: 18565
+  # 代理ID
+  agent-id: 'arthas-admin'
+
+# Actuator端点配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+    logfile:
+      external-file: ./logs/info.log
+      enabled: true

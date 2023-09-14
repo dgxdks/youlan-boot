@@ -13,7 +13,7 @@ import lombok.experimental.Accessors;
 @TableName("t_sys_role_menu")
 public class RoleMenu {
 
-    @Schema(title = DBConstant.DESC_ID)
+    @Schema(description = DBConstant.DESC_ID)
     @TableId(type = IdType.AUTO)
     private Long id;
 

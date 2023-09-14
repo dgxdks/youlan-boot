@@ -14,11 +14,11 @@ import javax.validation.constraints.Size;
 @Accessors(chain = true)
 public class UserResetPasswdDTO {
 
-    @Schema(title = "用户ID")
+    @Schema(description = "用户ID")
     @NotNull(message = "用户ID不能为空")
     private Long id;
 
-    @Schema(title = "用户密码")
+    @Schema(description = "用户密码")
     @NotBlank(message = "用户密码不能为空")
     @Size(min = 6, max = 20, message = "用户密码长度必须介于5和20之间")
     @DecryptField(algorithm = AlgorithmType.AES)

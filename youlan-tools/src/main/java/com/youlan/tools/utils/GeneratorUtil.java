@@ -283,14 +283,14 @@ public class GeneratorUtil {
      * 获取@Schema注解
      */
     public static String getSchemaAnnoFromDBConstant(String constantName) {
-        return String.format("@Schema(title = DBConstant.%s)", constantName);
+        return String.format("@Schema(description = DBConstant.%s)", constantName);
     }
 
     /**
      * 获取@Schema注解
      */
     public static String getSchemaAnno(String title) {
-        return String.format("@Schema(title = \"%s\")", title);
+        return String.format("@Schema(description = \"%s\")", title);
     }
 
     /**

@@ -85,7 +85,7 @@
                 <el-option
                   v-for="item in typeList"
                   :key="item.id"
-                  :label="item.typeName"
+                  :label="item.typeKey"
                   :value="item.typeKey"
                 />
               </el-select>
@@ -176,6 +176,17 @@
                   />
                 </el-select>
               </el-form-item>
+              <el-form-item>
+                <base-form-label slot="label" content="如果需要对表数据进行排序排序则可指定排序列，列对应的Java类型需要实现Comparable接口，默认升序， 如：org_sort" label="树表排序列名" />
+                <el-select v-model="generatorTable.sortColumnName" placeholder="树表排序列名" style="width: 100%;">
+                  <el-option
+                    v-for="column in generatorColumnList"
+                    :key="column.columnName"
+                    :label="column.columnName + '：' + column.columnComment"
+                    :value="column.columnName"
+                  />
+                </el-select>
+              </el-form-item>
             </base-row-split2>
           </template>
         </el-form>
@@ -232,7 +243,8 @@ export default {
         bizName: null,
         generatorPath: null,
         columnName: null,
-        parentColumnName: null
+        parentColumnName: null,
+        sortColumnName: null
       },
       // 基础信息校验规则
       basicTableRules: {

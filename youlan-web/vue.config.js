@@ -40,10 +40,6 @@ module.exports = {
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
         }
-      },
-      '/v3/api-docs': {
-        target: `http://localhost:4085`,
-        changeOrigin: true
       }
     },
     disableHostCheck: true

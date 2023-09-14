@@ -32,66 +32,66 @@ import java.util.List;
 public class Config extends PageDTO {
 
     @ExcelProperty(value = "配置序号")
-    @Schema(title = DBConstant.DESC_ID)
+    @Schema(description = DBConstant.DESC_ID)
     @TableId(type = IdType.AUTO)
     private Long id;
 
     @ExcelProperty(value = "配置名称")
     @Query(type = QueryType.LIKE)
     @NotBlank(message = "配置名称不能为空")
-    @Schema(title = "配置名称")
+    @Schema(description = "配置名称")
     private String configName;
 
     @ExcelProperty(value = "配置键名")
     @Query(type = QueryType.LIKE)
     @NotBlank(message = "配置键名不能不能为空")
-    @Schema(title = "配置键名")
+    @Schema(description = "配置键名")
     private String configKey;
 
     @ExcelProperty(value = "配置键值")
     @Query(type = QueryType.LIKE)
     @NotBlank(message = "配置键值不能为空")
-    @Schema(title = "配置键值")
+    @Schema(description = "配置键值")
     private String configValue;
 
     @ExcelProperty(value = "配置类型", converter = EnumConverter.class)
     @ExcelEnumProperty(ConfigType.class)
     @Query(type = QueryType.EQUAL)
     @StrIn(value = {SystemConstant.CONFIG_TYPE_INNER, SystemConstant.CONFIG_TYPE_OUTER})
-    @Schema(title = "配置类型(1-内置参数 2-外置参数)")
+    @Schema(description = "配置类型(1-内置参数 2-外置参数)")
     private String configType;
 
     @ExcelProperty(value = "配置备注")
-    @Schema(title = DBConstant.DESC_REMARK)
+    @Schema(description = DBConstant.DESC_REMARK)
     private String remark;
 
-    @Schema(title = DBConstant.DESC_CREATE_ID)
+    @Schema(description = DBConstant.DESC_CREATE_ID)
     @TableField(fill = FieldFill.INSERT)
     private Long createId;
 
-    @Schema(title = DBConstant.DESC_CREATE_BY)
+    @Schema(description = DBConstant.DESC_CREATE_BY)
     @TableField(fill = FieldFill.INSERT)
     private String createBy;
 
-    @Schema(title = DBConstant.DESC_UPDATE_ID)
+    @Schema(description = DBConstant.DESC_UPDATE_ID)
     @TableField(fill = FieldFill.UPDATE)
     private Long updateId;
 
-    @Schema(title = DBConstant.DESC_UPDATE_BY)
+    @Schema(description = DBConstant.DESC_UPDATE_BY)
     @TableField(fill = FieldFill.UPDATE)
     private String updateBy;
 
-    @Schema(title = DBConstant.DESC_CREATE_TIME)
+    @Schema(description = DBConstant.DESC_CREATE_TIME)
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 
     @Query(column = "create_time", type = QueryType.BETWEEN)
     @TableField(exist = false)
-    @Schema(title = DBConstant.DESC_CREATE_TIME)
+    @Schema(description = DBConstant.DESC_CREATE_TIME)
     private List<Date> createTimeRange;
 
 
-    @Schema(title = DBConstant.DESC_UPDATE_TIME)
+    @Schema(description = DBConstant.DESC_UPDATE_TIME)
     @TableField(fill = FieldFill.UPDATE)
     private Date updateTime;
 

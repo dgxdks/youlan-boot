@@ -46,6 +46,7 @@ public class ServletHelper {
      * 获取UserAgent
      */
     public static String getUserAgent() {
+
         return getHttpServletRequest().getHeader(HttpHeaders.USER_AGENT);
     }
 

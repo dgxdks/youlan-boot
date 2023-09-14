@@ -10,15 +10,15 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class UserRolePageDTO extends PageDTO {
 
-    @Schema(title = "角色ID")
+    @Schema(description = "角色ID")
     private Long roleId;
 
-    @Schema(title = "用户账号")
+    @Schema(description = "用户账号")
     private String userName;
 
-    @Schema(title = "用户手机")
+    @Schema(description = "用户手机")
     private String userMobile;
 
-    @Schema(title = DBConstant.DESC_STATUS)
+    @Schema(description = DBConstant.DESC_STATUS)
     private String status;
 }

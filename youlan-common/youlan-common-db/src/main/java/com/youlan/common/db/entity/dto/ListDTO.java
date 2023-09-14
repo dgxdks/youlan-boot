@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 public class ListDTO<T> {
-    @Schema(title = "数据列表")
+    @Schema(description = "数据列表")
     private List<T> list = new ArrayList<>();
 
     @Schema(hidden = true)

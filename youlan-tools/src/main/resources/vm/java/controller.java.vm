@@ -2,6 +2,7 @@ package ${packageName}.controller;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import com.youlan.common.core.helper.ListHelper;
 import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.db.entity.dto.ListDTO;
@@ -24,6 +25,7 @@ import ${packageName}.entity.${EntityName};
 import ${packageName}.entity.vo.${EntityName}VO;
 #end
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -41,7 +43,7 @@ public class ${EntityName}Controller extends BaseController {
 
     @Operation(summary = "${featureName}新增")
     @PostMapping("/add${BizName}")
-    @SystemLog(name = "${featureName}", type = SystemLogType.OPERATION_LOG_TYPE_ADD)
+    @OperationLog(name = "${featureName}", type = OperationLogType.OPERATION_LOG_TYPE_ADD)
     #if(${needDto})
     public ApiResult add${BizName}(@Validated @RequestBody ${EntityName}DTO dto) {
     #else
@@ -56,7 +58,7 @@ public class ${EntityName}Controller extends BaseController {
 
     @Operation(summary = "${featureName}修改")
     @PostMapping("/update${BizName}")
-    @SystemLog(name = "${featureName}", type = SystemLogType.OPERATION_LOG_TYPE_UPDATE)
+    @OperationLog(name = "${featureName}", type = OperationLogType.OPERATION_LOG_TYPE_UPDATE)
     #if(${needDto})
     public ApiResult update${BizName}(@Validated @RequestBody ${EntityName}DTO dto) {
     #else
@@ -77,7 +79,7 @@ public class ${EntityName}Controller extends BaseController {
 
     @Operation(summary = "${featureName}删除")
     @PostMapping("/remove${BizName}")
-    @SystemLog(name = "${featureName}", type = SystemLogType.OPERATION_LOG_TYPE_REMOVE)
+    @OperationLog(name = "${featureName}", type = OperationLogType.OPERATION_LOG_TYPE_REMOVE)
     public ApiResult remove${BizName}(@Validated @RequestBody ListDTO<${pkColumn.javaType}> dto) {
         if (CollectionUtil.isEmpty(dto.getList())) {
             return toSuccess();
@@ -97,56 +99,99 @@ public class ${EntityName}Controller extends BaseController {
 
     @Operation(summary = "${featureName}分页")
     @PostMapping("/get${BizName}PageList")
-    @SystemLog(name = "${featureName}", type = SystemLogType.OPERATION_LOG_TYPE_PAGE_LIST)
+    @OperationLog(name = "${featureName}", type = OperationLogType.OPERATION_LOG_TYPE_PAGE_LIST)
     #if(${needPageDto})
     public ApiResult get${BizName}PageList(@RequestBody ${EntityName}PageDTO dto) {
     #else
     public ApiResult get${BizName}PageList(@RequestBody ${EntityName} ${entityName}) {
     #end
         #if(${needPageDto})
+        #if(${needVo})
+        return toSuccess(${entityName}Service.loadPage(dto, QueryWrapperUtil.getQueryWrapper(dto), ${EntityName}VO.class));
+        #else
         return toSuccess(${entityName}Service.loadPage(dto, QueryWrapperUtil.getQueryWrapper(dto)));
+        #end
+        #else
+        #if(${needVo})
+        return toSuccess(${entityName}Service.loadPage(${entityName}, QueryWrapperUtil.getQueryWrapper(${entityName}), ${EntityName}VO.class));
         #else
         return toSuccess(${entityName}Service.loadPage(${entityName}, QueryWrapperUtil.getQueryWrapper(${entityName})));
+        #end
         #end
     }
 
     @Operation(summary = "${featureName}列表")
     @PostMapping("/get${BizName}List")
-    @SystemLog(name = "${featureName}", type = SystemLogType.OPERATION_LOG_TYPE_LIST)
+    @OperationLog(name = "${featureName}", type = OperationLogType.OPERATION_LOG_TYPE_LIST)
     #if(${needPageDto})
     public ApiResult get${BizName}List(@RequestBody ${EntityName}PageDTO dto) {
     #else
     public ApiResult get${BizName}List(@RequestBody ${EntityName} ${entityName}) {
     #end
         #if(${needPageDto})
-            return toSuccess(${entityName}Service.loadMore(QueryWrapperUtil.getQueryWrapper(dto)));
+        #if(${needVo})
+        return toSuccess(${entityName}Service.loadMore(QueryWrapperUtil.getQueryWrapper(dto), ${EntityName}VO.class));
         #else
-            return toSuccess(${entityName}Service.loadMore(QueryWrapperUtil.getQueryWrapper(${entityName})));
+        return toSuccess(${entityName}Service.loadMore(QueryWrapperUtil.getQueryWrapper(dto)));
+        #end
+        #else
+        #if(${needVo})
+        return toSuccess(${entityName}Service.loadMore(QueryWrapperUtil.getQueryWrapper(${entityName}), ${EntityName}VO.class));
+        #else
+        return toSuccess(${entityName}Service.loadMore(QueryWrapperUtil.getQueryWrapper(${entityName})));
+        #end
         #end
     }
 
     @Operation(summary = "${featureName}导出")
     @PostMapping("/export${BizName}List")
-    @SystemLog(name = "${featureName}", type = SystemLogType.OPERATION_LOG_TYPE_EXPORT)
+    @OperationLog(name = "${featureName}", type = OperationLogType.OPERATION_LOG_TYPE_EXPORT)
     #if(${needPageDto})
     public void export${BizName}List(@RequestBody ${EntityName}PageDTO dto, HttpServletResponse response) throws IOException {
-        #if(${needVo})
+    #if(${needVo})
         List<${EntityName}VO> ${entityName}List = ${entityName}Service.loadMore(QueryWrapperUtil.getQueryWrapper(dto), ${EntityName}VO.class);
         toExcel("${featureName}.xlsx", ${EntityName}VO.class, ${entityName}List, response);
-        #else
+    #else
         List<${EntityName}> ${entityName}List = ${entityName}Service.loadMore(QueryWrapperUtil.getQueryWrapper(dto));
         toExcel("${featureName}.xlsx", ${EntityName}.class, ${entityName}List, response);
-        #end
+    #end
     }
     #else
     public void export${BizName}List(@RequestBody ${EntityName} ${entityName}, HttpServletResponse response) throws IOException {
+    #if(${needVo})
+        List<${EntityName}VO> ${entityName}List = ${entityName}Service.loadMore(QueryWrapperUtil.getQueryWrapper(${entityName}), ${EntityName}VO.class);
+        toExcel("${featureName}.xlsx", "${featureName}", ${EntityName}VO.class, ${entityName}List, response);
+    #else
+        List<${EntityName}> ${entityName}List = ${entityName}Service.loadMore(QueryWrapperUtil.getQueryWrapper(${entityName}));
+        toExcel("${featureName}.xlsx", "${featureName}", ${EntityName}.class, ${entityName}List, response);
+    #end
+    }
+    #end
+
+    #if(${templateType} == "2")
+    @Operation(summary = "${featureName}树列表")
+    @PostMapping("/get${BizName}TreeList")
+    @Operation(name = "${featureName}", type = OperationLogType.OPERATION_LOG_TYPE_list)
+    #if(${needPageDto})
+    public ApiResult get${BizNameList}TreeList(@RequestBody ${EntityName}PageDTO dto) {
+    #else
+    public ApiResult get${BizNameList}TreeList(@RequestBody ${EntityName} ${entityName})
+    #end
         #if(${needVo})
-            List<${EntityName}VO> ${entityName}List = ${entityName}Service.loadMore(QueryWrapperUtil.getQueryWrapper(${entityName}), ${EntityName}VO.class);
-            toExcel("${featureName}.xlsx", "${featureName}", ${EntityName}VO.class, ${entityName}List, response);
+        List<${EntityName}VO> ${bizName}List = ${entityName}Service.loadMore(QueryWrapperUtil.getQueryWrapper(dto), ${EntityName}VO.class)
+        #if(${SortTreeField})
+        List<${EntityName}VO> ${bizName}TreeList = ListHelper.getTreeList(${bizName}List, ${EntityName}VO::getChildren()}, ${EntityName}VO::get${TreeField}(), ${EntityName}VO::get${ParentTreeField}(), ${EntityName}VO::get${SortTreeField}());
         #else
-            List<${EntityName}> ${entityName}List = ${entityName}Service.loadMore(QueryWrapperUtil.getQueryWrapper(${entityName}));
-            toExcel("${featureName}.xlsx", "${featureName}", ${EntityName}.class, ${entityName}List, response);
+        List<${EntityName}VO> ${bizName}TreeList = ListHelper.getTreeList(${bizName}List, ${EntityName}VO::getChildren()}, ${EntityName}VO::get${TreeField}(), ${EntityName}VO::get${ParentTreeField}());
         #end
+        #else
+        List<${EntityName}> ${bizName}List = ${entityName}Service.loadMore(QueryWrapperUtil.getQueryWrapper(dto));
+        #if(${SortTreeField})
+        List<${EntityName}> ${bizName}TreeList = ListHelper.getTreeList(${bizName}List, ${EntityName}::getChildren()}, ${EntityName}::get${TreeField}(), ${EntityName}::get${ParentTreeField}(), ${EntityName}::get${SortTreeField}());
+        #end
+        List<${EntityName}> ${bizName}TreeList = ListHelper.getTreeList(${bizName}List, ${EntityName}::getChildren()}, ${EntityName}::get${TreeField}(), ${EntityName}::get${ParentTreeField}());
+        #end
+        return toSuccess(${bizName}TreeList);
     }
     #end
 

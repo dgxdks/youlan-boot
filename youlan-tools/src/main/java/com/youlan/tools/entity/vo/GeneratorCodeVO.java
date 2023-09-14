@@ -12,15 +12,15 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 public class GeneratorCodeVO {
 
-    @Schema(title = "代码内容")
+    @Schema(description = "代码内容")
     private String codeContent;
 
-    @Schema(title = "包名称")
+    @Schema(description = "包名称")
     private String packageName;
 
-    @Schema(title = "模版名称")
+    @Schema(description = "模版名称")
     private String vmName;
 
-    @Schema(title = "代码名称")
+    @Schema(description = "代码名称")
     private String codeName;
 }
