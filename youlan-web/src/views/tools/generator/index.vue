@@ -138,10 +138,11 @@ import {
 } from '@/api/tools/generator'
 import importTable from './importTable'
 import crud from '@/framework/mixin/crud'
+import Dict from '@/views/system/dict/index.vue'
 
 export default {
   name: 'Generator',
-  components: { importTable },
+  components: { Dict, importTable },
   mixins: [crud],
   data() {
     return {

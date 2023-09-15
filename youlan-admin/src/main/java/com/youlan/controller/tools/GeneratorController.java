@@ -4,7 +4,7 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.db.entity.dto.ListDTO;
 import com.youlan.common.db.helper.DBHelper;
-import com.youlan.framework.controller.BaseController;
+import com.youlan.controller.base.BaseController;
 import com.youlan.tools.constant.GeneratorConstant;
 import com.youlan.tools.entity.DBTable;
 import com.youlan.tools.entity.dto.GeneratorDTO;

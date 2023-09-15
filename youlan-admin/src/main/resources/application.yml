@@ -1,6 +1,22 @@
-# 项目配置
+--- # 后台管理模块
 youlan:
-  # 系统模块
+  admin:
+    # sa-token配置
+    sa-token:
+      exclude-path-patterns:
+        # 静态资源相关
+        - /*.html
+        - /**/*.html
+        - /*.css
+        - /**/*.css
+        - /*.js
+        - /**/*.js
+        # swagger相关
+        - /*/api-docs
+        - /*/api-docs/**
+
+--- # 系统模块
+youlan:
   system:
     # 验证码
     captcha:
@@ -18,8 +34,6 @@ youlan:
       record-enabled: true
       # 存储记录缓存时间(s)
       record-cache-timeout: 1800
-  # 框架模块
-  framework:
     # 操作日志
     operation-log:
       # 是否开启操作日志
@@ -30,20 +44,9 @@ youlan:
       async-enabled: true
       # 异常信息保存长度上限
       error-length-limit: 200
-    # sa-token配置
-    sa-token:
-      exclude-path-patterns:
-        # 静态资源相关
-        - /*.html
-        - /**/*.html
-        - /*.css
-        - /**/*.css
-        - /*.js
-        - /**/*.js
-        # swagger相关
-        - /*/api-docs
-        - /*/api-docs/**
-  # 公共模块
+
+--- # 公共模块
+youlan:
   common:
     # 加密
     crypto:
@@ -59,7 +62,9 @@ youlan:
       sm2-private-key: classpath:crypto/sm2-private.key
       # SM2秘钥(支持明文秘钥/系统路径文件[需指定绝对路径]/类路径文件[需添加classpath:前缀])
       sm4-key: XZAzFuMtViu55dngoUVivQ==
-  # 插件模块
+
+--- # 插件模块
+youlan:
   plugin:
     region:
       # ip2region 查询模式(FILE-基于文件 INDEX-基于索引 MEMORY-基于内存 NETWORK-基于网络)

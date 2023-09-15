@@ -1,4 +1,4 @@
-package com.youlan.framework.controller;
+package com.youlan.controller.base;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;

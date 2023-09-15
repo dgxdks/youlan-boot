@@ -1,4 +1,4 @@
-package com.youlan.framework.aspect;
+package com.youlan.system.aspect;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.thread.ThreadUtil;
@@ -6,9 +6,9 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.json.JSONUtil;
 import com.youlan.common.core.servlet.helper.ServletHelper;
-import com.youlan.framework.anno.OperationLog;
-import com.youlan.framework.config.FrameworkProperties;
 import com.youlan.plugin.region.helper.RegionHelper;
+import com.youlan.system.anno.OperationLog;
+import com.youlan.system.config.SystemProperties;
 import com.youlan.system.constant.SystemConstant;
 import com.youlan.system.helper.SystemAuthHelper;
 import com.youlan.system.service.OperationLogService;
@@ -32,7 +32,7 @@ import java.util.Date;
 @ConditionalOnProperty(prefix = "youlan.framework.operation-log", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class OperationLogAspect {
     private static final ThreadLocal<Long> COST_TIME_THREADLOCAL = new ThreadLocal<>();
-    private final FrameworkProperties frameworkProperties;
+    private final SystemProperties systemProperties;
     private final OperationLogService operationLogService;
 
     @Before("@annotation(operationAnno)")
@@ -53,7 +53,7 @@ public class OperationLogAspect {
     public void handleOperationLog(final JoinPoint joinPoint, OperationLog operationAnno, Object apiResult, final Exception exception) {
         try {
             //项目开关判断逻辑
-            boolean enabled = frameworkProperties.getOperationLog().getEnabled();
+            boolean enabled = systemProperties.getOperationLog().getEnabled();
             if (!enabled) {
                 return;
             }
@@ -61,8 +61,8 @@ public class OperationLogAspect {
             if (!operationAnno.enabled()) {
                 return;
             }
-            boolean regionEnabled = frameworkProperties.getOperationLog().getRegionEnabled();
-            boolean asyncEnabled = frameworkProperties.getOperationLog().getAsyncEnabled();
+            boolean regionEnabled = systemProperties.getOperationLog().getRegionEnabled();
+            boolean asyncEnabled = systemProperties.getOperationLog().getAsyncEnabled();
             HttpServletRequest httpServletRequest = ServletHelper.getHttpServletRequest();
             String method = joinPoint.getSignature().getName();
             String logName = operationAnno.name();
@@ -103,7 +103,7 @@ public class OperationLogAspect {
                 }
             }
             if (ObjectUtil.isNotNull(exception)) {
-                int errorLengthLimit = frameworkProperties.getOperationLog().getErrorLengthLimit();
+                int errorLengthLimit = systemProperties.getOperationLog().getErrorLengthLimit();
                 operationLog.setLogStatus(SystemConstant.OPERATION_LOG_STATUS_ERROR);
                 operationLog.setErrorMsg(ExceptionUtil.stacktraceToString(exception, errorLengthLimit));
             }

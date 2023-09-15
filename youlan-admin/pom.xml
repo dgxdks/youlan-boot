@@ -19,11 +19,11 @@
     <dependencies>
         <dependency>
             <groupId>com.youlan</groupId>
-            <artifactId>youlan-framework</artifactId>
+            <artifactId>youlan-tools</artifactId>
         </dependency>
         <dependency>
             <groupId>com.youlan</groupId>
-            <artifactId>youlan-tools</artifactId>
+            <artifactId>youlan-system</artifactId>
         </dependency>
         <dependency>
             <groupId>com.youlan</groupId>

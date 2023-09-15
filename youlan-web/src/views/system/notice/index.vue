@@ -76,7 +76,7 @@
       <el-table-column align="center" type="selection" width="55" />
       <el-table-column align="center" label="序号" prop="noticeId" width="100" />
       <el-table-column
-        :show-overflow-tooltip="true"
+        show-overflow-tooltip
         align="center"
         label="公告标题"
         prop="noticeTitle"

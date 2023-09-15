@@ -33,14 +33,14 @@
           <span>{{ (pageNum - 1) * pageSize + scope.$index + 1 }}</span>
         </template>
       </el-table-column>
-      <el-table-column :show-overflow-tooltip="true" align="center" label="会话编号" prop="tokenId" />
-      <el-table-column :show-overflow-tooltip="true" align="center" label="登录名称" prop="userName" />
+      <el-table-column show-overflow-tooltip align="center" label="会话编号" prop="tokenId" />
+      <el-table-column show-overflow-tooltip align="center" label="登录名称" prop="userName" />
       <el-table-column align="center" label="部门名称" prop="deptName" />
-      <el-table-column :show-overflow-tooltip="true" align="center" label="主机" prop="ipaddr" />
-      <el-table-column :show-overflow-tooltip="true" align="center" label="登录地点" prop="loginLocation" />
+      <el-table-column show-overflow-tooltip align="center" label="主机" prop="ipaddr" />
+      <el-table-column show-overflow-tooltip align="center" label="登录地点" prop="loginLocation" />
       <el-table-column align="center" label="浏览器" prop="browser" />
       <el-table-column align="center" label="操作系统" prop="os" />
-      <el-table-column align="center" label="登录时间" prop="loginTime" width="180">
+      <el-table-column align="center" label="登录时间" prop="loginTime" width="160">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.loginTime) }}</span>
         </template>

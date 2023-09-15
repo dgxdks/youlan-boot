@@ -1,6 +1,6 @@
-package com.youlan.framework.anno;
+package com.youlan.system.anno;
 
-import com.youlan.framework.constant.OperationLogType;
+import com.youlan.system.constant.OperationLogType;
 
 import java.lang.annotation.*;
 

@@ -1,4 +1,4 @@
-package com.youlan.framework.constant;
+package com.youlan.system.constant;
 
 public class OperationLogType {
     /**

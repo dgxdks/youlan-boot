@@ -1,22 +1,26 @@
 package ${packageName}.entity;
 
+#foreach(${package} in ${entityPackages})
+${package}
+#end
 #if(!${needVo})
-import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.annotation.write.style.ColumnWidth;
-import com.alibaba.excel.annotation.write.style.HeadFontStyle;
-import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
-import com.youlan.common.db.constant.DBConstant;
-import com.youlan.system.excel.anno.ExcelDictProperty;
-import com.youlan.system.excel.converter.DictConverter;
+#foreach(${package} in ${voPackages})
+${package}
+#end
 #end
 #if(!${needPageDto})
-import lombok.EqualsAndHashCode;
+#foreach(${package} in ${pageDtoPackages})
+${package}
+#end
 #end
 #if(!${needDto})
+#foreach(${package} in ${dtoPackages})
+${package}
 #end
-import com.baomidou.mybatisplus.annotation.*;
-import lombok.Data;
-import org.springframework.validation.annotation.Validated;
+#end
+#foreach(${package} in ${basePackages})
+${package}
+#end
 
 @Data
 @TableName("${tableName}")
@@ -61,7 +65,12 @@ public class ${EntityName} extends PageDTO {
 #end
 #if(${templateType} == "2")
     @Schema(description = "${featureName}子集")
+    @TableField(exist = false)
+    #if(${needVo})
     private List<${EntityName}VO> children;
+    #else
+    private List<${EntityName}> children;
+    #end
 
 #end
 }

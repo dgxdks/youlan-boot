@@ -1,15 +1,16 @@
 package ${packageName}.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import com.youlan.common.core.helper.ListHelper;
 import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.db.entity.dto.ListDTO;
-import com.youlan.common.db.utils.QueryWrapperUtil;
-import com.youlan.framework.controller.BaseController;
-import com.youlan.framework.constant.OperationLogType;
-import com.youlan.framework.anno.OperationLog;
+import com.youlan.common.db.helper.DBHelper;
+import com.youlan.controller.base.BaseController;
+import com.youlan.system.constant.OperationLogType;
+import com.youlan.system.anno.OperationLog;
 import ${packageName}.entity.${EntityName};
 import ${packageName}.service.${EntityName}Service;
 #if(${needDto})
@@ -32,6 +33,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 @Tag(name = "${featureName}")
@@ -41,6 +43,7 @@ import java.util.List;
 public class ${EntityName}Controller extends BaseController {
     private final ${EntityName}Service ${entityName}Service;
 
+    @SaCheckPermission("${moduleName}:${bizName}:add")
     @Operation(summary = "${featureName}新增")
     @PostMapping("/add${BizName}")
     @OperationLog(name = "${featureName}", type = OperationLogType.OPERATION_LOG_TYPE_ADD)
@@ -56,6 +59,7 @@ public class ${EntityName}Controller extends BaseController {
         #end
     }
 
+    @SaCheckPermission("${moduleName}:${bizName}:update")
     @Operation(summary = "${featureName}修改")
     @PostMapping("/update${BizName}")
     @OperationLog(name = "${featureName}", type = OperationLogType.OPERATION_LOG_TYPE_UPDATE)
@@ -65,18 +69,19 @@ public class ${EntityName}Controller extends BaseController {
     public ApiResult update${BizName}(@Validated @RequestBody ${EntityName} ${entityName}) {
     #end
         #if(${needDto})
-        if (ObjectUtil.isNull(dto.get${pkJavaField}())) {
+        if (ObjectUtil.isNull(dto.get${PkJavaField}())) {
             return toError(ApiResultCode.C0001);
         }
         return toSuccess(${entityName}Service.updateById(BeanUtil.copyProperties(dto, ${EntityName}.class)));
         #else
-        if (ObjectUtil.isNull(${entityName}.get${pkJavaField}())) {
+        if (ObjectUtil.isNull(${entityName}.get${PkJavaField}())) {
             return toError(ApiResultCode.C0001);
         }
         return toSuccess(${entityName}Service.updateById(${entityName}));
         #end
     }
 
+    @SaCheckPermission("${moduleName}:${bizName}:remove")
     @Operation(summary = "${featureName}删除")
     @PostMapping("/remove${BizName}")
     @OperationLog(name = "${featureName}", type = OperationLogType.OPERATION_LOG_TYPE_REMOVE)
@@ -87,6 +92,7 @@ public class ${EntityName}Controller extends BaseController {
         return toSuccess(${entityName}Service.removeBatchByIds(dto.getList()));
     }
 
+    @SaCheckPermission("${moduleName}:${bizName}:load")
     @Operation(summary = "${featureName}详情")
     @PostMapping("/load${BizName}")
     public ApiResult load${BizName}(@RequestParam ${pkColumn.javaType} ${pkColumn.javaField}) {
@@ -97,6 +103,7 @@ public class ${EntityName}Controller extends BaseController {
         #end
     }
 
+    @SaCheckPermission("${moduleName}:${bizName}:list")
     @Operation(summary = "${featureName}分页")
     @PostMapping("/get${BizName}PageList")
     @OperationLog(name = "${featureName}", type = OperationLogType.OPERATION_LOG_TYPE_PAGE_LIST)
@@ -107,19 +114,20 @@ public class ${EntityName}Controller extends BaseController {
     #end
         #if(${needPageDto})
         #if(${needVo})
-        return toSuccess(${entityName}Service.loadPage(dto, QueryWrapperUtil.getQueryWrapper(dto), ${EntityName}VO.class));
+        return toSuccess(${entityName}Service.loadPage(dto, DBHelper.getQueryWrapper(dto), ${EntityName}VO.class));
         #else
-        return toSuccess(${entityName}Service.loadPage(dto, QueryWrapperUtil.getQueryWrapper(dto)));
+        return toSuccess(${entityName}Service.loadPage(dto, DBHelper.getQueryWrapper(dto)));
         #end
         #else
         #if(${needVo})
-        return toSuccess(${entityName}Service.loadPage(${entityName}, QueryWrapperUtil.getQueryWrapper(${entityName}), ${EntityName}VO.class));
+        return toSuccess(${entityName}Service.loadPage(${entityName}, DBHelper.getQueryWrapper(${entityName}), ${EntityName}VO.class));
         #else
-        return toSuccess(${entityName}Service.loadPage(${entityName}, QueryWrapperUtil.getQueryWrapper(${entityName})));
+        return toSuccess(${entityName}Service.loadPage(${entityName}, DBHelper.getQueryWrapper(${entityName})));
         #end
         #end
     }
 
+    @SaCheckPermission("${moduleName}:${bizName}:list")
     @Operation(summary = "${featureName}列表")
     @PostMapping("/get${BizName}List")
     @OperationLog(name = "${featureName}", type = OperationLogType.OPERATION_LOG_TYPE_LIST)
@@ -130,66 +138,69 @@ public class ${EntityName}Controller extends BaseController {
     #end
         #if(${needPageDto})
         #if(${needVo})
-        return toSuccess(${entityName}Service.loadMore(QueryWrapperUtil.getQueryWrapper(dto), ${EntityName}VO.class));
+        return toSuccess(${entityName}Service.loadMore(DBHelper.getQueryWrapper(dto), ${EntityName}VO.class));
         #else
-        return toSuccess(${entityName}Service.loadMore(QueryWrapperUtil.getQueryWrapper(dto)));
+        return toSuccess(${entityName}Service.loadMore(DBHelper.getQueryWrapper(dto)));
         #end
         #else
         #if(${needVo})
-        return toSuccess(${entityName}Service.loadMore(QueryWrapperUtil.getQueryWrapper(${entityName}), ${EntityName}VO.class));
+        return toSuccess(${entityName}Service.loadMore(DBHelper.getQueryWrapper(${entityName}), ${EntityName}VO.class));
         #else
-        return toSuccess(${entityName}Service.loadMore(QueryWrapperUtil.getQueryWrapper(${entityName})));
+        return toSuccess(${entityName}Service.loadMore(DBHelper.getQueryWrapper(${entityName})));
         #end
         #end
     }
 
+    @SaCheckPermission("${moduleName}:${bizName}:export")
     @Operation(summary = "${featureName}导出")
     @PostMapping("/export${BizName}List")
     @OperationLog(name = "${featureName}", type = OperationLogType.OPERATION_LOG_TYPE_EXPORT)
     #if(${needPageDto})
     public void export${BizName}List(@RequestBody ${EntityName}PageDTO dto, HttpServletResponse response) throws IOException {
     #if(${needVo})
-        List<${EntityName}VO> ${entityName}List = ${entityName}Service.loadMore(QueryWrapperUtil.getQueryWrapper(dto), ${EntityName}VO.class);
+        List<${EntityName}VO> ${entityName}List = ${entityName}Service.loadMore(DBHelper.getQueryWrapper(dto), ${EntityName}VO.class);
         toExcel("${featureName}.xlsx", ${EntityName}VO.class, ${entityName}List, response);
     #else
-        List<${EntityName}> ${entityName}List = ${entityName}Service.loadMore(QueryWrapperUtil.getQueryWrapper(dto));
+        List<${EntityName}> ${entityName}List = ${entityName}Service.loadMore(DBHelper.getQueryWrapper(dto));
         toExcel("${featureName}.xlsx", ${EntityName}.class, ${entityName}List, response);
     #end
     }
     #else
     public void export${BizName}List(@RequestBody ${EntityName} ${entityName}, HttpServletResponse response) throws IOException {
     #if(${needVo})
-        List<${EntityName}VO> ${entityName}List = ${entityName}Service.loadMore(QueryWrapperUtil.getQueryWrapper(${entityName}), ${EntityName}VO.class);
+        List<${EntityName}VO> ${entityName}List = ${entityName}Service.loadMore(DBHelper.getQueryWrapper(${entityName}), ${EntityName}VO.class);
         toExcel("${featureName}.xlsx", "${featureName}", ${EntityName}VO.class, ${entityName}List, response);
     #else
-        List<${EntityName}> ${entityName}List = ${entityName}Service.loadMore(QueryWrapperUtil.getQueryWrapper(${entityName}));
+        List<${EntityName}> ${entityName}List = ${entityName}Service.loadMore(DBHelper.getQueryWrapper(${entityName}));
         toExcel("${featureName}.xlsx", "${featureName}", ${EntityName}.class, ${entityName}List, response);
     #end
     }
     #end
 
     #if(${templateType} == "2")
+    @SaCheckPermission("${moduleName}:${bizName}:list")
     @Operation(summary = "${featureName}树列表")
     @PostMapping("/get${BizName}TreeList")
-    @Operation(name = "${featureName}", type = OperationLogType.OPERATION_LOG_TYPE_list)
+    @OperationLog(name = "${featureName}", type = OperationLogType.OPERATION_LOG_TYPE_LIST)
     #if(${needPageDto})
-    public ApiResult get${BizNameList}TreeList(@RequestBody ${EntityName}PageDTO dto) {
+    public ApiResult get${BizName}TreeList(@RequestBody ${EntityName}PageDTO dto) {
     #else
-    public ApiResult get${BizNameList}TreeList(@RequestBody ${EntityName} ${entityName})
+    public ApiResult get${BizName}TreeList(@RequestBody ${EntityName} ${entityName})
     #end
         #if(${needVo})
-        List<${EntityName}VO> ${bizName}List = ${entityName}Service.loadMore(QueryWrapperUtil.getQueryWrapper(dto), ${EntityName}VO.class)
+        List<${EntityName}VO> ${bizName}List = ${entityName}Service.loadMore(DBHelper.getQueryWrapper(dto), ${EntityName}VO.class);
         #if(${SortTreeField})
-        List<${EntityName}VO> ${bizName}TreeList = ListHelper.getTreeList(${bizName}List, ${EntityName}VO::getChildren()}, ${EntityName}VO::get${TreeField}(), ${EntityName}VO::get${ParentTreeField}(), ${EntityName}VO::get${SortTreeField}());
+        List<${EntityName}VO> ${bizName}TreeList = ListHelper.getTreeList(${bizName}List, ${EntityName}VO::getChildren, ${EntityName}VO::get${TreeField}, ${EntityName}VO::get${ParentTreeField}, ${EntityName}VO::get${SortTreeField});
         #else
-        List<${EntityName}VO> ${bizName}TreeList = ListHelper.getTreeList(${bizName}List, ${EntityName}VO::getChildren()}, ${EntityName}VO::get${TreeField}(), ${EntityName}VO::get${ParentTreeField}());
+        List<${EntityName}VO> ${bizName}TreeList = ListHelper.getTreeList(${bizName}List, ${EntityName}VO::getChildren, ${EntityName}VO::get${TreeField}, ${EntityName}VO::get${ParentTreeField});
         #end
         #else
-        List<${EntityName}> ${bizName}List = ${entityName}Service.loadMore(QueryWrapperUtil.getQueryWrapper(dto));
+        List<${EntityName}> ${bizName}List = ${entityName}Service.loadMore(DBHelper.getQueryWrapper(dto));
         #if(${SortTreeField})
-        List<${EntityName}> ${bizName}TreeList = ListHelper.getTreeList(${bizName}List, ${EntityName}::getChildren()}, ${EntityName}::get${TreeField}(), ${EntityName}::get${ParentTreeField}(), ${EntityName}::get${SortTreeField}());
+        List<${EntityName}> ${bizName}TreeList = ListHelper.getTreeList(${bizName}List, ${EntityName}::getChildren, ${EntityName}::get${TreeField}, ${EntityName}::get${ParentTreeField}, ${EntityName}::get${SortTreeField});
+        #else
+        List<${EntityName}> ${bizName}TreeList = ListHelper.getTreeList(${bizName}List, ${EntityName}::getChildren, ${EntityName}::get${TreeField}, ${EntityName}::get${ParentTreeField});
         #end
-        List<${EntityName}> ${bizName}TreeList = ListHelper.getTreeList(${bizName}List, ${EntityName}::getChildren()}, ${EntityName}::get${TreeField}(), ${EntityName}::get${ParentTreeField}());
         #end
         return toSuccess(${bizName}TreeList);
     }

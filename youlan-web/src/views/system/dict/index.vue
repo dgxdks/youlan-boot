@@ -53,8 +53,8 @@
     <el-table v-loading="tableLoading" :data="typeList" @selection-change="handleSelectionChange">
       <el-table-column align="center" type="selection" width="55" />
       <el-table-column align="center" label="字典编号" prop="id" />
-      <el-table-column :show-overflow-tooltip="true" align="center" label="字典名称" prop="typeName" />
-      <el-table-column :show-overflow-tooltip="true" align="center" label="字典类型">
+      <el-table-column show-overflow-tooltip align="center" label="字典名称" prop="typeName" />
+      <el-table-column show-overflow-tooltip align="center" label="字典类型">
         <template slot-scope="scope">
           <router-link :to="'/system/dict-data/type/' + scope.row.typeKey" class="link-type">
             <span>{{ scope.row.typeKey }}</span>
@@ -66,8 +66,8 @@
           <dict-tag v-model="scope.row.status" dict-type="db_status" />
         </template>
       </el-table-column>
-      <el-table-column :show-overflow-tooltip="true" align="center" label="备注" prop="remark" />
-      <el-table-column align="center" label="创建时间" prop="createTime" width="180" />
+      <el-table-column show-overflow-tooltip align="center" label="备注" prop="remark" />
+      <el-table-column align="center" label="创建时间" prop="createTime" width="160" />
       <el-table-column align="center" class-name="small-padding fixed-width" label="操作">
         <template slot-scope="scope">
           <base-update-button v-has-perm="['system:dict:update']" type="text" @click="handleUpdate(scope.row)" />

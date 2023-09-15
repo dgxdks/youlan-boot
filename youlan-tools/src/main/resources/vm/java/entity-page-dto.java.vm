@@ -1,14 +1,11 @@
 package ${packageName}.entity.dto;
 
-import com.youlan.common.db.constant.DBConstant;
-import com.youlan.common.db.anno.Query;
-import com.youlan.common.db.entity.dto.PageDTO;
-import com.youlan.common.db.enums.QueryType;
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
-import java.util.List;
+#foreach(${package} in ${pageDtoPackages})
+${package}
+#end
+#foreach(${package} in ${basePackages})
+${package}
+#end
 
 @Data
 @EqualsAndHashCode(callSuper = true)

@@ -26,16 +26,16 @@
     <el-row>
       <el-table ref="table" v-loading="tableLoading" :data="userList" height="260px" @row-click="handleRowClick" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" :selectable="tableSelectEnabled" />
-        <el-table-column label="用户名称" prop="userName" :show-overflow-tooltip="true" />
-        <el-table-column label="用户昵称" prop="nickName" :show-overflow-tooltip="true" />
-        <el-table-column label="邮箱" prop="email" :show-overflow-tooltip="true" />
-        <el-table-column label="手机" prop="userMobile" :show-overflow-tooltip="true" />
+        <el-table-column label="用户名称" prop="userName" show-overflow-tooltip />
+        <el-table-column label="用户昵称" prop="nickName" show-overflow-tooltip />
+        <el-table-column label="邮箱" prop="email" show-overflow-tooltip />
+        <el-table-column label="手机" prop="userMobile" show-overflow-tooltip />
         <el-table-column label="状态" align="center" prop="status">
           <template slot-scope="scope">
             <dict-tag v-model="scope.row.status" dict-type="db_status" />
           </template>
         </el-table-column>
-        <el-table-column label="创建时间" align="center" prop="createTime" width="180" />
+        <el-table-column label="创建时间" align="center" prop="createTime" width="160" />
       </el-table>
       <pagination
         v-show="pageTotal>0"

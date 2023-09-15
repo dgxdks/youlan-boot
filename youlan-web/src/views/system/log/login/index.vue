@@ -66,8 +66,8 @@
           <dict-tag v-model="scope.row.loginStatus" dict-type="sys_login_log_status" />
         </template>
       </el-table-column>
-      <el-table-column :show-overflow-tooltip="true" align="center" label="登录信息" prop="loginMsg" />
-      <el-table-column align="center" label="登录时间" prop="loginTime" width="180" sortable="custom" />
+      <el-table-column show-overflow-tooltip align="center" label="登录信息" prop="loginMsg" />
+      <el-table-column align="center" label="登录时间" prop="loginTime" width="160" sortable="custom" />
     </el-table>
 
     <pagination

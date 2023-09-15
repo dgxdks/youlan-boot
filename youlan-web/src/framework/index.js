@@ -64,6 +64,7 @@ import BaseDrawer from '@/framework/components/BaseDrawer.vue'
 import ImagePreview from '@/framework/components/ImagePreview.vue'
 import BaseCopyIcon from '@/framework/components/BaseCopyIcon.vue'
 import BaseHighLightCode from '@/framework/components/BaseHighLightCode.vue'
+import DictCheckbox from '@/framework/components/DictCheckbox.vue'
 
 // 全局组件
 function mountComponent() {
@@ -75,6 +76,7 @@ function mountComponent() {
   Vue.component('DictTag', DictTag)
   Vue.component('OrgTree', OrgTree)
   Vue.component('DictRadio', DictRadio)
+  Vue.component('DictCheckbox', DictCheckbox)
   Vue.component('BaseDialog', BaseDialog)
   Vue.component('BaseDrawer', BaseDrawer)
   Vue.component('BaseRowSplit', BaseRowSplit)

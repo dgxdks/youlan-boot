@@ -71,38 +71,10 @@
         <el-table v-loading="tableLoading" :data="userList" @selection-change="handleSelectionChange">
           <el-table-column align="center" type="selection" :selectable="tableSelectEnabled" width="50" />
           <el-table-column v-if="columns.id.show" key="id" align="center" label="用户编号" prop="id" />
-          <el-table-column
-            v-if="columns.userName.show"
-            key="userName"
-            :show-overflow-tooltip="true"
-            align="center"
-            label="用户名称"
-            prop="userName"
-          />
-          <el-table-column
-            v-if="columns.nickName.show"
-            key="nickName"
-            :show-overflow-tooltip="true"
-            align="center"
-            label="用户昵称"
-            prop="nickName"
-          />
-          <el-table-column
-            v-if="columns.orgName.show"
-            key="orgName"
-            :show-overflow-tooltip="true"
-            align="center"
-            label="组织机构"
-            prop="orgName"
-          />
-          <el-table-column
-            v-if="columns.userMobile.show"
-            key="userMobile"
-            align="center"
-            label="手机号码"
-            prop="userMobile"
-            width="120"
-          />
+          <el-table-column v-if="columns.userName.show" key="userName" show-overflow-tooltip align="center" label="用户名称" prop="userName" />
+          <el-table-column v-if="columns.nickName.show" key="nickName" show-overflow-tooltip align="center" label="用户昵称" prop="nickName" />
+          <el-table-column v-if="columns.orgName.show" key="orgName" show-overflow-tooltip align="center" label="组织机构" prop="orgName" />
+          <el-table-column v-if="columns.userMobile.show" key="userMobile" align="center" label="手机号码" prop="userMobile" width="120" />
           <el-table-column v-if="columns.status.show" key="status" align="center" label="状态">
             <template slot-scope="scope">
               <base-switch v-model="scope.row.status" :disabled="$auth.isAdmin(scope.row.id)" @change="handleStatusChange(scope.row)" />

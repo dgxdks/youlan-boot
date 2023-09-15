@@ -108,20 +108,20 @@
     <el-table v-loading="loading" :data="jobLogList" @selection-change="handleSelectionChange">
       <el-table-column align="center" type="selection" width="55" />
       <el-table-column align="center" label="日志编号" prop="jobLogId" width="80" />
-      <el-table-column :show-overflow-tooltip="true" align="center" label="任务名称" prop="jobName" />
-      <el-table-column :show-overflow-tooltip="true" align="center" label="任务组名" prop="jobGroup">
+      <el-table-column show-overflow-tooltip align="center" label="任务名称" prop="jobName" />
+      <el-table-column show-overflow-tooltip align="center" label="任务组名" prop="jobGroup">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_job_group" :value="scope.row.jobGroup" />
         </template>
       </el-table-column>
-      <el-table-column :show-overflow-tooltip="true" align="center" label="调用目标字符串" prop="invokeTarget" />
-      <el-table-column :show-overflow-tooltip="true" align="center" label="日志信息" prop="jobMessage" />
+      <el-table-column show-overflow-tooltip align="center" label="调用目标字符串" prop="invokeTarget" />
+      <el-table-column show-overflow-tooltip align="center" label="日志信息" prop="jobMessage" />
       <el-table-column align="center" label="执行状态" prop="status">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_common_status" :value="scope.row.status" />
         </template>
       </el-table-column>
-      <el-table-column align="center" label="执行时间" prop="createTime" width="180">
+      <el-table-column align="center" label="执行时间" prop="createTime" width="160">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
         </template>

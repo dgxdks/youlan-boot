@@ -1,6 +1,6 @@
 package com.youlan.controller.demo;
 
-import com.youlan.framework.controller.BaseController;
+import com.youlan.controller.base.BaseController;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;

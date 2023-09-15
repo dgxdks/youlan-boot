@@ -306,4 +306,59 @@ public class GeneratorUtil {
     public static String getQueryTypeAnnoWithColumn(String column, String queryType) {
         return String.format("@Query(column = \"%s\", type = QueryType.%s)", column, queryType);
     }
+
+    /**
+     * 实体类DTO需要导入的包
+     */
+    public static List<String> getDtoPackages() {
+        return Arrays.asList(
+                "import javax.validation.constraints.*;",
+                "import com.youlan.common.validator.anno.*;"
+        );
+    }
+
+    /**
+     * 实体类PageDTO需要导入的包
+     */
+    public static List<String> getPageDtoPackages() {
+        return Arrays.asList(
+                "import lombok.EqualsAndHashCode;",
+                "import com.youlan.common.db.anno.Query;",
+                "import com.youlan.common.db.enums.QueryType;",
+                "import com.youlan.common.db.entity.dto.PageDTO;"
+        );
+    }
+
+    /**
+     * 实体类VO需要导入的包
+     */
+    public static List<String> getVoPackages() {
+        return Arrays.asList(
+                "import com.alibaba.excel.annotation.ExcelProperty;",
+                "import com.alibaba.excel.annotation.write.style.ColumnWidth;",
+                "import com.alibaba.excel.annotation.write.style.HeadFontStyle;",
+                "import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;",
+                "import com.youlan.system.excel.anno.ExcelDictProperty;",
+                "import com.youlan.system.excel.converter.DictConverter;"
+        );
+    }
+
+    /**
+     * 需要导入的基础包
+     */
+    public static List<String> getBasePackages() {
+        return Arrays.asList(
+                "import com.youlan.common.db.constant.DBConstant;",
+                "import io.swagger.v3.oas.annotations.media.Schema;",
+                "import lombok.Data;",
+                "import java.util.Date;",
+                "import java.util.List;"
+        );
+    }
+
+    public static List<String> getEntityPackages() {
+        return Arrays.asList(
+                "import com.youlan.common.validator.anno.*;"
+        );
+    }
 }

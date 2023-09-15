@@ -2,7 +2,7 @@ package com.youlan.controller.system;
 
 import cn.dev33.satoken.annotation.SaIgnore;
 import com.youlan.common.core.restful.ApiResult;
-import com.youlan.framework.controller.BaseController;
+import com.youlan.controller.base.BaseController;
 import com.youlan.system.entity.dto.AccountLoginDTO;
 import com.youlan.system.service.biz.LoginBizService;
 import com.youlan.system.service.biz.RoleBizService;

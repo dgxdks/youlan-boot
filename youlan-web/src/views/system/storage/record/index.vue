@@ -139,7 +139,7 @@
               {{ editForm.thSize }}字节
             </template>
           </el-form-item>
-          <el-form-item label="缩略图MIME类型：" prop="thContentType" label-width="180">
+          <el-form-item label="缩略图MIME类型：" prop="thContentType" label-width="160">
             {{ editForm.thContentType }}
           </el-form-item>
           <el-form-item label="附加属性：" prop="attr">

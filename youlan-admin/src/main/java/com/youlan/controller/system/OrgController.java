@@ -1,9 +1,9 @@
 package com.youlan.controller.system;
 
 import com.youlan.common.core.restful.ApiResult;
-import com.youlan.framework.anno.OperationLog;
-import com.youlan.framework.constant.OperationLogType;
-import com.youlan.framework.controller.BaseController;
+import com.youlan.system.anno.OperationLog;
+import com.youlan.system.constant.OperationLogType;
+import com.youlan.controller.base.BaseController;
 import com.youlan.system.entity.dto.OrgPageDTO;
 import com.youlan.system.service.OrgService;
 import io.swagger.v3.oas.annotations.Operation;

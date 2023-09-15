@@ -365,6 +365,7 @@ public class GeneratorBizService {
         velocityContext.put("pkColumn", pkGeneratorColumn);
         velocityContext.put("pkColumnComment", pkGeneratorColumn.getColumnComment());
         velocityContext.put("pkJavaField", StrUtil.toCamelCase(pkGeneratorColumn.getColumnName()));
+        velocityContext.put("PkJavaField", NamingCase.toPascalCase(pkGeneratorColumn.getColumnName()));
         //判断是否需要DTO
         velocityContext.put("needDto", yesNo2Boolean(generatorTable.getEntityDto()));
         //判断是否需要VO
@@ -380,6 +381,10 @@ public class GeneratorBizService {
         velocityContext.put("pageDtoColumns", pageDtoColumns);
         //设置搜索框里面要生成的列
         velocityContext.put("queryColumns", ListHelper.filterList(pageDtoColumns, column -> VAL_YES.equals(column.getIsQuery())));
+        //设置表格里面要生成的列
+        velocityContext.put("tableColumns", ListHelper.filterList(generatorColumnList, column -> VAL_YES.equals(column.getIsTable())));
+        //设置编辑里面要生成的列
+        velocityContext.put("editColumns", ListHelper.filterList(generatorColumnList, column -> VAL_YES.equals(column.getIsEdit())));
         //设置VO里面要生成的列
         velocityContext.put("voColumns", generatorVoColumnList(generatorTable, generatorColumnList));
         //树表列首字母大写驼峰Java字段
@@ -390,6 +395,16 @@ public class GeneratorBizService {
         if (StrUtil.isNotBlank(generatorTable.getSortColumnName())) {
             velocityContext.put("SortTreeField", NamingCase.toPascalCase(generatorTable.getSortColumnName()));
         }
+        // Entity需要导入的包
+        velocityContext.put("entityPackages", GeneratorUtil.getEntityPackages());
+        // DTO需要导入的包
+        velocityContext.put("dtoPackages", GeneratorUtil.getDtoPackages());
+        // PageDTO需要导入的包
+        velocityContext.put("pageDtoPackages", GeneratorUtil.getPageDtoPackages());
+        // VO需要导入的包
+        velocityContext.put("voPackages", GeneratorUtil.getVoPackages());
+        // 需要导入的基础包
+        velocityContext.put("basePackages", GeneratorUtil.getBasePackages());
         return velocityContext;
     }
 

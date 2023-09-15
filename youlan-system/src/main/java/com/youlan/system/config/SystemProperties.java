@@ -1,12 +1,10 @@
 package com.youlan.system.config;
 
 import lombok.Data;
-import lombok.experimental.Accessors;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 @Data
-@Accessors(chain = true)
 @ConfigurationProperties(prefix = "youlan.system")
 public class SystemProperties {
     /**
@@ -20,4 +18,10 @@ public class SystemProperties {
      */
     @NestedConfigurationProperty
     private StorageProperties storage;
+
+    /**
+     * 操作日志
+     */
+    @NestedConfigurationProperty
+    private OperationLogProperties operationLog;
 }

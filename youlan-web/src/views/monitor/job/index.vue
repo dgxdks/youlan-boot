@@ -99,14 +99,14 @@
     <el-table v-loading="loading" :data="jobList" @selection-change="handleSelectionChange">
       <el-table-column align="center" type="selection" width="55" />
       <el-table-column align="center" label="任务编号" prop="jobId" width="100" />
-      <el-table-column :show-overflow-tooltip="true" align="center" label="任务名称" prop="jobName" />
+      <el-table-column show-overflow-tooltip align="center" label="任务名称" prop="jobName" />
       <el-table-column align="center" label="任务组名" prop="jobGroup">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_job_group" :value="scope.row.jobGroup" />
         </template>
       </el-table-column>
-      <el-table-column :show-overflow-tooltip="true" align="center" label="调用目标字符串" prop="invokeTarget" />
-      <el-table-column :show-overflow-tooltip="true" align="center" label="cron执行表达式" prop="cronExpression" />
+      <el-table-column show-overflow-tooltip align="center" label="调用目标字符串" prop="invokeTarget" />
+      <el-table-column show-overflow-tooltip align="center" label="cron执行表达式" prop="cronExpression" />
       <el-table-column align="center" label="状态">
         <template slot-scope="scope">
           <el-switch

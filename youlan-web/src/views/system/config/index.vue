@@ -53,16 +53,16 @@
     <el-table v-loading="tableLoading" :data="configList" @selection-change="handleSelectionChange">
       <el-table-column align="center" type="selection" width="55" />
       <el-table-column align="center" label="参数主键" prop="id" />
-      <el-table-column :show-overflow-tooltip="true" align="center" label="参数名称" prop="configName" />
-      <el-table-column :show-overflow-tooltip="true" align="center" label="参数键名" prop="configKey" />
-      <el-table-column :show-overflow-tooltip="true" align="center" label="参数键值" prop="configValue" />
+      <el-table-column show-overflow-tooltip align="center" label="参数名称" prop="configName" />
+      <el-table-column show-overflow-tooltip align="center" label="参数键名" prop="configKey" />
+      <el-table-column show-overflow-tooltip align="center" label="参数键值" prop="configValue" />
       <el-table-column align="center" label="系统内置" prop="configType">
         <template slot-scope="scope">
           <dict-tag v-model="scope.row.configType" dict-type="db_yes_no" />
         </template>
       </el-table-column>
-      <el-table-column :show-overflow-tooltip="true" align="center" label="备注" prop="remark" />
-      <el-table-column align="center" label="创建时间" prop="createTime" width="180" />
+      <el-table-column show-overflow-tooltip align="center" label="备注" prop="remark" />
+      <el-table-column align="center" label="创建时间" prop="createTime" width="160" />
       <el-table-column align="center" class-name="small-padding fixed-width" label="操作">
         <template slot-scope="scope">
           <base-update-button v-has-perm="['system:config:update']" type="text" @click="handleUpdate(scope.row)" />

@@ -1,4 +1,4 @@
-package com.youlan.framework.config;
+package com.youlan.system.config;
 
 import lombok.Data;
 

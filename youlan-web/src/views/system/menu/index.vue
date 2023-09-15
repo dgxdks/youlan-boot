@@ -35,15 +35,15 @@
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
       row-key="id"
     >
-      <el-table-column :show-overflow-tooltip="true" label="菜单名称" prop="menuName" width="160" />
+      <el-table-column show-overflow-tooltip label="菜单名称" prop="menuName" width="160" />
       <el-table-column align="center" label="图标" prop="menuIcon" width="100">
         <template slot-scope="scope">
           <svg-icon :icon-class="scope.row.menuIcon" />
         </template>
       </el-table-column>
       <el-table-column label="排序" prop="sort" width="60" />
-      <el-table-column :show-overflow-tooltip="true" label="权限标识" prop="menuPerms" />
-      <el-table-column :show-overflow-tooltip="true" label="组件路径" prop="componentPath" />
+      <el-table-column show-overflow-tooltip label="权限标识" prop="menuPerms" />
+      <el-table-column show-overflow-tooltip label="组件路径" prop="componentPath" />
       <el-table-column label="状态" prop="status" width="80">
         <template slot-scope="scope">
           <dict-tag v-model="scope.row.status" dict-type="db_status" />

@@ -13,7 +13,6 @@
         <module>youlan-common</module>
         <module>youlan-admin</module>
         <module>youlan-plugin</module>
-        <module>youlan-framework</module>
         <module>youlan-tools</module>
         <module>youlan-web</module>
     </modules>
@@ -151,11 +150,6 @@
             <dependency>
                 <groupId>com.youlan</groupId>
                 <artifactId>youlan-tools</artifactId>
-                <version>${youlan.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.youlan</groupId>
-                <artifactId>youlan-framework</artifactId>
                 <version>${youlan.version}</version>
             </dependency>
             <dependency>

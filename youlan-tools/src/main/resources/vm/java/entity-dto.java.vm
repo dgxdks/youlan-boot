@@ -1,10 +1,11 @@
 package ${packageName}.entity.dto;
 
-import com.youlan.common.db.constant.DBConstant;
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-
-import javax.validation.constraints.*;
+#foreach(${package} in ${dtoPackages})
+${package}
+#end
+#foreach(${package} in ${basePackages})
+${package}
+#end
 
 @Data
 public class ${EntityName}DTO {

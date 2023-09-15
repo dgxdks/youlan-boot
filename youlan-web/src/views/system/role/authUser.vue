@@ -40,16 +40,16 @@
 
     <el-table v-loading="tableLoading" :data="userList" @selection-change="handleSelectionChange">
       <el-table-column align="center" type="selection" width="55" />
-      <el-table-column :show-overflow-tooltip="true" label="用户名称" prop="userName" />
-      <el-table-column :show-overflow-tooltip="true" label="用户昵称" prop="nickName" />
-      <el-table-column :show-overflow-tooltip="true" label="邮箱" prop="email" />
-      <el-table-column :show-overflow-tooltip="true" label="手机" prop="userMobile" />
+      <el-table-column show-overflow-tooltip label="用户名称" prop="userName" />
+      <el-table-column show-overflow-tooltip label="用户昵称" prop="nickName" />
+      <el-table-column show-overflow-tooltip label="邮箱" prop="email" />
+      <el-table-column show-overflow-tooltip label="手机" prop="userMobile" />
       <el-table-column align="center" label="状态" prop="status">
         <template slot-scope="scope">
           <dict-tag v-model="scope.row.status" dict-type="db_status" />
         </template>
       </el-table-column>
-      <el-table-column align="center" label="创建时间" prop="createTime" width="180">
+      <el-table-column align="center" label="创建时间" prop="createTime" width="160">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
         </template>

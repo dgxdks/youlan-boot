@@ -5,7 +5,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.db.entity.dto.ListDTO;
 import com.youlan.common.db.helper.DBHelper;
-import com.youlan.framework.controller.BaseController;
+import com.youlan.controller.base.BaseController;
 import com.youlan.system.entity.OperationLog;
 import com.youlan.system.entity.dto.OperationLogPageDTO;
 import com.youlan.system.service.OperationLogService;

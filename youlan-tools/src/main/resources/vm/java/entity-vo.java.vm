@@ -1,16 +1,11 @@
 package ${packageName}.entity.vo;
 
-import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.annotation.write.style.ColumnWidth;
-import com.alibaba.excel.annotation.write.style.HeadFontStyle;
-import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
-import com.youlan.system.excel.anno.ExcelDictProperty;
-import com.youlan.system.excel.converter.DictConverter;
-import com.youlan.common.db.constant.DBConstant;
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-
-import java.util.List;
+#foreach(${package} in ${voPackages})
+${package}
+#end
+#foreach(${package} in ${basePackages})
+${package}
+#end
 
 @Data
 @ColumnWidth(20)
@@ -30,7 +25,11 @@ public class ${EntityName}VO {
 #end
 #if(${templateType} == "2")
     @Schema(description = "${featureName}子集")
+    #if(${needVo})
     private List<${EntityName}VO> children;
+    #else
+    private List<${EntityName}> children;
+    #end
 
 #end
 }

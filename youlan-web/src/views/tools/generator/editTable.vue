@@ -33,12 +33,7 @@
               <el-input v-model="scope.row.columnComment" />
             </template>
           </el-table-column>
-          <el-table-column
-            show-overflow-tooltip
-            label="字典类型"
-            min-width="10%"
-            prop="columnType"
-          />
+          <el-table-column show-overflow-tooltip label="列类型" min-width="10%" prop="columnType" />
           <el-table-column label="Java类型" min-width="11%">
             <template slot-scope="scope">
               <dict-select v-model="scope.row.javaType" dict-type="tools_generator_java_type" />
@@ -130,6 +125,18 @@
                 style="width: 100%"
                 @change="handleMenuChange"
               />
+            </el-form-item>
+            <el-form-item prop="entityDto">
+              <base-form-label slot="label" content="实体类DTO只包含参与页面新增修改的字段，例如 数据新增、数据编辑，数据库实体类字段较多时建议使用" label="实体类DTO" />
+              <dict-radio v-model="generatorTable.entityDto" dict-type="db_yes_no" />
+            </el-form-item>
+            <el-form-item prop="entityPageDto">
+              <base-form-label slot="label" content="实体类分页DTO只包含参与页面列表相关查询的字段，例如 分页查询、列表查询、列表导出，数据库实体类字段较多时建议使用" label="实体类PageDTO" />
+              <dict-radio v-model="generatorTable.entityPageDto" dict-type="db_yes_no" />
+            </el-form-item>
+            <el-form-item prop="entityVo">
+              <base-form-label slot="label" content="实体类VO只包含参与接口返回数据的字段，例如 各种查询返回的数据、Excel表格导出，数据库实体类字段较多时建议使用" label="实体类VO" />
+              <dict-radio v-model="generatorTable.entityVo" dict-type="db_yes_no" />
             </el-form-item>
             <el-form-item prop="generatorType">
               <base-form-label slot="label" content="默认为zip压缩包下载，也可以自定义生成路径" label="生成代码方式" />
@@ -244,18 +251,21 @@ export default {
         generatorPath: null,
         columnName: null,
         parentColumnName: null,
-        sortColumnName: null
+        sortColumnName: null,
+        entityDto: null,
+        entityPageDto: null,
+        entityVo: null
       },
       // 基础信息校验规则
       basicTableRules: {
         tableName: [
-          { required: true, message: '请输入表名称', trigger: 'blur' }
+          this.$validator.requiredRule('请输入表名称')
         ],
         tableComment: [
-          { required: true, message: '请输入表描述', trigger: 'blur' }
+          this.$validator.requiredRule('请输入描述')
         ],
         entityName: [
-          { required: true, message: '请输入实体类名称', trigger: 'blur' }
+          this.$validator.requiredRule('请输入实体类名称')
         ]
       },
       // 生成信息校验规则
@@ -279,6 +289,15 @@ export default {
         ],
         generatorType: [
           this.$validator.requiredRule('生成类型必须指定')
+        ],
+        entityDto: [
+          this.$validator.requiredRule('请指定是否使用实体类DTO')
+        ],
+        entityPageDto: [
+          this.$validator.requiredRule('请指定是否使用实体类分页DTO')
+        ],
+        entityVo: [
+          this.$validator.requiredRule('请指定是否使用实体类VO')
         ]
       },
       // 字典列表

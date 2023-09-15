@@ -29,7 +29,7 @@
       <el-table-column align="center" label="角色编号" prop="id" />
       <el-table-column align="center" label="角色名称" prop="roleName" />
       <el-table-column align="center" label="权限字符" prop="roleStr" />
-      <el-table-column align="center" label="创建时间" prop="createTime" width="180" />
+      <el-table-column align="center" label="创建时间" prop="createTime" width="160" />
     </el-table>
     <pagination
       v-show="pageTotal>0"

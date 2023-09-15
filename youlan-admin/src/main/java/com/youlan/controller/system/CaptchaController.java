@@ -11,7 +11,7 @@ import com.youlan.common.captcha.helper.AbstractImageCaptchaHelper;
 import com.youlan.common.captcha.holder.CaptchaHelperHolder;
 import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.crypto.anno.DecryptRequest;
-import com.youlan.framework.controller.BaseController;
+import com.youlan.controller.base.BaseController;
 import com.youlan.system.config.CaptchaProperties;
 import com.youlan.system.config.SystemProperties;
 import com.youlan.system.helper.SystemConfigHelper;

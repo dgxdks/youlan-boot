@@ -50,15 +50,15 @@
     <el-table v-loading="tableLoading" :data="roleList" @selection-change="handleSelectionChange">
       <el-table-column align="center" type="selection" :selectable="tableSelectEnabled" width="55" />
       <el-table-column label="角色编号" prop="id" width="120" />
-      <el-table-column :show-overflow-tooltip="true" label="角色名称" prop="roleName" width="150" />
-      <el-table-column :show-overflow-tooltip="true" label="角色字符" prop="roleStr" width="150" />
+      <el-table-column show-overflow-tooltip label="角色名称" prop="roleName" width="150" />
+      <el-table-column show-overflow-tooltip label="角色字符" prop="roleStr" width="150" />
       <el-table-column label="显示顺序" prop="sort" width="100" />
       <el-table-column align="center" label="状态" width="100">
         <template slot-scope="scope">
           <base-switch v-model="scope.row.status" :disabled="$auth.isAdminRole(scope.row.id)" @change="handleStatusChange(scope.row)" />
         </template>
       </el-table-column>
-      <el-table-column align="center" label="创建时间" prop="createTime" width="180" />
+      <el-table-column align="center" label="创建时间" prop="createTime" width="160" />
       <el-table-column align="center" class-name="small-padding fixed-width" label="操作">
         <template v-if="!$auth.isAdminRole(scope.row.id)" slot-scope="scope">
           <base-update-button v-has-perm="['system:role:update']" type="text" @click="handleUpdate(scope.row)" />
