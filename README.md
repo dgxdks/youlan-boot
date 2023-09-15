@@ -28,7 +28,7 @@
 - 树表父子列不能一样
 - 缺少全局XSS攻击过滤器
 - controller缺少权限注解
-
+- 树列需要支持clearable
 # 规范
 
 - 默认生成的service尽量只参与底层数据库查询逻辑，且尽量不注入其他内容，例如其他Service或Spring受管Bean或缓存工具

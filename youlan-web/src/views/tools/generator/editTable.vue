@@ -163,7 +163,7 @@
             <base-row-split2>
               <el-form-item>
                 <base-form-label slot="label" content="树结构表列名，一般都是主键或者能够保证唯一的列， 如：org_id" label="树表列名" />
-                <el-select v-model="generatorTable.columnName" placeholder="请选择树表列名" style="width: 100%;">
+                <el-select v-model="generatorTable.columnName" clearable placeholder="请选择树表列名" style="width: 100%;">
                   <el-option
                     v-for="column in generatorColumnList"
                     :key="column.columnName"
@@ -174,7 +174,7 @@
               </el-form-item>
               <el-form-item>
                 <base-form-label slot="label" content="树结构表指向父级的列名称， 如：子parent_org_id -> 父org_id" label="树表父列名" />
-                <el-select v-model="generatorTable.parentColumnName" placeholder="请选择树表父列名" style="width: 100%;">
+                <el-select v-model="generatorTable.parentColumnName" clearable placeholder="请选择树表父列名" style="width: 100%;">
                   <el-option
                     v-for="column in generatorColumnList"
                     :key="column.columnName"
@@ -185,7 +185,7 @@
               </el-form-item>
               <el-form-item>
                 <base-form-label slot="label" content="如果需要对表数据进行排序排序则可指定排序列，列对应的Java类型需要实现Comparable接口，默认升序， 如：org_sort" label="树表排序列名" />
-                <el-select v-model="generatorTable.sortColumnName" placeholder="树表排序列名" style="width: 100%;">
+                <el-select v-model="generatorTable.sortColumnName" clearable placeholder="树表排序列名" style="width: 100%;">
                   <el-option
                     v-for="column in generatorColumnList"
                     :key="column.columnName"

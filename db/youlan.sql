@@ -252,7 +252,7 @@ values (101, '用户管理', '2', 'system:user', 100, 'user', 'user', '', '1', '
         'monitor/onlineUser/index', '2', 0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
        (202, '缓存监控', '2', 'monitor:cacheMonitor', 200, 'redis', 'cacheMonitor' '', '', '1',
         'monitor/cacheMonitor/index', '2', 0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (301, '系统接口', '2', 'tools:swagger', 300, 'swagger', '/doc.html', '', '1', '', '1', 0, '1', '1', '', 100,
+       (301, '系统接口', '2', 'tools:swagger', 300, 'swagger', 'http://localhost:4085/doc.html', '', '1', '', '1', 0, '1', '1', '', 100,
         'admin', 0, '', sysdate(), null),
        (302, '代码生成', '2', 'tools:generator', 300, 'code', 'generator', '', '1', 'tools/generator/index', '2', 0,
         '1', '1', '', 100, 'admin', 0, '', sysdate(), null);

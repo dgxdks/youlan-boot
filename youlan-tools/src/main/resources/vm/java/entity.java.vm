@@ -67,9 +67,9 @@ public class ${EntityName} extends PageDTO {
     @Schema(description = "${featureName}子集")
     @TableField(exist = false)
     #if(${needVo})
-    private List<${EntityName}VO> children;
+    private List<${EntityName}VO> children = new ArrayList();
     #else
-    private List<${EntityName}> children;
+    private List<${EntityName}> children = new ArrayList();
     #end
 
 #end
