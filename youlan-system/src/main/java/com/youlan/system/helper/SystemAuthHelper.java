@@ -8,6 +8,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
+import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.system.entity.auth.SystemAuthInfo;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.youlan.system.constant.SystemConstant.*;
 
@@ -50,6 +52,31 @@ public class SystemAuthHelper {
     public static void setSystemAuthInfo(SystemAuthInfo authInfo) {
         SaSession tokenSession = StpUtil.getTokenSession();
         tokenSession.set(SaSession.USER, authInfo);
+    }
+
+
+    /**
+     * 根据token获取用户信息
+     */
+    public static SystemAuthInfo getSystemAuthInfoByTokenValue(String tokenValue) {
+        try {
+            SaSession tokenSession = StpUtil.getTokenSessionByToken(tokenValue);
+            return tokenSession.getModel(SaSession.USER, SystemAuthInfo.class);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return null;
+        }
+    }
+
+    /**
+     * 根据token强踢用户
+     */
+    public static void kickoutByTokenValue(String tokenValue) {
+        try {
+            StpUtil.kickoutByTokenValue(tokenValue);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
     }
 
     /**
@@ -408,5 +435,16 @@ public class SystemAuthHelper {
     public static void cleanUserMenuPerms(String roleStr) {
         SaSession session = SaSessionCustomUtil.getSessionById(ROLE_STR_PREFIX + roleStr);
         session.delete(SaSession.PERMISSION_LIST);
+    }
+
+    public static List<String> searchTokenValue(String keyword, int start, int size, boolean sortType) {
+        List<String> tokenKeys = StpUtil.searchTokenValue(keyword, start, size, sortType);
+        //不知道是不是sa-token的bug，返回的竟然是token对应的redis key，导致如果用这个值取数据会取出问题，需要自己截取一下真实的token
+        if (CollectionUtil.isEmpty(tokenKeys)) {
+            return new ArrayList<>();
+        }
+        return tokenKeys.stream()
+                .map(tokenKey -> StrUtil.subAfter(tokenKey, StringPool.COLON, true))
+                .collect(Collectors.toList());
     }
 }

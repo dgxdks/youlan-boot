@@ -69,7 +69,7 @@ export default {
   methods: {
     getList() {
       getOrgTreeList({}).then(res => {
-        this.treeList = res
+        this.treeList = res.data
         this.$nextTick(() => {
           this.setCheckedKeys(this.checkedKeys)
         })

@@ -56,7 +56,7 @@ export default {
   methods: {
     getList() {
       getRoleList({}).then(res => {
-        this.roleOptions = res
+        this.roleOptions = res.data
       })
     }
   }

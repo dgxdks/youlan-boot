@@ -40,7 +40,7 @@
     "axios": "0.24.0",
     "core-js": "3.25.3",
     "crypto-js": "^4.1.1",
-    "echarts": "5.4.0",
+    "echarts": "5.4.3",
     "element-ui": "2.15.13",
     "file-saver": "2.0.5",
     "fuse.js": "6.4.3",

@@ -265,7 +265,7 @@ export default {
   created() {
     this.getList()
     this.$config.getInitPassword().then(res => {
-      res.configValue && (this.initPassword = res.configValue)
+      res.configValue && (this.initPassword = res.data.configValue)
     })
   },
   methods: {
@@ -273,8 +273,8 @@ export default {
     getList() {
       this.openTableLoading()
       getUserPageList(this.queryForm).then(res => {
-        this.userList = res.rows
-        this.pageTotal = res.total
+        this.userList = res.data.rows
+        this.pageTotal = res.data.total
         this.closeTableLoading()
       })
     },
@@ -303,7 +303,7 @@ export default {
       loadUser({ id }).then(res => {
         this.openEdit('修改用户')
         this.editForm = {
-          ...res
+          ...res.data
         }
       })
     },

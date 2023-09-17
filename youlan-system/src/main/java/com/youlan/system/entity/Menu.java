@@ -3,6 +3,10 @@ package com.youlan.system.entity;
 import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.youlan.common.db.anno.Query;
 import com.youlan.common.db.constant.DBConstant;
 import com.youlan.common.db.entity.dto.PageDTO;
@@ -23,6 +27,7 @@ public class Menu extends PageDTO {
 
     @Schema(description = DBConstant.DESC_ID)
     @TableId(type = IdType.AUTO)
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
     @NotBlank(message = "菜单名称不能为空")

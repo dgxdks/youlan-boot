@@ -1,18 +1,19 @@
 import request from '@/framework/tools/request'
 
-// 查询在线用户列表
-export function list(query) {
+// 在线用户分页
+export function getOnlineUserPageList(data) {
   return request({
-    url: '/monitor/online/list',
-    method: 'get',
-    params: query
+    url: '/monitor/online/getOnlineUserPageList',
+    method: 'post',
+    data
   })
 }
 
-// 强退用户
-export function forceLogout(tokenId) {
+// 在线强踢
+export function kickoutOnlineUser(params) {
   return request({
-    url: '/monitor/online/' + tokenId,
-    method: 'delete'
+    url: '/monitor/online/kickoutOnlineUser',
+    method: 'post',
+    params
   })
 }

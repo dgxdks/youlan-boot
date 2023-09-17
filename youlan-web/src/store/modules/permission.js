@@ -35,7 +35,7 @@ const permission = {
         // 向后端请求路由数据
         getMenuTreeList().then(res => {
           // 获取菜单路由
-          const menuRoutes = menuListConvertToRoutes(res)
+          const menuRoutes = menuListConvertToRoutes(res.data)
           // 获取动态权限路由
           const dynamicPermissionRoutes = getPermissionDynamicRoutes()
           // 设置符合权限的动态权限路由

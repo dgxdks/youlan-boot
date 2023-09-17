@@ -36,6 +36,7 @@
         <knife4j.version>4.1.0</knife4j.version>
         <arthas.version>3.7.1</arthas.version>
         <satoken.version>1.35.0.RC</satoken.version>
+        <sms4j.version>2.2.0</sms4j.version>
         <spring.file.storage.version>1.0.2</spring.file.storage.version>
         <httpclient.version>4.5.14</httpclient.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -131,6 +132,11 @@
                 <groupId>cn.xuyanwu</groupId>
                 <artifactId>spring-file-storage</artifactId>
                 <version>${spring.file.storage.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dromara.sms4j</groupId>
+                <artifactId>sms4j-spring-boot-starter</artifactId>
+                <version>${sms4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>

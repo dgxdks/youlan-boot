@@ -1,87 +1,60 @@
 <template>
   <div class="app-container">
-    <el-form ref="queryForm" :inline="true" :model="queryParams" label-width="68px" size="small">
-      <el-form-item label="登录地址" prop="ipaddr">
-        <el-input
-          v-model="queryParams.ipaddr"
-          clearable
-          placeholder="请输入登录地址"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
+    <el-form ref="queryForm" :inline="true" :model="queryForm" label-width="68px" size="small">
       <el-form-item label="用户名称" prop="userName">
         <el-input
-          v-model="queryParams.userName"
+          v-model="queryForm.userName"
           clearable
           placeholder="请输入用户名称"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
       <el-form-item>
-        <el-button icon="el-icon-search" size="mini" type="primary" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        <base-search-button @click="handleQuery" />
+        <base-reset-button @click="handleResetQuery" />
       </el-form-item>
 
     </el-form>
-    <el-table
-      v-loading="loading"
-      :data="list.slice((pageNum-1)*pageSize,pageNum*pageSize)"
-      style="width: 100%;"
-    >
-      <el-table-column align="center" label="序号" type="index">
-        <template slot-scope="scope">
-          <span>{{ (pageNum - 1) * pageSize + scope.$index + 1 }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip align="center" label="会话编号" prop="tokenId" />
-      <el-table-column show-overflow-tooltip align="center" label="登录名称" prop="userName" />
-      <el-table-column align="center" label="部门名称" prop="deptName" />
-      <el-table-column show-overflow-tooltip align="center" label="主机" prop="ipaddr" />
+    <el-table v-loading="tableLoading" :data="onlineList">
+      <el-table-column show-overflow-tooltip align="center" label="会话编号" prop="tokenValue" />
+      <el-table-column show-overflow-tooltip align="center" label="用户名称" prop="userName" />
+      <el-table-column align="center" label="组织机构" prop="orgName" />
+      <el-table-column show-overflow-tooltip align="center" label="主机" prop="loginIp" />
       <el-table-column show-overflow-tooltip align="center" label="登录地点" prop="loginLocation" />
       <el-table-column align="center" label="浏览器" prop="browser" />
       <el-table-column align="center" label="操作系统" prop="os" />
-      <el-table-column align="center" label="登录时间" prop="loginTime" width="160">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.loginTime) }}</span>
-        </template>
-      </el-table-column>
+      <el-table-column align="center" label="登录时间" prop="loginTime" width="160" />
       <el-table-column align="center" class-name="small-padding fixed-width" label="操作">
         <template slot-scope="scope">
-          <el-button
-            v-has-perm="['monitor:online:forceLogout']"
-            icon="el-icon-delete"
-            size="mini"
-            type="text"
-            @click="handleForceLogout(scope.row)"
-          >强退
-          </el-button>
+          <base-remove-button v-has-perm="['monitor:onlineUser:kickout']" type="text" @click="handleKickout(scope.row)">强踢</base-remove-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :limit.sync="pageSize" :page.sync="pageNum" :total="total" />
+    <pagination
+      :limit.sync="queryForm.pageSize"
+      :page.sync="queryForm.pageNum"
+      @pagination="getList"
+    />
   </div>
 </template>
 
 <script>
-import { forceLogout, list } from '@/api/monitor/online'
+import { getOnlineUserPageList, kickoutOnlineUser } from '@/api/monitor/online'
+import crud from '@/framework/mixin/crud'
 
 export default {
-  name: 'Online',
+  name: 'OnlineUser',
+  mixins: [crud],
   data() {
     return {
-      // 遮罩层
-      loading: true,
-      // 总条数
-      total: 0,
-      // 表格数据
-      list: [],
+      // 在线用户数据
+      onlineList: [],
       pageNum: 1,
       pageSize: 10,
       // 查询参数
-      queryParams: {
-        ipaddr: undefined,
-        userName: undefined
+      queryForm: {
+        userName: null
       }
     }
   },
@@ -89,32 +62,32 @@ export default {
     this.getList()
   },
   methods: {
-    /** 查询登录日志列表 */
+    // 查询登录日志列表
     getList() {
-      this.loading = true
-      list(this.queryParams).then(response => {
-        this.list = response.rows
-        this.total = response.total
-        this.loading = false
+      this.openTableLoading()
+      getOnlineUserPageList(this.queryForm).then(res => {
+        this.onlineList = res.data.rows
+        this.pageTotal = res.data.total
+        this.closeTableLoading()
       })
     },
-    /** 搜索按钮操作 */
+    // 搜索按钮
     handleQuery() {
-      this.pageNum = 1
+      this.resetPageNum()
       this.getList()
     },
-    /** 重置按钮操作 */
-    resetQuery() {
-      this.resetForm('queryForm')
+    // 重置按钮
+    handleResetQuery() {
+      this.$refs.queryForm && this.$refs.queryForm.resetFields()
       this.handleQuery()
     },
-    /** 强退按钮操作 */
-    handleForceLogout(row) {
-      this.$modal.confirm('是否确认强退名称为"' + row.userName + '"的用户？').then(function() {
-        return forceLogout(row.tokenId)
+    // 强踢按钮
+    handleKickout(row) {
+      this.$modal.confirm('是否确认强踢名称为"' + row.userName + '"的用户？').then(function() {
+        return kickoutOnlineUser({ tokenValue: row.tokenValue })
       }).then(() => {
         this.getList()
-        this.$modal.msgSuccess('强退成功')
+        this.$modal.success('强退成功')
       }).catch(() => {
       })
     }

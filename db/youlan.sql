@@ -249,10 +249,11 @@ values (101, '用户管理', '2', 'system:user', 100, 'user', 'user', '', '1', '
        (110, '存储管理', '1', 'system:storage', 100, 'storage', 'storage', '', '2', '', '2', 0, '1', '1', '', 100,
         'admin', 0, '', sysdate(), null),
        (201, '在线用户', '2', 'monitor:onlineUser', 200, 'online', 'onlineUser' '', '', '1',
-        'monitor/onlineUser/index', '2', 0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
+        'monitor/online/index', '2', 0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
        (202, '缓存监控', '2', 'monitor:cacheMonitor', 200, 'redis', 'cacheMonitor' '', '', '1',
-        'monitor/cacheMonitor/index', '2', 0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (301, '系统接口', '2', 'tools:swagger', 300, 'swagger', 'http://localhost:4085/doc.html', '', '1', '', '1', 0, '1', '1', '', 100,
+        'monitor/cache/index', '2', 0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (301, '系统接口', '2', 'tools:swagger', 300, 'swagger', 'http://localhost:4085/doc.html', '', '1', '', '1', 0,
+        '1', '1', '', 100,
         'admin', 0, '', sysdate(), null),
        (302, '代码生成', '2', 'tools:generator', 300, 'code', 'generator', '', '1', 'tools/generator/index', '2', 0,
         '1', '1', '', 100, 'admin', 0, '', sysdate(), null);
@@ -279,7 +280,7 @@ values (20000, '用户新增', '3', 'system:user:add', 101, '', '', '', '1', '',
         0, '', sysdate(), null),
        (20003, '用户详情', '3', 'system:user:load', 101, '', '', '', '1', '', '2', 4, '1', '1', '', 100, 'admin',
         0, '', sysdate(), null),
-       (20004, '用户分页', '3', 'system:user:list', 101, '', '', '', '1', '', '2', 5, '1', '1', '', 100,
+       (20004, '用户列表', '3', 'system:user:list', 101, '', '', '', '1', '', '2', 5, '1', '1', '', 100,
         'admin', 0, '', sysdate(), null),
        (20005, '用户导出', '3', 'system:user:export', 101, '', '', '', '1', '', '2', 6, '1', '1', '', 100,
         'admin', 0, '', sysdate(), null),
@@ -297,7 +298,7 @@ values (20050, '角色新增', '3', 'system:role:add', 102, '', '', '', '1', '',
         0, '', sysdate(), null),
        (20053, '角色详情', '3', 'system:role:load', 102, '', '', '', '1', '', '2', 4, '1', '1', '', 100, 'admin',
         0, '', sysdate(), null),
-       (20054, '角色分页', '3', 'system:role:list', 102, '', '', '', '1', '', '2', 5, '1', '1', '', 100,
+       (20054, '角色列表', '3', 'system:role:list', 102, '', '', '', '1', '', '2', 5, '1', '1', '', 100,
         'admin', 0, '', sysdate(), null),
        (20055, '角色导出', '3', 'system:role:export', 102, '', '', '', '1', '', '2', 6, '1', '1', '', 100,
         'admin', 0, '', sysdate(), null);
@@ -305,13 +306,13 @@ values (20050, '角色新增', '3', 'system:role:add', 102, '', '', '', '1', '',
 insert into t_sys_menu
 values (20100, '菜单新增', '3', 'system:menu:add', 103, '', '', '', '1', '', '2', 1, '1', '1', '', 100, 'admin', 0,
         '', sysdate(), null),
-       (200101, '菜单修改', '3', 'system:menu:update', 103, '', '', '', '1', '', '2', 2, '1', '1', '', 100, 'admin',
+       (20101, '菜单修改', '3', 'system:menu:update', 103, '', '', '', '1', '', '2', 2, '1', '1', '', 100, 'admin',
         0, '', sysdate(), null),
-       (200102, '菜单删除', '3', 'system:menu:remove', 103, '', '', '', '1', '', '2', 3, '1', '1', '', 100, 'admin',
+       (20102, '菜单删除', '3', 'system:menu:remove', 103, '', '', '', '1', '', '2', 3, '1', '1', '', 100, 'admin',
         0, '', sysdate(), null),
        (20103, '菜单详情', '3', 'system:menu:load', 103, '', '', '', '1', '', '2', 4, '1', '1', '', 100, 'admin',
         0, '', sysdate(), null),
-       (20104, '菜单分页', '3', 'system:menu:list', 103, '', '', '', '1', '', '2', 5, '1', '1', '', 100,
+       (20104, '菜单列表', '3', 'system:menu:list', 103, '', '', '', '1', '', '2', 5, '1', '1', '', 100,
         'admin', 0, '', sysdate(), null);
 -- 部门管理按钮
 insert into t_sys_menu
@@ -323,7 +324,7 @@ values (20150, '部门新增', '3', 'system:dept:add', 104, '', '', '', '1', '',
         0, '', sysdate(), null),
        (20153, '部门详情', '3', 'system:dept:load', 104, '', '', '', '1', '', '2', 4, '1', '1', '', 100, 'admin',
         0, '', sysdate(), null),
-       (20154, '部门分页', '3', 'system:dept:list', 104, '', '', '', '1', '', '2', 5, '1', '1', '', 100,
+       (20154, '部门列表', '3', 'system:dept:list', 104, '', '', '', '1', '', '2', 5, '1', '1', '', 100,
         'admin', 0, '', sysdate(), null);
 -- 岗位管理按钮
 insert into t_sys_menu
@@ -335,7 +336,7 @@ values (20200, '岗位新增', '3', 'system:post:add', 105, '', '', '', '1', '',
         0, '', sysdate(), null),
        (20203, '岗位详情', '3', 'system:post:load', 105, '', '', '', '1', '', '2', 4, '1', '1', '', 100, 'admin',
         0, '', sysdate(), null),
-       (20204, '岗位分页', '3', 'system:post:list', 105, '', '', '', '1', '', '2', 5, '1', '1', '', 100,
+       (20204, '岗位列表', '3', 'system:post:list', 105, '', '', '', '1', '', '2', 5, '1', '1', '', 100,
         'admin', 0, '', sysdate(), null),
        (20205, '岗位导出', '3', 'system:post:export', 105, '', '', '', '1', '', '2', 6, '1', '1', '', 100,
         'admin', 0, '', sysdate(), null);
@@ -349,7 +350,7 @@ values (20250, '字典新增', '3', 'system:dict:add', 106, '', '', '', '1', '',
         0, '', sysdate(), null),
        (20253, '字典详情', '3', 'system:dict:load', 106, '', '', '', '1', '', '2', 4, '1', '1', '', 100, 'admin',
         0, '', sysdate(), null),
-       (20254, '字典分页', '3', 'system:dict:list', 106, '', '', '', '1', '', '2', 5, '1', '1', '', 100,
+       (20254, '字典列表', '3', 'system:dict:list', 106, '', '', '', '1', '', '2', 5, '1', '1', '', 100,
         'admin', 0, '', sysdate(), null),
        (20255, '字典导出', '3', 'system:dict:export', 106, '', '', '', '1', '', '2', 6, '1', '1', '', 100,
         'admin', 0, '', sysdate(), null);
@@ -363,7 +364,7 @@ values (20300, '参数新增', '3', 'system:config:add', 107, '', '', '', '1', '
         'admin', 0, '', sysdate(), null),
        (20303, '参数详情', '3', 'system:config:load', 107, '', '', '', '1', '', '2', 4, '1', '1', '', 100, 'admin',
         0, '', sysdate(), null),
-       (20304, '参数分页', '3', 'system:config:list', 107, '', '', '', '1', '', '2', 5, '1', '1', '', 100,
+       (20304, '参数列表', '3', 'system:config:list', 107, '', '', '', '1', '', '2', 5, '1', '1', '', 100,
         'admin', 0, '', sysdate(), null),
        (20305, '参数导出', '3', 'system:config:export', 107, '', '', '', '1', '', '2', 6, '1', '1', '', 100,
         'admin', 0, '', sysdate(), null);
@@ -377,7 +378,7 @@ values (20350, '通知新增', '3', 'system:notice:add', 108, '', '', '', '1', '
         'admin', 0, '', sysdate(), null),
        (20353, '通知详情', '3', 'system:notice:load', 108, '', '', '', '1', '', '2', 4, '1', '1', '', 100, 'admin',
         0, '', sysdate(), null),
-       (20354, '通知分页', '3', 'system:notice:list', 108, '', '', '', '1', '', '2', 5, '1', '1', '', 100,
+       (20354, '通知列表', '3', 'system:notice:list', 108, '', '', '', '1', '', '2', 5, '1', '1', '', 100,
         'admin', 0, '', sysdate(), null);
 -- 操作日志按钮
 insert into t_sys_menu
@@ -385,7 +386,7 @@ values (20400, '日志删除', '3', 'system:operationLog:remove', 10000, '', '',
         '', 100, 'admin', 0, '', sysdate(), null),
        (20401, '日志详情', '3', 'system:operationLog:load', 10000, '', '', '', '1', '', '2', 2, '1', '1',
         '', 100, 'admin', 0, '', sysdate(), null),
-       (20402, '日志分页', '3', 'system:operationLog:list', 10000, '', '', '', '1', '', '2', 3, '1',
+       (20402, '日志列表', '3', 'system:operationLog:list', 10000, '', '', '', '1', '', '2', 3, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null),
        (20403, '日志导出', '3', 'system:operationLog:export', 10000, '', '', '', '1', '', '2', 4, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null);
@@ -395,7 +396,7 @@ values (20450, '日志删除', '3', 'system:loginLog:remove', 10001, '', '', '',
         '', 100, 'admin', 0, '', sysdate(), null),
        (20451, '日志详情', '3', 'system:loginLog:load', 10001, '', '', '', '1', '', '2', 2, '1', '1',
         '', 100, 'admin', 0, '', sysdate(), null),
-       (20452, '日志分页', '3', 'system:loginLog:list', 10001, '', '', '', '1', '', '2', 3, '1',
+       (20452, '日志列表', '3', 'system:loginLog:list', 10001, '', '', '', '1', '', '2', 3, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null),
        (20453, '日志导出', '3', 'system:loginLog:export', 10001, '', '', '', '1', '', '2', 4, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null),
@@ -403,12 +404,10 @@ values (20450, '日志删除', '3', 'system:loginLog:remove', 10001, '', '', '',
         '1', '', 100, 'admin', 0, '', sysdate(), null);
 -- 在线用户按钮
 insert into t_sys_menu
-values (20500, '在线分页', '3', 'system:onlineUser:list', 201, '', '', '', '1', '', '2', 1, '1', '1', '', 100, 'admin',
+values (20500, '在线列表', '3', 'monitor:onlineUser:list', 201, '', '', '', '1', '', '2', 1, '1', '1', '', 100, 'admin',
         0, '', sysdate(), null),
-       (20501, '批量强退', '3', 'system:onlineUser:logoutBatch', 201, '', '', '', '1', '', '2', 2, '1', '1',
-        '', 100, 'admin', 0, '', sysdate(), null),
-       (20502, '单条强退', '3', 'system:onlineUser:logout', 201, '', '', '', '1', '', '2', 3, '1',
-        '1', '', 100, 'admin', 0, '', sysdate(), null);
+       (20501, '在线强踢', '3', 'monitor:onlineUser:kickout', 201, '', '', '', '1', '', '2', 3, '1', '1', '', 100,
+        'admin', 0, '', sysdate(), null);
 -- 存储配置按钮
 insert into t_sys_menu
 values (20550, '配置新增', '3', 'system:storageConfig:add', 10002, '', '', '', '1', '', '2', 1, '1', '1',
@@ -419,7 +418,7 @@ values (20550, '配置新增', '3', 'system:storageConfig:add', 10002, '', '', '
         '1', '', 100, 'admin', 0, '', sysdate(), null),
        (20553, '配置详情', '3', 'system:storageConfig:load', 10002, '', '', '', '1', '', '2', 4, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (20554, '配置分页', '3', 'system:storageConfig:list', 10002, '', '', '', '1', '', '2', 5, '1',
+       (20554, '配置列表', '3', 'system:storageConfig:list', 10002, '', '', '', '1', '', '2', 5, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null),
        (20555, '配置导出', '3', 'system:storageConfig:export', 10002, '', '', '', '1', '', '2', 6, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null);
@@ -433,11 +432,11 @@ values (20600, '记录新增', '3', 'system:storageRecord:add', 10003, '', '', '
         '1', '', 100, 'admin', 0, '', sysdate(), null),
        (20603, '记录详情', '3', 'system:storageRecord:load', 10003, '', '', '', '1', '', '2', 4, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (20604, '记录分页', '3', 'system:storageRecord:list', 10003, '', '', '', '1', '', '2', 5, '1',
+       (20604, '记录列表', '3', 'system:storageRecord:list', 10003, '', '', '', '1', '', '2', 5, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null);
 -- 代码生成按钮
 insert into t_sys_menu
-values (20650, '库表分页', '3', 'tools:generator:list', 302, '', '', '', '1', '', '2', 1, '1', '1',
+values (20650, '库表列表', '3', 'tools:generator:list', 302, '', '', '', '1', '', '2', 1, '1', '1',
         '', 100, 'admin', 0, '', sysdate(), null),
        (20651, '库表修改', '3', 'tools:generator:update', 302, '', '', '', '1', '', '2', 2, '1', '1',
         '', 100, 'admin', 0, '', sysdate(), null),
@@ -450,8 +449,6 @@ values (20650, '库表分页', '3', 'tools:generator:list', 302, '', '', '', '1'
        (20655, '库表详情', '3', 'tools:generator:load', 302, '', '', '', '1', '', '2', 6, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null);
 
-
--- ----------------------------
 -- 角色关联菜单表(一对多)
 -- ----------------------------
 drop table if exists t_sys_role_menu;
@@ -567,6 +564,7 @@ create table t_tools_generator_table
     parent_column_name varchar(32)  default null comment '树表父列名',
     sort_column_name   varchar(32)  default null comment '树表排序列名',
     parent_menu_id     bigint       default null comment '父级菜单ID',
+    menu_icon          varchar(32)  default null comment '菜单图标',
     remark             varchar(128) default '' comment '备注',
     create_id          bigint       default 0 comment '创建用户ID',
     create_by          varchar(64)  default '' comment '创建用户',

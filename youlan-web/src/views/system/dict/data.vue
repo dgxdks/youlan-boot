@@ -174,15 +174,15 @@ export default {
     // 查询字典类型列表
     getTypeList() {
       getDictTypeList({}).then(res => {
-        this.typeList = res
+        this.typeList = res.data
       })
     },
     // 查询字典数据列表
     getList() {
       this.openTableLoading()
       getDictDataPageList(this.queryForm).then(res => {
-        this.dataList = res.rows
-        this.pageTotal = res.total
+        this.dataList = res.data.rows
+        this.pageTotal = res.data.total
         this.closeTableLoading()
       })
     },
@@ -211,7 +211,7 @@ export default {
       const id = row.id || this.tableIds[0]
       loadDictData({ id }).then(res => {
         this.openEdit('修改字典数据')
-        this.editForm = res
+        this.editForm = res.data
       })
     },
     // 删除按钮

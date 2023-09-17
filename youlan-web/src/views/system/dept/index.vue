@@ -148,7 +148,7 @@ export default {
     getList() {
       this.openTableLoading()
       getDeptTreeList(this.queryForm).then(res => {
-        this.deptList = res
+        this.deptList = res.data
         this.$nextTick(() => {
           this.tableExpandAll = false
           this.handleExpandAll()
@@ -183,7 +183,7 @@ export default {
     // 新增按钮
     handleAdd(row) {
       getDeptTreeList({}).then(res => {
-        this.deptOptions = res
+        this.deptOptions = res.data
       })
       this.openEdit('新增部门')
       if (row) {
@@ -193,14 +193,14 @@ export default {
     // 修改按钮
     handleUpdate(row) {
       getDeptTreeList({ excludeOrgId: row.orgId }).then(res => {
-        this.deptOptions = res
+        this.deptOptions = res.data
         if (this.deptOptions.length === 0) {
           this.deptOptions.push({ orgId: row.parentOrgId, orgName: row.orgName, children: [] })
         }
       })
       loadDept({ id: row.id }).then(res => {
         this.openEdit('修改部门')
-        this.editForm = res
+        this.editForm = res.data
       })
     },
     // 展开/折叠按钮

@@ -75,15 +75,15 @@ export default {
   methods: {
     getUser() {
       loadUser({ id: this.userId }).then(res => {
-        this.user = res
+        this.user = res.data
         this.getRoleList()
       })
     },
     getRoleList() {
       this.openTableLoading()
       getAuthRolePageList(this.queryForm).then(res => {
-        this.roleList = res.rows
-        this.pageTotal = res.total
+        this.roleList = res.data.rows
+        this.pageTotal = res.data.total
         this.closeTableLoading()
         this.$nextTick(() => {
           this.roleList.forEach(role => {

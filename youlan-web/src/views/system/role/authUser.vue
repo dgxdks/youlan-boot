@@ -49,11 +49,7 @@
           <dict-tag v-model="scope.row.status" dict-type="db_status" />
         </template>
       </el-table-column>
-      <el-table-column align="center" label="创建时间" prop="createTime" width="160">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
-        </template>
-      </el-table-column>
+      <el-table-column align="center" label="创建时间" prop="createTime" width="160" />
       <el-table-column align="center" class-name="small-padding fixed-width" label="操作">
         <template slot-scope="scope">
           <base-close-button v-has-perm="['system:role:remove']" type="text" @click="handleCancelAuthUser(scope.row)">取消授权</base-close-button>
@@ -109,8 +105,8 @@ export default {
     getList() {
       this.openTableLoading()
       getAuthUserPageList(this.queryForm).then(res => {
-        this.userList = res.rows
-        this.pageTotal = res.total
+        this.userList = res.data.rows
+        this.pageTotal = res.data.total
         this.closeTableLoading()
       })
     },

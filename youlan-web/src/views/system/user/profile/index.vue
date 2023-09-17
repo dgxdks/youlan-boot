@@ -82,9 +82,9 @@ export default {
   methods: {
     getUser() {
       loadUserProfile().then(res => {
-        this.user = res
-        this.roleDesc = res.roleNameList && res.roleNameList.join(',')
-        this.postDesc = res.postNameList && res.postNameList.join(',')
+        this.user = res.data
+        this.roleDesc = res.data.roleNameList && res.data.roleNameList.join(',')
+        this.postDesc = res.data.postNameList && res.data.postNameList.join(',')
         this.orgDesc = `${this.user.orgName} / ${this.postDesc}`
       })
     }

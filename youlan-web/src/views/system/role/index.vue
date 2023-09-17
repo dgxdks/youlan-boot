@@ -223,8 +223,8 @@ export default {
     getList() {
       this.openTableLoading()
       getRolePageList(this.queryForm).then(res => {
-        this.roleList = res.rows
-        this.pageTotal = res.total
+        this.roleList = res.data.rows
+        this.pageTotal = res.data.total
         this.closeTableLoading()
       })
     },
@@ -253,7 +253,7 @@ export default {
       loadRole({ id }).then(res => {
         this.openEdit('修改角色')
         this.editForm = {
-          ...res
+          ...res.data
         }
         this.$nextTick(() => {
           this.$refs.menu.setCheckedKeys(this.editForm.menuIdList)
@@ -363,7 +363,7 @@ export default {
         this.resetEdit()
         this.dataScope.open = true
         this.editForm = {
-          ...res
+          ...res.data
         }
         this.$nextTick(() => {
           this.$refs.org.setCheckedKeys(this.editForm.orgIdList)

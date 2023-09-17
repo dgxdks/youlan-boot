@@ -231,8 +231,8 @@ export default {
     getList() {
       this.openTableLoading()
       getStorageRecordPageList(this.queryForm).then(res => {
-        this.logList = res.rows
-        this.pageTotal = res.total
+        this.logList = res.data.rows
+        this.pageTotal = res.data.total
         this.closeTableLoading()
       })
     },

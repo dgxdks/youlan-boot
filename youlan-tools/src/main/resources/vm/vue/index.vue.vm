@@ -226,8 +226,8 @@ export default {
     getList() {
       this.openTableLoading()
       get${BizName}PageList(this.queryForm).then(res => {
-        this.${bizName}List = res.rows
-        this.pageTotal = res.total
+        this.${bizName}List = res.data.rows
+        this.pageTotal = res.data.total
         this.closeTableLoading()
       })
     },
@@ -250,7 +250,7 @@ export default {
       const id = row.id || this.tableIds[0]
       load${BizName}({ id }).then(res => {
         this.openEdit('修改${featureName}')
-        this.editForm = res
+        this.editForm = res.data
       })
     },
     // 删除按钮

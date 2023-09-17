@@ -116,7 +116,7 @@ export default {
         this.$modal.error('文件格式错误，请上传图片类型,如：JPG，PNG后缀的文件。')
       } else {
         this.$download.saveFileAsUrl(file).then(res => {
-          this.options.avatar = res
+          this.options.avatar = res.data
           this.options.name = file.name
         })
       }
@@ -125,7 +125,6 @@ export default {
     handleAvatarUpdate() {
       this.$refs.cropper.getCropBlob(data => {
         const formData = new FormData()
-        console.log(this.options.name)
         formData.append('file', data, this.options.name)
         this.$upload.upload('/system/user/profile/uploadUserAvatar', formData).then(res => {
           this.$modal.success('更换成功')

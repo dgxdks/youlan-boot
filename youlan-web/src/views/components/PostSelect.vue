@@ -56,7 +56,7 @@ export default {
   methods: {
     getList() {
       getPostList({}).then(res => {
-        this.postOptions = res
+        this.postOptions = res.data
       })
     }
   }

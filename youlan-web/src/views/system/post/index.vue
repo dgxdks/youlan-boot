@@ -135,8 +135,8 @@ export default {
       this.loading = true
       this.openTableLoading()
       getPostPageList(this.queryForm).then(res => {
-        this.postList = res.rows
-        this.pageTotal = res.total
+        this.postList = res.data.rows
+        this.pageTotal = res.data.total
         this.closeTableLoading()
       })
     },
@@ -175,7 +175,7 @@ export default {
       const id = row.id || this.tableIds[0]
       loadPost({ id }).then(res => {
         this.openEdit('修改岗位')
-        this.editForm = res
+        this.editForm = res.data
       })
     },
     // 删除按钮

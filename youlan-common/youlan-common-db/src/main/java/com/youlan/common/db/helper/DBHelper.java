@@ -1,11 +1,14 @@
 package com.youlan.common.db.helper;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.net.NetUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.incrementer.DefaultIdentifierGenerator;
+import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.youlan.common.db.anno.Query;
@@ -22,6 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class DBHelper {
+    private static final IdentifierGenerator IDENTIFIER_GENERATOR = new DefaultIdentifierGenerator(NetUtil.getLocalhost());
     private static final ConcurrentHashMap<Class<?>, Map<Field, Query>> CACHE_FIELD = new ConcurrentHashMap<>();
 
     /**
@@ -239,5 +243,12 @@ public class DBHelper {
         } catch (IllegalAccessException e) {
             throw new QueryException(e);
         }
+    }
+
+    /**
+     * 随机ID生成器
+     */
+    public static IdentifierGenerator identifierGenerator() {
+        return IDENTIFIER_GENERATOR;
     }
 }

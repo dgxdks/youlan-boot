@@ -58,7 +58,7 @@ export default {
   methods: {
     getOrgTreeList() {
       getOrgTreeList({}).then(res => {
-        this.orgOptions = res
+        this.orgOptions = res.data
       })
     },
     orgNormalizer(node) {

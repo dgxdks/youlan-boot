@@ -142,7 +142,7 @@ public class UserController extends BaseController {
         return toSuccess(userBizService.resetUserPasswd(dto));
     }
 
-    @SaCheckPermission("system.user.update")
+    @SaCheckPermission("system:user:update")
     @Operation(summary = "用户状态修改")
     @PostMapping("/updateUserStatus")
     @OperationLog(name = "用户", type = OperationLogType.OPERATION_LOG_TYPE_UPDATE)
@@ -152,7 +152,7 @@ public class UserController extends BaseController {
         return toSuccess(userService.updateStatus(id, status));
     }
 
-    @SaCheckPermission("system.user.list")
+    @SaCheckPermission("system:user:list")
     @Operation(summary = "授权角色分页")
     @PostMapping("/getAuthRolePageList")
     public ApiResult getAuthRolePageList(@RequestBody Role role) {
@@ -162,7 +162,7 @@ public class UserController extends BaseController {
         return toSuccess(roleList);
     }
 
-    @SaCheckPermission("system.user.update")
+    @SaCheckPermission("system:user:update")
     @Operation(summary = "授权角色修改")
     @PostMapping("/updateAuthRole")
     public ApiResult updateAuthRole(@RequestParam Long userId, @RequestParam List<Long> roleIds) {

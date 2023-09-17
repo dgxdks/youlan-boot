@@ -109,10 +109,10 @@ export default {
   methods: {
     getCode() {
       getImageCaptcha().then(res => {
-        this.captchaEnabled = res.captchaEnabled
+        this.captchaEnabled = res.data.captchaEnabled
         if (this.captchaEnabled) {
-          this.captchaImg = 'data:image/gif;base64,' + res.captchaImg
-          this.loginForm.captchaId = res.captchaId
+          this.captchaImg = 'data:image/gif;base64,' + res.data.captchaImg
+          this.loginForm.captchaId = res.data.captchaId
         }
       })
     },

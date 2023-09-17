@@ -202,8 +202,8 @@ export default {
     getList() {
       this.openTableLoading()
       getStorageConfigPageList(this.queryForm).then(res => {
-        this.configList = res.rows
-        this.pageTotal = res.total
+        this.configList = res.data.rows
+        this.pageTotal = res.data.total
         this.closeTableLoading()
       })
     },
@@ -226,7 +226,7 @@ export default {
       const id = row.id || this.tableIds[0]
       loadStorageConfig({ id }).then(res => {
         this.openEdit('修改配置')
-        this.editForm = res
+        this.editForm = res.data
       })
     },
     // 删除按钮

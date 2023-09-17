@@ -178,7 +178,7 @@ export default {
       this.openTableLoading()
       // 加载表格数据
       getMenuTreeList(this.queryForm).then(res => {
-        this.menuList = res
+        this.menuList = res.data
         this.tableExpandAll = false
         this.$nextTick(() => {
           this.handleExpandAll()
@@ -225,7 +225,7 @@ export default {
       loadMenu({ id: row.id }).then(res => {
         this.openEdit('修改菜单')
         this.editForm = {
-          ...res
+          ...res.data
         }
       })
     },
@@ -285,7 +285,7 @@ export default {
     // 加载全部菜单
     getMenuTreeList() {
       getMenuTreeList({}).then(res => {
-        this.menuOptions = [{ id: 0, menuName: '主类目', children: res }]
+        this.menuOptions = [{ id: 0, menuName: '主类目', children: res.data }]
       })
     },
     // 菜单是否目录类型

@@ -98,6 +98,7 @@ public class GeneratorConstant {
     public static final String TPL_JS_API = "vm/js/api.js.vm";
     public static final String TPL_VUE_INDEX = "vm/vue/index.vue.vm";
     public static final String TPL_XML_MAPPER = "vm/xml/mapper.xml.vm";
+    public static final String TPL_MENU_SQL = "vm/sql/menu.sql.vm";
 
 
     // ******************** 文件名称 ********************
@@ -112,8 +113,12 @@ public class GeneratorConstant {
     public static final String FILE_NAME_SUFFIX_JS = ".js";
     public static final String FILE_NAME_VUE_INDEX = "index.vue";
     public static final String FILE_NAME_CODE_ZIP = "youlan.zip";
+    public static final String FILE_NAME_SUFFIX_MENU_SQL = "Menu.sql";
 
     // ******************** 包名称 ********************
+    public static final String PACKAGE_NAME_SUFFIX_JAVA = "main.java.";
+    public static final String PACKAGE_NAME_SUFFIX_RESOURCES = "main.resources.";
+    public static final String PACKAGE_NAME_MENU_SQL = "sql";
     public static final String PACKAGE_NAME_PREFIX_VUE_API = "vue.api.";
     public static final String PACKAGE_NAME_PREFIX_VUE_INDEX = "vue.views.";
     public static final String PACKAGE_NAME_SUFFIX_CONTROLLER = ".controller";
@@ -123,6 +128,16 @@ public class GeneratorConstant {
     public static final String PACKAGE_NAME_SUFFIX_ENTITY = ".entity";
     public static final String PACKAGE_NAME_SUFFIX_ENTITY_DTO = PACKAGE_NAME_SUFFIX_ENTITY + ".dto";
     public static final String PACKAGE_NAME_SUFFIX_ENTITY_VO = PACKAGE_NAME_SUFFIX_ENTITY + ".vo";
+
+    // ******************** 模版类型 ********************
+    /**
+     * 增删改查表
+     */
+    public static final String TEMPLATE_TYPE_CRUD = "1";
+    /**
+     * 树表
+     */
+    public static final String TEMPLATE_TYPE_TREE = "2";
 
     /**
      * 列与描述的映射
@@ -140,5 +155,4 @@ public class GeneratorConstant {
         put(COL_SORT, "DESC_SORT");
         put(COL_REMARK, "DESC_REMARK");
     }};
-
 }

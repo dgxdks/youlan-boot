@@ -1,19 +1,28 @@
 package com.youlan.system.service.biz;
 
 import cn.dev33.satoken.stp.SaTokenInfo;
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.useragent.UserAgent;
+import cn.hutool.http.useragent.UserAgentUtil;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.youlan.common.captcha.helper.CaptchaHelper;
 import com.youlan.common.core.exception.BizRuntimeException;
+import com.youlan.common.core.helper.ListHelper;
 import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.core.servlet.helper.ServletHelper;
+import com.youlan.common.db.helper.DBHelper;
 import com.youlan.common.redis.helper.RedisHelper;
+import com.youlan.plugin.region.helper.RegionHelper;
 import com.youlan.system.entity.Org;
 import com.youlan.system.entity.User;
 import com.youlan.system.entity.auth.SystemAuthInfo;
 import com.youlan.system.entity.dto.AccountLoginDTO;
+import com.youlan.system.entity.dto.OnlineUserPageDTO;
 import com.youlan.system.entity.vo.LoginInfoVO;
+import com.youlan.system.entity.vo.OnlineUserVO;
 import com.youlan.system.entity.vo.UserVO;
 import com.youlan.system.enums.LoginStatus;
 import com.youlan.system.helper.SystemAuthHelper;
@@ -23,15 +32,20 @@ import com.youlan.system.service.OrgService;
 import com.youlan.system.service.UserService;
 import com.youlan.system.utils.SystemUtil;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import static com.youlan.common.core.restful.enums.ApiResultCode.A0002;
 import static com.youlan.system.constant.SystemConstant.CONFIG_VALUE_LOGIN_RETRY_STRATEGY_USERNAME_IP;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class LoginBizService {
@@ -39,7 +53,6 @@ public class LoginBizService {
     private final OrgService orgService;
     private final LoginLogService loginLogService;
     private final RedisHelper redisHelper;
-    private final RoleBizService roleBizService;
 
     /**
      * 用户登录
@@ -135,11 +148,21 @@ public class LoginBizService {
      */
     public SystemAuthInfo createSystemAuthInfo(User user) {
         Org org = orgService.loadOrgIfExist(user.getOrgId());
-        return new SystemAuthInfo()
+        SystemAuthInfo systemAuthInfo = new SystemAuthInfo()
                 .setOrgId(org.getOrgId())
                 .setOrgType(org.getOrgType())
                 .setUserName(user.getUserName())
-                .setUserId(user.getId());
+                .setUserId(user.getId())
+                .setLoginTime(new Date());
+        try {
+            String loginIp = ServletHelper.getClientIp();
+            String userAgent = ServletHelper.getUserAgent();
+            systemAuthInfo.setLoginIp(loginIp)
+                    .setUserAgent(userAgent);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+        return systemAuthInfo;
     }
 
     /**
@@ -167,5 +190,54 @@ public class LoginBizService {
      */
     public void unlockLoginUser(String userName) {
         redisHelper.deleteByPattern(SystemUtil.getLoginRetryRedisKey(userName) + StringPool.ASTERISK);
+    }
+
+    /**
+     * 获取在线用户分页列表
+     */
+    public IPage<OnlineUserVO> getOnlineUserPageList(OnlineUserPageDTO dto) {
+        IPage<OnlineUserVO> page = DBHelper.getPage(dto);
+        List<String> tokenValueList = null;
+        //如果指定了用户名称则先查询用户ID
+        String userName = dto.getUserName();
+        if (StrUtil.isNotBlank(userName)) {
+            User user = userService.loadUserByUserName(userName);
+            if (ObjectUtil.isNull(user)) {
+                return page;
+            }
+            tokenValueList = SystemAuthHelper.getTokenValueList(user.getId());
+        } else {
+            long start = page.offset();
+            tokenValueList = SystemAuthHelper.searchTokenValue(StrUtil.EMPTY, Math.toIntExact(start), (int) page.getSize(), !dto.getIsDesc());
+        }
+        //通过tokenValue查询token信息
+        List<OnlineUserVO> onlineUserList = new ArrayList<>();
+        for (String tokenValue : tokenValueList) {
+            SystemAuthInfo systemAuthInfo = SystemAuthHelper.getSystemAuthInfoByTokenValue(tokenValue);
+            if (ObjectUtil.isNull(systemAuthInfo)) {
+                systemAuthInfo = new SystemAuthInfo();
+            }
+            OnlineUserVO onlineUser = BeanUtil.copyProperties(systemAuthInfo, OnlineUserVO.class);
+            onlineUser.setTokenValue(tokenValue);
+            onlineUserList.add(onlineUser);
+        }
+        List<Long> orgIdList = ListHelper.mapList(onlineUserList, OnlineUserVO::getOrgId);
+        Map<Long, String> orgNameMap = orgService.loadOrgNameMapByOrgIdList(orgIdList);
+        onlineUserList.forEach(onlineUser -> {
+            //设置机构名称
+            onlineUser.setOrgName(orgNameMap.get(onlineUser.getOrgId()));
+            // 设置位置信息
+            if (StrUtil.isNotBlank(onlineUser.getLoginIp())) {
+                onlineUser.setLoginLocation(RegionHelper.ip2Region(onlineUser.getLoginIp()));
+            }
+            //设置浏览器信息
+            String userAgent = onlineUser.getUserAgent();
+            if (StrUtil.isNotBlank(userAgent)) {
+                UserAgent userAgentParse = UserAgentUtil.parse(userAgent);
+                onlineUser.setOs(userAgentParse.getOs().getName());
+                onlineUser.setBrowser(userAgentParse.getBrowser().getName());
+            }
+        });
+        return page.setRecords(onlineUserList);
     }
 }

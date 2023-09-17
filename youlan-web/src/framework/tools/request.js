@@ -77,7 +77,7 @@ service.interceptors.response.use(response => {
   const errorMsg = data.errorMsg || '系统未知错误，请反馈给管理员'
   // 判断是否已登录
   if (status === '00000') {
-    return data.data
+    return Promise.resolve(data)
   }
   if (status === 'A0003') {
     MessageBox.confirm('登录状态已过期，您可以继续留在该页面，或者重新登录', '系统提示', {

@@ -72,8 +72,8 @@ export default {
     getList() {
       this.openTableLoading()
       getDbTablePageList(this.queryForm).then(res => {
-        this.dbTableList = res.rows
-        this.pageTotal = res.total
+        this.dbTableList = res.data.rows
+        this.pageTotal = res.data.total
         this.closeTableLoading()
       })
     },

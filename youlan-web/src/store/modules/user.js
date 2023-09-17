@@ -52,7 +52,7 @@ const user = {
       }
       return new Promise((resolve, reject) => {
         accountLogin(data).then(res => {
-          commit('SET_TOKEN', res)
+          commit('SET_TOKEN', res.data)
           resolve()
         }).catch(error => {
           reject(error)
@@ -64,16 +64,16 @@ const user = {
     GetLoginInfo({ commit, state }) {
       return new Promise((resolve, reject) => {
         getLoginInfo().then(res => {
-          const user = res.user
+          const user = res.data.user
           // 设置用户名
           commit('SET_USER_NAME', user.userName)
           // 设置用户头像
           const avatar = StrUtil.isBlank(user.avatar) ? require('@/assets/images/profile.png') : DownloadUtil.parseSrcUrl(user.avatar)
           commit('SET_AVATAR', avatar)
           // 设置用户角色信息
-          if (ArrayUtil.isNotEmpty(res.roleList)) {
-            commit('SET_ROLE_LIST', res.roleList)
-            commit('SET_PERMISSION_LIST', res.permissionList)
+          if (ArrayUtil.isNotEmpty(res.data.roleList)) {
+            commit('SET_ROLE_LIST', res.data.roleList)
+            commit('SET_PERMISSION_LIST', res.data.permissionList)
           }
           resolve(res)
         }).catch(error => {

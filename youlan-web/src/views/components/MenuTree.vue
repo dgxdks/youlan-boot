@@ -34,7 +34,7 @@ export default {
   methods: {
     getList() {
       getMenuTreeList({}).then(res => {
-        this.treeList = res
+        this.treeList = res.data
         // 刷新一次选中的key
         this.$nextTick(() => {
           this.setCheckedKeys(this.checkedKeys)

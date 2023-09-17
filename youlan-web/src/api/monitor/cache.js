@@ -1,10 +1,10 @@
 import request from '@/framework/tools/request'
 
-// 查询缓存详细
-export function getCache() {
+// 获取缓存监控信息
+export function getCacheMonitorInfo() {
   return request({
-    url: '/monitor/cache',
-    method: 'get'
+    url: '/monitor/cache/getCacheMonitorInfo',
+    method: 'post'
   })
 }
 

@@ -71,12 +71,15 @@ public class GeneratorTable {
     @Schema(description = "父级菜单ID")
     private String parentMenuId;
 
+    @Schema(description = "菜单图标")
+    private String menuIcon;
+
     @Schema(description = DBConstant.DESC_REMARK)
     private String remark;
 
     @Schema(description = DBConstant.DESC_CREATE_ID)
     @TableField(fill = FieldFill.INSERT)
-    private Long create_id;
+    private Long createId;
 
     @Schema(description = DBConstant.DESC_CREATE_BY)
     @TableField(fill = FieldFill.INSERT)

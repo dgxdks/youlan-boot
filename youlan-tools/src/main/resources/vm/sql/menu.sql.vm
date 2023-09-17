@@ -1,0 +1,12 @@
+-- ${featureName}菜单SQL
+insert into t_sys_menu
+values (${menuIds[0]}, '${featureName}', '2', '${moduleName}:${bizName}', ${parentMenuId}, '${menuIcon}', '${bizName}', '', '1', '${moduleName}/${bizName}/index', '2', 0, '1', '1', '', ${createId}, '${createBy}', 0, '', sysdate(), null);
+
+-- ${featureName}按钮SQL
+insert into t_sys_menu
+values (${menuIds[1]}, '${featureName}新增', '3', '${moduleName}:${bizName}:add', ${menuIds[0]}, '', '', '', '2', '', '2', 0, '1', '1', '', ${createId}, '${createBy}', 0, '', sysdate(), null),
+       (${menuIds[2]}, '${featureName}修改', '3', '${moduleName}:${bizName}:update', ${menuIds[0]}, '', '', '', '2', '', '2', 1, '1', '1', '', ${createId}, '${createBy}', 0, '', sysdate(), null),
+       (${menuIds[3]}, '${featureName}删除', '3', '${moduleName}:${bizName}:remove', ${menuIds[0]}, '', '', '', '2', '', '2', 2, '1', '1', '', ${createId}, '${createBy}', 0, '', sysdate(), null),
+       (${menuIds[4]}, '${featureName}详情', '3', '${moduleName}:${bizName}:load', ${menuIds[0]}, '', '', '', '2', '', '2', 3, '1', '1', '', ${createId}, '${createBy}', 0, '', sysdate(), null),
+       (${menuIds[5]}, '${featureName}列表', '3', '${moduleName}:${bizName}:list', ${menuIds[0]}, '', '', '', '2', '', '2', 4, '1', '1', '', ${createId}, '${createBy}', 0, '', sysdate(), null),
+       (${menuIds[6]}, '${featureName}导出', '3', '${moduleName}:${bizName}:export', ${menuIds[0]}, '', '', '', '2', '', '2', 5, '1', '1', '', ${createId}, '${createBy}', 0, '', sysdate(), null);

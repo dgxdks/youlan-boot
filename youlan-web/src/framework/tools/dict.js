@@ -53,10 +53,10 @@ export default {
     }
     loadingStatus[typeKey] = true
     getDictDataListByTypeKey({ typeKey }).then(res => {
-      if (ArrayUtil.isNotEmpty(res)) {
+      if (ArrayUtil.isNotEmpty(res.data)) {
         store.commit('dict/SET_DICT', {
           type: typeKey,
-          values: _this.formatDict(res)
+          values: _this.formatDict(res.data)
         })
         loadingStatus[typeKey] = false
       }
@@ -80,10 +80,10 @@ export default {
     const dict = typeKey ? { typeKey: [] } : store.getters.dict
     for (const typeKey in dict) {
       getDictDataListByTypeKey({ typeKey }).then(res => {
-        if (ArrayUtil.isNotEmpty(res)) {
+        if (ArrayUtil.isNotEmpty(res.data)) {
           store.commit('dict/SET_DICT', {
             type: typeKey,
-            values: this.formatDict(res)
+            values: this.formatDict(res.data)
           })
         }
       }).catch(error => {

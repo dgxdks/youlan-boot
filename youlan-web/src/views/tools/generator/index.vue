@@ -138,11 +138,10 @@ import {
 } from '@/api/tools/generator'
 import importTable from './importTable'
 import crud from '@/framework/mixin/crud'
-import Dict from '@/views/system/dict/index.vue'
 
 export default {
   name: 'Generator',
-  components: { Dict, importTable },
+  components: { importTable },
   mixins: [crud],
   data() {
     return {
@@ -186,8 +185,8 @@ export default {
     getList() {
       this.openTableLoading()
       getTablePageList(this.queryForm).then(res => {
-        this.tableList = res.rows
-        this.pageTotal = res.total
+        this.tableList = res.data.rows
+        this.pageTotal = res.data.total
         this.closeTableLoading()
       })
     },
@@ -203,23 +202,25 @@ export default {
     },
     // 生成代码操作
     handleGenerateCode(row) {
-      const tableNames = row.tableName || this.tableNames
-      if (tableNames === '') {
-        this.$modal.msgError('请选择要生成的数据')
+      const list = (row.id && [row.id]) || this.tableIds
+      if (this.$array.isEmpty(list)) {
+        this.$modal.error('请选择要生成的数据')
         return
       }
-      if (row.genType === '1') {
+      // 指定路径写入
+      if (row.generatorType === '2') {
         writeCode(row.tableName).then(response => {
           this.$modal.success('成功生成到自定义路径：' + row.genPath)
         })
+        // zip包下载
       } else {
-        this.$download.zip('/tool/gen/batchGenCode?tables=' + tableNames, 'ruoyi.zip')
+        this.$download.post('/tools/generator/downloadCode', {}, { list }, 'youlan.zip')
       }
     },
     // 预览按钮
     handlePreviewCode(row) {
       previewCode({ id: row.id }).then(res => {
-        this.preview.codes = res
+        this.preview.codes = res.data
         this.preview.open = true
         this.preview.activeVm = this.getActiveVm(this.preview.codes)
       })

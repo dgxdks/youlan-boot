@@ -126,6 +126,21 @@
                 @change="handleMenuChange"
               />
             </el-form-item>
+            <el-form-item prop="icon">
+              <base-form-label slot="label" content="指定要生成的菜单对应的图标" label="菜单图标" />
+              <el-popover placement="bottom-start" trigger="click" width="460" @show="handleIconShow">
+                <base-icon-select ref="iconSelect" v-model="generatorTable.menuIcon" />
+                <el-input slot="reference" v-model="generatorTable.menuIcon" placeholder="点击选择图标" readonly>
+                  <svg-icon
+                    v-if="generatorTable.menuIcon"
+                    slot="prefix"
+                    :icon-class="generatorTable.menuIcon"
+                    style="width: 25px;"
+                  />
+                  <i v-else slot="prefix" class="el-icon-search el-input__icon" />
+                </el-input>
+              </el-popover>
+            </el-form-item>
             <el-form-item prop="entityDto">
               <base-form-label slot="label" content="实体类DTO只包含参与页面新增修改的字段，例如 数据新增、数据编辑，数据库实体类字段较多时建议使用" label="实体类DTO" />
               <dict-radio v-model="generatorTable.entityDto" dict-type="db_yes_no" />
@@ -254,7 +269,9 @@ export default {
         sortColumnName: null,
         entityDto: null,
         entityPageDto: null,
-        entityVo: null
+        entityVo: null,
+        menuIcon: null,
+        parentMenuId: null
       },
       // 基础信息校验规则
       basicTableRules: {
@@ -330,20 +347,20 @@ export default {
     // 获取表详细信息
     getTable() {
       loadTable({ id: this.tableId }).then(res => {
-        this.generatorColumnList = res.generatorColumnList
-        this.generatorTable = res.generatorTable
+        this.generatorColumnList = res.data.generatorColumnList
+        this.generatorTable = res.data.generatorTable
       })
     },
     // 查询字典类型列表
     getDictList() {
       getDictTypeList({}).then(res => {
-        this.typeList = res
+        this.typeList = res.data
       })
     },
     // 查询菜单下拉列表
     getMenuList() {
       getMenuTreeList({ menuTypeList: ['1'] }).then(res => {
-        this.menuOptions = this.formatMenuOptions(res)
+        this.menuOptions = this.formatMenuOptions(res.data)
       })
     },
     // 提交按钮
@@ -356,7 +373,7 @@ export default {
         })
       })
       Promise.all(validateAll).then(res => {
-        const validateResult = res.every(item => item === true)
+        const validateResult = res.data.every(item => item === true)
         if (!validateResult) {
           this.$modal.error('表单校验未通过，请重新检查提交内容')
           return
@@ -405,6 +422,10 @@ export default {
         }
       })
       return menuOptions
+    },
+    // icon组件显示
+    handleIconShow() {
+      this.$refs.iconSelect && this.$refs.iconSelect.reset()
     }
   }
 }

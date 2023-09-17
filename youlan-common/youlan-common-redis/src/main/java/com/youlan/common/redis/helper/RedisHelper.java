@@ -1,20 +1,26 @@
 package com.youlan.common.redis.helper;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.AllArgsConstructor;
-import org.springframework.data.redis.core.Cursor;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+import static com.youlan.common.redis.constant.RedisConstant.COMMAND_STATS;
+import static com.youlan.common.redis.constant.RedisConstant.DB_SIZE;
+
 @Component
 @AllArgsConstructor
 public class RedisHelper {
     public final RedisTemplate<String, Object> redisTemplate;
+    public final RedisConnectionFactory redisConnectionFactory;
 
     public Long increment(final String key) {
         return redisTemplate.opsForValue().increment(key);
@@ -135,5 +141,31 @@ public class RedisHelper {
 
     public Set<String> keys(String pattern) {
         return redisTemplate.keys(pattern);
+    }
+
+    /**
+     * 获取Redis监控信息
+     */
+    public Map<Object, Object> getMonitorInfo() {
+        RedisConnection connection = redisConnectionFactory.getConnection();
+        Map<Object, Object> monitorInfo = new HashMap<>(3);
+        monitorInfo.put(DB_SIZE, connection.dbSize());
+        Properties info = connection.info();
+        if (ObjectUtil.isNotNull(info)) {
+            monitorInfo.putAll(info);
+        }
+        Properties commandProps = connection.info(COMMAND_STATS);
+        if (ObjectUtil.isNotNull(commandProps)) {
+            List<Map<String, String>> commandStats = new ArrayList<>();
+            commandProps.stringPropertyNames().forEach(key -> {
+                Map<String, String> data = new HashMap<>(2);
+                String property = commandProps.getProperty(key);
+                data.put("name", StrUtil.removePrefix(key, "cmdstat_"));
+                data.put("value", StrUtil.subBetween(property, "calls=", ",usec"));
+                commandStats.add(data);
+            });
+            monitorInfo.put(COMMAND_STATS, commandStats);
+        }
+        return monitorInfo;
     }
 }

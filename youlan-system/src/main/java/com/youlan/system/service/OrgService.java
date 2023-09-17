@@ -1,5 +1,6 @@
 package com.youlan.system.service;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.youlan.common.core.helper.ListHelper;
 import com.youlan.common.core.restful.enums.ApiResultCode;
@@ -13,7 +14,11 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -30,6 +35,22 @@ public class OrgService extends BaseServiceImpl<OrgMapper, Org> {
                 .oneOpt()
                 .orElseThrow(ApiResultCode.D0001::getException);
         return org.getOrgName();
+    }
+
+    /**
+     * 根据机构ID列表获取机构ID与机构名称的映射
+     */
+    public Map<Long, String> loadOrgNameMapByOrgIdList(List<Long> orgIdList) {
+        if (CollectionUtil.isEmpty(orgIdList)) {
+            return new HashMap<>();
+        }
+        ArrayList<Long> distinctOrgIdList = CollectionUtil.distinct(orgIdList);
+        return this.lambdaQuery()
+                .select(Org::getOrgId, Org::getOrgName)
+                .in(Org::getOrgId, distinctOrgIdList)
+                .list()
+                .stream()
+                .collect(Collectors.toMap(Org::getOrgId, Org::getOrgName));
     }
 
     /**

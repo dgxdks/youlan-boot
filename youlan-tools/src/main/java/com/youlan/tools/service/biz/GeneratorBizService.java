@@ -2,11 +2,15 @@ package com.youlan.tools.service.biz;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.text.NamingCase;
 import cn.hutool.core.text.StrPool;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.youlan.common.core.exception.BizRuntimeException;
@@ -35,10 +39,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.zip.ZipOutputStream;
@@ -204,6 +205,12 @@ public class GeneratorBizService {
 
     @Transactional(rollbackFor = Exception.class)
     public void update(GeneratorDTO dto) {
+        //如果指定了表为树表，则树表列不能与树表父列一致
+        GeneratorTable generatorTable = dto.getGeneratorTable();
+        String templateType = generatorTable.getTemplateType();
+        if (TEMPLATE_TYPE_TREE.equals(templateType)) {
+            Assert.notEquals(generatorTable.getColumnName(), generatorTable.getParentColumnName(), () -> new BizRuntimeException("树表列不能和树表父列一致"));
+        }
         generatorTableService.updateById(dto.getGeneratorTable());
         generatorColumnService.updateBatchById(dto.getGeneratorColumnList());
     }
@@ -254,6 +261,7 @@ public class GeneratorBizService {
                 GeneratorUtil.writeToZip(packageName, codeName, codeContent, zipOs);
             });
         });
+        IoUtil.close(zipOs);
         return zipBos.toByteArray();
     }
 
@@ -289,52 +297,58 @@ public class GeneratorBizService {
         String entityName = generatorTable.getEntityName();
         //生成entity
         String entity = GeneratorUtil.mergeTemplate(TPL_JAVA_ENTITY, velocityContext);
-        String entityPackage = packageName + PACKAGE_NAME_SUFFIX_ENTITY;
+        String entityPackage = PACKAGE_NAME_SUFFIX_JAVA + packageName + PACKAGE_NAME_SUFFIX_ENTITY;
         generatorCodes.add(new GeneratorCodeVO(entity, entityPackage, TPL_JAVA_ENTITY, entityName + FILE_NAME_SUFFIX_ENTITY));
         //生成dto
         if (yesNo2Boolean(generatorTable.getEntityDto())) {
             String entityDto = GeneratorUtil.mergeTemplate(TPL_JAVA_ENTITY_DTO, velocityContext);
-            String entityDtoPackageName = packageName + PACKAGE_NAME_SUFFIX_ENTITY_DTO;
+            String entityDtoPackageName = PACKAGE_NAME_SUFFIX_JAVA + packageName + PACKAGE_NAME_SUFFIX_ENTITY_DTO;
             String entityDtoName = entityName + FILE_NAME_SUFFIX_DTO;
             generatorCodes.add(new GeneratorCodeVO(entityDto, entityDtoPackageName, TPL_JAVA_ENTITY_DTO, entityDtoName));
         }
         //生成page dto
         if (yesNo2Boolean(generatorTable.getEntityPageDto())) {
             String entityPageDto = GeneratorUtil.mergeTemplate(TPL_JAVA_ENTITY_PAGE_DTO, velocityContext);
-            String entityPageDtoPackageName = packageName + PACKAGE_NAME_SUFFIX_ENTITY_DTO;
+            String entityPageDtoPackageName = PACKAGE_NAME_SUFFIX_JAVA + packageName + PACKAGE_NAME_SUFFIX_ENTITY_DTO;
             String entityPageDtoName = entityName + FILE_NAME_SUFFIX_PAGE_DTO;
             generatorCodes.add(new GeneratorCodeVO(entityPageDto, entityPageDtoPackageName, TPL_JAVA_ENTITY_PAGE_DTO, entityPageDtoName));
         }
         //生成vo
         if (yesNo2Boolean(generatorTable.getEntityVo())) {
             String entityVo = GeneratorUtil.mergeTemplate(TPL_JAVA_ENTITY_VO, velocityContext);
-            String entityVoPackageName = packageName + PACKAGE_NAME_SUFFIX_ENTITY_VO;
+            String entityVoPackageName = PACKAGE_NAME_SUFFIX_JAVA + packageName + PACKAGE_NAME_SUFFIX_ENTITY_VO;
             String entityVoName = entityName + FILE_NAME_SUFFIX_VO;
             generatorCodes.add(new GeneratorCodeVO(entityVo, entityVoPackageName, TPL_JAVA_ENTITY_VO, entityVoName));
         }
         //生成mapper
         String mapper = GeneratorUtil.mergeTemplate(TPL_JAVA_MAPPER, velocityContext);
-        String mapperPackageName = packageName + PACKAGE_NAME_SUFFIX_MAPPER;
+        String mapperPackageName = PACKAGE_NAME_SUFFIX_JAVA + packageName + PACKAGE_NAME_SUFFIX_MAPPER;
         String mapperName = entityName + FILE_NAME_SUFFIX_MAPPER;
         generatorCodes.add(new GeneratorCodeVO(mapper, mapperPackageName, TPL_JAVA_MAPPER, mapperName));
         //生成service
         String service = GeneratorUtil.mergeTemplate(TPL_JAVA_SERVICE, velocityContext);
-        String servicePackageName = packageName + PACKAGE_NAME_SUFFIX_SERVICE;
+        String servicePackageName = PACKAGE_NAME_SUFFIX_JAVA + packageName + PACKAGE_NAME_SUFFIX_SERVICE;
         String serviceName = entityName + FILE_NAME_SUFFIX_SERVICE;
         generatorCodes.add(new GeneratorCodeVO(service, servicePackageName, TPL_JAVA_SERVICE, serviceName));
         //生成controller
         String controller = GeneratorUtil.mergeTemplate(TPL_JAVA_CONTROLLER, velocityContext);
-        String controllerPackageName = packageName + PACKAGE_NAME_SUFFIX_CONTROLLER;
+        String controllerPackageName = PACKAGE_NAME_SUFFIX_JAVA + packageName + PACKAGE_NAME_SUFFIX_CONTROLLER;
         String controllerName = entityName + FILE_NAME_SUFFIX_CONTROLLER;
         generatorCodes.add(new GeneratorCodeVO(controller, controllerPackageName, TPL_JAVA_CONTROLLER, controllerName));
         //生成mapperXml
         String mapperXml = GeneratorUtil.mergeTemplate(TPL_XML_MAPPER, velocityContext);
-        String mapperXmlPackageName = packageName + PACKAGE_NAME_SUFFIX_XML;
+        String mapperXmlPackageName = PACKAGE_NAME_SUFFIX_RESOURCES + packageName + PACKAGE_NAME_SUFFIX_XML;
         String mapperXmlName = entityName + FILE_NAME_SUFFIX_MAPPER_XML;
         generatorCodes.add(new GeneratorCodeVO(mapperXml, mapperXmlPackageName, TPL_XML_MAPPER, mapperXmlName));
+        //生成菜单SQL
+        if (StrUtil.isNotBlank(generatorTable.getParentMenuId())) {
+            String menuSql = GeneratorUtil.mergeTemplate(TPL_MENU_SQL, velocityContext);
+            String menuSqlName = bizName + FILE_NAME_SUFFIX_MENU_SQL;
+            generatorCodes.add(new GeneratorCodeVO(menuSql, PACKAGE_NAME_MENU_SQL, TPL_MENU_SQL, menuSqlName));
+        }
         //生成api.js
         String jsApi = GeneratorUtil.mergeTemplate(TPL_JS_API, velocityContext);
-        String jsApiPackageName = PACKAGE_NAME_PREFIX_VUE_API + moduleName + StrPool.DOT + bizName;
+        String jsApiPackageName = PACKAGE_NAME_PREFIX_VUE_API + moduleName;
         String jsApiName = bizName + FILE_NAME_SUFFIX_JS;
         generatorCodes.add(new GeneratorCodeVO(jsApi, jsApiPackageName, TPL_JS_API, jsApiName));
         //生成index.vue
@@ -357,6 +371,10 @@ public class GeneratorBizService {
         velocityContext.put("moduleName", generatorTable.getModuleName());
         velocityContext.put("featureName", generatorTable.getFeatureName());
         velocityContext.put("columns", generatorColumnList);
+        velocityContext.put("createId", ObjectUtil.defaultIfNull(generatorTable.getCreateId(), 100L));
+        velocityContext.put("createBy", StrUtil.blankToDefault(generatorTable.getCreateBy(), "admin"));
+        velocityContext.put("parentMenuId", generatorTable.getParentMenuId());
+        velocityContext.put("menuIcon", StrUtil.blankToDefault(generatorTable.getMenuIcon(), StrUtil.EMPTY));
         //设置首字母小写实体类名
         String entityName = StrUtil.lowerFirst(generatorTable.getEntityName());
         velocityContext.put("entityName", entityName);
@@ -405,6 +423,12 @@ public class GeneratorBizService {
         velocityContext.put("voPackages", GeneratorUtil.getVoPackages());
         // 需要导入的基础包
         velocityContext.put("basePackages", GeneratorUtil.getBasePackages());
+        // 供菜单SQL使用的菜单ID，每次自增50个且唯一，避免重复
+        List<Long> menuIds = new ArrayList<>();
+        for (int i = 0; i < 50; i++) {
+            menuIds.add(DBHelper.identifierGenerator().nextId(null).longValue());
+        }
+        velocityContext.put("menuIds", menuIds);
         return velocityContext;
     }
 

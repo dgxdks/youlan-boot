@@ -98,8 +98,8 @@ export default {
     getList() {
       this.openTableLoading()
       getUnAuthUserPageList(this.queryForm).then(res => {
-        this.userList = res.rows
-        this.pageTotal = res.total
+        this.userList = res.data.rows
+        this.pageTotal = res.data.total
         this.closeTableLoading()
       })
     },
