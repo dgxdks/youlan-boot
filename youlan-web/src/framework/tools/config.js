@@ -4,12 +4,9 @@ import { loadConfigByConfigKey } from '@/api/system/config'
 export default {
   getConfig(configKey) {
     if (StrUtil.isBlank(configKey)) {
-      return {}
+      return Promise.reject('系统配置键值不能为空')
     }
     return loadConfigByConfigKey({ configKey })
-  },
-  getCaptchaImageEnabled() {
-    return this.getConfig('sys.captcha.image.enabled')
   },
   async getInitPassword() {
     return this.getConfig('sys.user.initPassword')

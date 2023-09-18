@@ -3,7 +3,6 @@ package com.youlan.config;
 import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.exception.SaTokenException;
 import cn.hutool.core.exceptions.ExceptionUtil;
-import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.youlan.common.core.exception.BizException;
 import com.youlan.common.core.exception.BizRuntimeException;
@@ -25,6 +24,7 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static cn.dev33.satoken.exception.NotLoginException.*;
@@ -47,16 +47,14 @@ public class ExceptionHandlerConfig {
 
     @ExceptionHandler(Exception.class)
     public ApiResult handleException(Exception exception, HttpServletRequest request) {
-        return toApiResult(null, null, exception, request);
+        return handleBizExceptionIfExists(exception, request, () -> toApiResult(null, null, exception, request));
+
     }
 
     @ExceptionHandler(RuntimeException.class)
     public ApiResult handleRuntimeException(RuntimeException exception, HttpServletRequest request) {
-        BizRuntimeException bizRuntimeException = (BizRuntimeException) ExceptionUtil.getCausedBy(exception, BizRuntimeException.class);
-        if (ObjectUtil.isNotNull(bizRuntimeException)) {
-            return handleBizRuntimeException(bizRuntimeException, request);
-        }
-        return toApiResult(null, null, exception, request);
+        return handleBizExceptionIfExists(exception, request, () -> toApiResult(null, null, exception, request));
+
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
@@ -105,7 +103,7 @@ public class ExceptionHandlerConfig {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ApiResult handleHttpMessageNotReadableException(HttpMessageNotReadableException exception, HttpServletRequest request) {
-        return toApiResult(null, "数据格式异常", exception, request);
+        return handleBizExceptionIfExists(exception, request, () -> toApiResult(null, "数据格式异常", exception, request));
     }
 
     @ExceptionHandler(NotLoginException.class)
@@ -146,7 +144,23 @@ public class ExceptionHandlerConfig {
         return toApiResult(ApiResultCode.A0004.getStatus(), ApiResultCode.A0004.getErrorMsg(), exception, request);
     }
 
-    public static ApiResult toApiResult(String status, String errorMsg, Exception exception, HttpServletRequest request) {
+    /**
+     * 如果存在{@link BizRuntimeException}则优先处理
+     */
+    public ApiResult handleBizExceptionIfExists(Throwable throwable, HttpServletRequest request, Supplier<ApiResult> defaultSupplier) {
+        Throwable exception = ExceptionUtil.getCausedBy(throwable, BizRuntimeException.class);
+        if (exception instanceof BizException) {
+            BizException bizException = (BizException) exception;
+            return toApiResult(bizException.getStatus(), bizException.getErrorMsg(), bizException, request);
+        }
+        if (exception instanceof BizRuntimeException) {
+            BizRuntimeException bizRuntimeException = (BizRuntimeException) exception;
+            return toApiResult(bizRuntimeException.getStatus(), bizRuntimeException.getErrorMsg(), bizRuntimeException, request);
+        }
+        return defaultSupplier.get();
+    }
+
+    public ApiResult toApiResult(String status, String errorMsg, Exception exception, HttpServletRequest request) {
         status = StrUtil.isBlank(status) ? ApiResultCode.ERROR.getStatus() : status;
         errorMsg = StrUtil.isBlank(errorMsg) ? ApiResultCode.ERROR.getErrorMsg() : errorMsg;
         String requestUrl = request.getRequestURI();

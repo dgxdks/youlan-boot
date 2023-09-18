@@ -58,11 +58,7 @@ public class LoginBizService {
      * 用户登录
      */
     public SaTokenInfo accountLogin(AccountLoginDTO dto) {
-        //优先处理验证码逻辑,前提是系统开启的验证码功能
-        boolean captchaEnabled = SystemConfigHelper.captchaImageEnabled();
-        if (captchaEnabled) {
-            doImageCaptchaCheck(dto.getUserName(), dto.getCaptchaId(), dto.getCaptchaCode());
-        }
+        doImageCaptchaCheck(dto.getUserName(), dto.getCaptchaId(), dto.getCaptchaCode());
         String userName = dto.getUserName();
         String plainTextPassword = dto.getUserPassword();
         User user = userService.loadUserByUserNameOpt(userName)
@@ -87,11 +83,16 @@ public class LoginBizService {
      * 图片验证码校验
      */
     public void doImageCaptchaCheck(String userName, String captchaId, String captchaCode) {
+        //只有系统开启验证码功能才校验
+        boolean captchaEnabled = SystemConfigHelper.captchaImageEnabled();
+        if (!captchaEnabled) {
+            return;
+        }
         if (!StrUtil.isAllNotBlank(captchaId, captchaCode)) {
             throw new BizRuntimeException(ApiResultCode.A0010);
         }
         boolean verifyCaptcha = CaptchaHelper.verifyCaptcha(captchaId, captchaCode);
-        if (!verifyCaptcha) {
+        if (!verifyCaptcha && StrUtil.isNotBlank(userName)) {
             loginLogService.addAsync(userName, LoginStatus.FAILED, ApiResultCode.A0007.getErrorMsg());
             throw new BizRuntimeException(ApiResultCode.A0007);
         }
@@ -168,7 +169,7 @@ public class LoginBizService {
     /**
      * 用户注销
      */
-    public void logout() {
+    public void accountLogout() {
         SystemAuthHelper.logout();
     }
 

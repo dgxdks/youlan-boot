@@ -18,7 +18,7 @@ export default {
   },
   aesDecrypt(encryptText, key) {
     key = StrUtil.isNotBlank(key) ? key : defaultAesKey
-    const aesKey = CryptoJs.enc.Utf8.parse(key)
+    const aesKey = this.isBase64Str(key) ? CryptoJs.enc.Base64.parse(key) : CryptoJs.enc.Utf8.parse(key)
     const decryptText = CryptoJs.AES.decrypt(encryptText, aesKey, {
       mode: CryptoJs.mode.ECB,
       padding: CryptoJs.pad.Pkcs7

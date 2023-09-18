@@ -15,6 +15,7 @@ import lombok.Data;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
@@ -23,9 +24,9 @@ import javax.validation.constraints.Size;
 @ExcelIgnoreUnannotated
 public class UserTemplateVO {
 
-    @NotBlank(message = "机构名称必须填写")
-    @ExcelProperty(value = "机构名称")
-    private String orgName;
+    @NotNull(message = "机构编码必须填写")
+    @ExcelProperty(value = "机构编码")
+    private Long orgId;
 
     @NotBlank(message = "用户账号必须填写")
     @Size(min = 1, max = 30, message = "用户账号长度不能超过{max}个字符")

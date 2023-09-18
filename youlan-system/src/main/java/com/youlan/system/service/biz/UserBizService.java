@@ -194,13 +194,13 @@ public class UserBizService {
         String newPasswd = dto.getNewPasswd();
         String confirmPasswd = dto.getConfirmPasswd();
         if (!StrUtil.equals(newPasswd, confirmPasswd)) {
-            throw new BizRuntimeException("新密码与确认密码不一致");
+            throw new BizRuntimeException(ApiResultCode.A0023);
         }
         Long userId = SystemAuthHelper.getUserId();
         User user = userService.loadUserIfExist(userId);
         boolean validUserPassword = userService.validUserPassword(oldPasswd, user.getUserPassword());
         if (!validUserPassword) {
-            throw new BizRuntimeException("旧密码与用户密码不一致");
+            throw new BizRuntimeException(ApiResultCode.A0024);
         }
         user = new User()
                 .setId(userId)

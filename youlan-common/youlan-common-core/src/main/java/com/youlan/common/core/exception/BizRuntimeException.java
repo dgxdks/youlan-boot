@@ -2,7 +2,7 @@ package com.youlan.common.core.exception;
 
 
 import com.youlan.common.core.restful.enums.ApiResultCode;
-import com.youlan.common.core.spring.helper.MessageHelper;
+import com.youlan.common.core.i18n.helper.MessageHelper;
 
 public class BizRuntimeException extends RuntimeException {
     private String errorMsg = ApiResultCode.ERROR.getErrorMsg();

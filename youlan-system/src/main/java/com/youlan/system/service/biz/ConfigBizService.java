@@ -87,14 +87,14 @@ public class ConfigBizService {
     /**
      * 根据配置键名获取配置(支持缓存)
      */
-    public Config loadConfigCacheByConfigKey(String configKey) {
+    public Config loadConfigCacheByConfigKeyIfExists(String configKey) {
         if (StrUtil.isBlank(configKey)) {
             return null;
         }
         String redisKey = SystemUtil.getConfigRedisKey(configKey);
-        Config config = (Config) redisHelper.get(redisKey);
+        Config config = redisHelper.get(redisKey);
         if (ObjectUtil.isNull(config)) {
-            config = configService.loadConfigByConfigKey(configKey);
+            config = loadConfigByConfigKeyIfExist(configKey);
         }
         if (ObjectUtil.isNotNull(config)) {
             redisHelper.set(redisKey, config);
@@ -105,7 +105,7 @@ public class ConfigBizService {
     /**
      * 根据配置键名获取配置且不能为空(支持缓存)
      */
-    public Config loadConfigCacheByConfigKeyIfExist(String configKey) {
+    public Config loadConfigByConfigKeyIfExist(String configKey) {
         Config config = configService.loadConfigByConfigKeyIfExists(configKey);
         if (ObjectUtil.isNull(config)) {
             throw new BizRuntimeException(StrUtil.format("配置键值[{}]不存在", configKey));

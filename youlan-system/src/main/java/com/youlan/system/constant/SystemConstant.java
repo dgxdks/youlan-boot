@@ -32,7 +32,7 @@ public class SystemConstant {
     public static final String REDIS_PREFIX_STORAGE_FILE_NAME = "system_storage_record:fileName:";
 
 
-    // ******************** 机构类型常量 ********************
+    // ******************** 数据权限常量 ********************
     /**
      * 全部数据权限
      */
@@ -54,7 +54,8 @@ public class SystemConstant {
      */
     public static final String ROLE_SCOPE_USER = "5";
 
-    // ******************** 机构类型常量 ********************
+
+    // ******************** 系统配置常量 ********************
     /**
      * 内置参数
      */
@@ -64,10 +65,6 @@ public class SystemConstant {
      */
     public static final String CONFIG_TYPE_OUTER = "2";
 
-    // ******************** 用户常量 ********************
-    public static final Long SUPER_ADMIN_USER_ID = 100L;
-
-    // ******************** 系统配置常量 ********************
     /**
      * 用户初始密码
      */
@@ -76,6 +73,7 @@ public class SystemConstant {
      * 是否开启验证码
      */
     public static final String CONFIG_KEY_CAPTCHA_IMAGE_ENABLED = "sys.captcha.image.enabled";
+    public static final String CONFIG_KEY_LOGIN_ACCOUNT_REGISTRY_ENABLED = "sys.login.account.registry.enabled";
     /**
      * 用户登录最大重试次数
      */
@@ -98,20 +96,6 @@ public class SystemConstant {
     public static final String CONFIG_KEY_LOGIN_LOCK_TIME = "sys.login.lock.time";
     public static final String CONFIG_KEY_LOGIN_LOG_ENABLED = "sys.login.log.enabled";
 
-    // ******************** 来源类型常量 ********************
-    /**
-     * 后台端
-     */
-    public static final String SOURCE_TYPE_DESKTOP = "1";
-    /**
-     * 移动端
-     */
-    public static final String SOURCE_TYPE_MOBILE = "2";
-    /**
-     * 其它
-     */
-    public static final String SOURCE_TYPE_OTHER = "99";
-
     /**
      * 超级管理员用户ID
      */
@@ -131,4 +115,7 @@ public class SystemConstant {
      * 超级管理员权限字符
      */
     public static final String ADMIN_PERM_STR = "*";
+
+    // ******************** 用户常量 ********************
+    public static final Long SUPER_ADMIN_USER_ID = 100L;
 }

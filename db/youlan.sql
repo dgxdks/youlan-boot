@@ -537,6 +537,8 @@ values ('用户初始密码', 'sys.user.initPassword', '123456', '1', '用户初
        ('用户登录锁定时间', 'sys.login.lock.time', '60', '1', '用户登录失败超过重试次数后锁定时间(秒)', 100,
         'admin', sysdate()),
        ('用户登录日志', 'sys.login.log.enabled', 'true', '1', '是否允许开启用户登录日志(true-允许 false-不允许)', 100,
+        'admin', sysdate()),
+       ('用户注册', 'sys.login.account.registry.enabled', 'false', '1', '是否允许开启用户账户注册(true-允许 false-不允许)', 100,
         'admin', sysdate());
 
 -- ----------------------------

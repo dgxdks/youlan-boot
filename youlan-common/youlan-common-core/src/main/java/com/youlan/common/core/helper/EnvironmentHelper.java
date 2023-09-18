@@ -1,4 +1,4 @@
-package com.youlan.common.core.spring.helper;
+package com.youlan.common.core.helper;
 
 import cn.hutool.extra.spring.SpringUtil;
 import org.springframework.core.env.Environment;

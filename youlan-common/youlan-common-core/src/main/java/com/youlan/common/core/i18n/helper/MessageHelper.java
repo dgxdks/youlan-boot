@@ -1,4 +1,4 @@
-package com.youlan.common.core.spring.helper;
+package com.youlan.common.core.i18n.helper;
 
 import cn.hutool.extra.spring.SpringUtil;
 import com.youlan.common.core.restful.enums.ApiResultCode;

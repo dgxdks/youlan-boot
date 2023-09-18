@@ -2,10 +2,13 @@ package com.youlan.common.crypto.servlet;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONUtil;
+import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.core.restful.ApiResult;
+import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.crypto.anno.EncryptResponse;
 import com.youlan.common.crypto.helper.EncryptorHelper;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -14,6 +17,7 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
+@Slf4j
 @RestControllerAdvice
 @AllArgsConstructor
 public class EncryptResponseBodyAdvice implements ResponseBodyAdvice<Object> {
@@ -49,6 +53,11 @@ public class EncryptResponseBodyAdvice implements ResponseBodyAdvice<Object> {
             return retApiResult.setData(EncryptorHelper.encrypt(plainText, encryptResponse));
         }
         //默认对整个响应体进行加密
-        return EncryptorHelper.encrypt(body.toString(), encryptResponse);
+        try {
+            return EncryptorHelper.encrypt(body.toString(), encryptResponse);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new BizRuntimeException(ApiResultCode.B0018);
+        }
     }
 }

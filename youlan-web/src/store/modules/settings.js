@@ -28,7 +28,7 @@ const state = {
 }
 const mutations = {
   CHANGE_SETTING: (state, { key, value }) => {
-    if (state[key]) {
+    if (Object.hasOwn(state, key)) {
       state[key] = value
     }
   }

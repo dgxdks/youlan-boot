@@ -90,8 +90,8 @@ export default {
       // 验证码开关
       captchaEnabled: true,
       // 注册开关
-      register: true,
-      redirect: undefined
+      register: false,
+      redirect: null
     }
   },
   watch: {
@@ -128,6 +128,7 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
+          this.loginForm.userPassword = this.$crypto.aesEncrypt(this.loginForm.userPassword)
           if (this.loginForm.rememberMe) {
             this.$cookie.setUserName(this.loginForm.userName)
             this.$cookie.setUserPassword(this.loginForm.userPassword)

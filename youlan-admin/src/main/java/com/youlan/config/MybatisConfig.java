@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.BlockAttackInnerInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.DataPermissionInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.youlan.common.db.constant.DBConstant;
+import com.youlan.system.permission.handler.SystemDataPermissionHandler;
 import com.youlan.system.helper.SystemAuthHelper;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -38,6 +40,8 @@ public class MybatisConfig {
         //防全表更新与删除插件
         interceptor.addInnerInterceptor(new BlockAttackInnerInterceptor());
 
+        //数据权限插件
+        interceptor.addInnerInterceptor(new DataPermissionInterceptor(new SystemDataPermissionHandler()));
         return interceptor;
     }
 

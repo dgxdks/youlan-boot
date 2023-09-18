@@ -1,7 +1,7 @@
 package com.youlan.common.core.restful.enums;
 
 import com.youlan.common.core.exception.BizRuntimeException;
-import com.youlan.common.core.spring.helper.MessageHelper;
+import com.youlan.common.core.i18n.helper.MessageHelper;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -35,6 +35,9 @@ public enum ApiResultCode {
     A0019("A0019", "用户名已存在"),
     A0020("A0020", "用户手机已存在"),
     A0021("A0021", "无此机构操作权限"),
+    A0022("A0022", "不允许注册账户"),
+    A0023("A0023", "密码和确认密码不一致"),
+    A0024("A0024", "旧密码与新密码不一致"),
 
     // ********************** 功能类 **********************
     B0001("B0001", "文件导出失败"),
@@ -54,6 +57,7 @@ public enum ApiResultCode {
     B0015("B0015", "字典类型被禁用"),
     B0016("B0016", "系统配置不存在"),
     B0017("B0017", "内置配置不能删除"),
+    B0018("B0018", "参数加密失败"),
 
     // ********************** 参数类 **********************
     C0001("C0001", "ID不能为空"),

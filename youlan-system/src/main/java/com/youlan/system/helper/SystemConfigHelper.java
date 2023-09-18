@@ -39,6 +39,13 @@ public class SystemConfigHelper {
     }
 
     /**
+     * 是否允许用户注册
+     */
+    public static boolean accountRegistryEnabled() {
+        return getConfigValueBoolean(CONFIG_KEY_LOGIN_ACCOUNT_REGISTRY_ENABLED);
+    }
+
+    /**
      * 用户登录最大重试次数
      */
     public static int loginMaxRetryTimes() {
@@ -66,7 +73,7 @@ public class SystemConfigHelper {
      * 获取boolean类型配置值
      */
     public static boolean getConfigValueBoolean(String configKey) {
-        Config config = CONFIG_BIZ_SERVICE.loadConfigCacheByConfigKeyIfExist(configKey);
+        Config config = CONFIG_BIZ_SERVICE.loadConfigCacheByConfigKeyIfExists(configKey);
         String configValue = config.getConfigValue();
         Boolean configValueBoolean = Convert.toBool(configValue, null);
         if (ObjectUtil.isNull(configValueBoolean)) {
@@ -79,7 +86,7 @@ public class SystemConfigHelper {
      * 获取数字类型配置值
      */
     public static Number getConfigValueNumber(String configKey) {
-        Config config = CONFIG_BIZ_SERVICE.loadConfigCacheByConfigKeyIfExist(configKey);
+        Config config = CONFIG_BIZ_SERVICE.loadConfigCacheByConfigKeyIfExists(configKey);
         String configValue = config.getConfigValue();
         Number configValueNumber = Convert.toNumber(configValue, null);
         if (ObjectUtil.isNull(configValueNumber)) {
@@ -92,7 +99,7 @@ public class SystemConfigHelper {
      * 获取字符类型配置值
      */
     public static String getConfigValueString(String configKey) {
-        Config config = CONFIG_BIZ_SERVICE.loadConfigCacheByConfigKeyIfExist(configKey);
+        Config config = CONFIG_BIZ_SERVICE.loadConfigCacheByConfigKeyIfExists(configKey);
         String configValue = config.getConfigValue();
         if (StrUtil.isBlank(configValue)) {
             throw new BizRuntimeException(StrUtil.format("获取配置键值为[{}]的字符配置值失败", configKey));

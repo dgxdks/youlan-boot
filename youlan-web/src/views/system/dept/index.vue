@@ -36,6 +36,7 @@
       row-key="id"
     >
       <el-table-column label="部门名称" prop="orgName" width="260" />
+      <el-table-column label="机构编码" prop="orgId" />
       <el-table-column label="排序" prop="orgSort" width="200" />
       <el-table-column label="状态" prop="status" width="100">
         <template slot-scope="scope">

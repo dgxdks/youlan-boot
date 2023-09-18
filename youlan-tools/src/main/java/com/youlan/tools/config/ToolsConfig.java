@@ -1,6 +1,6 @@
 package com.youlan.tools.config;
 
-import com.youlan.common.core.spring.yaml.YamPropertySourceFactory;
+import com.youlan.common.core.i18n.yaml.YamPropertySourceFactory;
 import org.apache.velocity.app.Velocity;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

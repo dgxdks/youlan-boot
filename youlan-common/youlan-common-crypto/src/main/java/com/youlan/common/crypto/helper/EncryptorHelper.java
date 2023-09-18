@@ -8,7 +8,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
-import com.youlan.common.core.spring.helper.EnvironmentHelper;
+import com.youlan.common.core.helper.EnvironmentHelper;
 import com.youlan.common.crypto.anno.DecryptField;
 import com.youlan.common.crypto.anno.DecryptRequest;
 import com.youlan.common.crypto.anno.EncryptField;

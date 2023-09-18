@@ -1,4 +1,4 @@
-package com.youlan.common.core.spring.web;
+package com.youlan.common.core.servlet.filter;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;

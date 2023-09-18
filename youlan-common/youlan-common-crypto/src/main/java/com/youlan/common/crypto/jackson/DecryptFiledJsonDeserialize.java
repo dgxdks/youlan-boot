@@ -9,13 +9,17 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.deser.ContextualDeserializer;
+import com.youlan.common.core.exception.BizRuntimeException;
+import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.crypto.anno.DecryptField;
 import com.youlan.common.crypto.helper.EncryptorHelper;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
+@Slf4j
 @AllArgsConstructor
 @NoArgsConstructor
 public class DecryptFiledJsonDeserialize extends JsonDeserializer<String> implements ContextualDeserializer {
@@ -27,7 +31,12 @@ public class DecryptFiledJsonDeserialize extends JsonDeserializer<String> implem
         if (StrUtil.isBlank(encryptText)) {
             return encryptText;
         }
-        return EncryptorHelper.decrypt(encryptText, decryptField);
+        try {
+            return EncryptorHelper.decrypt(encryptText, decryptField);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new BizRuntimeException(ApiResultCode.B0003);
+        }
     }
 
     @Override

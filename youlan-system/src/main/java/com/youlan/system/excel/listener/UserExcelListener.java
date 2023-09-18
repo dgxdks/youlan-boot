@@ -50,11 +50,11 @@ public class UserExcelListener extends AbstractExcelListener<UserTemplateVO> {
         // 优先执行数据关联校验,抛出异常后在onException中处理
         ValidatorHelper.validateWithThrow(data);
         User user = userService.loadUserByUserName(data.getUserName());
-        Org org = orgService.loadOne(Org::getOrgName, data.getOrgName());
+        Org org = orgService.loadOne(data.getOrgId());
         try {
             if (ObjectUtil.isNull(org)) {
                 this.errorCount++;
-                this.addResultMsg(StrUtil.format("账号 {} 机构名称不存在", data.getUserName()));
+                this.addResultMsg(StrUtil.format("账号 {} 机构编码不存在", data.getUserName()));
             } else if (ObjectUtil.isNull(user)) {
                 UserDTO userDTO = BeanUtil.copyProperties(data, UserDTO.class);
                 userDTO.setUserPassword(this.initPassword);

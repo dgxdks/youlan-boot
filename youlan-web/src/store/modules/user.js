@@ -1,4 +1,4 @@
-import { accountLogin, getLoginInfo, logout } from '@/api/system/login'
+import { accountLogin, logout, getLoginInfo } from '@/api/system/login'
 import { ArrayUtil, CookieUtil, DownloadUtil, StrUtil } from '@/framework/tools'
 import { tokenValuePrefix } from '@/settings'
 
@@ -52,6 +52,7 @@ const user = {
       }
       return new Promise((resolve, reject) => {
         accountLogin(data).then(res => {
+          console.log(res)
           commit('SET_TOKEN', res.data)
           resolve()
         }).catch(error => {

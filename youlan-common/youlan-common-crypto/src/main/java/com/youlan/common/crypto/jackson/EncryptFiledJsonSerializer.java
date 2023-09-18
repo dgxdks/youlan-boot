@@ -8,13 +8,17 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.ContextualSerializer;
+import com.youlan.common.core.exception.BizRuntimeException;
+import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.crypto.anno.EncryptField;
 import com.youlan.common.crypto.helper.EncryptorHelper;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
+@Slf4j
 @AllArgsConstructor
 @NoArgsConstructor
 public class EncryptFiledJsonSerializer extends JsonSerializer<String> implements ContextualSerializer {
@@ -26,7 +30,13 @@ public class EncryptFiledJsonSerializer extends JsonSerializer<String> implement
             gen.writeString(value);
             return;
         }
-        gen.writeString(EncryptorHelper.encrypt(value, encryptField));
+        try {
+            String encrypt = EncryptorHelper.encrypt(value, encryptField);
+            gen.writeString(encrypt);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new BizRuntimeException(ApiResultCode.B0018);
+        }
     }
 
     @Override
