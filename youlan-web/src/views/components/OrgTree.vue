@@ -21,6 +21,7 @@
         :default-expand-all="defaultExpandAll"
         highlight-current
         node-key="orgId"
+        :check-strictly="checkStrictly"
         @node-click="handleNodeClick"
       />
     </div>
@@ -47,6 +48,10 @@ export default {
     defaultExpandAll: {
       type: Boolean,
       default: true
+    },
+    checkStrictly: {
+      type: Boolean,
+      default: false
     }
   },
   data() {

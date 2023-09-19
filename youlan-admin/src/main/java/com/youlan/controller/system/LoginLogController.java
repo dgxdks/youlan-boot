@@ -5,10 +5,9 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.db.entity.dto.ListDTO;
 import com.youlan.common.db.helper.DBHelper;
-import com.youlan.common.redis.helper.RedisHelper;
+import com.youlan.controller.base.BaseController;
 import com.youlan.system.anno.OperationLog;
 import com.youlan.system.constant.OperationLogType;
-import com.youlan.controller.base.BaseController;
 import com.youlan.system.entity.LoginLog;
 import com.youlan.system.service.LoginLogService;
 import com.youlan.system.service.biz.LoginBizService;
@@ -30,7 +29,6 @@ import java.util.List;
 public class LoginLogController extends BaseController {
     private final LoginLogService loginLogService;
     private final LoginBizService loginBizService;
-    private final RedisHelper redisHelper;
 
     @SaCheckPermission("system:loginLog:remove")
     @Operation(summary = "登录日志删除")

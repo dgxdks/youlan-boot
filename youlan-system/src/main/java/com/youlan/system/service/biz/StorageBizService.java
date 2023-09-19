@@ -58,7 +58,6 @@ public class StorageBizService {
     private final StorageRecordService storageRecordService;
     private final StorageConfigService storageConfigService;
     private final SystemProperties systemProperties;
-    private final RedisHelper redisHelper;
 
     /**
      * 上传文件
@@ -202,13 +201,13 @@ public class StorageBizService {
      */
     public StorageRecord loadStorageRecordCacheByFileName(String fileName) {
         String fileNameRedisKey = SystemUtil.getStorageFileNameRedisKey(fileName);
-        StorageRecord storageRecord = redisHelper.get(fileNameRedisKey);
+        StorageRecord storageRecord = RedisHelper.get(fileNameRedisKey);
         if (ObjectUtil.isNotNull(storageRecord)) {
             return storageRecord;
         }
         storageRecord = storageRecordService.loadStorageRecordCacheByFileName(fileName);
         long recordCacheTimeout = systemProperties.getStorage().getRecordCacheTimeout();
-        redisHelper.set(fileNameRedisKey, storageRecord, recordCacheTimeout, TimeUnit.SECONDS);
+        RedisHelper.set(fileNameRedisKey, storageRecord, recordCacheTimeout, TimeUnit.SECONDS);
         return storageRecord;
     }
 
@@ -217,13 +216,13 @@ public class StorageBizService {
      */
     public StorageRecord loadStorageRecordCacheByObjectId(String objectId) {
         String objectIdRedisKey = SystemUtil.getStorageObjectIdRedisKey(objectId);
-        StorageRecord storageRecord = redisHelper.get(objectIdRedisKey);
+        StorageRecord storageRecord = RedisHelper.get(objectIdRedisKey);
         if (ObjectUtil.isNotNull(storageRecord)) {
             return storageRecord;
         }
         storageRecord = storageRecordService.loadStorageRecordCacheByObjectId(objectId);
         long recordCacheTimeout = systemProperties.getStorage().getRecordCacheTimeout();
-        redisHelper.set(objectIdRedisKey, storageRecord, recordCacheTimeout, TimeUnit.SECONDS);
+        RedisHelper.set(objectIdRedisKey, storageRecord, recordCacheTimeout, TimeUnit.SECONDS);
         return storageRecord;
     }
 
@@ -260,13 +259,13 @@ public class StorageBizService {
      * 获取默认存储配置缓存
      */
     public StorageConfig loadDefaultStorageConfigCache() {
-        StorageConfig storageConfig = redisHelper.get(SystemUtil.getDefaultStorageConfigRedisKey());
+        StorageConfig storageConfig = RedisHelper.get(SystemUtil.getDefaultStorageConfigRedisKey());
         if (ObjectUtil.isNotNull(storageConfig)) {
             return storageConfig;
         }
         storageConfig = storageConfigService.loadDefaultStorageConfig();
         if (ObjectUtil.isNotNull(storageConfig)) {
-            redisHelper.set(SystemUtil.getDefaultStorageConfigRedisKey(), storageConfig);
+            RedisHelper.set(SystemUtil.getDefaultStorageConfigRedisKey(), storageConfig);
         }
         return storageConfig;
     }
@@ -276,20 +275,20 @@ public class StorageBizService {
      */
     public void reloadDefaultStorageConfigCache() {
         StorageConfig storageConfig = storageConfigService.loadDefaultStorageConfig();
-        redisHelper.set(SystemUtil.getDefaultStorageConfigRedisKey(), storageConfig);
+        RedisHelper.set(SystemUtil.getDefaultStorageConfigRedisKey(), storageConfig);
     }
 
     /**
      * 根据平台名称获取对应存储配置缓存
      */
     public StorageConfig loadStorageConfigCacheByPlatform(String platform) {
-        StorageConfig storageConfig = redisHelper.get(SystemUtil.getStorageConfigRedisKey(platform));
+        StorageConfig storageConfig = RedisHelper.get(SystemUtil.getStorageConfigRedisKey(platform));
         if (ObjectUtil.isNotNull(storageConfig)) {
             return storageConfig;
         }
         storageConfig = storageConfigService.loadStorageConfigByPlatform(platform);
         if (ObjectUtil.isNotNull(storageConfig)) {
-            redisHelper.set(SystemUtil.getStorageConfigRedisKey(platform), storageConfig);
+            RedisHelper.set(SystemUtil.getStorageConfigRedisKey(platform), storageConfig);
         }
         return storageConfig;
     }
@@ -299,7 +298,7 @@ public class StorageBizService {
      */
     public void reloadStorageConfigCacheByPlatform(String platform) {
         StorageConfig storageConfig = storageConfigService.loadStorageConfigByPlatform(platform);
-        redisHelper.set(SystemUtil.getStorageConfigRedisKey(platform), storageConfig);
+        RedisHelper.set(SystemUtil.getStorageConfigRedisKey(platform), storageConfig);
     }
 
     /**
@@ -368,7 +367,7 @@ public class StorageBizService {
         //删除配置缓存
         storageConfigs.forEach(storageConfig -> {
             try {
-                redisHelper.delete(SystemUtil.getStorageConfigRedisKey(storageConfig.getPlatform()));
+                RedisHelper.delete(SystemUtil.getStorageConfigRedisKey(storageConfig.getPlatform()));
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
@@ -420,8 +419,8 @@ public class StorageBizService {
     public void refreshStorageConfigCache() {
         String defaultStorageConfigRedisKey = SystemUtil.getDefaultStorageConfigRedisKey();
         String storageConfigRedisKeyPattern = SystemUtil.getStorageConfigRedisKey(StringPool.ASTERISK);
-        redisHelper.deleteByPattern(storageConfigRedisKeyPattern);
-        redisHelper.delete(defaultStorageConfigRedisKey);
+        RedisHelper.deleteByPattern(storageConfigRedisKeyPattern);
+        RedisHelper.delete(defaultStorageConfigRedisKey);
         this.reloadDefaultStorageConfigCache();
     }
 

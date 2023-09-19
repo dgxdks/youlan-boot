@@ -31,7 +31,7 @@ public class SaTokenConfig implements WebMvcConfigurer {
     }
 
     /**
-     * 指定当前服务的权限拦截实现类,不建议将此类默认交给Spring管理
+     * 指定当前服务的权限拦截实现类
      */
     @Bean("adminStpInterface")
     public StpInterface stpInterface() {
@@ -40,7 +40,7 @@ public class SaTokenConfig implements WebMvcConfigurer {
             public List<String> getPermissionList(Object loginId, String loginType) {
                 List<String> roleStrList = getRoleList(loginId, loginType);
                 return roleStrList.stream()
-                        .map(SystemAuthHelper::getUserMenuPerms)
+                        .map(SystemAuthHelper::getPermissionList)
                         .flatMap(Collection::stream)
                         .distinct()
                         .collect(Collectors.toList());

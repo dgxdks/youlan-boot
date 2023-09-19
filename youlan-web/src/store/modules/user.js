@@ -52,7 +52,6 @@ const user = {
       }
       return new Promise((resolve, reject) => {
         accountLogin(data).then(res => {
-          console.log(res)
           commit('SET_TOKEN', res.data)
           resolve()
         }).catch(error => {

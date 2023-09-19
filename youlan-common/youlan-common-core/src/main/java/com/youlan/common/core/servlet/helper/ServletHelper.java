@@ -28,6 +28,14 @@ public class ServletHelper {
         return getServletRequestAttributes().getRequest();
     }
 
+    public static <T> T getAttribute(String key) {
+        return (T) getHttpServletRequest().getAttribute(key);
+    }
+
+    public static void setAttribute(String key, Object value) {
+        getHttpServletRequest().setAttribute(key, value);
+    }
+
     /**
      * 获取请求体
      */

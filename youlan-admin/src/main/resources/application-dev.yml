@@ -1,9 +1,9 @@
 --- # Redis配置
 spring:
   redis:
-    host: 121.40.113.151
-    port: 32379
-    database: 80
+    host: localhost
+    port: 16379
+    database: 10
     password: Lechou@123
     # 链接超时时间
     timeout: 10s
@@ -38,8 +38,8 @@ spring:
         master:
           type: ${spring.datasource.type}
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://120.27.240.148:13308/youlan-boot?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true
-          username: basic
+          url: jdbc:mysql://localhost:13306/youlan-boot?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true
+          username: root
           password: Lechou@123
     # hikari配置
     hikari:

@@ -128,17 +128,20 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.loginForm.userPassword = this.$crypto.aesEncrypt(this.loginForm.userPassword)
-          if (this.loginForm.rememberMe) {
-            this.$cookie.setUserName(this.loginForm.userName)
-            this.$cookie.setUserPassword(this.loginForm.userPassword)
-            this.$cookie.setRememberMe(this.loginForm.rememberMe)
-          } else {
-            this.$cookie.removeUserName()
-            this.$cookie.removeUserPassword()
-            this.$cookie.removeRememberMe()
+          const data = {
+            ...this.loginForm,
+            userPassword: this.$crypto.aesEncrypt(this.loginForm.userPassword)
           }
-          this.$store.dispatch('AccountLogin', this.loginForm).then(() => {
+          this.$store.dispatch('AccountLogin', data).then(() => {
+            if (this.loginForm.rememberMe) {
+              this.$cookie.setUserName(data.userName)
+              this.$cookie.setUserPassword(data.userPassword)
+              this.$cookie.setRememberMe(data.rememberMe)
+            } else {
+              this.$cookie.removeUserName()
+              this.$cookie.removeUserPassword()
+              this.$cookie.removeRememberMe()
+            }
             this.$router.push({ path: this.redirect || '/' }).catch(error => {
               console.log(error)
             })

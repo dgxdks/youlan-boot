@@ -1,10 +1,8 @@
 package com.youlan.system.service;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.youlan.common.core.helper.ListHelper;
 import com.youlan.common.core.restful.enums.ApiResultCode;
-import com.youlan.common.db.helper.DBHelper;
 import com.youlan.common.db.service.BaseServiceImpl;
 import com.youlan.system.entity.Org;
 import com.youlan.system.entity.dto.OrgPageDTO;
@@ -66,8 +64,7 @@ public class OrgService extends BaseServiceImpl<OrgMapper, Org> {
      */
     @SuppressWarnings("all")
     public List<OrgVO> getOrgTreeList(OrgPageDTO dto) {
-        QueryWrapper<Org> queryWrapper = DBHelper.getQueryWrapper(dto);
-        List<OrgVO> orgList = this.loadMore(queryWrapper, OrgVO.class);
+        List<OrgVO> orgList = this.getBaseMapper().getOrgList(dto);
         return ListHelper.getTreeList(orgList, OrgVO::getChildren, OrgVO::getOrgId, OrgVO::getParentOrgId, OrgVO::getOrgSort);
     }
 }

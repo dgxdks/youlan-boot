@@ -74,9 +74,6 @@ export default {
     cancel() {
       this.visible = false
       this.$emit('cancel')
-    },
-    setTitle(title) {
-      this.title = title
     }
   }
 }

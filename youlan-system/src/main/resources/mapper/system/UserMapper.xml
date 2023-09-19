@@ -4,10 +4,10 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.youlan.system.mapper.UserMapper">
 
-    <select id="getList" resultType="com.youlan.system.entity.vo.UserVO">
+    <sql id="getUserList">
         select user.*, org.org_name
         from t_sys_user as user
-        left join t_sys_org as org on user.org_id =org.org_id
+        left join t_sys_org as org on user.org_id = org.org_id
         where user.sts = '1'
         and org.org_sts = '1'
         <if test="dto.orgId != null">
@@ -28,5 +28,13 @@
         <if test="dto.createTimeRange != null and dto.createTimeRange.size() > 1">
             and user.create_time between #{dto.createTimeRange[0]} and #{dto.createTimeRange[1]}
         </if>
+    </sql>
+
+    <select id="getUserList" resultType="com.youlan.system.entity.vo.UserVO">
+        <include refid="getUserList"/>
+    </select>
+
+    <select id="getUserPageList" resultType="com.youlan.system.entity.vo.UserVO">
+        <include refid="getUserList"/>
     </select>
 </mapper>

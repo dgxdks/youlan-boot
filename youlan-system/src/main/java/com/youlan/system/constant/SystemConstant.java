@@ -44,15 +44,15 @@ public class SystemConstant {
     /**
      * 本机构数据权限
      */
-    public static final String ROLE_SCOPE_ORG = "3";
+    public static final String ROLE_SCOPE_CURRENT_ORG = "3";
     /**
      * 本机构及以下数据权限
      */
-    public static final String ROLE_SCOPE_ORG_CHILDREN = "4";
+    public static final String ROLE_SCOPE_ORG_BELOW = "4";
     /**
      * 仅本人数据权限
      */
-    public static final String ROLE_SCOPE_USER = "5";
+    public static final String ROLE_SCOPE_CURRENT_USER = "5";
 
 
     // ******************** 系统配置常量 ********************

@@ -1,6 +1,7 @@
 package com.youlan.system.service.biz;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -56,10 +57,12 @@ public class RoleBizService {
     public boolean updateRole(Role role) {
         Role oldRole = roleService.loadRoleIfExists(role.getId());
         roleService.checkRoleNameRepeat(role);
-        roleService.checkRoleStrRepeat(role);
+        //角色字符不允许修改,否则会导致已缓存用户关联的角色字符失效
+        role.setRoleStr(oldRole.getRoleStr());
         boolean update = roleService.updateById(role);
         roleMenuService.updateRoleMenuBatch(role.getId(), role.getMenuIdList());
-        SystemAuthHelper.cleanUserMenuPerms(oldRole.getRoleStr());
+        SystemAuthHelper.setPermissionList(oldRole.getRoleStr());
+        SystemAuthHelper.setRoleScope(role.getRoleStr(), role.getRoleScope());
         return update;
     }
 
@@ -83,7 +86,9 @@ public class RoleBizService {
         //删除角色字符缓存,虽然没有删除与此角色ID关联的用户，但是由于删除角色字符缓存会触发二次查库加载，查不到也就自然没有权限
         //每个用户缓存的角色ID会在token到期后自动清除
         for (String roleStr : roleStrList) {
-            SystemAuthHelper.cleanUserMenuPerms(roleStr);
+            // 不建议删除角色权限缓存，而是将内容置空，避免有些用户缓存了已经删除的角色字符，但是查权限缓存又没有数据不断的去查库加载，然后库里也没
+            SystemAuthHelper.setPermissionList(roleStr);
+            SystemAuthHelper.setRoleScope(roleStr, StrUtil.EMPTY);
         }
         return true;
     }
@@ -123,7 +128,7 @@ public class RoleBizService {
                 .eq(UserRole::getRoleId, roleId).in(UserRole::getUserId, userIds);
         userRoleService.remove(queryWrapper);
         // 删除用户对应的角色信息
-        userIds.forEach(userId -> SystemAuthHelper.removeUserRole(userId, roleStr));
+        userIds.forEach(userId -> SystemAuthHelper.removeRoleStr(userId, roleStr));
     }
 
     /**
@@ -134,7 +139,7 @@ public class RoleBizService {
         String roleStr = roleService.getRoleStr(roleId);
         userRoleService.addUserRoleBatch(userIds, roleId);
         // 添加用户对应的角色信息
-        userIds.forEach(userId -> SystemAuthHelper.addUserRole(userId, roleStr));
+        userIds.forEach(userId -> SystemAuthHelper.addRoleStr(userId, roleStr));
     }
 
     /**
@@ -168,12 +173,13 @@ public class RoleBizService {
         String roleScope = role.getRoleScope();
         // 先更新角色数据范围
         roleService.updateRoleScope(roleId, roleScope);
-        // 如果不是自定义数据权限则删除角色关联机构ID信息并返回
+        // 如果不是自定义数据权限则删除角色关联机构ID信息
         if (!ROLE_SCOPE_CUSTOM.equals(roleScope)) {
             roleOrgService.removeByRoleId(roleId);
-            return true;
+        } else {
+            roleOrgService.updateRoleOrgBatch(roleId, role.getOrgIdList());
         }
-        roleOrgService.updateRoleOrgBatch(roleId, role.getOrgIdList());
+        SystemAuthHelper.setRoleScope(role.getRoleStr(), roleScope);
         return true;
     }
 
@@ -182,7 +188,7 @@ public class RoleBizService {
      */
     public void refreshRoleCache(Long id) {
         Role role = roleService.loadRoleIfExists(id);
-        SystemAuthHelper.cleanUserMenuPerms(role.getRoleStr());
+        SystemAuthHelper.setPermissionList(role.getRoleStr());
     }
 
     /**
@@ -192,6 +198,6 @@ public class RoleBizService {
     public void updateRoleStatus(Long id, String status) {
         Role role = roleService.loadRoleIfExists(id);
         roleService.updateStatus(id, status);
-        SystemAuthHelper.cleanUserMenuPerms(role.getRoleStr());
+        SystemAuthHelper.setPermissionList(role.getRoleStr());
     }
 }

@@ -32,15 +32,6 @@ import java.util.stream.Collectors;
 public class DictBizService {
     private final DictDataService dictDataService;
     private final DictTypeService dictTypeService;
-    private final RedisHelper redisHelper;
-
-    /**
-     * 初始化缓存诗句
-     */
-    @PostConstruct
-    public void initDictCache() {
-        this.setDictCache();
-    }
 
     /**
      * 获取字典数据
@@ -235,7 +226,7 @@ public class DictBizService {
      * 获取字典数据(支持缓存)
      */
     public List<DictData> getDictCache(String typeKey) {
-        List<DictData> dictDataList = redisHelper.get(SystemUtil.getDictRedisKey(typeKey));
+        List<DictData> dictDataList = RedisHelper.get(SystemUtil.getDictRedisKey(typeKey));
         if (CollectionUtil.isNotEmpty(dictDataList)) {
             return dictDataList;
         }
@@ -250,21 +241,21 @@ public class DictBizService {
      * 设置字典缓存
      */
     public void setDictCache(String typeKey, List<DictData> dictDataList) {
-        redisHelper.set(SystemUtil.getDictRedisKey(typeKey), dictDataList);
+        RedisHelper.set(SystemUtil.getDictRedisKey(typeKey), dictDataList);
     }
 
     /**
      * 删除字典缓存
      */
     public void removeDictCache(String typeKey) {
-        redisHelper.delete(SystemUtil.getDictRedisKey(typeKey));
+        RedisHelper.delete(SystemUtil.getDictRedisKey(typeKey));
     }
 
     /**
      * 删除所有字典缓存
      */
     public void removeDictCache() {
-        redisHelper.deleteByPattern(SystemConstant.REDIS_PREFIX_DICT + StringPool.ASTERISK);
+        RedisHelper.deleteByPattern(SystemConstant.REDIS_PREFIX_DICT + StringPool.ASTERISK);
     }
 
     /**

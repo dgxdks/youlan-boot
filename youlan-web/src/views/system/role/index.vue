@@ -10,9 +10,9 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="权限字符" prop="roleKey">
+      <el-form-item label="权限字符" prop="roleStr">
         <el-input
-          v-model="queryForm.roleKey"
+          v-model="queryForm.roleStr"
           clearable
           placeholder="请输入权限字符"
           style="width: 240px"
@@ -103,8 +103,8 @@
             <el-input v-model="editForm.roleName" placeholder="请输入角色名称" />
           </el-form-item>
           <el-form-item prop="roleStr">
-            <base-form-label slot="label" label="角色字符" content="控制器中定义的权限字符，如：@SaCheckRole('admin')" />
-            <el-input v-model="editForm.roleStr" placeholder="请输入权限字符" />
+            <base-form-label slot="label" label="角色字符" content="控制器中定义的权限字符，如：@SaCheckRole('admin')，新增后不支持修改" />
+            <el-input v-model="editForm.roleStr" placeholder="请输入权限字符" :disabled="$obj.isNotEmpty(editForm.id)" />
           </el-form-item>
           <el-form-item label="角色顺序" prop="sort">
             <el-input-number v-model="editForm.sort" :min="0" controls-position="right" />
@@ -145,7 +145,7 @@
         <!--自定义数据权限展示-->
         <el-form-item v-show="editForm.roleScope === '2'" label="数据权限">
           <el-checkbox v-model="orgExpandAll">展开/折叠</el-checkbox>
-          <el-checkbox v-model="orgCheckAll">全选/全不选</el-checkbox>
+          <el-checkbox @change="handleOrgCheckAll">全选/全不选</el-checkbox>
           <org-tree
             ref="org"
             show-check-box
@@ -153,10 +153,12 @@
             :default-expand-all="orgExpandAll"
             :check-all="orgCheckAll"
             :search-enabled="false"
+            :check-strictly="orgCheckStrictly"
             class="tree-border"
           />
         </el-form-item>
-      </el-form></base-dialog>
+      </el-form>
+    </base-dialog>
   </div>
 </template>
 
@@ -192,6 +194,8 @@ export default {
       orgExpandAll: true,
       // 是否选中全部机构
       orgCheckAll: false,
+      // 是否父子不相互关联
+      orgCheckStrictly: true,
       // 查询参数
       queryForm: {
         pageNum: 1,
@@ -360,8 +364,8 @@ export default {
     // 数据权限编辑按钮
     handleDataScope(row) {
       loadRole({ id: row.id }).then(res => {
-        this.resetEdit()
         this.dataScope.open = true
+        this.resetEdit()
         this.editForm = {
           ...res.data
         }
@@ -370,13 +374,22 @@ export default {
         })
       })
     },
+    // 全选/全不选按钮
+    handleOrgCheckAll(orgCheckAll) {
+      this.orgCheckStrictly = false
+      // 重新渲染后设置全选或全不选
+      this.$nextTick(() => {
+        this.orgCheckAll = orgCheckAll
+        this.orgCheckStrictly = true
+      })
+    },
     // 数据权限提交按钮
     handleDataScopeConfirm() {
       if (!this.editForm.id) {
         return
       }
       this.editForm.orgIdList = this.getOrgAllCheckedKeys()
-      updateRoleScope(this.editForm).then(response => {
+      updateRoleScope(this.editForm).then(res => {
         this.dataScope.open = false
         this.resetEdit()
         this.$modal.success('修改成功')

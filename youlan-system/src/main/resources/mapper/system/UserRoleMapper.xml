@@ -40,11 +40,23 @@
     </select>
 
     <select id="getRoleNameListByUserId" resultType="java.lang.String">
-        select role.role_name
+        select distinct role.role_name
         from t_sys_user_role as user_role
                  left join t_sys_role as role on role.id = user_role.role_id
                  left join t_sys_user as user on user.id = user_role.user_id
         where user.sts = '1'
+          and role.sts = '1'
+          and role.status = '1'
+          and user_role.user_id = #{userId}
+    </select>
+
+    <select id="getRoleStrListByUserId" resultType="java.lang.String">
+        select distinct role.role_str
+        from t_sys_user_role as user_role
+                 left join t_sys_role as role on role.id = user_role.role_id
+                 left join t_sys_user as user on user.id = user_role.user_id
+        where user.sts = '1'
+          and role.sts = '1'
           and role.status = '1'
           and user_role.user_id = #{userId}
     </select>

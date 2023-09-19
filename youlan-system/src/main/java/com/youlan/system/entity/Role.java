@@ -53,7 +53,7 @@ public class Role extends PageDTO {
     @Schema(description = "角色字符")
     private String roleStr;
 
-    @StrIn(value = {ROLE_SCOPE_ALL, ROLE_SCOPE_CUSTOM, ROLE_SCOPE_ORG, ROLE_SCOPE_ORG_CHILDREN, ROLE_SCOPE_USER})
+    @StrIn(value = {ROLE_SCOPE_ALL, ROLE_SCOPE_CUSTOM, ROLE_SCOPE_CURRENT_ORG, ROLE_SCOPE_ORG_BELOW, ROLE_SCOPE_CURRENT_USER})
     @ExcelProperty(value = "权限范围", converter = DictConverter.class)
     @ExcelDictProperty(value = "sys_data_scope")
     @Schema(description = "角色数据权限范围(1-全部数据权限 2-自定义数据权限 3-本机构数据权限 4-本机构及以下数据权限 5-仅本人数据权限)")

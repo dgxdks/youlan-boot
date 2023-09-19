@@ -4,6 +4,27 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.youlan.system.mapper.OrgMapper">
 
+    <sql id="getOrgList">
+        select * from t_sys_org
+        where org_sts = '1'
+        <if test="dto.orgName != null and dto.orgName != ''">
+            and org_name like concat('%', #{dto.orgName}, '%')
+        </if>
+        <if test="dto.orgStatus != null and dto.orgStatus != ''">
+            and org_status = #{dto.orgStatus}
+        </if>
+        <if test="dto.excludeOrgId != null and dto.excludeOrgId.size() > 0">
+            and org_id != #{dto.excludeOrgId} and find_in_set(#{dto.excludeOrgId}, org_ancestors) = 0)
+        </if>
+    </sql>
+
+    <select id="getOrgPageList" resultType="com.youlan.system.entity.vo.OrgVO">
+        <include refid="getOrgList"/>
+    </select>
+    <select id="getOrgList" resultType="com.youlan.system.entity.vo.OrgVO">
+        <include refid="getOrgList"/>
+    </select>
+
     <update id="replaceChildOrgAncestors">
         update t_sys_org
         set org_ancestors = replace(org_ancestors, #{oldAncestors}, #{newAncestors})

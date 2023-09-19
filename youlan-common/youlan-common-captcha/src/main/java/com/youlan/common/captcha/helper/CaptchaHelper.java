@@ -16,7 +16,6 @@ import java.util.concurrent.TimeUnit;
 
 @Component
 public class CaptchaHelper {
-    public static final RedisHelper redisHelper = SpringUtil.getBean(RedisHelper.class);
     public static final String REDIS_PREFIX_CAPTCHA = "captcha:";
 
     /**
@@ -45,11 +44,11 @@ public class CaptchaHelper {
         assert ObjectUtil.isAllNotEmpty(captchaCode, sourceId, codeTimeout, codeLimit);
         String captchaId = createCaptchaId();
         String limitRedisKey = createLimitRedisKey(sourceId);
-        Integer count = redisHelper.get(limitRedisKey);
+        Integer count = RedisHelper.get(limitRedisKey);
         //不存在则生成初始值
         if (ObjectUtil.isNull(count)) {
             count = 1;
-            redisHelper.set(limitRedisKey, count, codeTimeout, TimeUnit.SECONDS);
+            RedisHelper.set(limitRedisKey, count, codeTimeout, TimeUnit.SECONDS);
         }
         //超过最大限制则直接终端执行
         if (count > codeLimit) {
@@ -57,8 +56,8 @@ public class CaptchaHelper {
         }
         String codeRedisKey = createCodeRedisKey(captchaId);
         //保存验证码及生成次数信息
-        redisHelper.set(codeRedisKey, captchaCode, codeTimeout, TimeUnit.SECONDS);
-        redisHelper.increment(limitRedisKey, 1);
+        RedisHelper.set(codeRedisKey, captchaCode, codeTimeout, TimeUnit.SECONDS);
+        RedisHelper.increment(limitRedisKey, 1);
         return new CaptchaInfo().setCaptchaId(captchaId)
                 .setCaptchaCode(captchaCode)
                 .setCodeTimeout(codeTimeout);
@@ -74,7 +73,7 @@ public class CaptchaHelper {
         assert ObjectUtil.isAllNotEmpty(captchaCode, codeTimeout);
         String captchaId = createCaptchaId();
         String codeRedisKey = createCodeRedisKey(captchaId);
-        redisHelper.set(codeRedisKey, captchaCode, codeTimeout, TimeUnit.SECONDS);
+        RedisHelper.set(codeRedisKey, captchaCode, codeTimeout, TimeUnit.SECONDS);
         return new CaptchaInfo()
                 .setCaptchaId(captchaId)
                 .setCaptchaCode(captchaCode)
@@ -110,8 +109,8 @@ public class CaptchaHelper {
      */
     public static boolean verifyCaptcha(String captchaId, String captchaCode) {
         String codeRedisKey = createCodeRedisKey(captchaId);
-        Optional<String> captchaCodeOpt = redisHelper.getOpt(codeRedisKey);
-        redisHelper.delete(codeRedisKey);
+        Optional<String> captchaCodeOpt = RedisHelper.getOpt(codeRedisKey);
+        RedisHelper.delete(codeRedisKey);
         if (captchaCodeOpt.isEmpty()) {
             throw new BizRuntimeException(ApiResultCode.A0008);
         }

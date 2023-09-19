@@ -14,7 +14,7 @@ public interface RoleMenuMapper extends BaseMapper<RoleMenu> {
     /**
      * 根据角色字符查询角色关联的菜单权限字符列表
      */
-    Set<String> getMenuPermsListByRoleStr(@Param("roleStr") String roleStr);
+    List<String> getMenuPermsListByRoleStr(@Param("roleStr") String roleStr);
 
     /**
      * 根据用户ID查询角色关联的菜单权限字符列表

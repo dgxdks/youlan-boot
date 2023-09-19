@@ -11,7 +11,9 @@ import cn.hutool.extra.spring.SpringUtil;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.core.restful.enums.ApiResultCode;
+import com.youlan.system.entity.Role;
 import com.youlan.system.entity.auth.SystemAuthInfo;
+import com.youlan.system.enums.RoleScope;
 import com.youlan.system.service.RoleMenuService;
 import com.youlan.system.service.RoleService;
 import com.youlan.system.service.UserRoleService;
@@ -20,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.youlan.system.constant.SystemConstant.*;
@@ -28,6 +29,7 @@ import static com.youlan.system.constant.SystemConstant.*;
 @Slf4j
 public class SystemAuthHelper {
     public static final String ROLE_STR_PREFIX = "sys-role-";
+    public static final String ROLE_SCOPE = "ROLE_SCOPE";
     private static final RoleService roleService = SpringUtil.getBean(RoleService.class);
     private static final UserRoleService userRoleService = SpringUtil.getBean(UserRoleService.class);
     private static final RoleMenuService roleMenuService = SpringUtil.getBean(RoleMenuService.class);
@@ -50,8 +52,8 @@ public class SystemAuthHelper {
      * 设置用户授权信息
      */
     public static void setSystemAuthInfo(SystemAuthInfo authInfo) {
-        SaSession tokenSession = StpUtil.getTokenSession();
-        tokenSession.set(SaSession.USER, authInfo);
+        SaSession session = StpUtil.getSession();
+        session.set(SaSession.USER, authInfo);
     }
 
 
@@ -60,8 +62,9 @@ public class SystemAuthHelper {
      */
     public static SystemAuthInfo getSystemAuthInfoByTokenValue(String tokenValue) {
         try {
-            SaSession tokenSession = StpUtil.getTokenSessionByToken(tokenValue);
-            return tokenSession.getModel(SaSession.USER, SystemAuthInfo.class);
+            Object loginId = StpUtil.getLoginIdByToken(tokenValue);
+            SaSession session = StpUtil.getSessionByLoginId(loginId);
+            return session.getModel(SaSession.USER, SystemAuthInfo.class);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             return null;
@@ -83,8 +86,8 @@ public class SystemAuthHelper {
      * 获取用户授权信息
      */
     public static SystemAuthInfo getSystemAuthInfo() {
-        SaSession tokenSession = StpUtil.getTokenSession();
-        SystemAuthInfo systemAuthInfo = tokenSession.getModel(SaSession.USER, SystemAuthInfo.class);
+        SaSession session = StpUtil.getSession();
+        SystemAuthInfo systemAuthInfo = session.getModel(SaSession.USER, SystemAuthInfo.class);
         if (ObjectUtil.isNull(systemAuthInfo)) {
             throw new BizRuntimeException(ApiResultCode.A0003);
         }
@@ -129,18 +132,8 @@ public class SystemAuthHelper {
     /**
      * 获取用户session
      */
-    public static SaSession getTokenSession() {
-        return StpUtil.getTokenSession();
-    }
-
-    /**
-     * 根据用户ID获取关联token列表
-     */
-    public static List<String> getTokenValueList(Long userId) {
-        if (ObjectUtil.isNull(userId)) {
-            return new ArrayList<>();
-        }
-        return StpUtil.getTokenValueListByLoginId(userId);
+    public static SaSession getSession() {
+        return StpUtil.getSession();
     }
 
     /**
@@ -167,8 +160,8 @@ public class SystemAuthHelper {
     /**
      * 判断是否是超级管理员角色
      */
-    public static boolean isAdminRole(Long roleId) {
-        return ADMIN_ROLE_ID.equals(roleId);
+    public static boolean isAdminRole(Long roleStr) {
+        return ADMIN_ROLE_ID.equals(roleStr);
     }
 
     /**
@@ -182,7 +175,7 @@ public class SystemAuthHelper {
      * 判断是否是超级管理员角色
      */
     public static boolean isAdminRole() {
-        SaSession session = getTokenSession();
+        SaSession session = getSession();
         List<?> roleList = session.getModel(SaSession.ROLE_LIST, List.class, new ArrayList<>());
         return roleList.contains(ADMIN_ROLE_STR);
     }
@@ -199,8 +192,8 @@ public class SystemAuthHelper {
     /**
      * 校验角色不是管理员角色
      */
-    public static void checkRoleNotAdmin(Long roleId) {
-        if (ObjectUtil.isNotNull(roleId) && isAdminRole(roleId)) {
+    public static void checkRoleNotAdmin(Long roleStr) {
+        if (ObjectUtil.isNotNull(roleStr) && isAdminRole(roleStr)) {
             throw new BizRuntimeException(ApiResultCode.A0014);
         }
     }
@@ -315,128 +308,124 @@ public class SystemAuthHelper {
      * 根据用户ID获取用户对应角色的权限字符缓存
      */
     public static List<String> getRoleStrList(Long userId) {
-        SaSession session = SystemAuthHelper.getTokenSession();
-        return session.get(SaSession.ROLE_LIST, () -> {
-            // 获取用户关联的角色ID列表
-            List<Long> roleIdList = userRoleService.getRoleIdListByUserId(userId);
-            if (CollectionUtil.isEmpty(roleIdList)) {
-                return new ArrayList<>();
-            }
-            // 返回角色ID对应角色字符列表
-            return roleService.getRoleStrList(roleIdList);
-        });
-    }
-
-    /**
-     * 根据用户ID清除用户对应角色信息
-     */
-    public static void cleanUserRole(Long userId) {
-        List<String> tokenValueList = getTokenValueList(userId);
-        tokenValueList.forEach(tokenValue -> {
-            try {
-                SaSession session = StpUtil.getTokenSessionByToken(tokenValue);
-                session.delete(SaSession.ROLE_LIST);
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-            }
-        });
+        SaSession session = StpUtil.getSessionByLoginId(userId);
+        return session.get(SaSession.ROLE_LIST, () -> userRoleService.getBaseMapper().getRoleStrListByUserId(userId));
     }
 
     /**
      * 根据用户ID删除用户对应角色信息
      */
-    public static void removeUserRole(Long userId, String roleStr) {
+    public static void removeRoleStr(Long userId, String roleStr) {
         if (StrUtil.isBlank(roleStr)) {
             return;
         }
-        List<String> tokenValueList = getTokenValueList(userId);
-        tokenValueList.forEach(tokenValue -> {
-            //使用try/catch尽可能清除角色
-            try {
-                SaSession session = StpUtil.getTokenSessionByToken(tokenValue);
-                Object roleListObj = session.get(SaSession.ROLE_LIST);
-                ((List<String>) roleListObj).remove(roleStr);
-                session.set(SaSession.ROLE_LIST, roleListObj);
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-            }
-        });
+        SaSession session = StpUtil.getSessionByLoginId(userId);
+        List<String> roleStrList = (List<String>) session.get(SaSession.ROLE_LIST);
+        if (CollectionUtil.isEmpty(roleStrList)) {
+            return;
+        }
+        roleStrList.remove(roleStr);
+        session.set(SaSession.ROLE_LIST, roleStrList);
     }
 
     /**
      * 根据用ID设置用户对应的角色信息
      */
-    public static void setUserRole(Long userId, List<String> roleStrList) {
-        if (CollectionUtil.isEmpty(roleStrList)) {
-            return;
-        }
-        List<String> tokenValueList = getTokenValueList(userId);
-        tokenValueList.forEach(tokenValue -> {
-            //使用try/catch尽可能清除角色
-            try {
-                SaSession session = StpUtil.getTokenSessionByToken(tokenValue);
-                session.set(SaSession.ROLE_LIST, roleStrList);
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-            }
-        });
+    public static void setRoleStrList(Long userId, List<String> roleStrList) {
+        SaSession session = StpUtil.getSessionByLoginId(userId);
+        session.set(SaSession.ROLE_LIST, roleStrList);
     }
 
     /**
      * 根据用户ID新增用户对应角色信息
      */
-    public static void addUserRole(Long userId, String roleStr) {
+    public static void addRoleStr(Long userId, String roleStr) {
         if (StrUtil.isBlank(roleStr)) {
             return;
         }
-        List<String> tokenValueList = getTokenValueList(userId);
-        tokenValueList.forEach(tokenValue -> {
-            //使用try/catch尽可能清除角色
-            try {
-                SaSession session = StpUtil.getTokenSessionByToken(tokenValue);
-                Object roleListObj = session.get(SaSession.ROLE_LIST);
-                if (!((List<String>) roleListObj).contains(roleStr)) {
-                    ((List<String>) roleListObj).add(roleStr);
-                }
-                session.set(SaSession.ROLE_LIST, roleListObj);
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-            }
-        });
-    }
-
-    /**
-     * 获取菜单权限缓存(如果是超级管理员则返回匹配所有的权限字符)
-     */
-    public static List<String> getUserMenuPerms(Long userId) {
-        if (isAdmin(userId)) {
-            return Collections.singletonList(ADMIN_PERM_STR);
+        SaSession session = StpUtil.getSessionByLoginId(userId);
+        List<String> roleStrList = (List<String>) session.get(SaSession.ROLE_LIST);
+        if (CollectionUtil.isEmpty(roleStrList)) {
+            roleStrList = new ArrayList<>();
         }
-        Set<String> menPermsList = roleMenuService.getBaseMapper().getMenuPermsListByUserId(userId);
-        return new ArrayList<>(menPermsList);
+        //避免存在重名角色字符
+        if (!roleStrList.contains(roleStr)) {
+            roleStrList.add(roleStr);
+        }
+        session.set(SaSession.ROLE_LIST, roleStrList);
+    }
+
+    /**
+     * 获取自定义角色session
+     */
+    public static SaSession getRoleSession(String roleStr) {
+        return SaSessionCustomUtil.getSessionById(ROLE_STR_PREFIX + roleStr);
+    }
+
+    /**
+     * 设置权限列表缓存
+     */
+    public static List<String> setPermissionList(String roleStr) {
+        List<String> permissionList;
+        if (isAdminRoleStr(roleStr)) {
+            permissionList = Collections.singletonList(ADMIN_PERM_STR);
+        } else {
+            permissionList = roleMenuService.getBaseMapper().getMenuPermsListByRoleStr(roleStr);
+        }
+        setPermissionList(roleStr, permissionList);
+        return permissionList;
+    }
+
+    /**
+     * 设置权限列表缓存
+     */
+    public static void setPermissionList(String roleStr, List<String> permissionList) {
+        SaSession session = getRoleSession(roleStr);
+        session.set(SaSession.PERMISSION_LIST, permissionList);
     }
 
     /**
      * 获取菜单权限缓存(如果是超级管理员则返回匹配所有的权限字符)
      */
-    public static List<String> getUserMenuPerms(String roleStr) {
-        SaSession session = SaSessionCustomUtil.getSessionById(ROLE_STR_PREFIX + roleStr);
-        return session.get(SaSession.PERMISSION_LIST, () -> {
-            if (isAdminRoleStr(roleStr)) {
-                return Collections.singletonList(ADMIN_PERM_STR);
-            }
-            return new ArrayList<>(roleMenuService.getBaseMapper().getMenuPermsListByRoleStr(roleStr));
-        });
+    public static List<String> getPermissionList(String roleStr) {
+        SaSession session = getRoleSession(roleStr);
+        return session.get(SaSession.PERMISSION_LIST, () -> setPermissionList(roleStr));
     }
 
     /**
-     * 清除菜单权限缓存
+     * 根据角色字符获取对应权限范围
      */
-    public static void cleanUserMenuPerms(String roleStr) {
+    public static String getRoleScope(String roleStr) {
         SaSession session = SaSessionCustomUtil.getSessionById(ROLE_STR_PREFIX + roleStr);
-        session.delete(SaSession.PERMISSION_LIST);
+        return session.get(ROLE_SCOPE, () -> setRoleScope(roleStr));
     }
 
+    /**
+     * 设置角色字符对应的角色权限范围
+     */
+    public static void setRoleScope(String roleStr, String roleScope) {
+        SaSession session = SaSessionCustomUtil.getSessionById(ROLE_STR_PREFIX + roleStr);
+        session.set(ROLE_SCOPE, roleScope);
+    }
+
+    /**
+     * 设置角色字符对应的角色权限范围
+     */
+    public static String setRoleScope(String roleStr) {
+        Role role = roleService.loadRoleByRoleStr(roleStr);
+        String roleScope;
+        if (ObjectUtil.isNull(role) || !RoleScope.contains(role.getRoleScope())) {
+            roleScope = StrUtil.EMPTY;
+        } else {
+            roleScope = role.getRoleScope();
+        }
+        setRoleScope(roleStr, roleScope);
+        return roleScope;
+    }
+
+    /**
+     * 查找token
+     */
     public static List<String> searchTokenValue(String keyword, int start, int size, boolean sortType) {
         List<String> tokenKeys = StpUtil.searchTokenValue(keyword, start, size, sortType);
         //不知道是不是sa-token的bug，返回的竟然是token对应的redis key，导致如果用这个值取数据会取出问题，需要自己截取一下真实的token
@@ -446,5 +435,12 @@ public class SystemAuthHelper {
         return tokenKeys.stream()
                 .map(tokenKey -> StrUtil.subAfter(tokenKey, StringPool.COLON, true))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * 根据用户ID获取对应token列表
+     */
+    public static List<String> getTokenValuesByUserId(Long userId) {
+        return StpUtil.getTokenValueListByLoginId(userId);
     }
 }

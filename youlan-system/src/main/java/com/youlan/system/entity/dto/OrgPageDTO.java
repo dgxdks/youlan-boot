@@ -12,12 +12,10 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class OrgPageDTO extends PageDTO {
 
-    @Query(type = QueryType.LIKE)
     @Schema(description = "机构名称")
     @TableField(exist = false)
     private String orgName;
 
-    @Query(type = QueryType.EQUAL)
     @Schema(description = "机构状态(1-正常 2-停用)")
     @TableField(exist = false)
     private String orgStatus;

@@ -14,12 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/monitor/cache")
 @AllArgsConstructor
 public class CacheController extends BaseController {
-    private final RedisHelper redisHelper;
 
     @SaCheckPermission("monitor:cacheMonitor")
     @Operation(summary = "缓存监控信息")
     @PostMapping("/getCacheMonitorInfo")
     public ApiResult getCacheMonitorInfo() {
-        return toSuccess(redisHelper.getMonitorInfo());
+        return toSuccess(RedisHelper.getMonitorInfo());
     }
 }

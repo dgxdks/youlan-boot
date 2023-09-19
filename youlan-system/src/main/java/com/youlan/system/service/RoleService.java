@@ -32,6 +32,13 @@ public class RoleService extends BaseServiceImpl<RoleMapper, Role> {
     }
 
     /**
+     * 根据角色字符获取角色信息
+     */
+    public Role loadRoleByRoleStr(String roleStr) {
+        return this.loadOne(Role::getRoleStr, roleStr);
+    }
+
+    /**
      * 根据角色ID获取权限字符列表
      */
     public List<String> getRoleStrList(List<Long> roleIdList) {

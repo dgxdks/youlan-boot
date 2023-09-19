@@ -14,7 +14,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,12 +23,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ConfigBizService {
     private final ConfigService configService;
-    private final RedisHelper redisHelper;
-
-    @PostConstruct
-    public void iniConfigCache() {
-        this.setConfigCache();
-    }
 
     /**
      * 新增系统配置
@@ -92,12 +85,12 @@ public class ConfigBizService {
             return null;
         }
         String redisKey = SystemUtil.getConfigRedisKey(configKey);
-        Config config = redisHelper.get(redisKey);
+        Config config = RedisHelper.get(redisKey);
         if (ObjectUtil.isNull(config)) {
             config = loadConfigByConfigKeyIfExist(configKey);
         }
         if (ObjectUtil.isNotNull(config)) {
-            redisHelper.set(redisKey, config);
+            RedisHelper.set(redisKey, config);
         }
         return config;
     }
@@ -127,21 +120,21 @@ public class ConfigBizService {
      * 设置配置缓存
      */
     public void setConfigCache(String configKey, Config config) {
-        redisHelper.set(SystemUtil.getConfigRedisKey(configKey), config);
+        RedisHelper.set(SystemUtil.getConfigRedisKey(configKey), config);
     }
 
     /**
      * 删除配置缓存
      */
     public void removeConfigCache(String configKey) {
-        redisHelper.delete(SystemUtil.getConfigRedisKey(configKey));
+        RedisHelper.delete(SystemUtil.getConfigRedisKey(configKey));
     }
 
     /**
      * 删除配置缓存
      */
     public void removeConfigCache() {
-        redisHelper.deleteByPattern(SystemConstant.REDIS_PREFIX_CONFIG + StringPool.ASTERISK);
+        RedisHelper.deleteByPattern(SystemConstant.REDIS_PREFIX_CONFIG + StringPool.ASTERISK);
     }
 
     /**

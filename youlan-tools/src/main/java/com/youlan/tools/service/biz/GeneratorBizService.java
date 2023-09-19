@@ -74,7 +74,7 @@ public class GeneratorBizService {
     public IPage<DBTable> getDbTablePageList(DBTable dbTable) {
         dbTable.setTableExclude(generatorProperties().getTableExclude());
         return generatorTableService.getBaseMapper()
-                .getDbTableList(DBHelper.getPage(dbTable), dbTable);
+                .getDbTablePageList(DBHelper.getPage(dbTable), dbTable);
     }
 
     /**

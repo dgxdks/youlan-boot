@@ -67,6 +67,9 @@ public class UserBizService {
         }
         userPostService.updateUserPostBatch(user.getId(), dto.getPostIdList());
         userRoleService.updateUserRoleBatch(user.getId(), dto.getRoleIdList());
+        //重新设置用户角色权限
+        List<String> roleStrList = roleService.getRoleStrList(dto.getRoleIdList());
+        SystemAuthHelper.setRoleStrList(dto.getId(), roleStrList);
         return true;
     }
 
@@ -132,14 +135,14 @@ public class UserBizService {
      * 用户分页
      */
     public IPage<UserVO> getUserPageList(UserPageDTO dto) {
-        return userService.getBaseMapper().getList(DBHelper.getPage(dto), dto);
+        return userService.getBaseMapper().getUserPageList(DBHelper.getPage(dto), dto);
     }
 
     /**
      * 用户导出
      */
     public List<UserVO> exportUserList(UserPageDTO dto) {
-        return userService.getBaseMapper().getList(dto);
+        return userService.getBaseMapper().getUserList(dto);
     }
 
     /**
@@ -217,6 +220,6 @@ public class UserBizService {
         List<String> roleStrList = roleService.getRoleStrList(roleIds);
         userRoleService.updateUserRoleBatch(userId, roleIds);
         // 重新设置用户角色权限
-        SystemAuthHelper.setUserRole(userId, roleStrList);
+        SystemAuthHelper.setRoleStrList(userId, roleStrList);
     }
 }

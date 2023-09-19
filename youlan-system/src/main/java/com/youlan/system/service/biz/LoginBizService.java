@@ -29,20 +29,19 @@ import com.youlan.system.helper.SystemAuthHelper;
 import com.youlan.system.helper.SystemConfigHelper;
 import com.youlan.system.service.LoginLogService;
 import com.youlan.system.service.OrgService;
+import com.youlan.system.service.RoleMenuService;
 import com.youlan.system.service.UserService;
 import com.youlan.system.utils.SystemUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import static com.youlan.common.core.restful.enums.ApiResultCode.A0002;
+import static com.youlan.system.constant.SystemConstant.ADMIN_PERM_STR;
 import static com.youlan.system.constant.SystemConstant.CONFIG_VALUE_LOGIN_RETRY_STRATEGY_USERNAME_IP;
 
 @Slf4j
@@ -52,7 +51,7 @@ public class LoginBizService {
     private final UserService userService;
     private final OrgService orgService;
     private final LoginLogService loginLogService;
-    private final RedisHelper redisHelper;
+    private final RoleMenuService roleMenuService;
 
     /**
      * 用户登录
@@ -122,7 +121,7 @@ public class LoginBizService {
         } else {
             loginRetryKey = SystemUtil.getLoginRetryRedisKey(user.getUserName());
         }
-        Integer retryCount = ObjectUtil.defaultIfNull(redisHelper.get(loginRetryKey), 0);
+        Integer retryCount = ObjectUtil.defaultIfNull(RedisHelper.get(loginRetryKey), 0);
         //超出重试次数则不允许登录
         if (retryCount > loginMaxRetryTimes) {
             loginLogService.addAsync(user.getUserName(), LoginStatus.LOCKED.getCode(), ApiResultCode.A0006.getErrorMsg());
@@ -131,7 +130,7 @@ public class LoginBizService {
         if (!passwordMatch.get()) {
             retryCount++;
             int loginLockTime = SystemConfigHelper.loginLockTime();
-            redisHelper.set(loginRetryKey, retryCount, loginLockTime, TimeUnit.SECONDS);
+            RedisHelper.set(loginRetryKey, retryCount, loginLockTime, TimeUnit.SECONDS);
             //密码匹配失败重试次数+1后需在判断一次是否超过重试次数
             if (retryCount > loginMaxRetryTimes) {
                 loginLogService.addAsync(user.getUserName(), LoginStatus.LOCKED.getCode(), ApiResultCode.A0006.getErrorMsg());
@@ -141,7 +140,7 @@ public class LoginBizService {
                 throw new BizRuntimeException(A0002);
             }
         }
-        redisHelper.delete(loginRetryKey);
+        RedisHelper.delete(loginRetryKey);
     }
 
     /**
@@ -180,7 +179,12 @@ public class LoginBizService {
         Long userId = SystemAuthHelper.getUserId();
         UserVO user = userService.loadOne(userId, UserVO.class);
         List<String> roleList = SystemAuthHelper.getRoleStrList(userId);
-        List<String> permissionList = SystemAuthHelper.getUserMenuPerms(userId);
+        List<String> permissionList;
+        if (SystemAuthHelper.isAdmin(userId)) {
+            permissionList = Collections.singletonList(ADMIN_PERM_STR);
+        } else {
+            permissionList = new ArrayList<>(roleMenuService.getBaseMapper().getMenuPermsListByUserId(userId));
+        }
         return new LoginInfoVO().setUser(user)
                 .setRoleList(roleList)
                 .setPermissionList(permissionList);
@@ -190,7 +194,7 @@ public class LoginBizService {
      * 解锁用户登录
      */
     public void unlockLoginUser(String userName) {
-        redisHelper.deleteByPattern(SystemUtil.getLoginRetryRedisKey(userName) + StringPool.ASTERISK);
+        RedisHelper.deleteByPattern(SystemUtil.getLoginRetryRedisKey(userName) + StringPool.ASTERISK);
     }
 
     /**
@@ -206,7 +210,7 @@ public class LoginBizService {
             if (ObjectUtil.isNull(user)) {
                 return page;
             }
-            tokenValueList = SystemAuthHelper.getTokenValueList(user.getId());
+            tokenValueList = SystemAuthHelper.getTokenValuesByUserId(user.getId());
         } else {
             long start = page.offset();
             tokenValueList = SystemAuthHelper.searchTokenValue(StrUtil.EMPTY, Math.toIntExact(start), (int) page.getSize(), !dto.getIsDesc());

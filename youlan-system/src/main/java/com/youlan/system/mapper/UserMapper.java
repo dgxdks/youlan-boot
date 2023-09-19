@@ -6,6 +6,7 @@ import com.youlan.system.entity.User;
 import com.youlan.system.entity.dto.UserPageDTO;
 import com.youlan.system.entity.vo.UserVO;
 import com.youlan.system.permission.anno.DataPermission;
+import com.youlan.system.permission.anno.DataPermissions;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -16,12 +17,18 @@ public interface UserMapper extends BaseMapper<User> {
     /**
      * 用户分页
      */
-    @DataPermission
-    IPage<UserVO> getList(@Param("page") IPage<User> page, @Param("dto") UserPageDTO dto);
+    @DataPermissions({
+            @DataPermission(tableAlias = "user", userIdColumn = "id"),
+            @DataPermission(tableAlias = "user", orgIdColumn = "org_id")
+    })
+    IPage<UserVO> getUserPageList(@Param("page") IPage<User> page, @Param("dto") UserPageDTO dto);
 
     /**
      * 用户列表
      */
-    @DataPermission
-    List<UserVO> getList(@Param("dto") UserPageDTO dto);
+    @DataPermissions({
+            @DataPermission(tableAlias = "user", userIdColumn = "user_id"),
+            @DataPermission(tableAlias = "user", orgIdColumn = "org_id")
+    })
+    List<UserVO> getUserList(@Param("dto") UserPageDTO dto);
 }

@@ -12,6 +12,9 @@ import com.youlan.common.db.constant.DBConstant;
 import com.youlan.tools.constant.GeneratorConstant;
 import com.youlan.tools.entity.GeneratorColumn;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jsqlparser.JSQLParserException;
+import net.sf.jsqlparser.parser.CCJSqlParserUtil;
+import net.sf.jsqlparser.statement.Statement;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
@@ -360,5 +363,10 @@ public class GeneratorUtil {
         return Arrays.asList(
                 "import com.youlan.common.validator.anno.*;"
         );
+    }
+
+    public static void main(String[] args) throws JSQLParserException {
+        Statement parse = CCJSqlParserUtil.parse("select database()");
+
     }
 }

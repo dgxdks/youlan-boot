@@ -24,6 +24,10 @@ public class MybatisConfig {
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
 
+        //数据权限插件
+        // ********* 必须放在分页插件前面，不然分页插件如果先执行count且返回是0会中断后面真实的查询逻辑 *********
+        interceptor.addInnerInterceptor(new DataPermissionInterceptor(new SystemDataPermissionHandler()));
+
         // 分页插件
         PaginationInnerInterceptor paginationInnerInterceptor = new PaginationInnerInterceptor();
 
@@ -40,8 +44,6 @@ public class MybatisConfig {
         //防全表更新与删除插件
         interceptor.addInnerInterceptor(new BlockAttackInnerInterceptor());
 
-        //数据权限插件
-        interceptor.addInnerInterceptor(new DataPermissionInterceptor(new SystemDataPermissionHandler()));
         return interceptor;
     }
 

@@ -96,7 +96,7 @@ public class RoleController extends BaseController {
     @OperationLog(name = "角色", type = OperationLogType.OPERATION_LOG_TYPE_PAGE_LIST)
     public ApiResult getRolePageList(@RequestBody Role role) {
         // TODO: 2023/8/30 缺少数据权限
-        IPage<Role> roleList = roleService.getBaseMapper().getRoleList(DBHelper.getPage(role), role);
+        IPage<Role> roleList = roleService.getBaseMapper().getRolePageList(DBHelper.getPage(role), role);
         return toSuccess(roleList);
     }
 

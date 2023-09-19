@@ -12,9 +12,9 @@ import com.youlan.common.db.helper.DBHelper;
 import com.youlan.common.excel.helper.ExcelHelper;
 import com.youlan.common.validator.Insert;
 import com.youlan.common.validator.Update;
+import com.youlan.controller.base.BaseController;
 import com.youlan.system.anno.OperationLog;
 import com.youlan.system.constant.OperationLogType;
-import com.youlan.controller.base.BaseController;
 import com.youlan.system.constant.SystemConstant;
 import com.youlan.system.entity.Role;
 import com.youlan.system.entity.dto.UserDTO;
@@ -158,7 +158,7 @@ public class UserController extends BaseController {
     public ApiResult getAuthRolePageList(@RequestBody Role role) {
         // 此排除管理员角色ID
         role.setIdExcludes(Collections.singletonList(SystemConstant.ADMIN_ROLE_ID));
-        IPage<Role> roleList = roleService.getBaseMapper().getRoleList(DBHelper.getPage(role), role);
+        IPage<Role> roleList = roleService.getBaseMapper().getRolePageList(DBHelper.getPage(role), role);
         return toSuccess(roleList);
     }
 
@@ -178,5 +178,4 @@ public class UserController extends BaseController {
     public void downloadUserTemplate() throws IOException {
         toExcel("用户数据", UserTemplateVO.class, new ArrayList<>());
     }
-
 }
