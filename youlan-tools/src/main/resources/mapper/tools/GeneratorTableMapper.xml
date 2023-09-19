@@ -3,7 +3,8 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.youlan.tools.mapper.GeneratorTableMapper">
-    <select id="getDbTableList" parameterType="com.youlan.tools.entity.DBTable"
+
+    <select id="getDbTablePageList" parameterType="com.youlan.tools.entity.DBTable"
             resultType="com.youlan.tools.entity.DBTable">
         select tables.table_name, tables.table_comment, tables.create_time, tables.update_time
         from information_schema.tables as tables
@@ -28,4 +29,5 @@
             </foreach>
         </if>
     </select>
+
 </mapper>
