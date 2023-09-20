@@ -4,11 +4,13 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.youlan.system.mapper.UserRoleMapper">
 
-    <select id="getAuthUserList" resultType="com.youlan.system.entity.vo.UserVO">
+    <select id="getAuthUserPageList" resultType="com.youlan.system.entity.vo.UserVO">
         select user.*
         from t_sys_user_role as user_role
+        left join t_sys_role as role on user_role.role_id = role.id
         left join t_sys_user as user on user.id = user_role.user_id
-        where user.sts = '1'
+        left join t_sys_org as org on org.org_id = user.org_id
+        where role.sts = '1' and user.sts = '1' and org.org_sts = '1'
         and user_role.role_id = #{dto.roleId}
         <if test="dto.status != null and dto.status != ''">
             and user.status = #{dto.status}
@@ -24,8 +26,10 @@
     <select id="getUnAuthUserList" resultType="com.youlan.system.entity.vo.UserVO">
         select user.*
         from t_sys_user_role as user_role
+        left join t_sys_role as role on user_role.role_id = role.id
         left join t_sys_user as user on user.id = user_role.user_id
-        where user.sts = '1'
+        left join t_sys_org as org on org.org_id = user.org_id
+        where role.sts = '1' and user.sts = '1' and org.org_sts = '1'
         and user_role.role_id != #{dto.roleId}
         and user_role.user_id not in (select user_id from t_sys_user_role where role_id = #{dto.roleId})
         <if test="dto.status != null and dto.status != ''">

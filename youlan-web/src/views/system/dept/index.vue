@@ -37,6 +37,11 @@
     >
       <el-table-column label="部门名称" prop="orgName" width="260" />
       <el-table-column label="机构编码" prop="orgId" />
+      <el-table-column label="机构类型" prop="orgType">
+        <template slot-scope="scope">
+          <dict-tag v-model="scope.row.orgType" dict-type="sys_org_type" />
+        </template>
+      </el-table-column>
       <el-table-column label="排序" prop="orgSort" width="200" />
       <el-table-column label="状态" prop="status" width="100">
         <template slot-scope="scope">
@@ -61,16 +66,16 @@
     <!-- 部门编辑对话框 -->
     <base-dialog :title="editTitle" :open.sync="editOpen" width="600px" @confirm="handleEditSubmit" @cancel="handleEditCancel">
       <el-form ref="editForm" :model="editForm" :rules="editRules" label-width="80px">
-        <el-form-item label="上级部门" prop="parentOrgId">
+        <el-form-item label="上级机构" prop="parentOrgId">
           <treeselect
             v-model="editForm.parentOrgId"
             :normalizer="deptNormalizer"
             :options="deptOptions"
-            placeholder="选择上级部门"
+            placeholder="选择上级机构"
           />
         </el-form-item>
         <base-row-split2>
-          <el-form-item label="部门名称" prop="orgName">
+          <el-form-item label="机构名称" prop="orgName">
             <el-input v-model="editForm.orgName" placeholder="请输入部门名称" />
           </el-form-item>
           <el-form-item label="显示排序" prop="orgSort">
@@ -85,7 +90,7 @@
           <el-form-item label="邮箱" prop="email">
             <el-input v-model="editForm.email" maxlength="50" placeholder="请输入邮箱" />
           </el-form-item>
-          <el-form-item label="部门状态" prop="orgStatus">
+          <el-form-item label="机构状态" prop="orgStatus">
             <dict-radio v-model="editForm.orgStatus" dict-type="db_status" />
           </el-form-item>
         </base-row-split2>
@@ -158,7 +163,7 @@ export default {
       })
     },
     // 表单重置
-    resetEdit() {
+    resetEditForm() {
       this.editForm = {
         orgId: null,
         parentOrgId: null,

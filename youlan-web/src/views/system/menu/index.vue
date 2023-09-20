@@ -196,7 +196,7 @@ export default {
       this.handleQuery()
     },
     // 表单重置
-    resetEdit() {
+    resetEditForm() {
       this.editForm = {
         id: null,
         parentId: 0,

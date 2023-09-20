@@ -13,7 +13,7 @@
         <if test="dto.orgStatus != null and dto.orgStatus != ''">
             and org_status = #{dto.orgStatus}
         </if>
-        <if test="dto.excludeOrgId != null and dto.excludeOrgId.size() > 0">
+        <if test="dto.excludeOrgId != null">
             and org_id != #{dto.excludeOrgId} and find_in_set(#{dto.excludeOrgId}, org_ancestors) = 0)
         </if>
     </sql>
@@ -23,6 +23,23 @@
     </select>
     <select id="getOrgList" resultType="com.youlan.system.entity.vo.OrgVO">
         <include refid="getOrgList"/>
+    </select>
+
+    <select id="hasOrgId" resultType="java.lang.Long">
+        select org_id
+        from t_sys_org
+        where org_sts = '1'
+          and org_id = #{orgId}
+    </select>
+
+    <select id="hasOrgIds" resultType="java.lang.Long">
+        select org_id
+        from t_sys_org
+        where org_sts = '1'
+        and org_id in
+        <foreach collection="orgIds" item="orgId" open="(" close=")" separator=",">
+            #{orgId}
+        </foreach>
     </select>
 
     <update id="replaceChildOrgAncestors">

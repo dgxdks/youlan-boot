@@ -37,4 +37,25 @@
     <select id="getUserPageList" resultType="com.youlan.system.entity.vo.UserVO">
         <include refid="getUserList"/>
     </select>
+
+    <select id="hasUserId" resultType="java.lang.Long">
+        select user.id
+        from t_sys_user as user
+                 left join t_sys_org as org on user.org_id = org.org_id
+        where user.sts = '1'
+          and org.org_sts = '1'
+          and user.id = #{userId}
+    </select>
+
+    <select id="hasUserIds" resultType="java.lang.Long">
+        select user.id
+        from t_sys_user as user
+        left join t_sys_org as org on user.org_id = org.org_id
+        where user.sts = '1'
+        and org.org_sts = '1'
+        and user.id in
+        <foreach collection="userIds" item="userId" open="(" close=")" separator=",">
+            #{userId}
+        </foreach>
+    </select>
 </mapper>

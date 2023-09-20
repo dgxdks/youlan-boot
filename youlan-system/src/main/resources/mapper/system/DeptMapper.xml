@@ -24,7 +24,7 @@
         <if test="dto.orgStatus != null and dto.orgStatus != ''">
             and org.org_status = #{dto.orgStatus}
         </if>
-        <if test="dto.excludeOrgId != null and dto.excludeOrgId.size() > 0">
+        <if test="dto.excludeOrgId != null">
             and (org.org_id != #{dto.excludeOrgId} and find_in_set(#{dto.excludeOrgId}, org.org_ancestors) = 0)
         </if>
     </select>

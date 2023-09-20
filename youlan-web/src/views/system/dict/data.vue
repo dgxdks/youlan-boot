@@ -227,7 +227,7 @@ export default {
       })
     },
     // 表单重置
-    resetEdit() {
+    resetEditForm() {
       this.editForm = {
         id: null,
         dataName: null,

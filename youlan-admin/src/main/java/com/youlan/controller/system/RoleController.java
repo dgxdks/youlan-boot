@@ -75,6 +75,7 @@ public class RoleController extends BaseController {
     @Operation(summary = "角色详情")
     @PostMapping("/loadRole")
     public ApiResult loadRole(@RequestParam Long id) {
+        SystemAuthHelper.checkRoleNotAdmin(id);
         return toSuccess(roleBizService.loadRole(id));
     }
 
@@ -83,7 +84,6 @@ public class RoleController extends BaseController {
     @PostMapping("/getRoleList")
     @OperationLog(name = "角色", type = OperationLogType.OPERATION_LOG_TYPE_LIST)
     public ApiResult getRoleList(@RequestBody Role role) {
-        // TODO: 2023/8/23 需要考虑数据权限 只能看当前用户可以看的角色
         List<Role> roleList = roleService.getBaseMapper().getRoleList(role);
         //不显示管理员角色信息
         roleList = ListHelper.filterList(roleList, r -> !SystemAuthHelper.isAdminRole(r.getRoleStr()));
@@ -95,7 +95,6 @@ public class RoleController extends BaseController {
     @PostMapping("/getRolePageList")
     @OperationLog(name = "角色", type = OperationLogType.OPERATION_LOG_TYPE_PAGE_LIST)
     public ApiResult getRolePageList(@RequestBody Role role) {
-        // TODO: 2023/8/30 缺少数据权限
         IPage<Role> roleList = roleService.getBaseMapper().getRolePageList(DBHelper.getPage(role), role);
         return toSuccess(roleList);
     }
@@ -105,7 +104,6 @@ public class RoleController extends BaseController {
     @PostMapping("/exportRoleList")
     @OperationLog(name = "角色", type = OperationLogType.OPERATION_LOG_TYPE_EXPORT)
     public void exportRoleList(@RequestBody Role role, HttpServletResponse response) throws IOException {
-        // TODO: 2023/8/30 缺少数据权限
         List<Role> roleList = roleService.getBaseMapper().getRoleList(role);
         toExcel("角色数据.xlsx", Role.class, roleList, response);
     }

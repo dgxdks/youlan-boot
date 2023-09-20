@@ -12,22 +12,30 @@ import java.lang.annotation.*;
 @Documented
 public @interface DataPermission {
     /**
-     * 指定SQL中表别名(SQL解析时如果未获取到SQL中表的别名时会用表明与此值匹配)
+     * 绑定SQL中的表名，数据权限的条件SQL会生成在这个表下
+     * 例如 select * from t_a as a left join t_b as b on a.id = b.id where a.sts = 1 and b.sts = 1
+     * 如果绑定的是别名为a的表，则数据权限的条件SQL会拼接在 where a.sts = 1 and b.sts = 1 and ${permissionSql}
+     * 如果绑定的是别名为b的表，则数据权限的条件SQL会拼接在 on a.id = b.id and ${permissionSql}
+     * 这两个查询出来的结果是可能会有区别的
      */
-    String tableAlias();
+    String tableBind();
 
     /**
-     * 指定表对应的机构ID列
+     * 指定机构ID列，列可以是{@link #tableBind()}表的列也可以自己指定的任意列
      */
     String orgIdColumn() default StrUtil.EMPTY;
 
     /**
-     * 指定表对应的用户ID列
-     * 有时候当角色权限范围是{@link RoleScope#CURRENT_USER}时，但是上面指定的表有机构ID列没有用户ID列
-     * 这时候可以指定orgIdColumn，拦截器会优先获取机构列的值，并通过获取用户ID对应的机构ID做为条件进行过滤
+     * 指定用户ID列，指定机构ID列，列可以是tableBind表的列也可以自己指定的任意列
      *
      * @see com.youlan.system.mapper.OrgMapper#getOrgPageList(IPage, OrgPageDTO)
      * @see com.youlan.system.mapper.OrgMapper#getOrgList(OrgPageDTO)
      */
     String userIdColumn() default StrUtil.EMPTY;
+
+    /**
+     * 是否用{@link #orgIdColumn()}替代{@link #userIdColumn()}, 仅角色权限范围是{@link RoleScope#CURRENT_USER}时有效
+     * 有时候当角色权限范围是{@link RoleScope#CURRENT_USER}时，想通过用户的orgId进行过滤而不是用userId过滤可以修改为true
+     */
+    boolean orgIdReplaceUserId() default false;
 }

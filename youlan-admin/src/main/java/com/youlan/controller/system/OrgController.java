@@ -1,9 +1,9 @@
 package com.youlan.controller.system;
 
 import com.youlan.common.core.restful.ApiResult;
+import com.youlan.controller.base.BaseController;
 import com.youlan.system.anno.OperationLog;
 import com.youlan.system.constant.OperationLogType;
-import com.youlan.controller.base.BaseController;
 import com.youlan.system.entity.dto.OrgPageDTO;
 import com.youlan.system.service.OrgService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,7 +25,6 @@ public class OrgController extends BaseController {
     @PostMapping("/getOrgTreeList")
     @OperationLog(name = "机构", type = OperationLogType.OPERATION_LOG_TYPE_LIST)
     public ApiResult getOrgTreeList(@RequestBody OrgPageDTO dto) {
-        // TODO: 2023/9/4 缺少数据权限
         return toSuccess(orgService.getOrgTreeList(dto));
     }
 }

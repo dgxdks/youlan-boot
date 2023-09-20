@@ -155,7 +155,7 @@ export default {
       this.tableIds = selection.map(item => item.id)
     },
     // 表单重置
-    resetEdit() {
+    resetEditForm() {
       this.editForm = {
         id: null,
         postCode: null,

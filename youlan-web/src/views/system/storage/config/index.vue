@@ -241,7 +241,7 @@ export default {
       })
     },
     // 表单重置
-    resetEdit() {
+    resetEditForm() {
       this.editForm = {
         name: null,
         platform: null,

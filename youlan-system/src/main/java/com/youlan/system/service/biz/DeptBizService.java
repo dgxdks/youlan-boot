@@ -14,7 +14,6 @@ import com.youlan.system.entity.dto.DeptDTO;
 import com.youlan.system.entity.dto.OrgPageDTO;
 import com.youlan.system.entity.vo.DeptVO;
 import com.youlan.system.enums.OrgType;
-import com.youlan.system.helper.SystemAuthHelper;
 import com.youlan.system.service.DeptService;
 import com.youlan.system.service.OrgService;
 import com.youlan.system.service.UserService;
@@ -66,8 +65,6 @@ public class DeptBizService {
                 continue;
             }
             Dept dept = deptService.loadDeptIfExists(id);
-            //权限校验
-            SystemAuthHelper.checkHasOrgId(dept.getOrgId());
             //包含子机构则不允许删除;
             boolean childExists = orgService.exists(Wrappers.<Org>lambdaQuery().eq(Org::getParentOrgId, dept.getOrgId()));
             if (childExists) {

@@ -6,13 +6,14 @@ import cn.hutool.core.util.ObjectUtil;
 import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.db.entity.dto.ListDTO;
+import com.youlan.controller.base.BaseController;
 import com.youlan.system.anno.OperationLog;
 import com.youlan.system.constant.OperationLogType;
-import com.youlan.controller.base.BaseController;
 import com.youlan.system.entity.dto.DeptDTO;
 import com.youlan.system.entity.dto.OrgPageDTO;
 import com.youlan.system.entity.vo.DeptVO;
 import com.youlan.system.helper.SystemAuthHelper;
+import com.youlan.system.service.DeptService;
 import com.youlan.system.service.biz.DeptBizService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,6 +29,7 @@ import java.util.List;
 @AllArgsConstructor
 public class DeptController extends BaseController {
     private final DeptBizService deptBizService;
+    private final DeptService deptService;
 
     @SaCheckPermission("system:dept:add")
     @Operation(summary = "部门新增")
@@ -59,6 +61,10 @@ public class DeptController extends BaseController {
         if (CollectionUtil.isEmpty(dto.getList())) {
             return toSuccess();
         }
+        List<Long> orgIds = deptService.getOrgIdListByIds(dto.getList());
+        //顶级机构不允许删除
+        orgIds.forEach(SystemAuthHelper::checkOrgNotTop);
+        SystemAuthHelper.checkHasOrgIds(orgIds);
         deptBizService.removeDept(dto.getList());
         return toSuccess();
     }

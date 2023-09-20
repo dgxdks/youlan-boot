@@ -62,7 +62,6 @@ public class UserController extends BaseController {
     @PostMapping("/updateUser")
     @OperationLog(name = "用户", type = OperationLogType.OPERATION_LOG_TYPE_UPDATE)
     public ApiResult updateUser(@Validated(Update.class) @RequestBody UserDTO dto) {
-        // TODO: 2023/8/28 数据权限
         if (ObjectUtil.isNull(dto.getId())) {
             return toError(ApiResultCode.C0001);
         }
@@ -76,7 +75,6 @@ public class UserController extends BaseController {
     @PostMapping("/removeUser")
     @OperationLog(name = "用户", type = OperationLogType.OPERATION_LOG_TYPE_REMOVE)
     public ApiResult removeUser(@Validated @RequestBody ListDTO<Long> dto) {
-        // TODO: 2023/8/28 数据权限
         if (CollectionUtil.isEmpty(dto.getList())) {
             return toSuccess();
         }
@@ -85,6 +83,7 @@ public class UserController extends BaseController {
             throw new BizRuntimeException(ApiResultCode.A0012);
         }
         dto.getList().forEach(SystemAuthHelper::checkUserNotAdmin);
+        SystemAuthHelper.checkHasUserIds(dto.getList());
         return toSuccess(userBizService.removeUser(dto.getList()));
     }
 
@@ -92,7 +91,7 @@ public class UserController extends BaseController {
     @Operation(summary = "用户详情")
     @PostMapping("/loadUser")
     public ApiResult loadUser(@RequestParam Long id) {
-        // TODO: 2023/8/30 缺少数据权限
+        SystemAuthHelper.checkUserNotAdmin(id);
         SystemAuthHelper.checkHasUserId(id);
         return toSuccess(userBizService.loadUser(id));
     }
@@ -102,7 +101,6 @@ public class UserController extends BaseController {
     @PostMapping("/getUserPageList")
     @OperationLog(name = "用户", type = OperationLogType.OPERATION_LOG_TYPE_PAGE_LIST)
     public ApiResult getUserPageList(@RequestBody UserPageDTO dto) {
-        // TODO: 2023/8/30 缺少数据权限
         return toSuccess(userBizService.getUserPageList(dto));
     }
 
@@ -111,7 +109,6 @@ public class UserController extends BaseController {
     @PostMapping("/exportUserList")
     @OperationLog(name = "用户", type = OperationLogType.OPERATION_LOG_TYPE_EXPORT)
     public void exportUserList(@RequestBody UserPageDTO dto, HttpServletResponse response) throws IOException {
-        // TODO: 2023/8/30 缺少数据权限
         List<UserVO> userList = userBizService.exportUserList(dto);
         toExcel("用户.xlsx", "用户", UserVO.class, userList, response);
     }
@@ -133,7 +130,6 @@ public class UserController extends BaseController {
     @PostMapping("/resetUserPasswd")
     @OperationLog(name = "用户", type = OperationLogType.OPERATION_LOG_TYPE_UPDATE)
     public ApiResult resetUserPasswd(@Validated @RequestBody UserResetPasswdDTO dto) {
-        // TODO: 2023/8/23 数据权限
         if (ObjectUtil.isNull(dto.getId())) {
             return toError(ApiResultCode.C0001);
         }

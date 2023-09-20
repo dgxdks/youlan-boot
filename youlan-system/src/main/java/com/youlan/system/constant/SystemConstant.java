@@ -96,6 +96,7 @@ public class SystemConstant {
     public static final String CONFIG_KEY_LOGIN_LOCK_TIME = "sys.login.lock.time";
     public static final String CONFIG_KEY_LOGIN_LOG_ENABLED = "sys.login.log.enabled";
 
+    // ******************** 超级管理员常量 ********************
     /**
      * 超级管理员用户ID
      */
@@ -118,4 +119,7 @@ public class SystemConstant {
 
     // ******************** 用户常量 ********************
     public static final Long SUPER_ADMIN_USER_ID = 100L;
+
+    // ******************** 机构常量 ********************
+    public static final Long TOP_ORG_ID = 100L;
 }

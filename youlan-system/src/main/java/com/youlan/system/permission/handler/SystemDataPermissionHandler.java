@@ -3,8 +3,6 @@ package com.youlan.system.permission.handler;
 import cn.dev33.satoken.exception.NotWebContextException;
 import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.lang.Assert;
-import cn.hutool.core.text.StrPool;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -20,26 +18,22 @@ import com.youlan.system.permission.anno.DataPermission;
 import com.youlan.system.permission.anno.DataPermissions;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Table;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 public class SystemDataPermissionHandler implements MultiDataPermissionHandler {
     private static final String ROLE_SCOPE_MAP_NAME = "ROLE_SCOPE_MAP";
-    private static final ConcurrentHashMap<String, Optional<DataPermission[]>> ANNO_CACHE = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, Optional<List<DataPermission>>> ANNO_CACHE = new ConcurrentHashMap<>();
 
     @Override
     public Expression getSqlSegment(Table table, Expression where, String mappedStatementId) {
         try {
-            Optional<DataPermission[]> dataPermissionAnnoOpt = findDataPermissionAnno(mappedStatementId);
+            Optional<List<DataPermission>> dataPermissionAnnoOpt = findDataPermissionAnno(mappedStatementId);
             // msId对应的
             if (dataPermissionAnnoOpt.isEmpty()) {
                 return null;
@@ -48,7 +42,7 @@ public class SystemDataPermissionHandler implements MultiDataPermissionHandler {
             if (SystemAuthHelper.isAdmin()) {
                 return null;
             }
-            DataPermission[] dataPermissionArr = dataPermissionAnnoOpt.get();
+            List<DataPermission> dataPermissionList = dataPermissionAnnoOpt.get();
             Map<String, RoleScope> roleScopeMap = getOrCreateRoleScopeMap();
             // roleScopeMap是查出来的角色范围，如果查出来都没有权限就得抛出异常中断执行
             if (CollectionUtil.isEmpty(roleScopeMap)) {
@@ -67,34 +61,35 @@ public class SystemDataPermissionHandler implements MultiDataPermissionHandler {
             // 不同角色的权限范围之间是OR关系，相同角色的多个权限注解配置是AND关系
             for (Map.Entry<String, RoleScope> roleScopeEntry : roleScopeMap.entrySet()) {
                 List<String> permissionSqlItems = new ArrayList<>();
-                for (DataPermission dataPermissionAnno : dataPermissionArr) {
+                for (DataPermission dataPermissionAnno : dataPermissionList) {
                     String roleStr = roleScopeEntry.getKey();
                     RoleScope roleScope = roleScopeEntry.getValue();
-                    String permissionTableAlias = dataPermissionAnno.tableAlias();
+                    String permissionTableAlias = dataPermissionAnno.tableBind();
                     String orgIdColumn = dataPermissionAnno.orgIdColumn();
                     String userIdColumn = dataPermissionAnno.userIdColumn();
+                    boolean orgIdReplaceUserId = dataPermissionAnno.orgIdReplaceUserId();
                     if (!StrUtil.equals(tableAlias, permissionTableAlias)) {
                         continue;
                     }
                     if (roleScope == RoleScope.CUSTOM && StrUtil.isNotBlank(orgIdColumn)) {
-                        permissionSqlItems.add(StrUtil.format(RoleScope.CUSTOM.getSql(), permissionTableAlias + StrPool.DOT + orgIdColumn, roleStr));
+                        permissionSqlItems.add(StrUtil.format(RoleScope.CUSTOM.getSql(), mergeColumn(permissionTableAlias, orgIdColumn), roleStr));
                     }
                     if (roleScope == RoleScope.CURRENT_ORG && StrUtil.isNotBlank(orgIdColumn)) {
                         String orgId = SystemAuthHelper.getOrgId().toString();
-                        permissionSqlItems.add(StrUtil.format(RoleScope.CURRENT_ORG.getSql(), permissionTableAlias + StrPool.DOT + orgIdColumn, orgId));
+                        permissionSqlItems.add(StrUtil.format(RoleScope.CURRENT_ORG.getSql(), mergeColumn(permissionTableAlias, orgIdColumn), orgId));
                     }
                     if (roleScope == RoleScope.ORG_BELOW && StrUtil.isNotBlank(orgIdColumn)) {
                         String orgId = SystemAuthHelper.getOrgId().toString();
-                        permissionSqlItems.add(StrUtil.format(RoleScope.ORG_BELOW.getSql(), permissionTableAlias + StrPool.DOT + orgIdColumn, orgId, orgId));
+                        permissionSqlItems.add(StrUtil.format(RoleScope.ORG_BELOW.getSql(), mergeColumn(permissionTableAlias, orgIdColumn), orgId, orgId));
                     }
                     if (roleScope == RoleScope.CURRENT_USER) {
-                        // 优先判断是否指定了机构ID列，如果指定了机构ID列则用机构ID列过滤
-                        if (StrUtil.isNotBlank(orgIdColumn)) {
+                        // 判断是否使用机构ID列替代用户ID列
+                        if (orgIdReplaceUserId && StrUtil.isNotBlank(orgIdColumn)) {
                             String orgId = SystemAuthHelper.getOrgId().toString();
-                            permissionSqlItems.add(StrUtil.format(RoleScope.CURRENT_USER.getSql(), permissionTableAlias + StrPool.DOT + orgIdColumn, orgId));
-                        } else if (StrUtil.isNotBlank(userIdColumn)) {
+                            permissionSqlItems.add(StrUtil.format(RoleScope.CURRENT_USER.getSql(), mergeColumn(permissionTableAlias, orgIdColumn), orgId));
+                        } else if (!orgIdReplaceUserId && StrUtil.isNotBlank(userIdColumn)) {
                             String userId = SystemAuthHelper.getUserId().toString();
-                            permissionSqlItems.add(StrUtil.format(RoleScope.CURRENT_USER.getSql(), permissionTableAlias + StrPool.DOT + userIdColumn, userId));
+                            permissionSqlItems.add(StrUtil.format(RoleScope.CURRENT_USER.getSql(), mergeColumn(permissionTableAlias, userIdColumn), userId));
                         }
                     }
                 }
@@ -147,7 +142,7 @@ public class SystemDataPermissionHandler implements MultiDataPermissionHandler {
     /**
      * 获取数据权限注解
      */
-    public Optional<DataPermission[]> findDataPermissionAnno(String msId) {
+    public Optional<List<DataPermission>> findDataPermissionAnno(String msId) {
         // msId的格式类似于com.youlan.system.mapper.UserMapper.getList
         return ANNO_CACHE.computeIfAbsent(msId, key -> {
             final String mapperClzName = StrUtil.subBefore(msId, StringPool.DOT, true);
@@ -162,25 +157,29 @@ public class SystemDataPermissionHandler implements MultiDataPermissionHandler {
             if (ObjectUtil.isNull(mapperMethod)) {
                 return Optional.empty();
             }
+            List<DataPermission> permissionAnnoList = new ArrayList<>();
             DataPermissions dataPermissionsAnno = AnnotationUtil.getAnnotation(mapperMethod, DataPermissions.class);
-            if (ObjectUtil.isNull(dataPermissionsAnno) || ArrayUtil.isEmpty(dataPermissionsAnno.value())) {
+            if (ObjectUtil.isNotNull(dataPermissionsAnno) && ArrayUtil.isNotEmpty(dataPermissionsAnno.value())) {
+                permissionAnnoList.addAll(Arrays.asList(dataPermissionsAnno.value()));
+            }
+            DataPermission dataPermissionAnno = AnnotationUtil.getAnnotation(mapperMethod, DataPermission.class);
+            if (ObjectUtil.isNotNull(dataPermissionAnno)) {
+                permissionAnnoList.add(dataPermissionAnno);
+            }
+            if (CollectionUtil.isEmpty(permissionAnnoList)) {
                 return Optional.empty();
             }
-            return Optional.of(dataPermissionsAnno.value());
+            return Optional.of(permissionAnnoList);
         });
     }
 
     /**
-     * 断言机构ID列不为空
+     * 合并表别名和表列名
      */
-    public void assertOrgIdColumnNotBlank(String orgIdColumn) {
-        Assert.notBlank(orgIdColumn, ApiResultCode.A0026::getException);
-    }
-
-    /**
-     * 断言用户ID不为空
-     */
-    public void assertUserIdColumnNotBlanc(String userIdColumn) {
-        Assert.notBlank(userIdColumn, ApiResultCode.A0027::getException);
+    public String mergeColumn(String tableAlias, String columnAlias) {
+        if (columnAlias.contains(StringPool.DOT)) {
+            return columnAlias;
+        }
+        return tableAlias + StringPool.DOT + columnAlias;
     }
 }

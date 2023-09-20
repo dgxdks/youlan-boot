@@ -5,9 +5,12 @@
 <mapper namespace="com.youlan.system.mapper.RoleMapper">
 
     <sql id="getRoleList">
-        select role.*
+        select distinct role.*
         from t_sys_role as role
-        where role.sts = '1'
+        left join t_sys_user_role as user_role on user_role.role_id = role.id
+        left join t_sys_user as user on user.id = user_role.user_id
+        left join t_sys_org as org on org.org_id = user.org_id
+        where role.sts = '1' and user.sts = '1' and org.org_sts = '1'
         <if test="role.roleName != null and role.roleName != ''">
             and role.role_name like concat('%', #{role.roleName}, '%')
         </if>
@@ -36,4 +39,26 @@
         <include refid="getRoleList"/>
     </select>
 
+    <select id="hasRoleId" resultType="java.lang.Long">
+        select distinct role.*
+        from t_sys_role as role
+                 left join t_sys_user_role as user_role on user_role.role_id = role.id
+                 left join t_sys_user as user on user.id = user_role.user_id
+                 left join t_sys_org as org on org.org_id = user.org_id
+        where role.sts = '1' and user.sts = '1' and org.org_sts = '1'
+        and role.id = #{roleId}
+    </select>
+
+    <select id="hasRoleIds" resultType="java.lang.Long">
+        select distinct role.*
+        from t_sys_role as role
+        left join t_sys_user_role as user_role on user_role.role_id = role.id
+        left join t_sys_user as user on user.id = user_role.user_id
+        left join t_sys_org as org on org.org_id = user.org_id
+        where role.sts = '1' and user.sts = '1' and org.org_sts = '1'
+        and role.id in
+        <foreach collection="roleIds" item="roleId" open="(" close=")" separator=",">
+            #{roleId}
+        </foreach>
+    </select>
 </mapper>

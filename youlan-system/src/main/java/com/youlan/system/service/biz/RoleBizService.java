@@ -108,7 +108,7 @@ public class RoleBizService {
      * 用户角色授权分页
      */
     public IPage<UserVO> getAuthUserPageList(UserRolePageDTO dto) {
-        return userRoleService.getBaseMapper().getAuthUserList(DBHelper.getPage(dto), dto);
+        return userRoleService.getBaseMapper().getAuthUserPageList(DBHelper.getPage(dto), dto);
     }
 
     /**

@@ -14,13 +14,12 @@ import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.system.entity.Role;
 import com.youlan.system.entity.auth.SystemAuthInfo;
 import com.youlan.system.enums.RoleScope;
-import com.youlan.system.service.RoleMenuService;
-import com.youlan.system.service.RoleService;
-import com.youlan.system.service.UserRoleService;
+import com.youlan.system.service.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,7 +29,9 @@ import static com.youlan.system.constant.SystemConstant.*;
 public class SystemAuthHelper {
     public static final String ROLE_STR_PREFIX = "sys-role-";
     public static final String ROLE_SCOPE = "ROLE_SCOPE";
+    private static final UserService userService = SpringUtil.getBean(UserService.class);
     private static final RoleService roleService = SpringUtil.getBean(RoleService.class);
+    private static final OrgService orgService = SpringUtil.getBean(OrgService.class);
     private static final UserRoleService userRoleService = SpringUtil.getBean(UserRoleService.class);
     private static final RoleMenuService roleMenuService = SpringUtil.getBean(RoleMenuService.class);
 
@@ -137,6 +138,13 @@ public class SystemAuthHelper {
     }
 
     /**
+     * 判断是否是顶级机构ID
+     */
+    public static boolean isTopOrg(Long orgId) {
+        return TOP_ORG_ID.equals(orgId);
+    }
+
+    /**
      * 判断是否是超级管理员用户
      */
     public static boolean isAdmin() {
@@ -181,6 +189,15 @@ public class SystemAuthHelper {
     }
 
     /**
+     * 校验机构不是顶级机构
+     */
+    public static void checkOrgNotTop(Long orgId) {
+        if (ObjectUtil.isNotNull(orgId) && isTopOrg(orgId)) {
+            throw new BizRuntimeException(ApiResultCode.A0028);
+        }
+    }
+
+    /**
      * 校验用户不是管理员用户
      */
     public static void checkUserNotAdmin(Long userId) {
@@ -192,8 +209,8 @@ public class SystemAuthHelper {
     /**
      * 校验角色不是管理员角色
      */
-    public static void checkRoleNotAdmin(Long roleStr) {
-        if (ObjectUtil.isNotNull(roleStr) && isAdminRole(roleStr)) {
+    public static void checkRoleNotAdmin(Long roleId) {
+        if (ObjectUtil.isNotNull(roleId) && isAdminRole(roleId)) {
             throw new BizRuntimeException(ApiResultCode.A0014);
         }
     }
@@ -205,8 +222,19 @@ public class SystemAuthHelper {
         if (isAdmin()) {
             return true;
         }
-        // TODO: 2023/8/30 实现数据权限逻辑
-        return true;
+        List<Long> userIds = userService.getBaseMapper().hasUserId(userId);
+        return userIds.contains(userId);
+    }
+
+    /**
+     * 当前用户是否有此用户数据权限
+     */
+    public static boolean hasUserIds(List<Long> userIds) {
+        if (isAdmin()) {
+            return true;
+        }
+        List<Long> userIdsRet = userService.getBaseMapper().hasUserIds(userIds);
+        return new HashSet<>(userIdsRet).containsAll(userIds);
     }
 
     /**
@@ -222,7 +250,9 @@ public class SystemAuthHelper {
      * 校验当前用户是否有此用户数据权限
      */
     public static void checkHasUserIds(List<Long> userIds) {
-
+        if (!hasUserIds(userIds)) {
+            throw new BizRuntimeException(ApiResultCode.A0013);
+        }
     }
 
     /**
@@ -232,8 +262,8 @@ public class SystemAuthHelper {
         if (isAdmin()) {
             return true;
         }
-        // TODO: 2023/8/30 实现数据权限逻辑
-        return true;
+        List<Long> roleIds = roleService.getBaseMapper().hasRoleId(roleId);
+        return roleIds.contains(roleId);
     }
 
     /**
@@ -243,8 +273,8 @@ public class SystemAuthHelper {
         if (isAdmin()) {
             return true;
         }
-        // TODO: 2023/8/30 实现数据权限逻辑
-        return true;
+        List<Long> roleIdsRet = roleService.getBaseMapper().hasRoleIds(roleIds);
+        return new HashSet<>(roleIdsRet).containsAll(roleIds);
     }
 
     /**
@@ -272,7 +302,8 @@ public class SystemAuthHelper {
         if (isAdmin()) {
             return true;
         }
-        return true;
+        List<Long> orgIdList = orgService.getBaseMapper().hasOrgId(orgId);
+        return orgIdList.contains(orgId);
     }
 
     /**
@@ -282,7 +313,8 @@ public class SystemAuthHelper {
         if (isAdmin()) {
             return true;
         }
-        return true;
+        List<Long> orgIdsRet = orgService.getBaseMapper().hasOrgIds(orgIds);
+        return new HashSet<>(orgIdsRet).containsAll(orgIds);
     }
 
     /**

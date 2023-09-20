@@ -10,13 +10,14 @@ export default {
     vNodes = vNodes.filter(vNode => {
       return vNode.data
     })
+    console.log(vNodes)
     const leftNodes = []
     const rightNodes = []
     for (let i = 0; i < vNodes.length; i++) {
       const vNode = vNodes[i]
       i % 2 === 0 ? leftNodes.push(vNode) : rightNodes.push(vNode)
     }
-    return createElement('el-row', [
+    this.element = createElement('el-row', [
       createElement('el-col', {
         props: {
           span: 12
@@ -28,6 +29,7 @@ export default {
         }
       }, rightNodes)
     ])
+    return this.element
   }
 }
 </script>
