@@ -10,7 +10,6 @@ export default {
     vNodes = vNodes.filter(vNode => {
       return vNode.data
     })
-    console.log(vNodes)
     const leftNodes = []
     const rightNodes = []
     for (let i = 0; i < vNodes.length; i++) {

@@ -19,7 +19,7 @@ public class ImageCaptcha {
     private String captchaImg;
 
     @Schema(description = "验证码超时时间")
-    private Long codeTimeout;
+    private int codeTimeout;
 
     @Schema(description = "是否开启验证码")
     private Boolean captchaEnabled;

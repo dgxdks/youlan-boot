@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 @Data
 @Accessors(chain = true)
@@ -16,9 +15,4 @@ public class SmsCaptchaDTO {
     @NotBlank(message = "手机号码不能为空")
     @Schema(description = "手机号码")
     private String mobile;
-
-
-    @NotNull(message = "时间戳不能为空")
-    @Schema(description = "时间戳")
-    private Long timestamp;
 }

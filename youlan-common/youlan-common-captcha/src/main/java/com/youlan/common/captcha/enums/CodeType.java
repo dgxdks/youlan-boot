@@ -3,7 +3,7 @@ package com.youlan.common.captcha.enums;
 import lombok.Getter;
 
 @Getter
-public enum CaptchaCodeType {
+public enum CodeType {
     /**
      * 字符类型
      */

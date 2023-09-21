@@ -1,5 +1,7 @@
 package com.youlan.system.config;
 
+import com.youlan.common.captcha.config.ImageCaptchaProperties;
+import com.youlan.common.captcha.config.SmsCaptchaProperties;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
@@ -8,10 +10,16 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 @ConfigurationProperties(prefix = "youlan.system")
 public class SystemProperties {
     /**
-     * 验证码配置
+     * 图形验证码配置
      */
     @NestedConfigurationProperty
-    private CaptchaProperties captcha;
+    private ImageCaptchaProperties imageCaptcha;
+
+    /**
+     * 短信验证码配置
+     */
+    @NestedConfigurationProperty
+    private SmsCaptchaProperties smsCaptcha;
 
     /**
      * 存储配置

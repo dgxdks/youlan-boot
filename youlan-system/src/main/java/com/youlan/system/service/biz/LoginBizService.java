@@ -36,8 +36,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import static com.youlan.common.core.restful.enums.ApiResultCode.A0002;
@@ -90,8 +90,8 @@ public class LoginBizService {
         if (!StrUtil.isAllNotBlank(captchaId, captchaCode)) {
             throw new BizRuntimeException(ApiResultCode.A0010);
         }
-        boolean verifyCaptcha = CaptchaHelper.verifyCaptcha(captchaId, captchaCode);
-        if (!verifyCaptcha && StrUtil.isNotBlank(userName)) {
+        boolean matchCaptcha = CaptchaHelper.match(captchaId, captchaCode);
+        if (!matchCaptcha && StrUtil.isNotBlank(userName)) {
             loginLogService.addAsync(userName, LoginStatus.FAILED, ApiResultCode.A0007.getErrorMsg());
             throw new BizRuntimeException(ApiResultCode.A0007);
         }
@@ -121,7 +121,7 @@ public class LoginBizService {
         } else {
             loginRetryKey = SystemUtil.getLoginRetryRedisKey(user.getUserName());
         }
-        Integer retryCount = ObjectUtil.defaultIfNull(RedisHelper.get(loginRetryKey), 0);
+        Integer retryCount = ObjectUtil.defaultIfNull(RedisHelper.getCacheObject(loginRetryKey), 0);
         //超出重试次数则不允许登录
         if (retryCount > loginMaxRetryTimes) {
             loginLogService.addAsync(user.getUserName(), LoginStatus.LOCKED.getCode(), ApiResultCode.A0006.getErrorMsg());
@@ -130,7 +130,7 @@ public class LoginBizService {
         if (!passwordMatch.get()) {
             retryCount++;
             int loginLockTime = SystemConfigHelper.loginLockTime();
-            RedisHelper.set(loginRetryKey, retryCount, loginLockTime, TimeUnit.SECONDS);
+            RedisHelper.setCacheObject(loginRetryKey, retryCount, Duration.ofSeconds(loginLockTime));
             //密码匹配失败重试次数+1后需在判断一次是否超过重试次数
             if (retryCount > loginMaxRetryTimes) {
                 loginLogService.addAsync(user.getUserName(), LoginStatus.LOCKED.getCode(), ApiResultCode.A0006.getErrorMsg());
@@ -140,7 +140,7 @@ public class LoginBizService {
                 throw new BizRuntimeException(A0002);
             }
         }
-        RedisHelper.delete(loginRetryKey);
+        RedisHelper.deleteCacheObject(loginRetryKey);
     }
 
     /**
@@ -194,7 +194,7 @@ public class LoginBizService {
      * 解锁用户登录
      */
     public void unlockLoginUser(String userName) {
-        RedisHelper.deleteByPattern(SystemUtil.getLoginRetryRedisKey(userName) + StringPool.ASTERISK);
+        RedisHelper.deleteKeysByPattern(SystemUtil.getLoginRetryRedisKey(userName) + StringPool.ASTERISK);
     }
 
     /**

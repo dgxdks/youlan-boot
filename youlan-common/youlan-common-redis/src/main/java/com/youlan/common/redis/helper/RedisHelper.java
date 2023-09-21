@@ -4,145 +4,399 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
+import com.youlan.common.core.exception.BizRuntimeException;
+import lombok.Getter;
+import org.redisson.api.*;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static com.youlan.common.redis.constant.RedisConstant.*;
 
 public class RedisHelper {
-    public static final RedisTemplate<String, Object> redisTemplate = SpringUtil.getBean(REDIS_TEMPLATE_BEAN_NAME);
-    public static final RedisConnectionFactory redisConnectionFactory = SpringUtil.getBean(RedisConnectionFactory.class);
 
-    public static Long increment(final String key) {
-        return redisTemplate.opsForValue().increment(key);
+    @Getter
+    private static final RedisTemplate<String, Object> redisTemplate = SpringUtil.getBean(REDIS_TEMPLATE_BEAN_NAME);
+
+    @Getter
+    private static final RedissonClient redissonClient = SpringUtil.getBean(RedissonClient.class);
+
+    @Getter
+    private static final RedisConnectionFactory redisConnectionFactory = SpringUtil.getBean(RedisConnectionFactory.class);
+
+    /**
+     * 设置缓存
+     *
+     * @param key   缓存键名
+     * @param value 缓存键值
+     */
+    public static void setCacheObject(final String key, final Object value) {
+        setCacheObject(key, value, false);
     }
 
-    public static Long increment(final String key, final long delta) {
-        return redisTemplate.opsForValue().increment(key, delta);
+    /**
+     * 设置缓存
+     *
+     * @param key      缓存键名
+     * @param value    缓存键值
+     * @param duration 超时时间
+     */
+    public static void setCacheObject(final String key, final Object value, final Duration duration) {
+        RBucket<Object> bucket = redissonClient.getBucket(key);
+        bucket.set(value, duration.toMillis(), TimeUnit.MILLISECONDS);
     }
 
-    public static void set(final String key, final Object value) {
-        redisTemplate.opsForValue().set(key, value);
+    /**
+     * 设置缓存
+     *
+     * @param key   缓存键名
+     * @param value 缓存键值
+     */
+    public static void setCacheObject(final String key, final Object value, final boolean saveTtl) {
+        RBucket<Object> bucket = redissonClient.getBucket(key);
+        if (saveTtl) {
+            try {
+                bucket.setAndKeepTTL(value);
+            } catch (Exception e) {
+                long timeToLive = bucket.remainTimeToLive();
+                setCacheObject(key, value, Duration.ofMillis(timeToLive));
+            }
+        } else {
+            bucket.set(value);
+        }
     }
 
-    public static void set(final String key, final Object value, final long timeout, final TimeUnit timeUnit) {
-        redisTemplate.opsForValue().set(key, value, timeout, timeUnit);
+    /**
+     * 如果不存在则设置缓存
+     */
+    public static void setCacheObjectIfAbsent(final String key, final Object value) {
+        RBucket<Object> bucket = redissonClient.getBucket(key);
+        bucket.setIfAbsent(value);
     }
 
-    public static void expire(final String key, final long timeout, final TimeUnit timeUnit) {
-        redisTemplate.expire(key, timeout, timeUnit);
+    /**
+     * 如果不存在则设置缓存
+     */
+    public static void setCacheObjectIfAbsent(final String key, final Object value, Duration duration) {
+        RBucket<Object> bucket = redissonClient.getBucket(key);
+        bucket.setIfAbsent(value, duration);
     }
 
-    public static Long getExpire(final String key) {
-        return redisTemplate.getExpire(key);
+    /**
+     * 获取缓存
+     *
+     * @param key 缓存键名
+     * @return 缓存
+     */
+    public static <T> T getCacheObject(final String key) {
+        RBucket<T> bucket = redissonClient.getBucket(key);
+        return bucket.get();
     }
 
-    public static Boolean hasKey(final String key) {
-        return redisTemplate.hasKey(key);
+    /**
+     * 删除缓存
+     *
+     * @param key 缓存键名
+     */
+    public static boolean deleteCacheObject(final String key) {
+        return redissonClient.getBucket(key).delete();
     }
 
-    public static <T> T get(final String key) {
-        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
-        return (T) valueOperations.get(key);
+    /**
+     * 删除缓存
+     *
+     * @param keys 缓存键名列表
+     */
+    public static void deleteCacheObject(final Collection<String> keys) {
+        if (CollectionUtil.isEmpty(keys))
+            return;
+        RBatch batch = redissonClient.createBatch();
+        keys.forEach(key -> batch.getBucket(key).deleteAsync());
+        batch.execute();
     }
 
-    public static <T> Optional<T> getOpt(final String key) {
-        return Optional.ofNullable(get(key));
+    /**
+     * 设置缓存过期时间
+     *
+     * @param key      缓存键名
+     * @param duration 过期时间
+     */
+    public static void expireCacheObject(final String key, final Duration duration) {
+        RBucket<Object> bucket = redissonClient.getBucket(key);
+        bucket.expire(duration);
     }
 
-    public static <T> List<T> get(Collection<String> keys) {
-        return (List<T>) redisTemplate.opsForValue().multiGet(keys);
+    /**
+     * 获取缓存过期时间
+     *
+     * @param key 缓存键名
+     * @return 过期时间(毫秒)
+     */
+    public static long getCacheExpire(final String key) {
+        return redissonClient.getBucket(key).remainTimeToLive();
     }
 
-    public static Boolean delete(final String key) {
-        return redisTemplate.delete(key);
+    /**
+     * 缓存是否存在
+     *
+     * @param key 缓存键名
+     * @return 是否存在
+     */
+    public static boolean cacheObjectExists(final String key) {
+        return redissonClient.getBucket(key).isExists();
     }
 
-    public static Long delete(final Collection<String> keys) {
-        return redisTemplate.delete(keys);
+    /**
+     * 设置缓存List
+     *
+     * @param key  缓存键名
+     * @param list 缓存List
+     * @return 是否成功
+     */
+    public static boolean setCacheList(final String key, final Collection<?> list) {
+        if (CollectionUtil.isEmpty(list)) {
+            return true;
+        }
+        RList<Object> rList = redissonClient.getList(key);
+        return rList.addAll(list);
     }
 
-    public static void deleteByPattern(final String pattern) {
-        Set<String> keys = redisTemplate.keys(pattern);
-        if (CollectionUtil.isEmpty(keys)) {
+    /**
+     * 获取缓存List
+     *
+     * @param key 缓存键名
+     * @return 缓存List
+     */
+    public static <T> List<T> getCacheList(final String key) {
+        RList<T> rList = redissonClient.getList(key);
+        return rList.readAll();
+    }
+
+    /**
+     * 设置缓存Set
+     *
+     * @param key 缓存键名
+     * @param set 缓存Set
+     * @return 是否成功
+     */
+    public static boolean setCacheSet(final String key, Collection<?> set) {
+        RSet<Object> rSet = redissonClient.getSet(key);
+        return rSet.addAll(set);
+    }
+
+    /**
+     * 获取缓存Set
+     *
+     * @param key 缓存键名
+     * @return 缓存Set
+     */
+    public static <T> Set<T> getCacheSet(final String key) {
+        RSet<T> rSet = redissonClient.getSet(key);
+        return rSet.readAll();
+    }
+
+    /**
+     * 设置缓存Map
+     *
+     * @param key 缓存键名
+     * @param map 缓存Map
+     */
+    public static void setCacheMap(final String key, final Map<?, ?> map) {
+        if (CollectionUtil.isEmpty(map)) {
             return;
         }
-        redisTemplate.delete(keys);
+        RMap<Object, Object> rMap = redissonClient.getMap(key);
+        rMap.putAll(map);
     }
 
-    public static <T> Long setList(final String key, final List<T> list) {
-        return rightPushAllList(key, list);
+    /**
+     * 获取缓存Map
+     *
+     * @param key 缓存键名
+     * @return 缓存Map
+     */
+    public static <K, V> Map<K, V> getCacheMap(final String key) {
+        RMap<K, V> rMap = redissonClient.getMap(key);
+        return rMap.readAllMap();
     }
 
-    public static <T> Long rightPushAllList(final String key, final List<T> list) {
-        return redisTemplate.opsForList().rightPushAll(key, list.toArray());
+    /**
+     * 获取缓存Map
+     *
+     * @param key   缓存键名
+     * @param hKeys 指定缓存Map中key集合
+     * @return 缓存Map
+     */
+    public static <K, V> Map<K, V> getCacheMap(final String key, final Set<K> hKeys) {
+        RMap<K, V> rMap = redissonClient.getMap(key);
+        return rMap.getAll(hKeys);
     }
 
-    public static <T> Long leftPushAllList(final String key, final List<T> list) {
-        return redisTemplate.opsForList().leftPushAll(key, list.toArray());
+    /**
+     * 获取缓存Map的key集合
+     *
+     * @param key 缓存键名
+     */
+    public static <T> Set<T> getCacheMapKeySet(final String key) {
+        RMap<T, Object> rMap = redissonClient.getMap(key);
+        return rMap.keySet();
     }
 
-    public static <T> Long rightPushList(final String key, final T value) {
-        return redisTemplate.opsForList().rightPush(key, value);
+    /**
+     * 设置缓存Map中指定key的值
+     *
+     * @param key    缓存键名
+     * @param hKey   Map中的key
+     * @param hValue Map中的value
+     */
+    public static void setCacheMapValue(final String key, final Object hKey, final Object hValue) {
+        RMap<Object, Object> rMap = redissonClient.getMap(key);
+        rMap.put(hKey, hValue);
     }
 
-    public static <T> Long leftPushList(final String key, final T value) {
-        return redisTemplate.opsForList().leftPush(key, value);
+    /**
+     * 获取缓存Map中指定key的值
+     *
+     * @param key  缓存键名
+     * @param hKey Map中的key
+     */
+    public static <T> T getCacheMapValue(final String key, final Object hKey) {
+        RMap<?, T> rMap = redissonClient.getMap(key);
+        return rMap.get(hKey);
     }
 
-    public static <T> List<T> getList(final String key) {
-        return (List<T>) redisTemplate.opsForList().range(key, 0, -1);
+    /**
+     * 删除缓存Map中指定key的值
+     *
+     * @param key  缓存键名
+     * @param hKey Map中的key
+     */
+    public static <T> T deleteCacheMapValue(final String key, final Object hKey) {
+        RMap<?, T> rMap = redissonClient.getMap(key);
+        return rMap.remove(hKey);
     }
 
-    public static <T> T rightPopList(final String key) {
-        return (T) redisTemplate.opsForList().rightPop(key);
+    /**
+     * 删除缓存Map中指定key的值
+     *
+     * @param key   缓存键名
+     * @param hKeys Map中的key集合
+     */
+    public static void deleteCacheMapValue(final String key, final Collection<?> hKeys) {
+        if (CollectionUtil.isEmpty(hKeys)) {
+            return;
+        }
+        RBatch batch = redissonClient.createBatch();
+        RMapAsync<Object, Object> rMap = batch.getMap(key);
+        hKeys.forEach(rMap::removeAsync);
+        batch.execute();
     }
 
-    public static <T> T leftPopList(final String key) {
-        return (T) redisTemplate.opsForList().<T>leftPop(key);
+    /**
+     * 设置原子Long
+     *
+     * @param key   缓存键名
+     * @param value Long值
+     */
+    public static void setAtomicLong(final String key, final long value) {
+        RAtomicLong atomicLong = redissonClient.getAtomicLong(key);
+        atomicLong.set(value);
     }
 
-    public static <T> Long setSet(final String key, final Set<T> set) {
-        return redisTemplate.opsForSet().add(key, set.toArray());
+    /**
+     * 获取原子Long
+     *
+     * @param key 缓存键名
+     * @return Long值
+     */
+    public static long getAtomicLong(final String key) {
+        RAtomicLong atomicLong = redissonClient.getAtomicLong(key);
+        return atomicLong.get();
     }
 
-    public static <T> T popSet(final String key) {
-        return (T) redisTemplate.opsForSet().pop(key);
+    /**
+     * 递增原子Long
+     *
+     * @param key 缓存键名
+     * @return 递增后的Long值
+     */
+    public static long incrementAtomicLong(final String key) {
+        RAtomicLong atomicLong = redissonClient.getAtomicLong(key);
+        return atomicLong.incrementAndGet();
     }
 
-    public static <T> Set<T> getSet(final String key) {
-        return (Set<T>) redisTemplate.opsForSet().members(key);
+    /**
+     * 递减原子Long
+     *
+     * @param key 缓存键名
+     * @return 递减后的Long值
+     */
+    public static long decrementAtomicLong(final String key) {
+        RAtomicLong atomicLong = redissonClient.getAtomicLong(key);
+        return atomicLong.decrementAndGet();
     }
 
-    public static <T> void setMap(final String key, final Map<String, T> map) {
-        redisTemplate.opsForHash().putAll(key, map);
+    /**
+     * 根据匹配规则获取缓存键名集合
+     *
+     * @param pattern 匹配规则
+     * @return 键名集合
+     */
+    public static List<String> getKeysByPattern(final String pattern) {
+        RKeys keys = redissonClient.getKeys();
+        return keys.getKeysStreamByPattern(pattern).collect(Collectors.toList());
     }
 
-    public static <T> Map<String, T> getMap(final String key) {
-        return redisTemplate.<String, T>opsForHash().entries(key);
+    /**
+     * 根据匹配规则删除缓存
+     *
+     * @param pattern 匹配规则
+     * @return 删除条数
+     */
+    public static long deleteKeysByPattern(final String pattern) {
+        RKeys keys = redissonClient.getKeys();
+        return keys.deleteByPattern(pattern);
     }
 
-    public static <T> void setMapValue(final String key, final String hashKey, final T value) {
-        redisTemplate.opsForHash().put(key, hashKey, value);
+    /**
+     * 获取限流操作对象
+     *
+     * @param key 限流键名
+     * @return 限流操作对象
+     */
+    public static RRateLimiter getRateLimiter(final String key) {
+        return redissonClient.getRateLimiter(key);
     }
 
-    public static <T> T getMapValue(final String key, final String hashKey) {
-        return redisTemplate.<String, T>opsForHash().get(key, hashKey);
-    }
-
-    public static Set<String> keys(String pattern) {
-        return redisTemplate.keys(pattern);
+    /**
+     * 时间单位转换
+     */
+    public static RateIntervalUnit toRateIntervalUnit(TimeUnit timeUnit) {
+        switch (timeUnit) {
+            case MILLISECONDS:
+                return RateIntervalUnit.MILLISECONDS;
+            case SECONDS:
+                return RateIntervalUnit.SECONDS;
+            case MINUTES:
+                return RateIntervalUnit.MINUTES;
+            case HOURS:
+                return RateIntervalUnit.HOURS;
+            case DAYS:
+                return RateIntervalUnit.DAYS;
+            default:
+                throw new BizRuntimeException("时间单位不支持");
+        }
     }
 
     /**
      * 获取Redis监控信息
      */
-    public static Map<Object, Object> getMonitorInfo() {
+    public static Map<Object, Object> getRedisMonitorInfo() {
         RedisConnection connection = redisConnectionFactory.getConnection();
         Map<Object, Object> monitorInfo = new HashMap<>(3);
         monitorInfo.put(DB_SIZE, connection.dbSize());
@@ -164,4 +418,5 @@ public class RedisHelper {
         }
         return monitorInfo;
     }
+
 }

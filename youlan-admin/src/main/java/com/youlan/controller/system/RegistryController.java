@@ -13,6 +13,7 @@ import com.youlan.system.helper.SystemConfigHelper;
 import com.youlan.system.service.biz.LoginBizService;
 import com.youlan.system.service.biz.UserBizService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "用户注册")
 @RestController
 @RequestMapping("/system/registry")
 @AllArgsConstructor

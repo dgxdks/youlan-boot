@@ -85,12 +85,12 @@ public class ConfigBizService {
             return null;
         }
         String redisKey = SystemUtil.getConfigRedisKey(configKey);
-        Config config = RedisHelper.get(redisKey);
+        Config config = RedisHelper.getCacheObject(redisKey);
         if (ObjectUtil.isNull(config)) {
             config = loadConfigByConfigKeyIfExist(configKey);
         }
         if (ObjectUtil.isNotNull(config)) {
-            RedisHelper.set(redisKey, config);
+            RedisHelper.setCacheObject(redisKey, config);
         }
         return config;
     }
@@ -120,21 +120,21 @@ public class ConfigBizService {
      * 设置配置缓存
      */
     public void setConfigCache(String configKey, Config config) {
-        RedisHelper.set(SystemUtil.getConfigRedisKey(configKey), config);
+        RedisHelper.setCacheObject(SystemUtil.getConfigRedisKey(configKey), config);
     }
 
     /**
      * 删除配置缓存
      */
     public void removeConfigCache(String configKey) {
-        RedisHelper.delete(SystemUtil.getConfigRedisKey(configKey));
+        RedisHelper.deleteCacheObject(SystemUtil.getConfigRedisKey(configKey));
     }
 
     /**
      * 删除配置缓存
      */
     public void removeConfigCache() {
-        RedisHelper.deleteByPattern(SystemConstant.REDIS_PREFIX_CONFIG + StringPool.ASTERISK);
+        RedisHelper.deleteKeysByPattern(SystemConstant.REDIS_PREFIX_CONFIG + StringPool.ASTERISK);
     }
 
     /**

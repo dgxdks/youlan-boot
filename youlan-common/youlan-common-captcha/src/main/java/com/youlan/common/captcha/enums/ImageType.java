@@ -1,9 +1,6 @@
 package com.youlan.common.captcha.enums;
 
-import lombok.Getter;
-
-@Getter
-public enum CaptchaType {
+public enum ImageType {
     /**
      * 线条干扰类型
      */
@@ -16,8 +13,4 @@ public enum CaptchaType {
      * 扭曲干扰类型
      */
     SHEAR,
-    /**
-     * 短信类型
-     */
-    SMS
 }

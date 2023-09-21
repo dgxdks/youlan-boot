@@ -19,6 +19,6 @@ public class CacheController extends BaseController {
     @Operation(summary = "缓存监控信息")
     @PostMapping("/getCacheMonitorInfo")
     public ApiResult getCacheMonitorInfo() {
-        return toSuccess(RedisHelper.getMonitorInfo());
+        return toSuccess(RedisHelper.getRedisMonitorInfo());
     }
 }

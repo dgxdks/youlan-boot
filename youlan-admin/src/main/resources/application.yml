@@ -18,14 +18,24 @@ youlan:
 --- # 系统模块
 youlan:
   system:
-    # 验证码
-    captcha:
+    # 图形验证码
+    image-captcha:
       # 验证码类型(LINE-线条干扰 CIRCLE-圆圈干扰 SHEAR-扭曲干扰)
-      captcha-type: CIRCLE
+      image-type: circle
       # 验证码内容类型(CHAR-字符类型 NUMBER-数字类型 CHAR_NUMBER-字符+数字类型 MATH-四则运算类型)
-      captcha-code-type: MATH
+      code-type: math
       # 验证码长度
-      captcha-code-len: 5
+      code-length: 5
+      # 验证码过期时间
+      code-timeout: 30
+    # 短信验证码
+    sms-captcha:
+      # 验证码长度
+      code-length: 6
+      # 验证码过期时间
+      code-timeout: 60
+      # 验证码内容类型(NUMBER-数字型)
+      code-type: number
     # 存储
     storage:
       # 文件存储根路径(默认/, 指定路径时必须以/结尾)

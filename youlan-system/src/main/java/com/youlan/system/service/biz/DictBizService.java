@@ -20,7 +20,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -226,7 +225,7 @@ public class DictBizService {
      * 获取字典数据(支持缓存)
      */
     public List<DictData> getDictCache(String typeKey) {
-        List<DictData> dictDataList = RedisHelper.get(SystemUtil.getDictRedisKey(typeKey));
+        List<DictData> dictDataList = RedisHelper.getCacheObject(SystemUtil.getDictRedisKey(typeKey));
         if (CollectionUtil.isNotEmpty(dictDataList)) {
             return dictDataList;
         }
@@ -241,21 +240,21 @@ public class DictBizService {
      * 设置字典缓存
      */
     public void setDictCache(String typeKey, List<DictData> dictDataList) {
-        RedisHelper.set(SystemUtil.getDictRedisKey(typeKey), dictDataList);
+        RedisHelper.setCacheObject(SystemUtil.getDictRedisKey(typeKey), dictDataList);
     }
 
     /**
      * 删除字典缓存
      */
     public void removeDictCache(String typeKey) {
-        RedisHelper.delete(SystemUtil.getDictRedisKey(typeKey));
+        RedisHelper.deleteCacheObject(SystemUtil.getDictRedisKey(typeKey));
     }
 
     /**
      * 删除所有字典缓存
      */
     public void removeDictCache() {
-        RedisHelper.deleteByPattern(SystemConstant.REDIS_PREFIX_DICT + StringPool.ASTERISK);
+        RedisHelper.deleteKeysByPattern(SystemConstant.REDIS_PREFIX_DICT + StringPool.ASTERISK);
     }
 
     /**

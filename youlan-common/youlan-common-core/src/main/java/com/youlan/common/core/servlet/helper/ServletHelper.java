@@ -94,6 +94,9 @@ public class ServletHelper {
         throw new BizRuntimeException("无法获取org.springframework.web.context.request.ServletRequestAttributes");
     }
 
+    /**
+     * 文件下载
+     */
     public static void download(String fileName, byte[] data, String contentType, HttpServletResponse response) throws IOException {
         response.reset();
         response.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
