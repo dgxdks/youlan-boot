@@ -1,6 +1,5 @@
 package com.youlan.common.core.helper;
 
-import cn.hutool.core.util.ReflectUtil;
 import lombok.Getter;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -23,7 +22,7 @@ public class AspectHelper {
     /**
      * 获取切面方法
      */
-    public static Method getMethod(JoinPoint joinPoint) {
+    public static Method getTargetMethod(JoinPoint joinPoint) {
         return getMethodSignature(joinPoint).getMethod();
     }
 
@@ -44,14 +43,14 @@ public class AspectHelper {
     /**
      * 获取切面参数
      */
-    public static Object[] getMethodArgs(JoinPoint joinPoint) {
+    public static Object[] getTargetMethodArgs(JoinPoint joinPoint) {
         return joinPoint.getArgs();
     }
 
     /**
      * 获取切换参数名称
      */
-    public static String[] getMethodNames(JoinPoint joinPoint) {
-        return parameterNameDiscoverer.getParameterNames(getMethod(joinPoint));
+    public static String[] getTargetMethodNames(JoinPoint joinPoint) {
+        return parameterNameDiscoverer.getParameterNames(getTargetMethod(joinPoint));
     }
 }

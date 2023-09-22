@@ -4,17 +4,12 @@ public enum LimitType {
     /**
      * 自定义key限流
      */
-    CUSTOM,
+    CUSTOM_KEY,
 
     /**
-     * 指定唯一key限流
+     * SpEl表达式限流key
      */
-    KEY,
-
-    /**
-     * IP限流
-     */
-    IP,
+    SP_EL_KEY,
 
     /**
      * IP+请求URI限流

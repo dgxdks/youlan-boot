@@ -1,4 +1,4 @@
-package com.youlan.common.core.i18n.yaml;
+package com.youlan.common.core.yaml;
 
 import org.springframework.boot.env.YamlPropertySourceLoader;
 import org.springframework.core.env.PropertySource;

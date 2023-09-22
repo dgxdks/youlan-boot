@@ -10,7 +10,6 @@ import com.youlan.common.captcha.enums.CodeType;
 import com.youlan.common.captcha.helper.CaptchaHelper;
 import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.redis.anno.RateLimiter;
-import com.youlan.common.redis.enums.LimitType;
 import com.youlan.controller.base.BaseController;
 import com.youlan.system.config.SystemProperties;
 import com.youlan.system.helper.SystemConfigHelper;
@@ -42,7 +41,7 @@ public class CaptchaController extends BaseController {
     }
 
     @SaIgnore
-    @RateLimiter(key = "captchaController", rate = 30, interval = 10, strategy = LimitType.IP)
+    @RateLimiter(spElKey = "#{'system:captcha:' + #dto.mobile}", rate = 1, interval = 60, errorMessage = "验证码请求频繁")
     @Operation(summary = "短信验证码")
     @PostMapping("/getSmsCaptcha")
     public ApiResult getSmsCaptcha(@Validated @RequestBody SmsCaptchaDTO dto) {

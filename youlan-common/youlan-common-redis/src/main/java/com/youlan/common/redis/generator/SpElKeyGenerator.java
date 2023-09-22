@@ -13,16 +13,15 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 public class SpElKeyGenerator implements KeyGenerator {
     @Override
     public String generate(JoinPoint joinPoint, RateLimiter rateLimiterAnno) {
-        String key = rateLimiterAnno.key();
-        if (!SpElHelper.isExpressionString(key)) {
-            return key;
+        String spElKey = rateLimiterAnno.spElKey();
+        if (!SpElHelper.isExpressionString(spElKey)) {
+            return spElKey;
         }
         try {
-            String expressionKey = rateLimiterAnno.key();
-            Object[] args = AspectHelper.getMethodArgs(joinPoint);
-            String[] names = AspectHelper.getMethodNames(joinPoint);
+            Object[] args = AspectHelper.getTargetMethodArgs(joinPoint);
+            String[] names = AspectHelper.getTargetMethodNames(joinPoint);
             StandardEvaluationContext evaluationContext = SpElHelper.createEvaluationContext(names, args);
-            Expression expression = SpElHelper.parseExpression(expressionKey);
+            Expression expression = SpElHelper.parseExpression(spElKey);
             return expression.getValue(evaluationContext, String.class);
         } catch (Exception e) {
             log.error(e.getMessage(), e);

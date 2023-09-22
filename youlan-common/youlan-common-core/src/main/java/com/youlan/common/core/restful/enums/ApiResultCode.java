@@ -1,7 +1,7 @@
 package com.youlan.common.core.restful.enums;
 
 import com.youlan.common.core.exception.BizRuntimeException;
-import com.youlan.common.core.i18n.helper.MessageHelper;
+import com.youlan.common.core.helper.MessageHelper;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

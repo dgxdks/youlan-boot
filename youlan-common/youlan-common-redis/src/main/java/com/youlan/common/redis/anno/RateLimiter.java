@@ -5,9 +5,7 @@ import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.redis.constant.RedisConstant;
 import com.youlan.common.redis.enums.LimitType;
 import com.youlan.common.redis.generator.KeyGenerator;
-import com.youlan.common.redis.limiter.DefaultLimiter;
-import com.youlan.common.redis.limiter.Limiter;
-import org.redisson.api.RateIntervalUnit;
+import com.youlan.common.redis.limiter.RedissonRateLimiter;
 import org.redisson.api.RateType;
 
 import java.lang.annotation.*;
@@ -24,26 +22,26 @@ public @interface RateLimiter {
     String prefix() default RedisConstant.REDIS_PREFIX_RATE_LIMIT;
 
     /**
-     * 限流key
-     * 支持EL表达式，仅{@link LimitType#KEY}有效
+     * SpEl表达式限流key
+     * 仅{@link LimitType#SP_EL_KEY}有效
      */
-    String key() default StrUtil.EMPTY;
+    String spElKey() default StrUtil.EMPTY;
 
     /**
      * 限流类型
      */
-    LimitType limitType() default LimitType.KEY;
+    LimitType limitType() default LimitType.SP_EL_KEY;
 
     /**
      * 限流key生成器
-     * 仅{@link LimitType#CUSTOM}有效
+     * 仅{@link LimitType#CUSTOM_KEY}有效
      */
     Class<? extends KeyGenerator> generator() default KeyGenerator.class;
 
     /**
      * 限流执行器
      */
-    Class<? extends Limiter> limiter() default DefaultLimiter.class;
+    Class<? extends com.youlan.common.redis.limiter.RateLimiter> limiter() default RedissonRateLimiter.class;
 
     /**
      * 限流速率类型
@@ -61,9 +59,9 @@ public @interface RateLimiter {
     long interval();
 
     /**
-     * 限流间隔时间单位
+     * 限流过期时间(避免修改限流配置重启后无法更新最新的限流参数)
      */
-    RateIntervalUnit unit() default RateIntervalUnit.SECONDS;
+    long timeToAlive() default 120;
 
     /**
      * 触发限流后的响应信息
