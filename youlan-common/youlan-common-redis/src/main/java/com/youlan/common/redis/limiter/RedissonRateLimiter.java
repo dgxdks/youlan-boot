@@ -22,8 +22,6 @@ public class RedissonRateLimiter implements RateLimiter {
         if (trySetRate) {
             rateLimiter.expire(Duration.ofSeconds(timeToAlive));
         }
-        boolean tryAcquire = rateLimiter.tryAcquire();
-        System.out.println(tryAcquire);
-        return tryAcquire;
+        return rateLimiter.tryAcquire();
     }
 }
