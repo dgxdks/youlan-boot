@@ -29,7 +29,7 @@
 </p>
 
 日常开发中，为了避免重复造轮子，有时候会选择一些开源后台权限管理系统作为基础框架进行二开，例如[RuoYi](https://gitee.com/y_project/RuoYi)、[RuoYi-Vue-Plus](https://gitee.com/dromara/RuoYi-Vue-Plus)
-等等，本人有幸也用过RuoYi系的框架接过一些中小外包项目：小程序类、H5类、ERP类、接口对接类等等。由于这些框架本身不太包含常用的业务模块，比如要二开一个小程序项目，跟小程序相关的代码是需要自己写的，这种活干多了促使我又创建了基于不同业务场景的项目模版方便团队复用。做技术也有些年头了，现在想把自己关于这块的经验归纳至一处当做自己的“技术笔记”，如果在这个过程中还能帮助到别人更是吾之幸事！
+等等，本人有幸也用过RuoYi系的框架接过一些中小型外包项目：小程序类、H5类、ERP类、接口对接类等等。由于这些框架本身不太包含常用的业务模块，比如要二开一个小程序项目，跟小程序相关的代码是需要自己写的，这种活干多了促使我又创建了基于不同业务场景的项目模版方便团队复用。做技术也有些年头了，现在想把自己关于这块的经验归纳至一处当做自己的“技术笔记”，如果在这个过程中还能帮助到别人更是吾之幸事！
 
 - 使用和学习优先拉取主线分支master，代码会保持 GitHub 和 Gitee 同步
 - 感兴趣的小伙伴点个⭐️Star⭐️鼓励一下吧！
@@ -85,18 +85,18 @@
 > 这个注解，本质是对[excel](https://gitee.com/dgxdks/youlan-boot/tree/master/youlan-common/youlan-common-excel)
 > 模块的扩展，为了让excel导出时支持数据字典类型转换，同样的道理，引用了system模块，excel导出支持数据字典才有意义，如果放在“framework”这样的模块里，会被自动带入过多不相干的代码和自动注入的SpringBean
 
-### 4.前端组件更丰富
+### 前端组件更丰富
 
 前端轻度抽象封装 [framework](https://gitee.com/dgxdks/youlan-boot/tree/master/youlan-web/src/framework)
 模块，内置基础components、directive、icons、mixin、tools，同样是一套“工具集合”，放在陌生的ElementUI系项目里略加修改照样能打
 
-### 5.前端代码更简洁
+### 前端代码更简洁
 
 前端CRUD页面使用[framework](https://gitee.com/dgxdks/youlan-boot/tree/master/youlan-web/src/framework)
 预先定义的公共UI组件并默认混入[crud.js](https://gitee.com/dgxdks/youlan-boot/blob/master/youlan-web/src/framework/mixin/crud.js)
 ，实现同样的功能代码会更简洁，代码生成模版已同步支持
 
-### 6.代码生成更贴心
+### 代码生成更贴心
 
 - 支持生成数据库Entity衍生的DTO、VO、PageDTO，在数据库表字段非常多时非常有用，避免都混在一个数据库Entity中让类面目全非
 - 基于[db](https://gitee.com/dgxdks/youlan-boot/tree/master/youlan-common/youlan-common-db)
