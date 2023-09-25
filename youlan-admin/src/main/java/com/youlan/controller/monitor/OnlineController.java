@@ -9,12 +9,14 @@ import com.youlan.system.entity.dto.OnlineUserPageDTO;
 import com.youlan.system.helper.SystemAuthHelper;
 import com.youlan.system.service.biz.LoginBizService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "在线用户")
 @RestController
 @RequestMapping("/monitor/online")
 @AllArgsConstructor
