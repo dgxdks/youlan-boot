@@ -124,4 +124,7 @@
 | 校验框架                                                                        | Validation                                                           | SpringBoot内置校验框架spring-boot-starter-validation，支持自定义校验，足够满足常见校验场景                                                    |
 | Json序列化                                                                     | Jackson                                                              | SpringBoot内置Json序列化框架，请永远相信官方的技术选型                                                                                   |
 
+## 特别鸣谢
 
+* 感谢优秀开源项目[RuoYi](https://gitee.com/y_project/RuoYi)、[RuoYi-Vue-Plus](https://gitee.com/dromara/RuoYi-Vue-Plus)
+  及其作者，这个项目在设计开发时有参照过上述开源项目，有些代码甚至是先拿过来再重构的，感谢先行者们照亮后人路！
