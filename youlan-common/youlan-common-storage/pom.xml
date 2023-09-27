@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.youlan</groupId>
         <artifactId>youlan-common</artifactId>
-        <version>1.0.0</version>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>youlan-common-storage</artifactId>

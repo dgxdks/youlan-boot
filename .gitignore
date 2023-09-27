@@ -48,3 +48,4 @@ uploadPath
 !*/build/*.html
 !*/build/*.xml
 arthas-output
+.flattened-pom.xml
