@@ -80,7 +80,7 @@ youlan:
       # ip2region 查询模式(FILE-基于文件 INDEX-基于索引 MEMORY-基于内存 NETWORK-基于网络)
       searcher-model: MEMORY
       # ip2region.xdb文件路径,类路径文件需添加classpath:前缀，如classpath:ip2region/ip2region.xdb
-      xdb-path: classpath:ip2region/ip2region.xdb
+      xdb-path: classpath:ip2region.xdb
 
 # 服务配置
 server:
