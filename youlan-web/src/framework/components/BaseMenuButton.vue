@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: 'BaseColumnMenu',
+  name: 'BaseMenuButton',
   props: {},
   data() {
     return {}

@@ -53,7 +53,7 @@ import BaseUpdateButton from '@/framework/components/BaseUpdateButton.vue'
 import BaseAddButton from '@/framework/components/BaseAddButton.vue'
 import BaseSearchButton from '@/framework/components/BaseSearchButton.vue'
 import BaseResetButton from '@/framework/components/BaseResetButton.vue'
-import BaseColumnMenu from '@/framework/components/BaseColumnMenu.vue'
+import BaseMenuButton from '@/framework/components/BaseMenuButton.vue'
 import BaseTextButton from '@/framework/components/BaseTextButton.vue'
 import BaseFormLabel from '@/framework/components/BaseFormLabel.vue'
 import BaseCloseButton from '@/framework/components/BaseCloseButton.vue'
@@ -101,7 +101,7 @@ function mountComponent() {
   Vue.component('BaseSearchButton', BaseSearchButton)
   Vue.component('BaseResetButton', BaseResetButton)
   Vue.component('BaseCloseButton', BaseCloseButton)
-  Vue.component('BaseColumnMenu', BaseColumnMenu)
+  Vue.component('BaseMenuButton', BaseMenuButton)
   Vue.component('BaseTextButton', BaseTextButton)
   Vue.component('BaseFormLabel', BaseFormLabel)
   Vue.component('BaseIconSelect', BaseIconSelect)
@@ -138,7 +138,7 @@ function mountPrototype() {
   Vue.prototype.$cookie = CookieUtil
   // 权限工具
   Vue.prototype.$auth = AuthUtil
-  // 数据工具
+  // 数组工具
   Vue.prototype.$array = ArrayUtil
   // 字典工具
   Vue.prototype.$dict = DictUtil

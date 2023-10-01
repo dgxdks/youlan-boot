@@ -1,13 +1,13 @@
-package com.youlan.common.http.utils;
+package com.youlan.plugin.http.helper;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.youlan.common.core.exception.BizRuntimeException;
-import com.youlan.common.http.entity.CookieInfo;
-import com.youlan.common.http.entity.HeaderInfo;
-import com.youlan.common.http.entity.ProxyInfo;
+import com.youlan.plugin.http.entity.CookieInfo;
+import com.youlan.plugin.http.entity.HeaderInfo;
+import com.youlan.plugin.http.entity.ProxyInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpHost;
@@ -42,7 +42,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class HttpUtil {
+public class HttpHelper {
 
     private static final CloseableHttpClient CLIENT;
 

@@ -18,7 +18,6 @@
         <module>youlan-common-redis</module>
         <module>youlan-common-validator</module>
         <module>youlan-common-excel</module>
-        <module>youlan-common-httpclient</module>
         <module>youlan-common-captcha</module>
         <module>youlan-common-crypto</module>
         <module>youlan-common-storage</module>

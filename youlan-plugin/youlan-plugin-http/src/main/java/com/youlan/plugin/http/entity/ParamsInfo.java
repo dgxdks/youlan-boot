@@ -1,4 +1,4 @@
-package com.youlan.common.http.entity;
+package com.youlan.plugin.http.entity;
 
 import cn.hutool.core.util.StrUtil;
 import org.apache.http.client.utils.URLEncodedUtils;

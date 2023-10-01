@@ -1,4 +1,4 @@
-package com.youlan.common.http.entity;
+package com.youlan.plugin.http.entity;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;

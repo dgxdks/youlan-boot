@@ -1,4 +1,4 @@
-package com.youlan.common.http.utils;
+package com.youlan.plugin.http.helper;
 
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.resource.ClassPathResource;
@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class UAUtil {
+public class UserAgentHelper {
     public static List<String> MOB_DEVICES_NAMES = Arrays.asList("android", "ios", "ipad", "iphone", "mobile");
     public static List<String> WEB_DEVICES_NAMES = Arrays.asList("mac-os-x", "linux", "internet-explorer", "firefox", "computer", "chrome");
     public static List<String> MOB_AGENTS = new ArrayList<>();

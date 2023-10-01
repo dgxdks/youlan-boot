@@ -12,6 +12,7 @@
     <artifactId>youlan-plugin</artifactId>
     <packaging>pom</packaging>
     <modules>
+        <module>youlan-plugin-http</module>
         <module>youlan-plugin-mp</module>
         <module>youlan-plugin-pay</module>
         <module>youlan-plugin-region</module>
