@@ -152,8 +152,8 @@ export default {
     getList() {
       this.openTableLoading()
       getDictTypePageList(this.queryForm).then(res => {
-        this.typeList = res.rows
-        this.pageTotal = res.total
+        this.typeList = res.data.rows
+        this.pageTotal = res.data.total
         this.closeTableLoading()
       })
     },

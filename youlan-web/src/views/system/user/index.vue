@@ -90,7 +90,7 @@
             <template v-if="!$auth.isAdmin(scope.row.id)" slot-scope="scope">
               <base-update-button v-has-perm="['system:user:update']" type="text" @click="handleUpdate(scope.row)" />
               <base-remove-button v-has-perm="['system:user:remove']" type="text" @click="handleDelete(scope.row)" />
-              <base-column-menu>
+              <base-menu-button>
                 <base-text-button
                   v-has-perm="['system:user:updatePasswd']"
                   icon="el-icon-key"
@@ -103,7 +103,7 @@
                   color="#606266"
                   @click="handleAuthRole(scope.row)"
                 >分配角色</base-text-button>
-              </base-column-menu>
+              </base-menu-button>
             </template>
           </el-table-column>
         </el-table>

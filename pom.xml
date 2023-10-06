@@ -45,6 +45,10 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <flatten-maven-plugin.version>1.3.0</flatten-maven-plugin.version>
         <maven.compiler.plugin.version>3.10.1</maven.compiler.plugin.version>
+        <maven.jar.plugin.version>3.3.0</maven.jar.plugin.version>
+        <maven.dependency.plugin.version>3.3.0</maven.dependency.plugin.version>
+        <maven.resources.plugin.version>3.3.0</maven.resources.plugin.version>
+        <maven.assembly.plugin.version>3.4.2</maven.assembly.plugin.version>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
@@ -294,5 +298,114 @@
                 </executions>
             </plugin>
         </plugins>
+        <pluginManagement>
+            <plugins>
+                <!-- SpringBoot构建jar插件 -->
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${springboot.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>repackage</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!-- Maven构建jar插件 -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${maven.jar.plugin.version}</version>
+                    <configuration>
+                        <!-- 不加入jar包的文件类型或者路径 -->
+                        <excludes>
+                            <!-- .yml格式文件 -->
+                            <exclude>*.yml</exclude>
+                        </excludes>
+                        <archive>
+                            <manifest>
+                                <!-- 是否把三方依赖jar添加至MANIFEST.MF文件中的Class-Path类路径配置中 -->
+                                <addClasspath>true</addClasspath>
+                                <!-- 三方依赖jar文件路径前缀，因为要把jar都放在lib目录下，所以前缀是lib -->
+                                <classpathPrefix>lib</classpathPrefix>
+                                <!-- 使用jar的唯一版本，不jar的详细时间戳版本 -->
+                                <useUniqueVersions>false</useUniqueVersions>
+                            </manifest>
+                            <manifestEntries>
+                                <!-- 因为资源文件都放在conf目录下，所以向Class-Path类路径配置中添加资源配置目录 -->
+                                <Class-Path>conf/</Class-Path>
+                            </manifestEntries>
+                        </archive>
+                        <outputDirectory>${project.build.directory}</outputDirectory>
+                    </configuration>
+                </plugin>
+                <!-- Maven复制依赖jar至指定目录插件 -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>${maven.dependency.plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>copy-dependencies</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>copy-dependencies</goal>
+                            </goals>
+                            <configuration>
+                                <outputDirectory>${project.build.directory}/lib/</outputDirectory>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!-- Maven复制资源文件至指定目录插件 -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>${maven.resources.plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>copy-resources</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>copy-resources</goal>
+                            </goals>
+                            <configuration>
+                                <resources>
+                                    <resource>
+                                        <directory>src/main/resources</directory>
+                                    </resource>
+                                </resources>
+                                <outputDirectory>${project.build.directory}/conf</outputDirectory>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!-- Maven组装多个文件目录为压缩包插件 -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>${maven.assembly.plugin.version}</version>
+                    <configuration>
+                        <!-- 这个插件需要指定一个配置文件 -->
+                        <descriptors>
+                            <descriptor>src/main/resources/assembly.xml</descriptor>
+                        </descriptors>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <!-- 自定义 -->
+                            <id>zip</id>
+                            <phase>package</phase>
+                            <goals>
+                                <!-- 只执行一次 -->
+                                <goal>single</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 </project>

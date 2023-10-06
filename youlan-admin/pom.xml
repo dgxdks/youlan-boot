@@ -12,9 +12,79 @@
     <artifactId>youlan-admin</artifactId>
     <packaging>jar</packaging>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+    <profiles>
+        <!-- 通过Jar包部署时激活 -->
+        <profile>
+            <id>Jar</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <!-- SpringBoot构建jar插件 -->
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!-- 通过Zip包部署时激活 -->
+        <profile>
+            <id>Zip</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <!-- Maven构建jar插件 -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <configuration>
+                            <!-- 不加入jar包的文件类型或者路径 -->
+                            <excludes>
+                                <!-- 秘钥文件目录 -->
+                                <exclude>/crypto/</exclude>
+                                <!-- 国际化资源文件目录 -->
+                                <exclude>/i18n/</exclude>
+                                <!-- .yml格式文件 -->
+                                <exclude>*.yml</exclude>
+                                <!-- .txt格式文件 -->
+                                <exclude>*.txt</exclude>
+                                <!-- .xdb格式文件 -->
+                                <exclude>*.xdb</exclude>
+                                <!-- .xml格式文件 -->
+                                <exclude>*.xml</exclude>
+                            </excludes>
+                            <archive>
+                                <manifest>
+                                    <!-- 程序启动主类 -->
+                                    <mainClass>com.youlan.AdminApplication</mainClass>
+                                </manifest>
+                            </archive>
+                        </configuration>
+                    </plugin>
+                    <!-- Maven复制依赖jar至指定目录插件 -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                    </plugin>
+                    <!-- Maven复制资源文件至指定目录插件 -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                    </plugin>
+                    <!-- Maven组装多个文件目录为压缩包插件 -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 
     <dependencies>
         <dependency>
@@ -74,6 +144,7 @@
     </dependencies>
 
     <build>
+        <finalName>${project.artifactId}</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>

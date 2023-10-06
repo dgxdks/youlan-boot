@@ -151,7 +151,7 @@ export default {
         logBy: null,
         logType: null,
         logStatus: null,
-        logTimeRange: [],
+        logTimeRange: null,
         sortList: [
           { column: defaultSort.prop, asc: this.orderStrIsAsc(defaultSort.order) }
         ]

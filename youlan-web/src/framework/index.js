@@ -65,6 +65,7 @@ import ImagePreview from '@/framework/components/ImagePreview.vue'
 import BaseCopyIcon from '@/framework/components/BaseCopyIcon.vue'
 import BaseHighLightCode from '@/framework/components/BaseHighLightCode.vue'
 import DictCheckbox from '@/framework/components/DictCheckbox.vue'
+import BaseSvgIcon from '@/framework/components/BaseSvgIcon.vue'
 
 // 全局组件
 function mountComponent() {
@@ -104,6 +105,8 @@ function mountComponent() {
   Vue.component('BaseMenuButton', BaseMenuButton)
   Vue.component('BaseTextButton', BaseTextButton)
   Vue.component('BaseFormLabel', BaseFormLabel)
+  Vue.component('SvgIcon', BaseSvgIcon)
+  Vue.component('BaseSvgIcon', BaseSvgIcon)
   Vue.component('BaseIconSelect', BaseIconSelect)
   Vue.component('BaseCopyIcon', BaseCopyIcon)
   Vue.component('BaseHighLightCode', BaseHighLightCode)

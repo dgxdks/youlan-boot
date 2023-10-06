@@ -63,7 +63,7 @@
         <template v-if="!$auth.isAdminRole(scope.row.id)" slot-scope="scope">
           <base-update-button v-has-perm="['system:role:update']" type="text" @click="handleUpdate(scope.row)" />
           <base-remove-button v-has-perm="['system:role:remove']" type="text" @click="handleDelete(scope.row)" />
-          <base-column-menu v-has-perm="['system:role:update']">
+          <base-menu-button v-has-perm="['system:role:update']">
             <base-text-button
               v-has-perm="['system:role:update']"
               icon="el-icon-circle-check"
@@ -82,7 +82,7 @@
               color="#606266"
               @click="handleRefreshRole(scope.row)"
             >刷新缓存</base-text-button>
-          </base-column-menu>
+          </base-menu-button>
         </template>
       </el-table-column>
     </el-table>
