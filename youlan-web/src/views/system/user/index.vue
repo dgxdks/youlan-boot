@@ -191,12 +191,10 @@ import {
   getUserPageList, loadUser, removeUser, resetUserPasswd,
   updateUser, updateUserStatus
 } from '@/api/system/user'
-import FileUploadDrag from '@/framework/components/FileUploadDrag.vue'
 import crud from '@/framework/mixin/crud'
 
 export default {
   name: 'User',
-  components: { FileUploadDrag },
   mixins: [crud],
   data() {
     return {
@@ -438,7 +436,7 @@ export default {
     handleImportSuccess(res) {
       this.$refs.upload.clear()
       this.upload.open = false
-      this.alertImportMsg(res)
+      this.alertImportMsg(res.data)
       this.getList()
     },
     alertImportMsg(msg) {

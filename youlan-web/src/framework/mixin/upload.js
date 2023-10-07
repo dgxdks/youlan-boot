@@ -63,6 +63,10 @@ export default {
     timeout: {
       type: Number,
       default: 60 * 1000
+    },
+    showTips: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
