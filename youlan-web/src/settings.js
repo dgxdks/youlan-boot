@@ -6,7 +6,7 @@ module.exports = {
   /**
    * 登录页底部内容
    */
-  loginFooter: 'Copyright © 2022-2023 <a href="https://youlan.online" target="_blank">youlan.online</a> All Rights Reserved.',
+  loginFooter: 'Copyright © 2023 <a href="https://youlan.online" target="_blank">youlan.online</a> All Rights Reserved.',
   /**
    * token值前缀
    */

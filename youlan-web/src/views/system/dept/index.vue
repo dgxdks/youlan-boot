@@ -25,7 +25,7 @@
       <el-col :span="1.5">
         <base-add-button icon="el-icon-sort" type="info" plain @click="handleExpandAll">展开/折叠</base-add-button>
       </el-col>
-      <right-toolbar :query-show.sync="queryShow" @refresh="getList" />
+      <table-toolbar :query-show.sync="queryShow" @refresh="getList" />
     </el-row>
 
     <el-table

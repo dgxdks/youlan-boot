@@ -44,7 +44,7 @@
       <el-col :span="1.5">
         <base-download-button v-has-perm="['system:loginLog:export']" plain @click="handleExport">导出</base-download-button>
       </el-col>
-      <right-toolbar :query-show.sync="queryShow" @refresh="getList" />
+      <table-toolbar :query-show.sync="queryShow" @refresh="getList" />
     </el-row>
 
     <el-table

@@ -59,19 +59,23 @@ module.exports = {
       }
     },
     plugins: [
-      // http://doc.ruoyi.vip/ruoyi-vue/other/faq.html#使用gzip解压缩静态文件
       new CompressionPlugin({
-        cache: false, // 不启用文件缓存
-        test: /\.(js|css|html)?$/i, // 压缩文件格式
-        filename: '[path].gz[query]', // 压缩后的文件名
-        algorithm: 'gzip', // 使用gzip压缩
-        minRatio: 0.8 // 压缩率小于1才会压缩
+        // 不启用文件缓存
+        cache: false,
+        // 压缩文件格式
+        test: /\.(js|css|html)?$/i,
+        // 压缩后的文件名
+        filename: '[path].gz[query]',
+        // 使用gzip压缩
+        algorithm: 'gzip',
+        // 压缩率小于1才会压缩
+        minRatio: 0.8
       })
     ]
   },
   chainWebpack(config) {
-    config.plugins.delete('preload') // TODO: need test
-    config.plugins.delete('prefetch') // TODO: need test
+    config.plugins.delete('preload')
+    config.plugins.delete('prefetch')
 
     // set svg-sprite-loader
     config.module
@@ -116,8 +120,15 @@ module.exports = {
           },
           commons: {
             name: 'chunk-commons',
-            test: resolve('src/components'), // can customize your rules
-            minChunks: 3, //  minimum common number
+            test: resolve('src/components'),
+            minChunks: 3,
+            priority: 5,
+            reuseExistingChunk: true
+          },
+          framework: {
+            name: 'chunk-framework',
+            test: resolve('src/framework'),
+            minChunks: 3,
             priority: 5,
             reuseExistingChunk: true
           }

@@ -23,7 +23,7 @@
 </template>
 <script>
 export default {
-  name: 'BaseTableToolbar',
+  name: 'TableToolbar',
   props: {
     queryEnabled: {
       type: Boolean,
@@ -109,6 +109,7 @@ export default {
     // 右侧列表元素变化
     handleColumnChange(data) {
       for (const columnKey in this.columns) {
+        // eslint-disable-next-line vue/no-mutating-props
         this.columns[columnKey].show = !data.includes(columnKey)
       }
     },

@@ -44,7 +44,7 @@
       <el-col :span="1.5">
         <base-remove-button v-has-perm="['system:storageConfig:remove']" plain @click="handleRefreshCache">刷新缓存</base-remove-button>
       </el-col>
-      <right-toolbar :query-show.sync="queryShow" @refresh="getList" />
+      <table-toolbar :query-show.sync="queryShow" @refresh="getList" />
     </el-row>
 
     <el-table v-loading="tableLoading" :data="configList" @selection-change="handleSelectionChange">

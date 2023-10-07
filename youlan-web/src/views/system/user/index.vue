@@ -66,7 +66,7 @@
           <el-col :span="1.5">
             <base-download-button v-has-perm="['system:user:export']" plain @click="handleExport">导出</base-download-button>
           </el-col>
-          <right-toolbar :columns.sync="columns" :query-show.sync="queryShow" @refresh="getList" />
+          <table-toolbar :columns.sync="columns" :query-show.sync="queryShow" @refresh="getList" />
         </el-row>
         <el-table v-loading="tableLoading" :data="userList" @selection-change="handleSelectionChange">
           <el-table-column align="center" type="selection" :selectable="tableSelectEnabled" width="50" />

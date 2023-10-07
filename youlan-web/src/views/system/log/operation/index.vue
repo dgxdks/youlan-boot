@@ -50,7 +50,7 @@
       <el-col :span="1.5">
         <base-download-button v-has-perm="['system:operationLog:export']" plain @click="handleExport">导出</base-download-button>
       </el-col>
-      <right-toolbar :query-show.sync="queryShow" @refresh="getList" />
+      <table-toolbar :query-show.sync="queryShow" @refresh="getList" />
     </el-row>
 
     <el-table ref="table" v-loading="tableLoading" :data="logList" :default-sort="defaultSort" @sort-change="handleSortChange" @selection-change="handleSelectionChange">

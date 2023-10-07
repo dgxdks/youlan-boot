@@ -39,7 +39,7 @@
       <el-col :span="1.5">
         <base-remove-button v-has-perm="['tools:generator:remove']" :disabled="tableNoSelected" plain @click="handleDelete" />
       </el-col>
-      <right-toolbar :query-show.sync="queryShow" @refresh="getList" />
+      <table-toolbar :query-show.sync="queryShow" @refresh="getList" />
     </el-row>
 
     <el-table v-loading="tableLoading" :data="tableList" @selection-change="handleSelectionChange">

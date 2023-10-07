@@ -16,10 +16,9 @@ import BaseDialog from '@/framework/components/BaseDialog.vue'
 import BaseRowSplit from '@/framework/components/BaseRowSplit.vue'
 import BaseRowSplit2 from '@/framework/components/BaseRowSplit2.vue'
 import BaseRowSplit3 from '@/framework/components/BaseRowSplit3.vue'
-import TableOptions from '@/components/TableOptions/index.vue'
+import TableToolbar from '@/framework/components/TableToolbar.vue'
 import DictTag from '@/framework/components/DictTag.vue'
 import Pagination from '@/components/Pagination/index.vue'
-import BaseTableToolbar from '@/framework/components/BaseTableToolbar.vue'
 import Editor from '@/components/Editor/index.vue'
 import FileUpload from '@/framework/components/FileUpload.vue'
 import FileUploadDrag from '@/framework/components/FileUploadDrag.vue'
@@ -83,9 +82,8 @@ function mountComponent() {
   Vue.component('BaseRowSplit', BaseRowSplit)
   Vue.component('BaseRowSplit2', BaseRowSplit2)
   Vue.component('BaseRowSplit3', BaseRowSplit3)
-  Vue.component('TableOptions', TableOptions)
   Vue.component('Pagination', Pagination)
-  Vue.component('RightToolbar', BaseTableToolbar)
+  Vue.component('TableToolbar', TableToolbar)
   Vue.component('Editor', Editor)
   Vue.component('FileUpload', FileUpload)
   Vue.component('FileUploadDrag', FileUploadDrag)
