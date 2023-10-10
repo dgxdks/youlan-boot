@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <!-- 日志存放路径 -->
-    <property name="log.path" value="./log"/>
+    <property name="log.path" value="./logs"/>
     <!-- 日志输出格式 -->
     <property name="log.pattern" value="%d{HH:mm:ss.SSS} [%thread] %-5level %logger{20} - [%method,%line] - %msg%n"/>
 
@@ -26,14 +26,6 @@
             <encoder>
                 <pattern>${log.pattern}</pattern>
             </encoder>
-            <filter class="ch.qos.logback.classic.filter.LevelFilter">
-                <!-- 过滤的级别 -->
-                <level>INFO</level>
-                <!-- 匹配时的操作：接收（记录） -->
-                <onMatch>ACCEPT</onMatch>
-                <!-- 不匹配时的操作：拒绝（不记录） -->
-                <onMismatch>DENY</onMismatch>
-            </filter>
         </appender>
 
         <!-- error日志 -->

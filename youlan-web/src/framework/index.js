@@ -25,7 +25,6 @@ import FileUploadDrag from '@/framework/components/FileUploadDrag.vue'
 import ImageUpload from '@/framework/components/ImageUpload.vue'
 import BaseDateRangePicker from '@/framework/components/BaseDateRangePicker.vue'
 import Vue from 'vue'
-import tab from '@/framework/tools/tab'
 import BaseDownloadButton from '@/framework/components/BaseDownloadButton.vue'
 import Tools, {
   ArrayUtil,
@@ -36,7 +35,7 @@ import Tools, {
   DateUtil,
   DictUtil,
   DownloadUtil,
-  EnvUtil, HighLightUtil,
+  EnvUtil, HighLightUtil, JSONUtil,
   ModalUtil,
   ObjectUtil,
   StorageUtil,
@@ -125,8 +124,6 @@ function mountMixin() {
 }
 
 function mountPrototype() {
-  // 全局挂载
-  Vue.prototype.$tab = tab
   // 字符串工具
   Vue.prototype.$str = StrUtil
   // 浏览器Storage工具
@@ -157,11 +154,13 @@ function mountPrototype() {
   Vue.prototype.$date = DateUtil
   // 页签工具
   Vue.prototype.$tab = TabUtil
-  // 系统参数
+  // 系统参数工具
   Vue.prototype.$config = ConfigUtil
-  // 环境参数
+  // 环境参数工具
   Vue.prototype.$env = EnvUtil
-  // 高亮
+  // Json工具
+  Vue.prototype.$json = JSONUtil
+  // 代码高亮
   Vue.prototype.$highlight = HighLightUtil
   // 全量工具包
   Vue.prototype.$tools = Tools
