@@ -14,6 +14,7 @@ services:
       - ./mysql/conf/my.cnf:/etc/mysql/my.cnf
       - /etc/localtime:/etc/localtime
     environment:
+      - TZ=Asia/Shanghai
       - MYSQL_ROOT_PASSWORD=youlan@123
   redis:
     image: redis:7.2.1

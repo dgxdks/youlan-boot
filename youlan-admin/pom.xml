@@ -87,121 +87,61 @@
         <plugins>
             <!-- *******************************通过Jar包部署[开始]******************************* -->
             <!-- SpringBoot构建Jar插件 -->
-<!--            <plugin>-->
-<!--                <groupId>org.springframework.boot</groupId>-->
-<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <goals>-->
-<!--                            <goal>repackage</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- *******************************通过Jar包部署[结束]******************************* -->
 
-            <!-- *******************************通过Zip包部署[开始]******************************* -->
-            <!-- Maven构建jar插件 -->
+            <!-- *******************************通过Docker镜像部署[开始]******************************* -->
+            <!-- SpringBoot构建Jar插件 -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <executions>
+                    <!-- 镜像构建配置 -->
+                    <execution>
+                        <id>image-build</id>
+                        <!-- 触发镜像构建操作的Maven执行阶段，建议package/install，不需要时指定为none -->
+                        <phase>none</phase>
+                        <goals>
+                            <goal>build</goal>
+                            <goal>tag</goal>
+                        </goals>
+                    </execution>
+                    <!-- 镜像推送配置 -->
+                    <execution>
+                        <id>image-push</id>
+                        <!-- 触发镜像推送操作的Maven执行阶段，建议install/deploy，不需要时指定为none -->
+                        <phase>none</phase>
+                        <goals>
+                            <goal>push</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
-                    <!-- 不加入jar包的文件类型或者路径 -->
-                    <excludes>
-                        <!-- 秘钥文件目录 -->
-                        <exclude>/crypto/</exclude>
-                        <!-- 国际化资源文件目录 -->
-                        <exclude>/i18n/</exclude>
-                        <!-- .yml格式文件 -->
-                        <exclude>*.yml</exclude>
-                        <!-- .txt格式文件 -->
-                        <exclude>*.txt</exclude>
-                        <!-- .xdb格式文件 -->
-                        <exclude>*.xdb</exclude>
-                        <!-- .xml格式文件 -->
-                        <exclude>*.xml</exclude>
-                    </excludes>
-                    <archive>
-                        <manifest>
-                            <!-- 程序启动主类 -->
-                            <mainClass>com.youlan.AdminApplication</mainClass>
-                            <!-- 是否把三方依赖jar添加至MANIFEST.MF文件中的Class-Path类路径配置中 -->
-                            <addClasspath>true</addClasspath>
-                            <!-- 三方依赖jar文件路径前缀，因为要把jar都放在lib目录下，所以前缀是lib -->
-                            <classpathPrefix>lib</classpathPrefix>
-                            <!-- 使用jar的唯一版本，不jar的详细时间戳版本 -->
-                            <useUniqueVersions>false</useUniqueVersions>
-                        </manifest>
-                        <manifestEntries>
-                            <!-- 因为资源文件都放在conf目录下，所以向Class-Path类路径配置中添加资源配置目录 -->
-                            <Class-Path>conf/</Class-Path>
-                        </manifestEntries>
-                    </archive>
-                    <outputDirectory>${project.build.directory}</outputDirectory>
+                    <!-- 指定Dockerfile文件位置 -->
+                    <dockerfile>${project.basedir}/Dockerfile</dockerfile>
+                    <!-- 指定镜像名称 -->
+                    <repository>youlan-admin</repository>
+                    <!-- 指定镜像名称 -->
+                    <tag>latest</tag>
+                    <!-- 授权时是否使用Maven的settings.xml中的配置，false时用户名/密码需在当前pom.xml中配置，存在安全隐患 -->
+                    <useMavenSettingsForAuth>false</useMavenSettingsForAuth>
+                    <!-- 镜像仓库用户名 -->
+                    <username>youlan</username>
+                    <!-- 镜像仓库密码 -->
+                    <password>youlan</password>
                 </configuration>
             </plugin>
-            <!-- Maven复制依赖jar至指定目录插件 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-dependencies</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/lib/</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- Maven复制资源文件至指定目录插件 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-resources</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <resources>
-                                <resource>
-                                    <directory>src/main/resources</directory>
-                                </resource>
-                            </resources>
-                            <outputDirectory>${project.build.directory}/conf</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- Maven组装多个文件目录为压缩包插件 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <!-- 这个插件需要指定一个配置文件 -->
-                    <descriptors>
-                        <descriptor>assembly/assembly.xml</descriptor>
-                    </descriptors>
-                </configuration>
-                <executions>
-                    <execution>
-                        <!-- 自定义 -->
-                        <id>zip</id>
-                        <phase>package</phase>
-                        <goals>
-                            <!-- 只执行一次 -->
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- *******************************通过Zip包部署[结束]******************************* -->
+            <!-- *******************************通过Docker镜像部署[结束]******************************* -->
         </plugins>
     </build>
 </project>

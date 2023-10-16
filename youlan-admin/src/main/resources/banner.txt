@@ -1,6 +1,6 @@
 ${AnsiColor.BRIGHT_GREEN}
 Application Name: ${artifactId}
-Application Version: ${youlan.version}
+Application Version: ${revision}
 Spring Boot Version: ${spring-boot.formatted-version}
 ___  _ ____  _     _     ____  _            ____  ____  ____  _____
 \  \///  _ \/ \ /\/ \   /  _ \/ \  /|      /  _ \/  _ \/  _ \/__ __\
