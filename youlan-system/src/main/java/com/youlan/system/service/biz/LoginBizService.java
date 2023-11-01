@@ -169,7 +169,11 @@ public class LoginBizService {
      * 用户注销
      */
     public void accountLogout() {
-        SystemAuthHelper.logout();
+        try {
+            SystemAuthHelper.logout();
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
     }
 
     /**

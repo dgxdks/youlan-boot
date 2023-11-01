@@ -14,3 +14,18 @@ services:
       - TZ=Asia/Shanghai
       - JAR_OPTS=-Dspring.profiles.active=prod
       - JVM_OPTS=-XX:+UseStringDeduplication -XX:+HeapDumpOnOutOfMemoryError -XX:+UseParallelGC -XX:+UseParallelOldGC
+  youlan-web:
+    image: youlan-web:latest
+    restart: always
+    container_name: youlan-web
+    hostname: youlan-web
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./youlan-web/logs:/var/log/nginx
+    environment:
+      - TZ=Asia/Shanghai
+    #extra_hosts:
+      # youlan-admin指向的是Nginx配置中后端服务的DNS配置，前后端分离部署时可用于指向特定IP
+      #- "youlan-admin:后端服务地址"
