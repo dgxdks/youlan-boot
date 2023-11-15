@@ -18,8 +18,24 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.youlan</groupId>
+            <artifactId>youlan-common-db</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.youlan</groupId>
+            <artifactId>youlan-common-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.youlan</groupId>
+            <artifactId>youlan-common-excel</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.dromara.sms4j</groupId>
             <artifactId>sms4j-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
         </dependency>
     </dependencies>
 </project>

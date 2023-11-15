@@ -15,8 +15,8 @@
         <module>youlan-plugin-http</module>
         <module>youlan-plugin-mp</module>
         <module>youlan-plugin-pay</module>
-        <module>youlan-plugin-region</module>
         <module>youlan-plugin-sms</module>
+        <module>youlan-plugin-storage</module>
     </modules>
 
     <properties>

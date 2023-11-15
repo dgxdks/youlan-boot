@@ -11,6 +11,7 @@ import com.youlan.common.captcha.helper.CaptchaHelper;
 import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.redis.anno.RateLimiter;
 import com.youlan.controller.base.BaseController;
+import com.youlan.plugin.sms.service.biz.SmsBizService;
 import com.youlan.system.config.SystemProperties;
 import com.youlan.system.helper.SystemConfigHelper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CaptchaController extends BaseController {
 
     private final SystemProperties systemProperties;
+    private final SmsBizService smsBizService;
 
     @SaIgnore
     @Operation(summary = "图形验证码")
@@ -49,7 +51,9 @@ public class CaptchaController extends BaseController {
         int codeTimeout = smsCaptchaProperties.getCodeTimeout();
         CodeType codeType = smsCaptchaProperties.getCodeType();
         int codeLength = smsCaptchaProperties.getCodeLength();
-        SmsCaptcha smsCaptcha = CaptchaHelper.createSmsCaptcha(codeTimeout, codeType, codeLength);
+        SmsCaptcha smsCaptcha = CaptchaHelper.createSmsCaptcha(codeTimeout, codeType, codeLength, captchaCode -> {
+            smsBizService.sendMessage("短信模版ID", dto.getMobile(), captchaCode);
+        });
         return toSuccess(smsCaptcha);
     }
 }

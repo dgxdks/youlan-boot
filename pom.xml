@@ -35,8 +35,8 @@
         <knife4j.version>4.1.0</knife4j.version>
         <arthas.version>3.7.1</arthas.version>
         <satoken.version>1.35.0.RC</satoken.version>
-        <sms4j.version>2.2.0</sms4j.version>
-        <spring.file.storage.version>1.0.2</spring.file.storage.version>
+        <sms4j.version>3.0.3</sms4j.version>
+        <x.file.storage.spring>2.0.0</x.file.storage.spring>
         <httpclient.version>4.5.14</httpclient.version>
         <mapstruct-plus.version>1.3.5</mapstruct-plus.version>
         <mapstruct-plus.lombok.version>0.2.0</mapstruct-plus.lombok.version>
@@ -91,6 +91,11 @@
                 <groupId>com.taobao.arthas</groupId>
                 <artifactId>arthas-spring-boot-starter</artifactId>
                 <version>${arthas.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-core</artifactId>
+                <version>${satoken.version}</version>
             </dependency>
             <dependency>
                 <groupId>cn.dev33</groupId>
@@ -154,9 +159,9 @@
                 <version>${lock4j.version}</version>
             </dependency>
             <dependency>
-                <groupId>cn.xuyanwu</groupId>
-                <artifactId>spring-file-storage</artifactId>
-                <version>${spring.file.storage.version}</version>
+                <groupId>org.dromara.x-file-storage</groupId>
+                <artifactId>x-file-storage-spring</artifactId>
+                <version>${x.file.storage.spring}</version>
             </dependency>
             <dependency>
                 <groupId>org.dromara.sms4j</groupId>
@@ -225,12 +230,17 @@
             </dependency>
             <dependency>
                 <groupId>com.youlan</groupId>
-                <artifactId>youlan-common-storage</artifactId>
+                <artifactId>youlan-plugin-storage</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.youlan</groupId>
-                <artifactId>youlan-plugin-region</artifactId>
+                <artifactId>youlan-common-region</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.youlan</groupId>
+                <artifactId>youlan-plugin-sms</artifactId>
                 <version>${revision}</version>
             </dependency>
         </dependencies>

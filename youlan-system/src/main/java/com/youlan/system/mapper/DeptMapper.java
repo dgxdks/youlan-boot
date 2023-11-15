@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.youlan.system.entity.Dept;
 import com.youlan.system.entity.dto.OrgPageDTO;
 import com.youlan.system.entity.vo.DeptVO;
-import com.youlan.system.permission.anno.DataPermission;
+import com.youlan.system.anno.DataPermission;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

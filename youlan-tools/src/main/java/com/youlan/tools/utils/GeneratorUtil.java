@@ -59,10 +59,12 @@ public class GeneratorUtil {
         //字符类型
         if (ArrayUtil.contains(GeneratorConstant.COLUMN_TYPE_STR, dbType)) {
             String between = StrUtil.subBetween(columnType, "(", ")");
-            int columnLength = Integer.parseInt(between);
-            //大于500使用textarea
-            if (columnLength > 500) {
-                column.setComponentType(GeneratorConstant.COMPONENT_TYPE_TEXTAREA);
+            if (StrUtil.isNotBlank(between)) {
+                int columnLength = Integer.parseInt(between);
+                //大于500使用textarea
+                if (columnLength > 500) {
+                    column.setComponentType(GeneratorConstant.COMPONENT_TYPE_TEXTAREA);
+                }
             }
         }
         //文本类型
@@ -76,15 +78,19 @@ public class GeneratorUtil {
         }
         //数字类型
         if (ArrayUtil.contains(GeneratorConstant.COLUMN_TYPE_NUMBER, dbType)) {
-            System.out.println(columnType);
             String between = StrUtil.subBetween(columnType, "(", ")");
-            String[] split = between.split(",");
-            if (split.length == 2) {
-                column.setJavaType(GeneratorConstant.JAVA_TYPE_BIG_DECIMAL);
-            }
-            if (split.length == 1 && Integer.parseInt(split[0]) <= 10) {
-                column.setJavaType(GeneratorConstant.JAVA_TYPE_INTEGER);
+            if (StrUtil.isNotBlank(between)) {
+                String[] split = between.split(",");
+                if (split.length == 2) {
+                    column.setJavaType(GeneratorConstant.JAVA_TYPE_BIG_DECIMAL);
+                }
+                if (split.length == 1 && Integer.parseInt(split[0]) <= 10) {
+                    column.setJavaType(GeneratorConstant.JAVA_TYPE_INTEGER);
+                } else {
+                    column.setJavaType(GeneratorConstant.JAVA_TYPE_LONG);
+                }
             } else {
+                // 未指定长度默认使用Long类型
                 column.setJavaType(GeneratorConstant.JAVA_TYPE_LONG);
             }
         }
@@ -341,8 +347,8 @@ public class GeneratorUtil {
                 "import com.alibaba.excel.annotation.write.style.ColumnWidth;",
                 "import com.alibaba.excel.annotation.write.style.HeadFontStyle;",
                 "import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;",
-                "import com.youlan.system.excel.anno.ExcelDictProperty;",
-                "import com.youlan.system.excel.converter.DictConverter;"
+                "import com.youlan.system.anno.ExcelDictProperty;",
+                "import com.youlan.system.converter.DictConverter;"
         );
     }
 

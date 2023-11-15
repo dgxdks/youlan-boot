@@ -1,17 +1,18 @@
 <template>
+  <!--  eslint-disable-->
   <el-form ref="form" :model="user" :rules="rules" label-width="80px">
     <el-form-item label="用户昵称" prop="nickName">
-      <el-input v-model="user.nickName" maxlength="30" />
+      <el-input v-model="user.nickName" maxlength="30"/>
     </el-form-item>
     <el-form-item label="手机号码" prop="userMobile">
-      <el-input v-model="user.userMobile" maxlength="11" />
+      <el-input v-model="user.userMobile" maxlength="11"/>
     </el-form-item>
     <el-form-item label="邮箱" prop="email">
-      <el-input v-model="user.email" maxlength="50" />
+      <el-input v-model="user.email" maxlength="50"/>
     </el-form-item>
     <el-form-item label="性别">
       <!-- 排除掉未知-->
-      <dict-radio v-model="user.sex" dict-type="sys_user_sex" :exclude="['3']" />
+      <dict-radio v-model="user.sex" dict-type="sys_user_sex" :exclude="['3']"/>
     </el-form-item>
     <el-form-item>
       <el-button type="primary" size="mini" @click="submit">保存</el-button>

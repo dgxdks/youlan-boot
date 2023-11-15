@@ -33,8 +33,8 @@ public class MappingConverter extends AbstractConverter {
             return Arrays.stream(mappingProperties)
                     .collect(Collectors.toMap(MappingProperty::name, MappingProperty::value));
         });
-        //强制使用字符进行匹配
-        return Convert.convert(getField(contentProperty).getType(), mappingMap.get(javaData.toString()));
+        String convertDataStr = convertToMappingData(mappingMap, javaData.toString(), excelMappingProperty.separator());
+        return Convert.convert(getField(contentProperty).getType(), convertDataStr);
     }
 
     @Override

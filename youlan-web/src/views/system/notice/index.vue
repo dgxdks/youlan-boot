@@ -1,223 +1,118 @@
 <template>
   <div class="app-container">
-    <el-form v-show="showSearch" ref="queryForm" :inline="true" :model="queryParams" label-width="68px" size="small">
-      <el-form-item label="公告标题" prop="noticeTitle">
+    <el-form v-show="queryShow" ref="queryForm" :inline="true" :model="queryForm" label-width="68px" size="small">
+      <el-form-item label="通知标题" prop="title">
         <el-input
-          v-model="queryParams.noticeTitle"
+          v-model="queryForm.title"
           clearable
-          placeholder="请输入公告标题"
+          placeholder="请输入通知标题"
+          style="width: 240px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="操作人员" prop="createBy">
-        <el-input
-          v-model="queryParams.createBy"
-          clearable
-          placeholder="请输入操作人员"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="类型" prop="noticeType">
-        <el-select v-model="queryParams.noticeType" clearable placeholder="公告类型">
-          <el-option
-            v-for="dict in dict.type.sys_notice_type"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
+      <el-form-item label="通知类型" prop="type">
+        <dict-select v-model="queryForm.type" dict-type="sys_notice_type" clearable placeholder="通知类型" style="width: 240px" />
       </el-form-item>
       <el-form-item>
-        <el-button icon="el-icon-search" size="mini" type="primary" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        <base-search-button @click="handleQuery" />
+        <base-reset-button @click="resetQuery" />
       </el-form-item>
     </el-form>
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button
-          v-has-perm="['system:notice:add']"
-          icon="el-icon-plus"
-          plain
-          size="mini"
-          type="primary"
-          @click="handleAdd"
-        >新增
-        </el-button>
+        <base-add-button v-has-perm="['system:notice:add']" plain @click="handleAdd" />
       </el-col>
       <el-col :span="1.5">
-        <el-button
-          v-has-perm="['system:notice:edit']"
-          :disabled="single"
-          icon="el-icon-edit"
-          plain
-          size="mini"
-          type="success"
-          @click="handleUpdate"
-        >修改
-        </el-button>
+        <base-update-button v-has-perm="['system:notice:update']" plain :disabled="!tableSelectOne" @click="handleUpdate" />
       </el-col>
       <el-col :span="1.5">
-        <el-button
-          v-has-perm="['system:notice:remove']"
-          :disabled="multiple"
-          icon="el-icon-delete"
-          plain
-          size="mini"
-          type="danger"
-          @click="handleDelete"
-        >删除
-        </el-button>
+        <base-remove-button v-has-perm="['system:notice:remove']" plain :disabled="tableNoSelected" @click="handleDelete" />
       </el-col>
-      <table-toolbar :query-show.sync="showSearch" @refresh="getList" />
+      <table-toolbar :query-show.sync="queryShow" @refresh="getList" />
     </el-row>
 
-    <el-table v-loading="loading" :data="noticeList" @selection-change="handleSelectionChange">
+    <el-table v-loading="tableLoading" :data="noticeList" @selection-change="handleSelectionChange">
       <el-table-column align="center" type="selection" width="55" />
-      <el-table-column align="center" label="序号" prop="noticeId" width="100" />
-      <el-table-column
-        show-overflow-tooltip
-        align="center"
-        label="公告标题"
-        prop="noticeTitle"
-      />
-      <el-table-column align="center" label="公告类型" prop="noticeType" width="100">
+      <el-table-column align="center" label="通知编号" prop="id" />
+      <el-table-column show-overflow-tooltip align="center" label="通知标题" prop="title" />
+      <el-table-column align="center" label="通知类型" prop="type">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_notice_type" :value="scope.row.noticeType" />
+          <dict-tag v-model="scope.row.type" dict-type="sys_notice_type" />
         </template>
       </el-table-column>
-      <el-table-column align="center" label="状态" prop="status" width="100">
+      <el-table-column align="center" label="状态" prop="status">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_notice_status" :value="scope.row.status" />
+          <dict-tag v-model="scope.row.status" dict-type="db_status" />
         </template>
       </el-table-column>
-      <el-table-column align="center" label="创建者" prop="createBy" width="100" />
-      <el-table-column align="center" label="创建时间" prop="createTime" width="100">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
+      <el-table-column show-overflow-tooltip align="center" label="通知内容" prop="content" />
+      <el-table-column show-overflow-tooltip align="center" label="备注" prop="remark" />
+      <el-table-column show-overflow-tooltip align="center" label="创建用户" prop="createBy" />
+      <el-table-column align="center" label="创建时间" prop="createTime" width="160" />
       <el-table-column align="center" class-name="small-padding fixed-width" label="操作">
         <template slot-scope="scope">
-          <el-button
-            v-has-perm="['system:notice:edit']"
-            icon="el-icon-edit"
-            size="mini"
-            type="text"
-            @click="handleUpdate(scope.row)"
-          >修改
-          </el-button>
-          <el-button
-            v-has-perm="['system:notice:remove']"
-            icon="el-icon-delete"
-            size="mini"
-            type="text"
-            @click="handleDelete(scope.row)"
-          >删除
-          </el-button>
+          <base-update-button v-has-perm="['system:notice:update']" type="text" @click="handleUpdate(scope.row)" />
+          <base-remove-button v-has-perm="['system:notice:remove']" type="text" @click="handleDelete(scope.row)" />
         </template>
       </el-table-column>
     </el-table>
 
     <pagination
-      v-show="total>0"
-      :limit.sync="queryParams.pageSize"
-      :page.sync="queryParams.pageNum"
-      :total="total"
+      v-show="pageTotal>0"
+      :limit.sync="queryForm.pageSize"
+      :page.sync="queryForm.pageNum"
+      :total="pageTotal"
       @pagination="getList"
     />
 
-    <!-- 添加或修改公告对话框 -->
-    <el-dialog :title="title" :visible.sync="open" append-to-body width="780px">
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="公告标题" prop="noticeTitle">
-              <el-input v-model="form.noticeTitle" placeholder="请输入公告标题" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="公告类型" prop="noticeType">
-              <el-select v-model="form.noticeType" placeholder="请选择公告类型">
-                <el-option
-                  v-for="dict in dict.type.sys_notice_type"
-                  :key="dict.value"
-                  :label="dict.label"
-                  :value="dict.value"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="状态">
-              <el-radio-group v-model="form.status">
-                <el-radio
-                  v-for="dict in dict.type.sys_notice_status"
-                  :key="dict.value"
-                  :label="dict.value"
-                >{{ dict.label }}
-                </el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="内容">
-              <editor v-model="form.noticeContent" :min-height="192" />
-            </el-form-item>
-          </el-col>
-        </el-row>
+    <!-- 参数配置编辑对话框 -->
+    <base-dialog :title="editTitle" :open.sync="editOpen" width="800px" @confirm="handleEditSubmit" @cancel="handleEditCancel">
+      <el-form ref="editForm" :model="editForm" :rules="editRules" label-width="100px">
+        <base-row-split2>
+          <el-form-item label="通知标题" prop="title">
+            <el-input v-model="editForm.title" placeholder="请输入参数名称" />
+          </el-form-item>
+          <el-form-item label="通知类型" prop="type">
+            <dict-select v-model="editForm.content" dict-type="sys_notice_type" />
+          </el-form-item>
+          <el-form-item label="备注" prop="remark">
+            <el-input v-model="editForm.remark" placeholder="请输入内容" type="textarea" />
+          </el-form-item>
+          <el-form-item label="状态" prop="status">
+            <dict-radio v-model="editForm.status" dict-type="db_status" />
+          </el-form-item>
+        </base-row-split2>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
-    </el-dialog>
+    </base-dialog>
   </div>
 </template>
 
 <script>
-import { addNotice, delNotice, getNotice, listNotice, updateNotice } from '@/api/system/notice'
+import crud from '@/framework/mixin/crud'
+import { addNotice, getNoticePageList, loadNotice, removeNotice, updateNotice } from '@/api/system/notice'
 
 export default {
   name: 'Notice',
-  dicts: ['sys_notice_status', 'sys_notice_type'],
+  mixins: [crud],
   data() {
     return {
-      // 遮罩层
-      loading: true,
-      // 选中数组
-      ids: [],
-      // 非单个禁用
-      single: true,
-      // 非多个禁用
-      multiple: true,
-      // 显示搜索条件
-      showSearch: true,
-      // 总条数
-      total: 0,
-      // 公告表格数据
+      // 通知公告表格数据
       noticeList: [],
-      // 弹出层标题
-      title: '',
-      // 是否显示弹出层
-      open: false,
       // 查询参数
-      queryParams: {
+      queryForm: {
         pageNum: 1,
         pageSize: 10,
-        noticeTitle: undefined,
-        createBy: undefined,
-        status: undefined
+        title: null,
+        type: null
       },
-      // 表单参数
-      form: {},
       // 表单校验
-      rules: {
-        noticeTitle: [
-          { required: true, message: '公告标题不能为空', trigger: 'blur' }
+      editRules: {
+        title: [
+          this.$validator.requiredRule('通知标题不能为空')
         ],
-        noticeType: [
-          { required: true, message: '公告类型不能为空', trigger: 'change' }
+        type: [
+          this.$validator.requiredRule('通知类型不能为空')
         ]
       }
     }
@@ -226,93 +121,82 @@ export default {
     this.getList()
   },
   methods: {
-    /** 查询公告列表 */
+    // 查询参数列表
     getList() {
-      this.loading = true
-      listNotice(this.queryParams).then(response => {
-        this.noticeList = response.rows
-        this.total = response.total
-        this.loading = false
+      this.openTableLoading()
+      getNoticePageList(this.queryForm).then(res => {
+        this.noticeList = res.data.rows
+        this.pageTotal = res.data.total
+        this.closeTableLoading()
       })
     },
-    // 取消按钮
-    cancel() {
-      this.open = false
-      this.reset()
-    },
-    // 表单重置
-    reset() {
-      this.form = {
-        noticeId: undefined,
-        noticeTitle: undefined,
-        noticeType: undefined,
-        noticeContent: undefined,
-        status: '0'
-      }
-      this.resetForm('form')
-    },
-    /** 搜索按钮操作 */
+    // 搜索按钮
     handleQuery() {
-      this.queryParams.pageNum = 1
+      this.resetPageNum()
       this.getList()
     },
-    /** 重置按钮操作 */
+    // 搜索重置按钮
     resetQuery() {
-      this.resetForm('queryForm')
+      this.$refs.queryForm && this.$refs.queryForm.resetFields()
       this.handleQuery()
     },
-    // 多选框选中数据
-    handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.noticeId)
-      this.single = selection.length !== 1
-      this.multiple = !selection.length
-    },
-    /** 新增按钮操作 */
+    // 新增按钮
     handleAdd() {
-      this.reset()
-      this.open = true
-      this.title = '添加公告'
+      this.openEdit('添加参数')
     },
-    /** 修改按钮操作 */
+    // 修改按钮
     handleUpdate(row) {
-      this.reset()
-      const noticeId = row.noticeId || this.ids
-      getNotice(noticeId).then(response => {
-        this.form = response.data
-        this.open = true
-        this.title = '修改公告'
+      const id = row.id || this.tableIds[0]
+      loadNotice({ id }).then(res => {
+        this.openEdit('修改参数')
+        this.editForm = res.data
       })
     },
-    /** 提交按钮 */
-    submitForm: function() {
-      this.$refs['form'].validate(valid => {
+    // 删除按钮
+    handleDelete(row) {
+      const list = (row.id && [row.id]) || this.tableIds
+      this.$modal.confirm('是否确认删除参数编号为"' + list + '"的数据项？').then(function() {
+        return removeNotice({ list })
+      }).then(() => {
+        this.getList()
+        this.$modal.success('删除成功')
+      }).catch(() => {
+      })
+    },
+    // 表单重置
+    resetEditForm() {
+      this.editForm = {
+        title: null,
+        type: null,
+        content: null,
+        remark: null,
+        status: '1'
+      }
+      this.$refs.editForm && this.$refs.editForm.resetFields()
+    },
+    // 提交按钮
+    handleEditSubmit() {
+      this.$refs.editForm.validate(valid => {
         if (valid) {
-          if (this.form.noticeId !== undefined) {
-            updateNotice(this.form).then(response => {
+          if (this.editForm.id) {
+            updateNotice(this.editForm).then(res => {
               this.$modal.success('修改成功')
-              this.open = false
+              this.closeEdit()
               this.getList()
             })
           } else {
-            addNotice(this.form).then(response => {
+            addNotice(this.editForm).then(res => {
               this.$modal.success('新增成功')
-              this.open = false
+              this.closeEdit()
               this.getList()
             })
           }
         }
       })
     },
-    /** 删除按钮操作 */
-    handleDelete(row) {
-      const noticeIds = row.noticeId || this.ids
-      this.$modal.confirm('是否确认删除公告编号为"' + noticeIds + '"的数据项？').then(function() {
-        return delNotice(noticeIds)
-      }).then(() => {
-        this.getList()
-        this.$modal.success('删除成功')
-      }).catch(() => {
-      })
+    // 取消按钮
+    handleEditCancel() {
+      this.closeEdit()
     }
   }
 }

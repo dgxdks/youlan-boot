@@ -28,7 +28,6 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class DeptBizService {
-    private final OrgBizService orgBizService;
     private final OrgService orgService;
     private final DeptService deptService;
     private final UserService userService;
@@ -39,7 +38,7 @@ public class DeptBizService {
     @Transactional(rollbackFor = Exception.class)
     public void addDept(DeptDTO dto) {
         dto.setOrgType(OrgType.DEPT.getCode());
-        Org org = orgBizService.addOrg(dto);
+        Org org = orgService.addOrg(dto);
         Dept dept = BeanUtil.copyProperties(dto, Dept.class);
         dept.setOrgId(org.getOrgId());
         deptService.save(dept);
@@ -51,7 +50,7 @@ public class DeptBizService {
     @Transactional(rollbackFor = Exception.class)
     public void updateDept(DeptDTO dto) {
         dto.setOrgType(OrgType.DEPT.getCode());
-        orgBizService.updateOrg(dto);
+        orgService.updateOrg(dto);
         deptService.updateById(BeanUtil.copyProperties(dto, Dept.class));
     }
 

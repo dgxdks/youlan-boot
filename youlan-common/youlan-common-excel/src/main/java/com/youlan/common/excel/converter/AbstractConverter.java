@@ -15,6 +15,9 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public abstract class AbstractConverter implements Converter<Object> {
 
@@ -93,5 +96,37 @@ public abstract class AbstractConverter implements Converter<Object> {
     public WriteCellData<?> convertToExcelData(WriteConverterContext<Object> context) throws Exception {
         return convertToExcelData(context.getValue(), context.getContentProperty(),
                 context.getWriteContext().currentWriteHolder().globalConfiguration());
+    }
+
+    /**
+     * 将值转为映射值
+     */
+    public String convertToMappingData(Map<String, String> mapping, String value, String separator) {
+        if (StrUtil.contains(value, separator)) {
+            return Arrays.stream(value.split(separator))
+                    .map(item -> mapping.getOrDefault(item, StrUtil.EMPTY))
+                    .collect(Collectors.joining(separator));
+        }
+        return mapping.getOrDefault(value, StrUtil.EMPTY);
+    }
+
+    /**
+     * 删除值中包含的前缀和后缀
+     */
+    public String removePrefixSuffix(String value, String prefix, String suffix) {
+        if (StrUtil.isNotBlank(prefix)) {
+            value = StrUtil.removePrefix(value, prefix);
+        }
+        if (StrUtil.isNotBlank(suffix)) {
+            value = StrUtil.removeSuffix(value, suffix);
+        }
+        return value;
+    }
+
+    /**
+     * 拼接值的前缀和后缀
+     */
+    public String concatPrefixSuffix(String value, String prefix, String suffix) {
+        return StrUtil.concat(true, prefix, value, suffix);
     }
 }

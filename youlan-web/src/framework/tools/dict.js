@@ -11,7 +11,7 @@ const fieldMapping = {
   nameField: 'dataName',
   // 组件UI字段名称映射
   uiField: 'uiClass',
-  // 组件class字段名称已映射
+  // 组件class字段名称映射
   cssField: 'cssClass'
 }
 /**
@@ -22,7 +22,19 @@ const fieldMapping = {
  * ]
  */
 const staticDict = {
-
+  sms_type: [
+    { type: 'sms_type', value: '1', name: '标准短信' },
+    { type: 'sms_type', value: '2', name: '异步短信' },
+    { type: 'sms_type', value: '3', name: '延迟短信' }
+  ],
+  sms_send_type: [
+    { type: 'sms_send_type', value: '1', name: '单个发送' },
+    { type: 'sms_send_type', value: '2', name: '批量发送' }
+  ],
+  sms_send_status: [
+    { type: 'sms_send_status', value: '1', name: '成功', uiClass: 'success' },
+    { type: 'sms_send_status', value: '2', name: '失败', uiClass: 'danger' }
+  ]
 }
 // 管理数据字典加载状态
 const loadingStatus = {}

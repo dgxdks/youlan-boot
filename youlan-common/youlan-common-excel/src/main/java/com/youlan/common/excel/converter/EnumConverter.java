@@ -8,7 +8,6 @@ import com.alibaba.excel.metadata.GlobalConfiguration;
 import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
-import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.excel.anno.ExcelEnumProperty;
 
 import java.util.Arrays;
@@ -37,12 +36,29 @@ public class EnumConverter extends AbstractConverter {
                     .collect(Collectors.toMap(anEnum -> getEnumFieldValue(anEnum, key.textField()), anEnum -> getEnumFieldValue(anEnum, key.codeField())));
 
         });
-        //强制使用字符进行匹配
-        String value = mappingMap.get(javaData.toString());
-        if (StrUtil.isBlank(value)) {
-            throw new BizRuntimeException("映射值不存在");
+        String convertDataStr = convertToMappingData(mappingMap, javaData.toString(), excelEnumProperty.separator());
+        return Convert.convert(getField(contentProperty).getType(), convertDataStr);
+    }
+
+    @Override
+    public WriteCellData<?> convertToExcelData(Object value, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
+        if (ObjectUtil.isNull(value)) {
+            return emptyWriteCellData();
         }
-        return Convert.convert(getField(contentProperty).getType(), value);
+        final ExcelEnumProperty excelEnumProperty = getFieldAnnotation(contentProperty, ExcelEnumProperty.class);
+        Map<String, String> mappingMap = CONVERT_TO_EXCEL_CACHE.computeIfAbsent(excelEnumProperty, key -> {
+            Class<? extends Enum<?>> enumClass = excelEnumProperty.value();
+            Enum<?>[] enumConstants = enumClass.getEnumConstants();
+            // excel转java映射关系为 code -> text
+            return Arrays.stream(enumConstants)
+                    .collect(Collectors.toMap(anEnum -> getEnumFieldValue(anEnum, key.codeField()), anEnum -> getEnumFieldValue(anEnum, key.textField())));
+        });
+        String mappingData = mappingMap.get(value.toString());
+        if (StrUtil.isBlank(mappingData)) {
+            return emptyWriteCellData();
+        }
+        String convertDataStr = convertToMappingData(mappingMap, value.toString(), excelEnumProperty.separator());
+        return new WriteCellData<>(concatPrefixSuffix(convertDataStr, excelEnumProperty.prefixStr(), excelEnumProperty.suffixStr()));
     }
 
     /**
@@ -54,26 +70,5 @@ public class EnumConverter extends AbstractConverter {
             throw new IllegalArgumentException(StrUtil.format("枚举类{}中不存在字段{}", anEnum.getClass(), filedName));
         }
         return textFieldValue.toString();
-    }
-
-    @Override
-    public WriteCellData<?> convertToExcelData(Object value, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
-        if (ObjectUtil.isNull(value)) {
-            return emptyWriteCellData();
-        }
-        final ExcelEnumProperty excelEnumProperty = getFieldAnnotation(contentProperty, ExcelEnumProperty.class);
-        Map<String, String> mappingMap = CONVERT_TO_JAVA_CACHE.computeIfAbsent(excelEnumProperty, key -> {
-            Class<? extends Enum<?>> enumClass = excelEnumProperty.value();
-            Enum<?>[] enumConstants = enumClass.getEnumConstants();
-            // excel转java映射关系为 code -> text
-            return Arrays.stream(enumConstants)
-                    .collect(Collectors.toMap(anEnum -> getEnumFieldValue(anEnum, key.codeField()), anEnum -> getEnumFieldValue(anEnum, key.textField())));
-        });
-        String mappingData = mappingMap.get(value.toString());
-        if (StrUtil.isBlank(mappingData)) {
-            return emptyWriteCellData();
-        }
-        String finalData = StrUtil.concat(true, excelEnumProperty.prefixStr(), mappingData, excelEnumProperty.suffixStr());
-        return new WriteCellData<>(finalData);
     }
 }

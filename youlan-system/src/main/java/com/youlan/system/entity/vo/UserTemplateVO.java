@@ -8,8 +8,8 @@ import com.youlan.common.db.enums.DBStatus;
 import com.youlan.common.excel.anno.ExcelEnumProperty;
 import com.youlan.common.excel.converter.EnumConverter;
 import com.youlan.common.validator.anno.Phone;
-import com.youlan.system.excel.anno.ExcelDictProperty;
-import com.youlan.system.excel.converter.DictConverter;
+import com.youlan.system.anno.ExcelDictProperty;
+import com.youlan.system.converter.DictConverter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 

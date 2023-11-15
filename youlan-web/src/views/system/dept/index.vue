@@ -188,6 +188,7 @@ export default {
     },
     // 新增按钮
     handleAdd(row) {
+      // 处理部门树
       getDeptTreeList({}).then(res => {
         this.deptOptions = res.data
       })
@@ -198,6 +199,7 @@ export default {
     },
     // 修改按钮
     handleUpdate(row) {
+      // 处理部门树
       getDeptTreeList({ excludeOrgId: row.orgId }).then(res => {
         this.deptOptions = res.data
         if (this.deptOptions.length === 0) {

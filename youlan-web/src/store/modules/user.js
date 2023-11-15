@@ -14,7 +14,7 @@ const user = {
     tokenValue: CookieUtil.getTokenValue(),
     tokenHeaders: getTokenHeaders(),
     userName: '',
-    avatar: '',
+    avatar: require('@/assets/images/profile.png'),
     roleList: [],
     permissionList: []
   },
@@ -68,8 +68,9 @@ const user = {
           // 设置用户名
           commit('SET_USER_NAME', user.userName)
           // 设置用户头像
-          const avatar = StrUtil.isBlank(user.avatar) ? require('@/assets/images/profile.png') : DownloadUtil.parseSrcUrl(user.avatar)
-          commit('SET_AVATAR', avatar)
+          if (StrUtil.isNotBlank(user.avatar)) {
+            commit('SET_AVATAR', DownloadUtil.parseSrcUrl(user.avatar))
+          }
           // 设置用户角色信息
           if (ArrayUtil.isNotEmpty(res.data.roleList)) {
             commit('SET_ROLE_LIST', res.data.roleList)
@@ -81,14 +82,13 @@ const user = {
         })
       })
     },
-
     // 退出系统
     Logout({ commit, state }) {
       return new Promise((resolve, reject) => {
         logout(state.token).then(() => {
           commit('SET_TOKEN', '')
-          commit('SET_ROLES', [])
-          commit('SET_PERMISSIONS', [])
+          commit('SET_ROLE_LIST', [])
+          commit('SET_PERMISSION_LIST', [])
           CookieUtil.removeTokenValue()
           resolve()
         }).catch(error => {

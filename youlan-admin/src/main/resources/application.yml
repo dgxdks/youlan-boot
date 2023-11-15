@@ -36,14 +36,6 @@ youlan:
       code-timeout: 60
       # 验证码内容类型(NUMBER-数字型)
       code-type: number
-    # 存储
-    storage:
-      # 文件存储根路径(默认/, 指定路径时必须以/结尾)
-      storage-path: '~/youlan/'
-      # 是否开始存储记录
-      record-enabled: true
-      # 存储记录缓存时间(s)
-      record-cache-timeout: 1800
     # 操作日志
     operation-log:
       # 是否开启操作日志
@@ -75,12 +67,21 @@ youlan:
 
 --- # 插件模块
 youlan:
-  plugin:
-    region:
-      # ip2region 查询模式(FILE-基于文件 INDEX-基于索引 MEMORY-基于内存 NETWORK-基于网络)
-      searcher-model: MEMORY
-      # ip2region.xdb文件路径,类路径文件需添加classpath:前缀，如classpath:ip2region/ip2region.xdb
-      xdb-path: classpath:ip2region.xdb
+  region:
+    searcher-model: MEMORY
+    xdb-path: classpath:ip2region.xdb
+  storage:
+    # 文件存储根路径(默认/, 指定路径时必须以/结尾)
+    storage-path: '~/youlan/'
+    # 是否开始存储记录
+    record-enabled: true
+    # 存储记录缓存时间(s)
+    record-cache-timeout: 1800
+  sms:
+    # 是否打印banner
+    is-print: false
+    # 是否开启短信限制
+    restricted: false
 
 # 服务配置
 server:

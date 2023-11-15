@@ -155,10 +155,10 @@
             {{ editForm.thUrl }}
           </el-form-item>
           <el-form-item v-if="hasImageContentType(editForm)" label="图片预览">
-            <image-preview :src="editForm.fullUrl" :width="150" :height="150" />
+            <image-preview :src="editForm.url" :width="150" :height="150" />
           </el-form-item>
           <el-form-item v-if="hasImageContentType(editForm)" label="缩略图预览">
-            <image-preview :src="editForm.thFullUrl" :width="150" :height="150" />
+            <image-preview :src="editForm.thUrl" :width="150" :height="150" />
           </el-form-item>
         </base-row-split2>
       </el-form>
@@ -227,7 +227,7 @@ export default {
     this.getList()
   },
   methods: {
-    // 查询操作日志
+    // 查询存储记录
     getList() {
       this.openTableLoading()
       getStorageRecordPageList(this.queryForm).then(res => {
@@ -259,17 +259,13 @@ export default {
     },
     // 清空按钮
     handleClean() {
-      this.$modal.confirm('是否确认清空所有操作日志数据项？').then(function() {
+      this.$modal.confirm('是否确认清空所有存储记录数据项？').then(function() {
         return cleanStorageRecordList()
       }).then(() => {
         this.getList()
         this.$modal.success('清空成功')
       }).catch(() => {
       })
-    },
-    // 导出按钮
-    handleExport() {
-      this.$download.postAsName('/system/operationLog/exportOperationLogList', {}, this.queryForm, `operation_log_${new Date().getTime()}.xlsx`, { timeout: 60 * 1000 })
     },
     // 详细按钮
     handleDetail(row) {

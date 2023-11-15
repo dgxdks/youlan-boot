@@ -22,7 +22,7 @@ import com.youlan.system.entity.dto.UserPageDTO;
 import com.youlan.system.entity.dto.UserResetPasswdDTO;
 import com.youlan.system.entity.vo.UserTemplateVO;
 import com.youlan.system.entity.vo.UserVO;
-import com.youlan.system.excel.listener.UserExcelListener;
+import com.youlan.system.listener.UserExcelListener;
 import com.youlan.system.helper.SystemAuthHelper;
 import com.youlan.system.service.RoleService;
 import com.youlan.system.service.UserService;

@@ -5,13 +5,13 @@ import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.core.helper.FileHelper;
 import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.core.restful.enums.ApiResultCode;
+import com.youlan.common.storage.entity.StorageRecord;
+import com.youlan.common.storage.service.biz.StorageBizService;
+import com.youlan.controller.base.BaseController;
 import com.youlan.system.anno.OperationLog;
 import com.youlan.system.constant.OperationLogType;
-import com.youlan.controller.base.BaseController;
-import com.youlan.system.entity.StorageRecord;
 import com.youlan.system.entity.dto.UserDTO;
 import com.youlan.system.entity.dto.UserUpdatePasswdDTO;
-import com.youlan.system.service.biz.StorageBizService;
 import com.youlan.system.service.biz.UserBizService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -59,10 +59,10 @@ public class UserProfileController extends BaseController {
         if (!FileHelper.isImageExtName(file)) {
             throw new BizRuntimeException(ApiResultCode.B0013);
         }
-        StorageRecord storageRecord = storageBizService.upload(file, null, uploadPretreatment -> {
+        StorageRecord storageRecord = storageBizService.upload(null, file, uploadPretreatment -> {
             uploadPretreatment.image(200, 200);
         });
-        userBizService.updateUserAvatar(storageRecord.getFullUrl());
+        userBizService.updateUserAvatar(storageRecord.getUrl());
         return toSuccess(storageRecord.getUrl());
     }
 }

@@ -373,7 +373,7 @@ export default {
         })
       })
       Promise.all(validateAll).then(res => {
-        const validateResult = res.data.every(item => item === true)
+        const validateResult = res.every(item => item === true)
         if (!validateResult) {
           this.$modal.error('表单校验未通过，请重新检查提交内容')
           return

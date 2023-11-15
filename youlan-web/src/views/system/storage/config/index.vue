@@ -322,7 +322,7 @@ export default {
     // 状态变更
     handleStatusChange(row) {
       const confirmAction = row.status === '1' ? '启用' : '停用'
-      const confirmText = `确认要${confirmAction}"${row.roleName}"吗？`
+      const confirmText = `确认要${confirmAction}"${row.name}"吗？`
       this.$modal.confirm(confirmText).then(() => {
         const params = {
           id: row.id,

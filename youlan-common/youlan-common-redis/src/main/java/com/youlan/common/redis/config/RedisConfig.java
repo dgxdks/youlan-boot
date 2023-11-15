@@ -11,7 +11,7 @@ import com.youlan.common.redis.constant.RedisConstant;
 import lombok.AllArgsConstructor;
 import org.redisson.codec.JsonJacksonCodec;
 import org.redisson.spring.starter.RedissonAutoConfigurationCustomizer;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -20,7 +20,7 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
-@ImportAutoConfiguration({RedissonProperties.class})
+@EnableConfigurationProperties({RedissonProperties.class})
 @AllArgsConstructor
 public class RedisConfig {
     private final RedissonProperties redissonProperties;

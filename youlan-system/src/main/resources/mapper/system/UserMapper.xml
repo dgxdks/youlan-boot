@@ -9,7 +9,6 @@
         from t_sys_user as user
         left join t_sys_org as org on user.org_id = org.org_id
         where user.sts = '1'
-        and org.org_sts = '1'
         <if test="dto.orgId != null">
             and (org.org_id = #{dto.orgId} or find_in_set(#{dto.orgId}, org.org_ancestors))
         </if>
@@ -43,7 +42,6 @@
         from t_sys_user as user
                  left join t_sys_org as org on user.org_id = org.org_id
         where user.sts = '1'
-          and org.org_sts = '1'
           and user.id = #{userId}
     </select>
 
@@ -52,7 +50,6 @@
         from t_sys_user as user
         left join t_sys_org as org on user.org_id = org.org_id
         where user.sts = '1'
-        and org.org_sts = '1'
         and user.id in
         <foreach collection="userIds" item="userId" open="(" close=")" separator=",">
             #{userId}

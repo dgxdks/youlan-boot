@@ -1,5 +1,6 @@
 package com.youlan.common.excel.anno;
 
+import cn.hutool.core.text.StrPool;
 import cn.hutool.core.util.StrUtil;
 
 import java.lang.annotation.*;
@@ -12,6 +13,11 @@ public @interface ExcelEnumProperty {
      * 枚举集合
      */
     Class<? extends Enum<?>> value();
+
+    /**
+     * 数据字典值名称分隔符(适用于多个字典值名称的情况)
+     */
+    String separator() default StrPool.COMMA;
 
     /**
      * 枚举值映射字段

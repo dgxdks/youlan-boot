@@ -39,28 +39,29 @@ public class DictBizService {
         return dictDataService.loadMore(DictData::getTypeKey, typeKey);
     }
 
+
     /**
-     * 获取数据字典Map
+     * 获取数据字典值键值和名称的映射
      */
-    public Map<String, DictData> getDictDataValueMap(String typeKey) {
+    public Map<String, String> getDictDataValueMap(String typeKey) {
         List<DictData> dictDataList = getDict(typeKey);
         if (CollectionUtil.isEmpty(dictDataList)) {
             return new HashMap<>();
         }
         return dictDataList.stream()
-                .collect(Collectors.toMap(DictData::getDataValue, dictData -> dictData));
+                .collect(Collectors.toMap(DictData::getDataValue, DictData::getDataName));
     }
 
     /**
-     * 获取数据字典Map
+     * 获取数据字典值名称和键值的映射
      */
-    public Map<String, DictData> getDictDataNameMap(String typeKey) {
+    public Map<String, String> getDictDataNameMap(String typeKey) {
         List<DictData> dictDataList = getDict(typeKey);
         if (CollectionUtil.isEmpty(dictDataList)) {
             return new HashMap<>();
         }
         return dictDataList.stream()
-                .collect(Collectors.toMap(DictData::getDataName, dictData -> dictData));
+                .collect(Collectors.toMap(DictData::getDataName, DictData::getDataValue));
     }
 
 

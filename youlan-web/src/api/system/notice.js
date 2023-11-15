@@ -1,44 +1,46 @@
 import request from '@/framework/tools/request'
 
-// 查询公告列表
-export function listNotice(query) {
-  return request({
-    url: '/system/notice/list',
-    method: 'get',
-    params: query
-  })
-}
-
-// 查询公告详细
-export function getNotice(noticeId) {
-  return request({
-    url: '/system/notice/' + noticeId,
-    method: 'get'
-  })
-}
-
-// 新增公告
+// 通知公告新增
 export function addNotice(data) {
   return request({
-    url: '/system/notice',
+    url: '/system/notice/addNotice',
     method: 'post',
-    data: data
+    data
   })
 }
 
-// 修改公告
+// 通知公告修改
 export function updateNotice(data) {
   return request({
-    url: '/system/notice',
-    method: 'put',
-    data: data
+    url: '/system/notice/updateNotice',
+    method: 'post',
+    data
   })
 }
 
-// 删除公告
-export function delNotice(noticeId) {
+// 通知公告删除
+export function removeNotice(data) {
   return request({
-    url: '/system/notice/' + noticeId,
-    method: 'delete'
+    url: '/system/notice/removeNotice',
+    method: 'post',
+    data
+  })
+}
+
+// 通知公告详情
+export function loadNotice(params) {
+  return request({
+    url: '/system/notice/loadNotice',
+    method: 'post',
+    params
+  })
+}
+
+// 通知公告分页
+export function getNoticePageList(data) {
+  return request({
+    url: '/system/notice/getNoticePageList',
+    method: 'post',
+    data
   })
 }

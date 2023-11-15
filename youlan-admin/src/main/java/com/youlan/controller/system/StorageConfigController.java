@@ -7,12 +7,11 @@ import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.db.entity.dto.ListDTO;
 import com.youlan.common.db.helper.DBHelper;
+import com.youlan.common.storage.entity.StorageConfig;
+import com.youlan.common.storage.service.StorageConfigService;
+import com.youlan.controller.base.BaseController;
 import com.youlan.system.anno.OperationLog;
 import com.youlan.system.constant.OperationLogType;
-import com.youlan.controller.base.BaseController;
-import com.youlan.system.entity.StorageConfig;
-import com.youlan.system.service.StorageConfigService;
-import com.youlan.system.service.biz.StorageBizService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -28,7 +27,6 @@ import java.util.List;
 @RequestMapping("/system/storageConfig")
 @AllArgsConstructor
 public class StorageConfigController extends BaseController {
-    private final StorageBizService storageBizService;
     private final StorageConfigService storageConfigService;
 
     @SaCheckPermission("system:storageConfig:add")
@@ -36,7 +34,7 @@ public class StorageConfigController extends BaseController {
     @OperationLog(name = "存储配置", type = OperationLogType.OPERATION_LOG_TYPE_ADD)
     @PostMapping("/addStorageConfig")
     public ApiResult addStorageConfig(@Validated @RequestBody StorageConfig storageConfig) {
-        storageBizService.addStorageConfig(storageConfig);
+        storageConfigService.addStorageConfig(storageConfig);
         return toSuccess();
     }
 
@@ -48,7 +46,7 @@ public class StorageConfigController extends BaseController {
         if (ObjectUtil.isNull(storageConfig.getId())) {
             return toError(ApiResultCode.C0001);
         }
-        storageBizService.updateStorageConfig(storageConfig);
+        storageConfigService.updateStorageConfig(storageConfig);
         return toSuccess();
     }
 
@@ -60,7 +58,7 @@ public class StorageConfigController extends BaseController {
         if (CollectionUtil.isEmpty(dto.getList())) {
             return toSuccess();
         }
-        storageBizService.removeStorageConfigs(dto.getList());
+        storageConfigService.removeStorageConfigs(dto.getList());
         return toSuccess();
     }
 
@@ -93,7 +91,7 @@ public class StorageConfigController extends BaseController {
     @PostMapping("/updateStorageConfigStatus")
     @OperationLog(name = "存储配置", type = OperationLogType.OPERATION_LOG_TYPE_UPDATE)
     public ApiResult updateStorageConfigStatus(@RequestParam Long id, @RequestParam String status) {
-        storageBizService.updateStorageConfigStatus(id, status);
+        storageConfigService.updateStorageConfigStatus(id, status);
         return toSuccess();
     }
 
@@ -102,7 +100,7 @@ public class StorageConfigController extends BaseController {
     @PostMapping("/updateStorageConfigIsDefault")
     @OperationLog(name = "存储配置", type = OperationLogType.OPERATION_LOG_TYPE_UPDATE)
     public ApiResult updateStorageConfigIsDefault(@RequestParam Long id, @RequestParam String isDefault) {
-        storageBizService.updateStorageConfigIsDefault(id, isDefault);
+        storageConfigService.updateStorageConfigIsDefault(id, isDefault);
         return toSuccess();
     }
 
@@ -111,7 +109,7 @@ public class StorageConfigController extends BaseController {
     @PostMapping("/refreshStorageConfigCache")
     @OperationLog(name = "存储配置", type = OperationLogType.OPERATION_LOG_TYPE_REMOVE)
     public ApiResult refreshStorageConfigCache() {
-        storageBizService.refreshStorageConfigCache();
+        storageConfigService.refreshStorageConfigCache();
         return toSuccess();
     }
 }

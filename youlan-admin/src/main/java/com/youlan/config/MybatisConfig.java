@@ -8,8 +8,8 @@ import com.baomidou.mybatisplus.extension.plugins.inner.DataPermissionIntercepto
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.youlan.common.db.constant.DBConstant;
-import com.youlan.system.permission.handler.SystemDataPermissionHandler;
 import com.youlan.system.helper.SystemAuthHelper;
+import com.youlan.system.handler.SystemDataPermissionHandler;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -24,8 +24,7 @@ public class MybatisConfig {
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
 
-        //数据权限插件
-        // ********* 必须放在分页插件前面，不然分页插件如果先执行count且返回是0会中断后面真实的查询逻辑 *********
+        //数据权限插件(必须放在分页插件前面，不然分页插件如果先执行count且返回是0会中断后面真实的查询逻辑)
         interceptor.addInnerInterceptor(new DataPermissionInterceptor(new SystemDataPermissionHandler()));
 
         // 分页插件

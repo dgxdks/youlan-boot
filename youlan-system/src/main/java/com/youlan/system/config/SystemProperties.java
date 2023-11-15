@@ -22,12 +22,6 @@ public class SystemProperties {
     private SmsCaptchaProperties smsCaptcha;
 
     /**
-     * 存储配置
-     */
-    @NestedConfigurationProperty
-    private StorageProperties storage;
-
-    /**
      * 操作日志
      */
     @NestedConfigurationProperty

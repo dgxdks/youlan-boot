@@ -20,13 +20,20 @@ router.beforeEach((to, from, next) => {
       NProgress.done()
     } else {
       if (ArrayUtil.isEmpty(store.getters.roleList)) {
-        // 判断当前用户是否已拉取完user_info信息
+        // 获取用户登录信息
         store.dispatch('GetLoginInfo').then(() => {
-          store.dispatch('GenerateRoutes').then(accessRoutes => {
-            // 根据roles权限生成可访问的路由表
-            router.addRoutes(accessRoutes) // 动态添加可访问路由表
-            next({ ...to, replace: true }) // hack方法 确保addRoutes已完成
-          })
+          // 获取完成用户登录信息后再判断一次用户角色列表
+          if (ArrayUtil.isEmpty(store.getters.roleList)) {
+            store.dispatch('Logout').then(() => {
+              Message.error('用户角色信息异常')
+            })
+          } else {
+            store.dispatch('GenerateRoutes').then(accessRoutes => {
+              // 根据roles权限生成可访问的路由表
+              router.addRoutes(accessRoutes) // 动态添加可访问路由表
+              next({ ...to, replace: true }) // hack方法 确保addRoutes已完成
+            })
+          }
         }).catch(err => {
           console.log(err)
           store.dispatch('Logout').then(() => {

@@ -10,7 +10,7 @@
         left join t_sys_user_role as user_role on user_role.role_id = role.id
         left join t_sys_user as user on user.id = user_role.user_id
         left join t_sys_org as org on org.org_id = user.org_id
-        where role.sts = '1' and user.sts = '1' and org.org_sts = '1'
+        where role.sts = '1'
         <if test="role.roleName != null and role.roleName != ''">
             and role.role_name like concat('%', #{role.roleName}, '%')
         </if>
@@ -45,7 +45,7 @@
                  left join t_sys_user_role as user_role on user_role.role_id = role.id
                  left join t_sys_user as user on user.id = user_role.user_id
                  left join t_sys_org as org on org.org_id = user.org_id
-        where role.sts = '1' and user.sts = '1' and org.org_sts = '1'
+        where role.sts = '1'
         and role.id = #{roleId}
     </select>
 
@@ -55,7 +55,7 @@
         left join t_sys_user_role as user_role on user_role.role_id = role.id
         left join t_sys_user as user on user.id = user_role.user_id
         left join t_sys_org as org on org.org_id = user.org_id
-        where role.sts = '1' and user.sts = '1' and org.org_sts = '1'
+        where role.sts = '1'
         and role.id in
         <foreach collection="roleIds" item="roleId" open="(" close=")" separator=",">
             #{roleId}

@@ -4,7 +4,7 @@
       <settings>
         <option name="imageTag" value="youlan-web:latest" />
         <option name="buildOnly" value="true" />
-        <option name="sourceFilePath" value="Dockerfile" />
+        <option name="sourceFilePath" value="youlan-web/Dockerfile" />
       </settings>
     </deployment>
     <method v="2" />

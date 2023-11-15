@@ -169,8 +169,8 @@ export default {
     }
   },
   created() {
-    this.getList()
     this.getMenuTreeList()
+    this.getList()
   },
   methods: {
     // 列表查询
@@ -215,6 +215,7 @@ export default {
     },
     // 新增按钮
     handleAdd(row) {
+      this.getMenuTreeList()
       this.openEdit('新增菜单')
       if (row) {
         this.editForm.parentId = row.id
@@ -222,6 +223,7 @@ export default {
     },
     // 修改按钮
     handleUpdate(row) {
+      this.getMenuTreeList()
       loadMenu({ id: row.id }).then(res => {
         this.openEdit('修改菜单')
         this.editForm = {

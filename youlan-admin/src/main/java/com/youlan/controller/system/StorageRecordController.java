@@ -7,12 +7,11 @@ import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.db.entity.dto.ListDTO;
 import com.youlan.common.db.helper.DBHelper;
+import com.youlan.common.storage.entity.StorageRecord;
+import com.youlan.common.storage.service.StorageRecordService;
+import com.youlan.controller.base.BaseController;
 import com.youlan.system.anno.OperationLog;
 import com.youlan.system.constant.OperationLogType;
-import com.youlan.controller.base.BaseController;
-import com.youlan.system.entity.StorageRecord;
-import com.youlan.system.service.StorageRecordService;
-import com.youlan.system.service.biz.StorageBizService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -28,14 +27,13 @@ import java.util.List;
 @RequestMapping("/system/storageRecord")
 @AllArgsConstructor
 public class StorageRecordController extends BaseController {
-    private final StorageBizService storageBizService;
     private final StorageRecordService storageRecordService;
 
     @SaCheckPermission("system:storageRecord:update")
     @Operation(summary = "存储记录修改")
     @PostMapping("/updateStorageRecord")
     @OperationLog(name = "存储记录", type = OperationLogType.OPERATION_LOG_TYPE_UPDATE)
-    public ApiResult updateStorageConfig(@Validated @RequestBody StorageRecord storageRecord) {
+    public ApiResult updateStorageRecord(@Validated @RequestBody StorageRecord storageRecord) {
         if (ObjectUtil.isNull(storageRecord.getId())) {
             return toError(ApiResultCode.C0001);
         }
@@ -46,7 +44,7 @@ public class StorageRecordController extends BaseController {
     @Operation(summary = "存储记录删除")
     @PostMapping("/removeStorageRecord")
     @OperationLog(name = "存储记录", type = OperationLogType.OPERATION_LOG_TYPE_REMOVE)
-    public ApiResult removeStorageConfig(@Validated @RequestBody ListDTO<Long> dto) {
+    public ApiResult removeStorageRecord(@Validated @RequestBody ListDTO<Long> dto) {
         if (CollectionUtil.isEmpty(dto.getList())) {
             return toSuccess();
         }
@@ -56,23 +54,23 @@ public class StorageRecordController extends BaseController {
     @SaCheckPermission("system:storageRecord:load")
     @Operation(summary = "存储记录详情")
     @PostMapping("/loadStorageRecord")
-    public ApiResult loadStorageConfig(@RequestParam Long id) {
-        return toSuccess(storageBizService.loadStorageRecord(id));
+    public ApiResult loadStorageRecord(@RequestParam Long id) {
+        return toSuccess(storageRecordService.loadStorageRecord(id));
     }
 
     @SaCheckPermission("system:storageRecord:list")
     @Operation(summary = "存储记录分页")
     @PostMapping("/getStorageRecordPageList")
     @OperationLog(name = "存储记录", type = OperationLogType.OPERATION_LOG_TYPE_PAGE_LIST)
-    public ApiResult getStorageConfigPageList(@RequestBody StorageRecord storageRecord) {
-        return toSuccess(storageBizService.getStorageRecordPageList(storageRecord));
+    public ApiResult getStorageRecordPageList(@RequestBody StorageRecord storageRecord) {
+        return toSuccess(storageRecordService.getStorageRecordPageList(storageRecord));
     }
 
     @SaCheckPermission("system:storageRecord:export")
     @Operation(summary = "存储记录导出")
     @PostMapping("/exportStorageRecordList")
     @OperationLog(name = "存储记录", type = OperationLogType.OPERATION_LOG_TYPE_EXPORT)
-    public void exportStorageConfigList(@RequestBody StorageRecord storageRecord, HttpServletResponse response) throws IOException {
+    public void exportStorageRecordList(@RequestBody StorageRecord storageRecord, HttpServletResponse response) throws IOException {
         List<StorageRecord> storageRecords = storageRecordService.loadMore(DBHelper.getQueryWrapper(storageRecord));
         toExcel("存储记录.xlsx", "存储记录", StorageRecord.class, storageRecords, response);
     }

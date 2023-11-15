@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.youlan.system.mapper.StorageRecordMapper">
+<mapper namespace="com.youlan.common.storage.mapper.StorageRecordMapper">
 
     <delete id="cleanStorageRecordList">
         truncate table t_sys_storage_record;

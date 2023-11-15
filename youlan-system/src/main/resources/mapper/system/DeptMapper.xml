@@ -17,7 +17,7 @@
         org_sts
         from t_sys_dept as dept
         left join t_sys_org as org on org.org_id = dept.org_id
-        where org.org_sts = '1' and dept.sts = '1'
+        where dept.sts = '1'
         <if test="dto.orgName != null and dto.orgName != ''">
             and org.org_name like concat('%', #{dto.orgName}, '%')
         </if>

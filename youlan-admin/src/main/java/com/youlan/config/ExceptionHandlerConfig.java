@@ -166,7 +166,7 @@ public class ExceptionHandlerConfig {
         String requestUrl = request.getRequestURI();
         String queryString = request.getQueryString();
         String requestBody = ServletHelper.getBody();
-        log.error("请求异常: {}, 请求地址: {}, 请求参数: {}, 请求数据: {}", errorMsg, requestUrl, queryString, requestBody);
+        log.error("请求异常: {}, 请求地址: {}, 请求参数: {}, 请求数据: {}", errorMsg, requestUrl, queryString, StrUtil.sub(requestBody, 0, 512));
         log.error(exception.getMessage(), exception);
         return ApiResult.error(status, errorMsg);
     }

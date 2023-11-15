@@ -35,7 +35,6 @@
 
 <script>
 import { constantRoutes } from '@/router'
-import { mapState } from 'vuex'
 
 // 隐藏侧边栏路由
 const hideList = ['/index', '/user/profile']
@@ -68,11 +67,9 @@ export default {
       })
       return topMenus
     },
-    ...mapState({
-      routers: state => {
-        return state.permission.topbarRoutes
-      }
-    }),
+    routers() {
+      return this.$store.getters.topbarRouters
+    },
     // 设置子路由
     childrenMenus() {
       const childrenMenus = []

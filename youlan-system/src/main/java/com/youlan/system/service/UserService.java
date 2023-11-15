@@ -65,19 +65,6 @@ public class UserService extends BaseServiceImpl<UserMapper, User> {
         return DBConstant.VAL_STATUS_DISABLED.equals(user.getStatus());
     }
 
-    /**
-     * 是否为超级管理员用户
-     */
-    public boolean isSuperAdminUser(User user) {
-        return isSuperAdminUser(user.getId());
-    }
-
-    /**
-     * 是否为超级管理员用户
-     */
-    public boolean isSuperAdminUser(Long userId) {
-        return SystemConstant.SUPER_ADMIN_USER_ID.equals(userId);
-    }
 
     /**
      * 生成加密后的用户密码

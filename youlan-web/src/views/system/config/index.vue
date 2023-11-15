@@ -123,9 +123,8 @@ export default {
       queryForm: {
         pageNum: 1,
         pageSize: 10,
-        configName: undefined,
-        configKey: undefined,
-        configType: undefined
+        title: null,
+        type: null
       },
       // 表单校验
       editRules: {

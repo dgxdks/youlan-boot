@@ -73,19 +73,23 @@ public class GeneratorConstant {
     /**
      * 字符类型
      */
-    public static final String[] COLUMN_TYPE_STR = {"char", "varchar", "nvarchar", "varchar2"};
+    public static final String[] COLUMN_TYPE_STR = {"char", "varchar", "enum", "set", "nchar", "nvarchar", "varchar2", "nvarchar2"};
     /**
      * 文本类型
      */
-    public static final String[] COLUMN_TYPE_TEXT = {"tinytext", "text", "mediumtext", "longtext"};
+    public static final String[] COLUMN_TYPE_TEXT = {"tinytext", "text", "mediumtext", "longtext", "binary", "varbinary", "blob",
+            "ntext", "image", "bytea"};
     /**
      * 时间类型
      */
-    public static final String[] COLUMN_TYPE_TIME = {"datetime", "time", "date", "timestamp"};
+    public static final String[] COLUMN_TYPE_TIME = {"datetime", "time", "date", "timestamp", "year", "interval",
+            "smalldatetime", "datetime2", "datetimeoffset"};
     /**
      * 数字类型
      */
-    public static final String[] COLUMN_TYPE_NUMBER = {"tinyint", "smallint", "mediumint", "int", "number", "integer", "bit", "bigint", "float", "double", "decimal"};
+    public static final String[] COLUMN_TYPE_NUMBER = {"tinyint", "smallint", "mediumint", "int", "number", "integer",
+            "bit", "bigint", "float", "double", "decimal", "numeric", "real", "double precision",
+            "smallserial", "serial", "bigserial", "money", "smallmoney"};
 
     // ******************** 模版文件类路径 ********************
     public static final String TPL_JAVA_CONTROLLER = "vm/java/controller.java.vm";

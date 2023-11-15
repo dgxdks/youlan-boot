@@ -6,7 +6,7 @@ import com.youlan.system.entity.Role;
 import com.youlan.system.entity.UserRole;
 import com.youlan.system.entity.dto.UserRolePageDTO;
 import com.youlan.system.entity.vo.UserVO;
-import com.youlan.system.permission.anno.DataPermission;
+import com.youlan.system.anno.DataPermission;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
