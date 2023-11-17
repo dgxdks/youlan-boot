@@ -64,7 +64,7 @@ public class SmsRecordController extends BaseController {
     @PostMapping("/getSmsRecordPageList")
     @OperationLog(name = "短信记录", type = OperationLogType.OPERATION_LOG_TYPE_PAGE_LIST)
     public ApiResult getSmsRecordPageList(@RequestBody SmsRecord smsRecord) {
-        List<String> sortColumns = List.of("create_time");
+        List<String> sortColumns = List.of("send_time");
         IPage<SmsRecord> pageResult = smsRecordService.loadPage(smsRecord, sortColumns, DBHelper.getQueryWrapper(smsRecord));
         return toSuccess(pageResult);
     }

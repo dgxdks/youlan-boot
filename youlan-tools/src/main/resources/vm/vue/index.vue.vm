@@ -145,27 +145,27 @@
         </el-form-item>
         #elseif($componentType == "DATE")
         <el-form-item label="$columnComment" prop="$javaField">
-          <base-date-range-picker v-model="queryForm.${column.javaField}" type="date" style="width: 240px" />
+          <base-date-range-picker v-model="editForm.${column.javaField}" type="date" style="width: 240px" />
         </el-form-item>
         #elseif($componentType == "DATE_RANGE")
         <el-form-item label="$columnComment" prop="$javaField">
-          <base-date-range-picker v-model="queryForm.${column.javaField}" style="width: 240px" />
+          <base-date-range-picker v-model="editForm.${column.javaField}" style="width: 240px" />
         </el-form-item>
         #elseif($componentType == "DATE_TIME")
         <el-form-item label="$columnComment" prop="$javaField">
-          <base-date-time-range-picker v-model="queryForm.${column.javaField}" type="date" style="width: 340px" />
+          <base-date-time-range-picker v-model="editForm.${column.javaField}" type="date" style="width: 340px" />
         </el-form-item>
         #elseif($componentType == "DATE_TIME_RANGE")
         <el-form-item label="$columnComment" prop="$javaField">
-          <base-date-time-range-picker v-model="queryForm.${column.javaField}" style="width: 340px" />
+          <base-date-time-range-picker v-model="editForm.${column.javaField}" style="width: 340px" />
         </el-form-item>
         #elseif($componentType == "TEXTAREA")
         <el-form-item label="$columnComment" prop="$javaField">
-          <el-input v-model="queryForm.${column.javaField}" type="textarea" placeholder="$columnComment" />
+          <el-input v-model="editForm.${column.javaField}" type="textarea" placeholder="$columnComment" />
         </el-form-item>
         #else
         <el-form-item label="$columnComment" prop="$javaField">
-          <el-input v-model="queryForm.${column.javaField}" placeholder="$columnComment" />
+          <el-input v-model="editForm.${column.javaField}" placeholder="$columnComment" />
         </el-form-item>
         #end
         #end

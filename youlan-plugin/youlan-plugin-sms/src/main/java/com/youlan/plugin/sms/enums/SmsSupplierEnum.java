@@ -5,6 +5,7 @@ import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.json.JSONConfig;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.youlan.plugin.sms.provider.config.YunJiConfig;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.dromara.sms4j.aliyun.config.AlibabaConfig;
@@ -43,7 +44,8 @@ public enum SmsSupplierEnum {
     UNISMS(SupplierConstant.UNISMS, "合一", UniConfig.class),
     YUNPIAN(SupplierConstant.YUNPIAN, "云片", YunpianConfig.class),
     ZHUTONG(SupplierConstant.ZHUTONG, "助通", ZhutongConfig.class),
-    LIANLU(SupplierConstant.LIANLU, "联麓", LianLuConfig.class);
+    LIANLU(SupplierConstant.LIANLU, "联麓", LianLuConfig.class),
+    YUNJI("yunji", "云极", YunJiConfig.class);
 
     private static final ConcurrentHashMap<String, SmsSupplierEnum> SMS_SUPPLIER_CACHE = createSmsSupplierCache();
     private final String code;

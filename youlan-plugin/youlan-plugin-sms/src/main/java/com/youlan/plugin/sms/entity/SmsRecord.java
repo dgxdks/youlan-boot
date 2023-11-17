@@ -4,9 +4,12 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.alibaba.excel.annotation.write.style.HeadFontStyle;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.youlan.common.db.anno.Query;
 import com.youlan.common.db.entity.dto.PageDTO;
+import com.youlan.common.db.enums.QueryType;
 import com.youlan.plugin.sms.constant.SmsConstant;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -14,6 +17,7 @@ import lombok.EqualsAndHashCode;
 import org.dromara.sms4j.api.entity.SmsResponse;
 
 import java.util.Date;
+import java.util.List;
 
 import static com.youlan.common.db.constant.DBConstant.DESC_ID;
 
@@ -29,18 +33,23 @@ public class SmsRecord extends PageDTO {
     @TableId(type = IdType.AUTO)
     private Long id;
 
+    @Query(type = QueryType.LIKE_RIGHT)
     @Schema(description = "配置标识")
     private String configId;
 
+    @Query(type = QueryType.LIKE_RIGHT)
     @Schema(description = "模版ID")
     private String templateId;
 
+    @Query
     @Schema(description = "短信类型(1-标准短信 2-异步短信 3-延迟短信)")
     private String smsType;
 
+    @Query
     @Schema(description = "发送类型(1-单个发送 2-批量发送)")
     private String sendType;
 
+    @Query
     @Schema(description = "发送状态(1-成功 2-失败)")
     private String sendStatus;
 
@@ -64,4 +73,9 @@ public class SmsRecord extends PageDTO {
 
     @Schema(description = "响应时间")
     private Date responseTime;
+
+    @Query(type = QueryType.BETWEEN, column = "send_time")
+    @Schema(description = "发送时间")
+    @TableField(exist = false)
+    private List<Date> sendTimeRange;
 }

@@ -62,7 +62,7 @@
       <table-toolbar :query-show.sync="queryShow" @refresh="getList" />
     </el-row>
 
-    <el-table ref="table" v-loading="tableLoading" :data="logList" :default-sort="defaultSort" @sort-change="handleSortChange" @selection-change="handleSelectionChange">
+    <el-table ref="table" v-loading="tableLoading" :data="recordList" :default-sort="defaultSort" @sort-change="handleSortChange" @selection-change="handleSelectionChange">
       <el-table-column align="center" type="selection" width="50" />
       <el-table-column show-overflow-tooltip align="center" label="平台名称" prop="platform" />
       <el-table-column show-overflow-tooltip align="center" label="对象ID" prop="objectId" />
@@ -194,7 +194,7 @@ export default {
     const defaultSort = { prop: 'createTime', order: 'descending' }
     return {
       // 表格数据
-      logList: [],
+      recordList: [],
       // 查询参数
       queryForm: {
         pageNum: 1,
@@ -231,7 +231,7 @@ export default {
     getList() {
       this.openTableLoading()
       getStorageRecordPageList(this.queryForm).then(res => {
-        this.logList = res.data.rows
+        this.recordList = res.data.rows
         this.pageTotal = res.data.total
         this.closeTableLoading()
       })
@@ -249,7 +249,7 @@ export default {
     // 删除按钮
     handleDelete(row) {
       const list = (row.id && [row.id]) || this.tableIds
-      this.$modal.confirm('是否确认删除日志编号为"' + list + '"的数据项？').then(function() {
+      this.$modal.confirm('是否确认删除存储编号为"' + list + '"的数据项？').then(function() {
         return removeStorageRecord({ list })
       }).then(() => {
         this.getList()

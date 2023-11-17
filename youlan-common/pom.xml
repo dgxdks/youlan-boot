@@ -21,6 +21,7 @@
         <module>youlan-common-captcha</module>
         <module>youlan-common-crypto</module>
         <module>youlan-common-region</module>
+        <module>youlan-common-http</module>
     </modules>
 
     <properties>

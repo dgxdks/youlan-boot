@@ -17,23 +17,23 @@ const fieldMapping = {
 /**
  * 静态数据库字典配置样例
  * web_common_status: [
- *   { type: 'web_common_status', value: '1', name: '正常' },
- *   { type: 'web_common_status', value: '2', name: '停用' }
+ *   { type: 'web_common_status', value: '1', name: '正常', ui: 'primary' },
+ *   { type: 'web_common_status', value: '2', name: '停用', ui: 'danger' }
  * ]
  */
 const staticDict = {
   sms_type: [
-    { type: 'sms_type', value: '1', name: '标准短信' },
-    { type: 'sms_type', value: '2', name: '异步短信' },
-    { type: 'sms_type', value: '3', name: '延迟短信' }
+    { type: 'sms_type', value: '1', ui: 'primary', name: '标准短信' },
+    { type: 'sms_type', value: '2', ui: 'info', name: '异步短信' },
+    { type: 'sms_type', value: '3', ui: 'warning', name: '延迟短信' }
   ],
   sms_send_type: [
-    { type: 'sms_send_type', value: '1', name: '单个发送' },
-    { type: 'sms_send_type', value: '2', name: '批量发送' }
+    { type: 'sms_send_type', value: '1', ui: 'primary', name: '单个发送' },
+    { type: 'sms_send_type', value: '2', ui: 'danger', name: '批量发送' }
   ],
   sms_send_status: [
-    { type: 'sms_send_status', value: '1', name: '成功', uiClass: 'success' },
-    { type: 'sms_send_status', value: '2', name: '失败', uiClass: 'danger' }
+    { type: 'sms_send_status', value: '1', name: '成功', ui: 'success' },
+    { type: 'sms_send_status', value: '2', name: '失败', ui: 'danger' }
   ]
 }
 // 管理数据字典加载状态

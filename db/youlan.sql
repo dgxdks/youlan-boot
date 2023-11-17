@@ -1056,4 +1056,5 @@ values ('sys_org_type', '平台', '0', '', '', '2', 100, 'admin', sysdate()),
        ('sms_supplier', '合一', 'unisms', '', '', '2', 100, 'admin', sysdate()),
        ('sms_supplier', '云片', 'yunpian', '', '', '2', 100, 'admin', sysdate()),
        ('sms_supplier', '助通', 'zhutong', '', '', '2', 100, 'admin', sysdate()),
-       ('sms_supplier', '联麓', 'lianlu', '', '', '2', 100, 'admin', sysdate());
+       ('sms_supplier', '联麓', 'lianlu', '', '', '2', 100, 'admin', sysdate()),
+       ('sms_supplier', '云极', 'yunji', '', '', '2', 100, 'admin', sysdate());

@@ -1,6 +1,6 @@
-// 存储记录分页
 import request from '@/framework/tools/request'
 
+// 存储记录分页
 export function getStorageRecordPageList(data) {
   return request({
     url: '/system/storageRecord/getStorageRecordPageList',

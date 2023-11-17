@@ -52,7 +52,7 @@ public class CaptchaController extends BaseController {
         CodeType codeType = smsCaptchaProperties.getCodeType();
         int codeLength = smsCaptchaProperties.getCodeLength();
         SmsCaptcha smsCaptcha = CaptchaHelper.createSmsCaptcha(codeTimeout, codeType, codeLength, captchaCode -> {
-            smsBizService.sendMessage("短信模版ID", dto.getMobile(), captchaCode);
+            smsBizService.sendMessage("system-captcha", dto.getMobile(), captchaCode);
         });
         return toSuccess(smsCaptcha);
     }

@@ -19,7 +19,6 @@ import BaseRowSplit3 from '@/framework/components/BaseRowSplit3.vue'
 import TableToolbar from '@/framework/components/TableToolbar.vue'
 import DictTag from '@/framework/components/DictTag.vue'
 import Pagination from '@/components/Pagination/index.vue'
-import Editor from '@/components/Editor/index.vue'
 import FileUpload from '@/framework/components/FileUpload.vue'
 import FileUploadDrag from '@/framework/components/FileUploadDrag.vue'
 import ImageUpload from '@/framework/components/ImageUpload.vue'
@@ -64,6 +63,7 @@ import BaseCopyIcon from '@/framework/components/BaseCopyIcon.vue'
 import BaseHighLightCode from '@/framework/components/BaseHighLightCode.vue'
 import DictCheckbox from '@/framework/components/DictCheckbox.vue'
 import BaseSvgIcon from '@/framework/components/BaseSvgIcon.vue'
+import Editor from '@/framework/components/Editor.vue'
 
 // 全局组件
 function mountComponent() {
