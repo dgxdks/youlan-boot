@@ -347,8 +347,8 @@ public class GeneratorUtil {
                 "import com.alibaba.excel.annotation.write.style.ColumnWidth;",
                 "import com.alibaba.excel.annotation.write.style.HeadFontStyle;",
                 "import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;",
-                "import com.youlan.system.anno.ExcelDictProperty;",
-                "import com.youlan.system.converter.DictConverter;"
+                "import com.youlan.common.excel.anno.ExcelDictProperty;",
+                "import com.youlan.common.excel.converter.DictConverter;"
         );
     }
 

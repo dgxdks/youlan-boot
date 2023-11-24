@@ -1,0 +1,77 @@
+package com.youlan.plugin.pay.client;
+
+import com.youlan.plugin.pay.entity.request.PayQueryRequest;
+import com.youlan.plugin.pay.entity.request.PayRequest;
+import com.youlan.plugin.pay.entity.request.RefundQueryRequest;
+import com.youlan.plugin.pay.entity.request.RefundRequest;
+import com.youlan.plugin.pay.entity.response.*;
+import com.youlan.plugin.pay.enums.TradeType;
+
+import java.util.Map;
+
+public interface PayClient {
+
+    /**
+     * 支付
+     *
+     * @param payRequest 支付请求
+     * @return 支付响应
+     */
+    PayResponse pay(PayRequest payRequest);
+
+    /**
+     * 支付查询
+     *
+     * @param payQueryRequest 支付查询请求
+     * @return 支付查询响应
+     */
+    PayQueryResponse payQuery(PayQueryRequest payQueryRequest);
+
+
+    /**
+     * 支付回调解析
+     *
+     * @param params 路径参数
+     * @param body   请求体
+     * @return 支付回调响应
+     */
+    PayNotifyResponse payNotifyParse(Map<String, String> params, String body);
+
+    /**
+     * 退款
+     *
+     * @param refundRequest 退款请求
+     * @return 退款请求
+     */
+    RefundResponse refund(RefundRequest refundRequest);
+
+    /**
+     * 退款查询
+     *
+     * @param refundQueryRequest 退款查询请求
+     * @return 退款查询响应
+     */
+    RefundQueryResponse refundQuery(RefundQueryRequest refundQueryRequest);
+
+    /**
+     * 退款回调解析
+     *
+     * @param params 路径参数
+     * @param body   请求体
+     * @return 退款响应
+     */
+    RefundNotifyResponse refundNotifyParse(Map<String, String> params, String body);
+
+    /**
+     * 初始化
+     */
+    void init();
+
+    /**
+     * 交易类型
+     *
+     * @return 交易类型
+     */
+    TradeType tradeType();
+
+}

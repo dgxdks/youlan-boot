@@ -89,6 +89,10 @@ module.exports = {
       .end()
       .use('svg-sprite-loader')
       .loader('svg-sprite-loader')
+      .tap((options) => ({
+        ...options,
+        plugins: [{ removeAttrs: { attrs: 'fill' }}]
+      }))
       .options({
         symbolId: 'icon-[name]'
       })

@@ -77,7 +77,7 @@
       <el-table-column align="center" label="创建时间" prop="createTime" width="160px" sortable="custom" />
       <el-table-column align="center" class-name="small-padding fixed-width" label="操作" width="160">
         <template slot-scope="scope">
-          <base-download-button v-has-perm="['system:storageRecord:downloadFile']" type="text" @click="handleDownload(scope.row)" />
+          <base-download-button v-has-perm="['system:storageRecord:load']" type="text" @click="handleDownload(scope.row)" />
           <base-remove-button v-has-perm="['system:storageRecord:remove']" type="text" @click="handleDelete(scope.row)" />
           <base-detail-button v-has-perm="['system:storageRecord:load']" type="text" @click="handleDetail(scope.row)" />
         </template>
@@ -281,7 +281,7 @@ export default {
     },
     // 下载文件
     handleDownload(row) {
-      this.$download.saveUrlAsFile(row.fullUrl).then(() => {
+      this.$download.saveUrlAsFile(row.url).then(() => {
       }).catch(() => {
         this.$modal.error('文件下载失败')
       })

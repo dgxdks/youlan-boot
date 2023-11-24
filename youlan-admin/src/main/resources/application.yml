@@ -50,6 +50,10 @@ youlan:
 --- # 公共模块
 youlan:
   common:
+    # 地理位置
+    region:
+      searcher-model: MEMORY
+      xdb-path: classpath:ip2region.xdb
     # 加密
     crypto:
       # AES秘钥(支持明文秘钥/系统路径文件[需指定绝对路径]/类路径文件[需添加classpath:前缀])
@@ -67,9 +71,6 @@ youlan:
 
 --- # 插件模块
 youlan:
-  region:
-    searcher-model: MEMORY
-    xdb-path: classpath:ip2region.xdb
   storage:
     # 文件存储根路径(默认/, 指定路径时必须以/结尾)
     storage-path: '~/youlan/'
@@ -82,6 +83,11 @@ youlan:
     is-print: false
     # 是否开启短信限制
     restricted: false
+  pay:
+    # 支付回调地址
+    pay-notify-url:
+    # 退款回调地址
+    refund-notify-url:
 
 # 服务配置
 server:
@@ -193,12 +199,15 @@ springdoc:
     # operation排序
     operations-sorter: alpha
   group-configs:
-    - group: '1.系统管理模块'
+    - group: '1.系统管理'
       paths-to-match: '/**'
       packages-to-scan: 'com.youlan.controller.system'
-    - group: '2.系统工具模块'
+    - group: '2.系统工具'
       paths-to-match: '/**'
       packages-to-scan: 'com.youlan.controller.tools'
+    - group: '3.支付管理'
+      paths-to-match: '/**'
+      packages-to-scan: 'com.youlan.controller.pay'
 
 # Knife4j配置
 knife4j:

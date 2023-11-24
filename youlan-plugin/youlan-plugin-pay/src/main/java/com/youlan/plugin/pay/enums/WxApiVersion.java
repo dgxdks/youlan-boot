@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum WxPayApiVersion {
+public enum WxApiVersion {
     V2,
     V3
 }

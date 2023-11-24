@@ -226,6 +226,8 @@ values (100, '系统管理', '1', 'system', 0, 'system', 'system', '', '1', '', 
        (200, '系统监控', '1', 'monitor', 0, 'monitor', 'monitor', '', '1', '', '2', 0, '1', '1', '', 100, 'admin', 0,
         '', sysdate(), null),
        (300, '系统工具', '1', 'tools', 0, 'tool', 'tools', '', '1', '', '2', 0, '1', '1', '', 100, 'admin', 0, '',
+        sysdate(), null),
+       (400, '支付管理', '1', 'pay', 0, 'pay', 'pay', '', '1', '', '2', 0, '1', '1', '', 100, 'admin', 0, '',
         sysdate(), null);
 -- 二级菜单(二级菜单ID从父级菜单ID开始递增)
 insert into t_sys_menu
@@ -258,7 +260,9 @@ values (101, '用户管理', '2', 'system:user', 100, 'user', 'user', '', '1', '
        (301, '系统接口', '2', 'tools:swagger', 300, 'swagger', 'http://localhost:4085/doc.html', '', '1', '', '1', 0,
         '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
        (302, '代码生成', '2', 'tools:generator', 300, 'code', 'generator', '', '1', 'tools/generator/index', '2', 0,
-        '1', '1', '', 100, 'admin', 0, '', sysdate(), null);
+        '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (401, '支付配置', '2', 'pay:config', 400, 'config', 'config', '', '1', 'pay/config/index', '2', 0, '1', '1', '',
+        100, 'admin', 0, '', sysdate(), null);
 
 -- 三级菜单(三级菜单ID从10000开始)
 insert into t_sys_menu
@@ -481,8 +485,23 @@ values (20750, '记录新增', '3', 'system:smsRecord:add', 10005, '', '', '', '
         '1', '', 100, 'admin', 0, '', sysdate(), null),
        (20754, '记录列表', '3', 'system:smsRecord:list', 10005, '', '', '', '1', '', '2', 5, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null);
+-- 支付配置按钮
+insert into t_sys_menu
+values (20800, '配置新增', '3', 'pay:payConfig:add', 401, '', '', '', '1', '', '2', 1, '1', '1',
+        '', 100, 'admin', 0, '', sysdate(), null),
+       (20801, '配置修改', '3', 'pay:payConfig:update', 401, '', '', '', '1', '', '2', 2, '1', '1',
+        '', 100, 'admin', 0, '', sysdate(), null),
+       (20802, '配置删除', '3', 'pay:payConfig:remove', 401, '', '', '', '1', '', '2', 3, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (20803, '配置详情', '3', 'pay:payConfig:load', 401, '', '', '', '1', '', '2', 4, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (20804, '配置列表', '3', 'pay:payConfig:list', 401, '', '', '', '1', '', '2', 5, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (20805, '配置导出', '3', 'pay:payConfig:export', 401, '', '', '', '1', '', '2', 6, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null);
 
--- 角色关联菜单表(一对多)
+-- ----------------------------
+-- 角色关联菜单表
 -- ----------------------------
 drop table if exists t_sys_role_menu;
 create table t_sys_role_menu
@@ -602,8 +621,15 @@ values (101, 100),
        (101, 20751),
        (101, 20752),
        (101, 20753),
-       (101, 20754);
-
+       (101, 20754),
+       (101, 400),
+       (101, 401),
+       (101, 20800),
+       (101, 20801),
+       (101, 20802),
+       (101, 20803),
+       (101, 20804),
+       (101, 20805);
 
 -- ----------------------------
 -- 系统操作日志表
@@ -817,7 +843,7 @@ create table t_sys_storage_config
 (
     id          bigint      not null auto_increment comment '主键ID',
     name        varchar(32) not null comment '存储配置名称',
-    type        varchar(32) not null comment '存储类型(字典类型[sys_storage_type])',
+    type        varchar(32) not null comment '存储类型(字典类型[storage_type])',
     platform    varchar(64) not null comment '存储平台名称',
     domain      varchar(255) default '' comment '存储域名',
     base_path   varchar(128) default '' comment '基础路径',
@@ -897,6 +923,59 @@ create table t_sms_record
 ) auto_increment = 100 comment '短信记录表';
 
 -- ----------------------------
+-- 支付配置表
+-- ----------------------------
+drop table if exists t_pay_config;
+create table t_pay_config
+(
+    id                bigint       not null auto_increment comment '主键ID',
+    name              varchar(32)  not null comment '配置名称',
+    type              varchar(16)  not null comment '支付类型(数据字典[pay_type])',
+    pay_notify_url    varchar(256) not null comment '支付回调地址',
+    refund_notify_url varchar(256) not null comment '退款回调地址',
+    params            longtext     not null comment '配置参数(JSON格式)',
+    status            varchar(4)   default '1' comment '状态(1-正常 2-停用)',
+    remark            varchar(128) default '' comment '备注',
+    create_id         bigint       default 0 comment '创建用户ID',
+    create_by         varchar(64)  default '' comment '创建用户',
+    update_id         bigint       default 0 comment '修改用户ID',
+    update_by         varchar(64)  default '' comment '修改用户',
+    create_time       datetime comment '创建时间',
+    update_time       datetime comment '修改时间',
+    primary key (id)
+) auto_increment = 100 comment '支付配置表';
+
+-- ----------------------------
+-- 支付订单表
+-- ----------------------------
+drop table if exists t_pay_order;
+create table t_pay_order
+(
+    id            bigint         not null comment '主键ID',
+    mch_order_id  varchar(64)    not null comment '商户订单号',
+    pay_status    varchar(4)   default '1' comment '支付状态(1-待支付 2-已支付 3-已失败 4-已关闭 5-已退款)',
+    trade_type    varchar(16)    not null comment '交易类型',
+    pay_amount    decimal(18, 2) not null comment '支付金额',
+    expire_time   datetime       not null comment '过期时间',
+    success_time  datetime comment '成功时间',
+    refund_amount decimal(18, 2) comment '退款金额',
+    config_id     bigint         not null comment '支付配置ID',
+    subject       varchar(32)  default '' comment '商品标题',
+    detail        varchar(128) default '' comment '商品详情',
+    notify_url    varchar(256) default '' comment '回调地址',
+    client_ip     varchar(16)  default '' comment '客户端IP',
+    client_id     varchar(64) comment '客户端ID',
+    remark        varchar(128) default '' comment '备注',
+    create_id     bigint       default 0 comment '创建用户ID',
+    create_by     varchar(64)  default '' comment '创建用户',
+    update_id     bigint       default 0 comment '修改用户ID',
+    update_by     varchar(64)  default '' comment '修改用户',
+    create_time   datetime comment '创建时间',
+    update_time   datetime comment '修改时间',
+    primary key (id)
+) auto_increment = 100 comment '支付订单表';
+
+-- ----------------------------
 -- 字典类型表
 -- ----------------------------
 drop table if exists t_sys_dict_type;
@@ -931,9 +1010,10 @@ values ('机构类型', 'sys_org_type', '机构类型列表', 100, 'admin', sysd
        ('登录日志状态', 'sys_login_log_status', '登录日志状态列表', 100, 'admin', sysdate()),
        ('数据权限范围', 'sys_data_scope', '数据权限范围列表', 100, 'admin', sysdate()),
        ('用户性别', 'sys_user_sex', '用户性别列表', 100, 'admin', sysdate()),
-       ('存储类型', 'sys_storage_type', '存储类型列表', 100, 'admin', sysdate()),
-       ('存储访问控制', 'sys_storage_acl_type', '存储访问控制类型', 100, 'admin', sysdate()),
-       ('短信厂商', 'sms_supplier', '短信厂商列表', 100, 'admin', sysdate());
+       ('存储类型', 'storage_type', '存储类型列表', 100, 'admin', sysdate()),
+       ('存储访问控制', 'storage_acl_type', '存储访问控制类型', 100, 'admin', sysdate()),
+       ('短信厂商', 'sms_supplier', '短信厂商列表', 100, 'admin', sysdate()),
+       ('支付类型', 'pay_type', '支付类型列表', 100, 'admin', sysdate());
 
 -- ----------------------------
 -- 字典值表
@@ -1033,18 +1113,18 @@ values ('sys_org_type', '平台', '0', '', '', '2', 100, 'admin', sysdate()),
        ('sys_user_sex', '男', '1', '', '', '1', 100, 'admin', sysdate()),
        ('sys_user_sex', '女', '2', '', '', '2', 100, 'admin', sysdate()),
        ('sys_user_sex', '未知', '3', '', '', '2', 100, 'admin', sysdate()),
-       ('sys_storage_type', '本地存储', 'LOCAL', '', '', '1', 100, 'admin', sysdate()),
-       ('sys_storage_type', '华为OBS', 'HUAWEI_OBS', '', '', '2', 100, 'admin', sysdate()),
-       ('sys_storage_type', '阿里云OSS', 'ALIYUN_OSS', '', '', '2', 100, 'admin', sysdate()),
-       ('sys_storage_type', '七牛KODO', 'QINIU_KODO', '', '', '2', 100, 'admin', sysdate()),
-       ('sys_storage_type', '腾讯COS', 'TENCENT_COS', '', '', '2', 100, 'admin', sysdate()),
-       ('sys_storage_type', '百度BOS', 'BAIDU_BOS', '', '', '2', 100, 'admin', sysdate()),
-       ('sys_storage_type', 'MINIO', 'MINIO', '', '', '2', 100, 'admin', sysdate()),
-       ('sys_storage_type', 'AmazonS3', 'AMAZON_S3', '', '', '2', 100, 'admin', sysdate()),
-       ('sys_storage_acl_type', '默认', 'default', '', '', '1', 100, 'admin', sysdate()),
-       ('sys_storage_acl_type', '私有', 'private', '', '', '2', 100, 'admin', sysdate()),
-       ('sys_storage_acl_type', '公共读', 'public-read', '', '', '2', 100, 'admin', sysdate()),
-       ('sys_storage_acl_type', '公共读写', 'public-read-write', '', '', '2', 100, 'admin', sysdate()),
+       ('storage_type', '本地存储', 'LOCAL', '', '', '1', 100, 'admin', sysdate()),
+       ('storage_type', '华为OBS', 'HUAWEI_OBS', '', '', '2', 100, 'admin', sysdate()),
+       ('storage_type', '阿里云OSS', 'ALIYUN_OSS', '', '', '2', 100, 'admin', sysdate()),
+       ('storage_type', '七牛KODO', 'QINIU_KODO', '', '', '2', 100, 'admin', sysdate()),
+       ('storage_type', '腾讯COS', 'TENCENT_COS', '', '', '2', 100, 'admin', sysdate()),
+       ('storage_type', '百度BOS', 'BAIDU_BOS', '', '', '2', 100, 'admin', sysdate()),
+       ('storage_type', 'MINIO', 'MINIO', '', '', '2', 100, 'admin', sysdate()),
+       ('storage_type', 'AmazonS3', 'AMAZON_S3', '', '', '2', 100, 'admin', sysdate()),
+       ('storage_acl_type', '默认', 'default', '', '', '1', 100, 'admin', sysdate()),
+       ('storage_acl_type', '私有', 'private', '', '', '2', 100, 'admin', sysdate()),
+       ('storage_acl_type', '公共读', 'public-read', '', '', '2', 100, 'admin', sysdate()),
+       ('storage_acl_type', '公共读写', 'public-read-write', '', '', '2', 100, 'admin', sysdate()),
        ('sms_supplier', '阿里', 'alibaba', '', '', '1', 100, 'admin', sysdate()),
        ('sms_supplier', '容连云', 'cloopen', '', '', '2', 100, 'admin', sysdate()),
        ('sms_supplier', '天翼云', 'ctyun', '', '', '2', 100, 'admin', sysdate()),
@@ -1057,4 +1137,6 @@ values ('sys_org_type', '平台', '0', '', '', '2', 100, 'admin', sysdate()),
        ('sms_supplier', '云片', 'yunpian', '', '', '2', 100, 'admin', sysdate()),
        ('sms_supplier', '助通', 'zhutong', '', '', '2', 100, 'admin', sysdate()),
        ('sms_supplier', '联麓', 'lianlu', '', '', '2', 100, 'admin', sysdate()),
-       ('sms_supplier', '云极', 'yunji', '', '', '2', 100, 'admin', sysdate());
+       ('sms_supplier', '云极', 'yunji', '', '', '2', 100, 'admin', sysdate()),
+       ('pay_type', '微信', 'WECHAT', '', '', '1', 100, 'admin', sysdate()),
+       ('pay_type', '支付宝', 'ALIPAY', '', '', '2', 100, 'admin', sysdate());

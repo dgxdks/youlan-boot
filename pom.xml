@@ -14,6 +14,7 @@
         <module>youlan-admin</module>
         <module>youlan-plugin</module>
         <module>youlan-tools</module>
+        <module>youlan-common/youlan-common-api</module>
     </modules>
 
     <properties>
@@ -232,6 +233,11 @@
             <dependency>
                 <groupId>com.youlan</groupId>
                 <artifactId>youlan-common-crypto</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.youlan</groupId>
+                <artifactId>youlan-common-api</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>

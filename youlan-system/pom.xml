@@ -41,6 +41,10 @@
             <artifactId>youlan-common-region</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.youlan</groupId>
+            <artifactId>youlan-common-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>

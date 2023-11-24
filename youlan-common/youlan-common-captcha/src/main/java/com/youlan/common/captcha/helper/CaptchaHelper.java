@@ -8,7 +8,6 @@ import cn.hutool.captcha.generator.RandomGenerator;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.math.Calculator;
 import cn.hutool.core.util.IdUtil;
-import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.youlan.common.captcha.config.ImageCaptchaProperties;
@@ -20,7 +19,6 @@ import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.redis.helper.RedisHelper;
 
 import java.time.Duration;
-import java.util.function.Consumer;
 
 import static com.youlan.common.captcha.constant.CaptchaConstant.REDIS_PREFIX_CAPTCHA_DEFAULT;
 
@@ -62,34 +60,30 @@ public class CaptchaHelper {
     /**
      * 创建短信验证码
      *
-     * @param codeTimeout  验证码超时时间
-     * @param codeLength   验证码长度
-     * @param codeCallback 验证码回调
+     * @param codeTimeout 验证码超时时间
+     * @param codeLength  验证码长度
      */
 
-    public static SmsCaptcha createSmsCaptcha(int codeTimeout, int codeLength, Consumer<String> codeCallback) {
-        return createSmsCaptcha(codeTimeout, CodeType.NUMBER, codeLength, codeCallback);
+    public static SmsCaptcha createSmsCaptcha(int codeTimeout, int codeLength) {
+        return createSmsCaptcha(codeTimeout, CodeType.NUMBER, codeLength);
     }
 
     /**
      * 创建短信验证码
      *
-     * @param codeTimeout  验证码超时时间
-     * @param codeType     验证码类型
-     * @param codeLength   验证码长度
-     * @param codeCallback 验证码回调
+     * @param codeTimeout 验证码超时时间
+     * @param codeType    验证码类型
+     * @param codeLength  验证码长度
      */
-    public static SmsCaptcha createSmsCaptcha(int codeTimeout, CodeType codeType, int codeLength, Consumer<String> codeCallback) {
+    public static SmsCaptcha createSmsCaptcha(int codeTimeout, CodeType codeType, int codeLength) {
         CodeGenerator codeGenerator = createCodeGenerator(codeType, codeLength);
         String captchaCode = codeGenerator.generate();
         String captchaId = IdUtil.fastUUID();
         createStringCaptcha(captchaId, captchaCode, codeTimeout);
-        if (ObjectUtil.isNotNull(codeCallback)) {
-            codeCallback.accept(captchaCode);
-        }
         return new SmsCaptcha()
                 .setCaptchaId(captchaId)
-                .setCodeTimeout(codeTimeout);
+                .setCodeTimeout(codeTimeout)
+                .setCaptchaCode(captchaCode);
     }
 
     /**

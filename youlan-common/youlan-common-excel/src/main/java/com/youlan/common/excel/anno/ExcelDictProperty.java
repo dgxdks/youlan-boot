@@ -1,4 +1,4 @@
-package com.youlan.system.anno;
+package com.youlan.common.excel.anno;
 
 import cn.hutool.core.text.StrPool;
 import cn.hutool.core.util.StrUtil;

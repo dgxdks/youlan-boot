@@ -20,7 +20,7 @@
         />
       </el-form-item>
       <el-form-item label="存储类型" prop="type">
-        <dict-select v-model="queryForm.type" dict-type="sys_storage_type" style="width: 240px" placeholder="存储类型" clearable />
+        <dict-select v-model="queryForm.type" dict-type="storage_type" style="width: 240px" placeholder="存储类型" clearable />
       </el-form-item>
       <el-form-item>
         <base-search-button @click="handleQuery" />
@@ -54,7 +54,7 @@
       <el-table-column show-overflow-tooltip align="center" label="平台名称" prop="platform" />
       <el-table-column show-overflow-tooltip align="center" label="存储类型" prop="type">
         <template slot-scope="scope">
-          <dict-tag v-model="scope.row.type" dict-type="sys_storage_type" />
+          <dict-tag v-model="scope.row.type" dict-type="storage_type" />
         </template>
       </el-table-column>
       <el-table-column align="center" label="是否默认" prop="isDefault">
@@ -94,7 +94,7 @@
           </el-form-item>
           <el-form-item label="存储类型" prop="type">
             <base-form-label slot="label" content="支持本地存储、各家云存储、AmazonS3协议" label="存储类型" />
-            <dict-select v-model="editForm.type" placeholder="请选择存储类型" dict-type="sys_storage_type" />
+            <dict-select v-model="editForm.type" placeholder="请选择存储类型" dict-type="storage_type" />
           </el-form-item>
           <el-form-item v-if="!!editForm.id" label="平台名称" prop="platform">
             <base-form-label slot="label" content="新增时会自动生成唯一平台名称" label="平台名称" />
@@ -130,7 +130,7 @@
           </el-form-item>
           <el-form-item label="访问控制" prop="fileAcl">
             <base-form-label slot="label" content="云存储中对应的ACL" label="访问控制" />
-            <dict-select v-model="editForm.fileAcl" :disabled="isLocalType" dict-type="sys_storage_acl_type" />
+            <dict-select v-model="editForm.fileAcl" :disabled="isLocalType" dict-type="storage_acl_type" />
           </el-form-item>
           <el-form-item label="是否HTTPS" prop="isHttps">
             <dict-radio v-model="editForm.isHttps" dict-type="db_yes_no" />

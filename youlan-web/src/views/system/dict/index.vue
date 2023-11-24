@@ -176,7 +176,7 @@ export default {
       const id = row.id || this.tableIds[0]
       loadDictType({ id }).then(res => {
         this.openEdit('修改字典类型')
-        this.editForm = res
+        this.editForm = res.data
       })
     },
     // 表单重置

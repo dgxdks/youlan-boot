@@ -1,4 +1,4 @@
-package com.youlan.system.converter;
+package com.youlan.common.excel.converter;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.convert.Convert;
@@ -8,9 +8,8 @@ import com.alibaba.excel.metadata.GlobalConfiguration;
 import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
-import com.youlan.common.excel.converter.AbstractConverter;
-import com.youlan.system.anno.ExcelDictProperty;
-import com.youlan.system.service.biz.DictBizService;
+import com.youlan.common.api.DictApi;
+import com.youlan.common.excel.anno.ExcelDictProperty;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,9 +26,9 @@ public class DictConverter extends AbstractConverter {
             return null;
         }
         final ExcelDictProperty excelDictProperty = getFieldAnnotation(contentProperty, ExcelDictProperty.class);
-        DictBizService dictBizService = SpringUtil.getBean(DictBizService.class);
+        DictApi dictApi = SpringUtil.getBean(DictApi.class);
         String typeKey = excelDictProperty.value();
-        Map<String, String> dictDataNameMap = CONVERT_TO_JAVA_CACHE.computeIfAbsent(typeKey, key -> dictBizService.getDictDataNameMap(typeKey));
+        Map<String, String> dictDataNameMap = CONVERT_TO_JAVA_CACHE.computeIfAbsent(typeKey, key -> dictApi.getDictDataNameMap(typeKey));
         if (CollectionUtil.isEmpty(dictDataNameMap)) {
             return null;
         }
@@ -43,9 +42,9 @@ public class DictConverter extends AbstractConverter {
             return emptyWriteCellData();
         }
         final ExcelDictProperty excelDictProperty = getFieldAnnotation(contentProperty, ExcelDictProperty.class);
-        DictBizService dictBizService = SpringUtil.getBean(DictBizService.class);
+        DictApi dictApi = SpringUtil.getBean(DictApi.class);
         String typeKey = excelDictProperty.value();
-        Map<String, String> dictDataValueMap = CONVERT_TO_EXCEL_CACHE.computeIfAbsent(typeKey, dictBizService::getDictDataValueMap);
+        Map<String, String> dictDataValueMap = CONVERT_TO_EXCEL_CACHE.computeIfAbsent(typeKey, dictApi::getDictDataValueMap);
         if (CollectionUtil.isEmpty(dictDataValueMap)) {
             return emptyWriteCellData();
         }

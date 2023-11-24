@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -38,32 +37,6 @@ public class DictBizService {
     public List<DictData> getDict(String typeKey) {
         return dictDataService.loadMore(DictData::getTypeKey, typeKey);
     }
-
-
-    /**
-     * 获取数据字典值键值和名称的映射
-     */
-    public Map<String, String> getDictDataValueMap(String typeKey) {
-        List<DictData> dictDataList = getDict(typeKey);
-        if (CollectionUtil.isEmpty(dictDataList)) {
-            return new HashMap<>();
-        }
-        return dictDataList.stream()
-                .collect(Collectors.toMap(DictData::getDataValue, DictData::getDataName));
-    }
-
-    /**
-     * 获取数据字典值名称和键值的映射
-     */
-    public Map<String, String> getDictDataNameMap(String typeKey) {
-        List<DictData> dictDataList = getDict(typeKey);
-        if (CollectionUtil.isEmpty(dictDataList)) {
-            return new HashMap<>();
-        }
-        return dictDataList.stream()
-                .collect(Collectors.toMap(DictData::getDataName, DictData::getDataValue));
-    }
-
 
     /**
      * 新增字典值
