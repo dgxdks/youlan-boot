@@ -189,7 +189,7 @@ public class DictBizService {
      * 设置所有字典缓存
      */
     public void setDictCache() {
-        List<DictData> cacheList = dictDataService.getBaseMapper().getCacheList();
+        List<DictData> cacheList = dictDataService.getBaseMapper().getDictList();
         Map<String, List<DictData>> dictDataGroup = cacheList.stream()
                 .collect(Collectors.groupingBy(DictData::getTypeKey));
         dictDataGroup.forEach(this::setDictCache);

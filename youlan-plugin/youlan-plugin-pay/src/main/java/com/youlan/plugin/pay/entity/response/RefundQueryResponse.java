@@ -1,5 +1,6 @@
 package com.youlan.plugin.pay.entity.response;
 
+import com.youlan.plugin.pay.enums.RefundStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -11,7 +12,7 @@ import lombok.experimental.Accessors;
 public class RefundQueryResponse extends BaseResponse {
 
     @Schema(description = "退款状态")
-    private String refundStatus;
+    private RefundStatus refundStatus;
 
     @Schema(description = "外部退款订单号")
     private String outRefundNo;

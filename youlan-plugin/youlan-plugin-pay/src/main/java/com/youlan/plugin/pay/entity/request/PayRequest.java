@@ -6,6 +6,7 @@ import cn.hutool.core.util.StrUtil;
 import com.youlan.common.core.exception.BizRuntimeException;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
 
@@ -17,6 +18,7 @@ import java.util.Date;
 import java.util.Map;
 
 @Data
+@Accessors(chain = true)
 public class PayRequest {
 
     @NotBlank(message = "外部订单号不能为空")

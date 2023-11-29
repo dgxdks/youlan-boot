@@ -231,37 +231,45 @@ values (100, '系统管理', '1', 'system', 0, 'system', 'system', '', '1', '', 
         sysdate(), null);
 -- 二级菜单(二级菜单ID从父级菜单ID开始递增)
 insert into t_sys_menu
-values (101, '用户管理', '2', 'system:user', 100, 'user', 'user', '', '1', 'system/user/index', '2', 0, '1',
+values (101, '用户管理', '2', 'system:user', 100, 'user', 'user', '', '1', 'system/user/index', '2', 0, '1', '1', '',
+        100, 'admin', 0, '', sysdate(), null),
+       (102, '角色管理', '2', 'system:role', 100, 'peoples', 'role', '', '1', 'system/role/index', '2', 0, '1', '1', '',
+        100, 'admin', 0, '', sysdate(), null),
+       (103, '菜单管理', '2', 'system:menu', 100, 'tree-table', 'menu', '', '1', 'system/menu/index', '2', 0, '1', '1',
+        '', 100, 'admin', 0, '', sysdate(), null),
+       (104, '部门管理', '2', 'system:dept', 100, 'tree', 'dept', '', '1', 'system/dept/index', '2', 0, '1', '1', '',
+        100, 'admin', 0, '', sysdate(), null),
+       (105, '岗位管理', '2', 'system:post', 100, 'post', 'post', '', '1', 'system/post/index', '2', 0, '1', '1', '',
+        100, 'admin', 0, '', sysdate(), null),
+       (106, '字典管理', '2', 'system:dict', 100, 'dict', 'dict', '', '1', 'system/dict/index', '2', 0, '1', '1', '',
+        100, 'admin', 0, '', sysdate(), null),
+       (107, '系统参数', '2', 'system:config', 100, 'config', 'config', '', '1', 'system/config/index', '2', 0, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (102, '角色管理', '2', 'system:role', 100, 'peoples', 'role', '', '1', 'system/role/index', '2', 0, '1',
+       (108, '通知公告', '2', 'system:notice', 100, 'message', 'notice', '', '1', 'system/notice/index', '2', 0, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (103, '菜单管理', '2', 'system:menu', 100, 'tree-table', 'menu', '', '1', 'system/menu/index', '2', 0,
-        '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (104, '部门管理', '2', 'system:dept', 100, 'tree', 'dept', '', '1', 'system/dept/index', '2', 0, '1',
-        '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (105, '岗位管理', '2', 'system:post', 100, 'post', 'post', '', '1', 'system/post/index', '2', 0, '1',
-        '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (106, '字典管理', '2', 'system:dict', 100, 'dict', 'dict', '', '1', 'system/dict/index', '2', 0, '1',
-        '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (107, '系统参数', '2', 'system:config', 100, 'config', 'config', '', '1', 'system/config/index', '2', 0,
-        '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (108, '通知公告', '2', 'system:notice', 100, 'message', 'notice', '', '1', 'system/notice/index', '2',
-        0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
        (109, '日志管理', '1', 'system:log', 100, 'log', 'log', '', '2', '', '2', 0, '1', '1', '', 100, 'admin', 0, '',
         sysdate(), null),
        (110, '存储管理', '1', 'system:storage', 100, 'storage', 'storage', '', '2', '', '2', 0, '1', '1', '', 100,
         'admin', 0, '', sysdate(), null),
        (111, '短信管理', '1', 'system:sms', 100, 'sms', 'sms', '', '2', '', '2', 0, '1', '1', '', 100, 'admin', 0, '',
         sysdate(), null),
-       (201, '在线用户', '2', 'monitor:onlineUser', 200, 'online', 'onlineUser' '', '', '1',
-        'monitor/online/index', '2', 0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (202, '缓存监控', '2', 'monitor:cacheMonitor', 200, 'redis', 'cacheMonitor' '', '', '1',
-        'monitor/cache/index', '2', 0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (201, '在线用户', '2', 'monitor:onlineUser', 200, 'online', 'onlineUser' '', '', '1', 'monitor/online/index',
+        '2', 0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (202, '缓存监控', '2', 'monitor:cacheMonitor', 200, 'redis', 'cacheMonitor' '', '', '1', 'monitor/cache/index',
+        '2', 0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
        (301, '系统接口', '2', 'tools:swagger', 300, 'swagger', 'http://localhost:4085/doc.html', '', '1', '', '1', 0,
         '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
        (302, '代码生成', '2', 'tools:generator', 300, 'code', 'generator', '', '1', 'tools/generator/index', '2', 0,
         '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
        (401, '支付配置', '2', 'pay:config', 400, 'config', 'config', '', '1', 'pay/config/index', '2', 0, '1', '1', '',
+        100, 'admin', 0, '', sysdate(), null),
+       (402, '支付通道', '2', 'pay:channel', 400, 'channel', 'channel', '', '1', 'pay/channel/index', '2', 0, '1', '1',
+        '', 100, 'admin', 0, '', sysdate(), null),
+       (403, '支付订单', '2', 'pay:order', 400, 'pay-order', 'order', '', '1', 'pay/order/index', '2', 0, '1', '1', '',
+        100, 'admin', 0, '', sysdate(), null),
+       (404, '退款订单', '2', 'pay:refund', 400, 'refund', 'refund', '', '1', 'pay/refund/index', '2', 0, '1', '1', '',
+        100, 'admin', 0, '', sysdate(), null),
+       (405, '回调通知', '2', 'pay:notify', 400, 'notify', 'notify', '', '1', 'pay/notify/index', '2', 0, '1', '1', '',
         100, 'admin', 0, '', sysdate(), null);
 
 -- 三级菜单(三级菜单ID从10000开始)
@@ -629,8 +637,11 @@ values (101, 100),
        (101, 20802),
        (101, 20803),
        (101, 20804),
-       (101, 20805);
-
+       (101, 20805),
+       (101, 402),
+       (101, 403),
+       (101, 404),
+       (101, 405);
 -- ----------------------------
 -- 系统操作日志表
 -- ----------------------------
@@ -928,12 +939,32 @@ create table t_sms_record
 drop table if exists t_pay_config;
 create table t_pay_config
 (
+    id          bigint      not null auto_increment comment '主键ID',
+    name        varchar(32) not null comment '配置名称',
+    type        varchar(16) not null comment '支付类型(数据字典[pay_type])',
+    params      longtext    not null comment '配置参数(JSON格式)',
+    status      varchar(4)   default '1' comment '状态(1-正常 2-停用)',
+    remark      varchar(128) default '' comment '备注',
+    create_id   bigint       default 0 comment '创建用户ID',
+    create_by   varchar(64)  default '' comment '创建用户',
+    update_id   bigint       default 0 comment '修改用户ID',
+    update_by   varchar(64)  default '' comment '修改用户',
+    create_time datetime comment '创建时间',
+    update_time datetime comment '修改时间',
+    primary key (id)
+) auto_increment = 100 comment '支付配置表';
+
+-- ----------------------------
+-- 支付通道表
+-- ----------------------------
+drop table if exists t_pay_channel;
+create table t_pay_channel
+(
     id                bigint       not null auto_increment comment '主键ID',
-    name              varchar(32)  not null comment '配置名称',
+    name              varchar(32)  not null comment '通道名称',
     type              varchar(16)  not null comment '支付类型(数据字典[pay_type])',
     pay_notify_url    varchar(256) not null comment '支付回调地址',
     refund_notify_url varchar(256) not null comment '退款回调地址',
-    params            longtext     not null comment '配置参数(JSON格式)',
     status            varchar(4)   default '1' comment '状态(1-正常 2-停用)',
     remark            varchar(128) default '' comment '备注',
     create_id         bigint       default 0 comment '创建用户ID',
@@ -943,7 +974,20 @@ create table t_pay_config
     create_time       datetime comment '创建时间',
     update_time       datetime comment '修改时间',
     primary key (id)
-) auto_increment = 100 comment '支付配置表';
+) auto_increment = 100 comment '支付通道表';
+
+-- ----------------------------
+-- 支付通道配置表
+-- ----------------------------
+drop table if exists t_pay_channel_config;
+create table t_pay_channel_config
+(
+    id         bigint      not null auto_increment comment '主键ID',
+    channel_id bigint      not null comment '支付通道ID',
+    config_id  bigint      not null comment '支付配置ID',
+    trade_type varchar(16) not null comment '交易类型(数据字典[trade_type])',
+    primary key (id)
+) auto_increment = 100 comment '支付通道配置表';
 
 -- ----------------------------
 -- 支付订单表
@@ -953,27 +997,58 @@ create table t_pay_order
 (
     id            bigint         not null comment '主键ID',
     mch_order_id  varchar(64)    not null comment '商户订单号',
-    pay_status    varchar(4)   default '1' comment '支付状态(1-待支付 2-已支付 3-已失败 4-已关闭 5-已退款)',
-    trade_type    varchar(16)    not null comment '交易类型',
+    out_trade_no  varchar(64) comment '外部交易订单号',
+    trade_no      varchar(64) comment '交易订单号',
+    pay_status    varchar(4)     default '1' comment '支付状态(1-待支付 2-已支付 3-已关闭 4-已退款)',
+    trade_type    varchar(16) comment '交易类型',
     pay_amount    decimal(18, 2) not null comment '支付金额',
     expire_time   datetime       not null comment '过期时间',
     success_time  datetime comment '成功时间',
-    refund_amount decimal(18, 2) comment '退款金额',
-    config_id     bigint         not null comment '支付配置ID',
-    subject       varchar(32)  default '' comment '商品标题',
-    detail        varchar(128) default '' comment '商品详情',
-    notify_url    varchar(256) default '' comment '回调地址',
-    client_ip     varchar(16)  default '' comment '客户端IP',
+    refund_amount decimal(18, 2) default 0 comment '退款金额',
+    channel_id    bigint         not null comment '支付通道ID',
+    config_id     bigint comment '支付配置ID',
+    record_id     bigint comment '支付记录ID',
+    subject       varchar(32)    default '' comment '商品标题',
+    detail        varchar(128)   default '' comment '商品详情',
+    notify_url    varchar(256)   default '' comment '回调地址',
+    client_ip     varchar(16)    default '' comment '客户端IP',
     client_id     varchar(64) comment '客户端ID',
-    remark        varchar(128) default '' comment '备注',
-    create_id     bigint       default 0 comment '创建用户ID',
-    create_by     varchar(64)  default '' comment '创建用户',
-    update_id     bigint       default 0 comment '修改用户ID',
-    update_by     varchar(64)  default '' comment '修改用户',
+    remark        varchar(128)   default '' comment '备注',
+    create_id     bigint         default 0 comment '创建用户ID',
+    create_by     varchar(64)    default '' comment '创建用户',
+    update_id     bigint         default 0 comment '修改用户ID',
+    update_by     varchar(64)    default '' comment '修改用户',
     create_time   datetime comment '创建时间',
     update_time   datetime comment '修改时间',
     primary key (id)
 ) auto_increment = 100 comment '支付订单表';
+
+-- ----------------------------
+-- 支付记录表
+-- ----------------------------
+drop table if exists t_pay_record;
+create table t_pay_record
+(
+    id              bigint      not null comment '主键ID',
+    out_trade_no    varchar(64) not null comment '外部交易订单号',
+    order_id        bigint      not null comment '支付订单ID',
+    config_id       bigint      not null comment '支付配置ID',
+    trade_type      varchar(16) not null comment '交易类型',
+    client_ip       varchar(16) default '' comment '客户端IP',
+    pay_status      varchar(4)  default '1' comment '支付状态(1-待支付 2-已支付 3-已关闭 4-已退款)',
+    extra_params    longtext comment '额外参数(JSON格式)',
+    error_code      varchar(32) comment '错误码',
+    error_msg       varchar(128) comment '错误信息',
+    raw_data        longtext comment '原始数据',
+    notify_raw_data longtext comment '回调原始数据',
+    create_id       bigint      default 0 comment '创建用户ID',
+    create_by       varchar(64) default '' comment '创建用户',
+    update_id       bigint      default 0 comment '修改用户ID',
+    update_by       varchar(64) default '' comment '修改用户',
+    create_time     datetime comment '创建时间',
+    update_time     datetime comment '修改时间',
+    primary key (id)
+) auto_increment = 100 comment '支付记录表';
 
 -- ----------------------------
 -- 字典类型表

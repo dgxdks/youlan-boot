@@ -1,12 +1,66 @@
 package com.youlan.plugin.pay.service;
 
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.ObjectUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.youlan.common.core.exception.BizRuntimeException;
+import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.db.service.BaseServiceImpl;
 import com.youlan.plugin.pay.entity.PayOrder;
+import com.youlan.plugin.pay.enums.PayStatus;
 import com.youlan.plugin.pay.mapper.PayOrderMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
+@Slf4j
 @Service
 public class PayOrderService extends BaseServiceImpl<PayOrderMapper, PayOrder> {
+
+    /**
+     * 更新支付订单为已支付状态
+     *
+     * @param id             支付订单ID
+     * @param updatePayOrder 支付订单更新值
+     */
+    public void updatePayOrderSuccess(Long id, PayOrder updatePayOrder) {
+        PayOrder payOrder = this.loadPayOrderIfExists(id);
+        PayStatus payStatus = payOrder.getPayStatus();
+        switch (payStatus) {
+            case SUCCESS:
+                log.info("支付订单是已支付状态，无需更新：{id: {}}", id);
+                return;
+            case WAITING:
+                break;
+            default:
+                throw new BizRuntimeException(ApiResultCode.E0009);
+        }
+        if (ObjectUtil.isNull(updatePayOrder)) {
+            updatePayOrder = new PayOrder();
+        }
+        updatePayOrder.setPayStatus(PayStatus.SUCCESS);
+        boolean update = this.updateByIdAndPayStatus(id, payOrder.getPayStatus(), updatePayOrder);
+        if (!update) {
+            throw new BizRuntimeException(ApiResultCode.E0009);
+        }
+    }
+
+    /**
+     * 根据支付订单ID和支付状态更新支付订单
+     *
+     * @param id        支付订单ID
+     * @param payStatus 支付状态
+     * @param payOrder  支付订单更新值
+     * @return 是否更新成功
+     */
+    public boolean updateByIdAndPayStatus(Long id, PayStatus payStatus, PayOrder payOrder) {
+        LambdaQueryWrapper<PayOrder> queryWrapper = Wrappers.<PayOrder>lambdaQuery()
+                .eq(PayOrder::getId, id)
+                .eq(PayOrder::getPayStatus, payStatus);
+        return this.update(payOrder, queryWrapper);
+    }
 
     /**
      * 根据商户订单号获取支付订单
@@ -15,8 +69,23 @@ public class PayOrderService extends BaseServiceImpl<PayOrderMapper, PayOrder> {
      * @return 支付订单
      */
     public PayOrder loadPayOrderByMchOrderId(String mchOrderId) {
-        return this.lambdaQuery()
+        List<PayOrder> payOrderList = this.lambdaQuery()
                 .eq(PayOrder::getMchOrderId, mchOrderId)
-                .one();
+                .list();
+        return CollectionUtil.getFirst(payOrderList);
+    }
+
+    /**
+     * 如果存在获取支付订单
+     *
+     * @param id 订单ID
+     * @return 支付订单
+     */
+    public PayOrder loadPayOrderIfExists(Long id) {
+        PayOrder payOrder = this.getById(id);
+        if (ObjectUtil.isNull(payOrder)) {
+            throw new BizRuntimeException(ApiResultCode.E0007);
+        }
+        return payOrder;
     }
 }

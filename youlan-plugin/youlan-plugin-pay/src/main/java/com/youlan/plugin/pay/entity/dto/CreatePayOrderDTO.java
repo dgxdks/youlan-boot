@@ -1,6 +1,5 @@
 package com.youlan.plugin.pay.entity.dto;
 
-import com.youlan.plugin.pay.enums.TradeType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -9,22 +8,16 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
 @Accessors(chain = true)
 public class CreatePayOrderDTO {
 
-    @NotNull(message = "支付配置ID不能为空")
-    @Schema(description = "支付配置ID")
-    private Long configId;
-
-    @NotNull(message = "交易类型不能为空")
-    private TradeType tradeType;
-
-    @NotBlank(message = "客户端IP不能为空")
-    @Schema(description = "客户端IP")
-    private String clientIp;
+    @NotNull(message = "支付通道ID不能为空")
+    @Schema(description = "支付通道ID")
+    private Long channelId;
 
     @NotBlank(message = "商户订单号不能为空")
     @Length(max = 64, message = "商户订单号不能超过64个长度")
@@ -42,7 +35,7 @@ public class CreatePayOrderDTO {
     @NotNull(message = "支付金额不能为空")
     @Schema(description = "支付金额")
     @DecimalMin(value = "0", inclusive = false, message = "支付金额必须大于零")
-    private String payAmount;
+    private BigDecimal payAmount;
 
     @NotNull(message = "过期时间不能为空")
     @Schema(description = "过期时间")

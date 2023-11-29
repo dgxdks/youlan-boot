@@ -12,11 +12,8 @@ import com.github.binarywang.wxpay.constant.WxPayConstants;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.core.helper.FileHelper;
-import com.youlan.plugin.pay.constant.PayConstant;
 import com.youlan.plugin.pay.entity.response.*;
-import com.youlan.plugin.pay.enums.PayStatus;
-import com.youlan.plugin.pay.enums.TradeType;
-import com.youlan.plugin.pay.helper.MoneyHelper;
+import com.youlan.plugin.pay.enums.*;
 import com.youlan.plugin.pay.params.WxPayParams;
 
 import java.math.BigDecimal;
@@ -24,7 +21,7 @@ import java.util.Date;
 
 import static cn.hutool.core.date.DatePattern.PURE_DATETIME_PATTERN;
 import static cn.hutool.core.date.DatePattern.UTC_WITH_XXX_OFFSET_PATTERN;
-import static com.youlan.plugin.pay.constant.PayConstant.*;
+import static com.youlan.plugin.pay.constant.PayConstant.CURRENCY_CNY;
 
 public class WxPayUtil {
 
@@ -38,8 +35,7 @@ public class WxPayUtil {
      * @param successTime  成功时间
      * @return 退款通知响应
      */
-    public static RefundNotifyResponse createRefundNotifyResponse(String refundStatus, String outRefundNo, String refundNo,
-                                                                  Object rawData, Date successTime) {
+    public static RefundNotifyResponse createRefundNotifyResponse(RefundStatus refundStatus, String outRefundNo, String refundNo, Object rawData, Date successTime) {
         return (RefundNotifyResponse) new RefundNotifyResponse()
                 .setRefundStatus(refundStatus)
                 .setOutRefundNo(outRefundNo)
@@ -58,8 +54,7 @@ public class WxPayUtil {
      * @param successTime  成功时间
      * @return 退款查询响应
      */
-    public static RefundQueryResponse createRefundQueryResponse(String refundStatus, String outRefundNo, String refundNo,
-                                                                Object rawData, Date successTime) {
+    public static RefundQueryResponse createRefundQueryResponse(RefundStatus refundStatus, String outRefundNo, String refundNo, Object rawData, Date successTime) {
         return (RefundQueryResponse) new RefundQueryResponse()
                 .setRefundStatus(refundStatus)
                 .setOutRefundNo(outRefundNo)
@@ -69,22 +64,21 @@ public class WxPayUtil {
     }
 
     /**
-     * 创建支付回调响应
+     * 创建支付通知响应
      *
      * @param payStatus   支付状态
-     * @param tradeNo     交易号
-     * @param userId      用户ID
-     * @param rwaData     原始数据
+     * @param tradeNo     交易订单号
+     * @param clientId    客户端ID
+     * @param rawData     原始数据
      * @param successTime 成功时间
-     * @return 支付回调响应
+     * @return 支付通知响应
      */
-    public static PayNotifyResponse createPayNotifyResponse(String payStatus, String tradeNo, String userId, Object rwaData,
-                                                            Date successTime) {
+    public static PayNotifyResponse createPayNotifyResponse(PayStatus payStatus, String tradeNo, String clientId, Object rawData, Date successTime) {
         return (PayNotifyResponse) new PayNotifyResponse()
                 .setPayStatus(payStatus)
                 .setTradeNo(tradeNo)
-                .setClientId(userId)
-                .setRawData(rwaData)
+                .setClientId(clientId)
+                .setRawData(rawData)
                 .setSuccessTime(successTime);
     }
 
@@ -92,63 +86,72 @@ public class WxPayUtil {
      * 创建支付查询响应
      *
      * @param payStatus   支付状态
-     * @param tradeNo     交易号
-     * @param userId      用户ID
-     * @param rwaData     原始数据
+     * @param tradeNo     交易订单号
+     * @param clientId    客户端ID
+     * @param rawData     原始数据
      * @param successTime 成功时间
      * @return 支付查询响应
      */
-    public static PayQueryResponse createPayQueryResponse(String payStatus, String tradeNo, String userId, Object rwaData,
-                                                          Date successTime) {
-        return (PayNotifyResponse) new PayNotifyResponse()
+    public static PayQueryResponse createPayQueryResponse(PayStatus payStatus, String tradeNo, String clientId, Object rawData, Date successTime) {
+        return (PayQueryResponse) new PayQueryResponse()
                 .setPayStatus(payStatus)
                 .setTradeNo(tradeNo)
-                .setClientId(userId)
-                .setRawData(rwaData)
+                .setClientId(clientId)
+                .setRawData(rawData)
                 .setSuccessTime(successTime);
     }
 
     /**
      * 创建待支付响应
      *
-     * @param outTradeNo 外部交易订单号
-     * @param rawData    原始数据
+     * @param outTradeNo  外部交易订单号
+     * @param rawData     原始数据
+     * @param payShowType 支付展示类型
+     * @param payInfo     支付信息
      * @return 待支付响应
      */
-    public static PayResponse createPayWaitingResponse(String outTradeNo, Object rawData) {
-        return createPayResponse(PayConstant.PAY_STATUS_WAITING, outTradeNo, rawData, null, null);
+    public static PayResponse createPayWaitingResponse(String outTradeNo, Object rawData, PayShowType payShowType, Object payInfo) {
+        return (PayResponse) new PayResponse()
+                .setOutTradeNo(outTradeNo)
+                .setPayShowType(payShowType)
+                .setPayInfo(payInfo)
+                .setRawData(rawData);
     }
 
     /**
-     * 创建支付失败响应
+     * 创建支付关闭响应
      *
      * @param outTradeNo     外部订单号
      * @param wxPayException 微信支付异常
      * @return 失败响应
      */
-    public static PayResponse createPayFailedResponse(String outTradeNo, WxPayException wxPayException) {
-        return createPayResponse(PayConstant.PAY_STATUS_FAILED, outTradeNo, wxPayException,
-                getErrorCode(wxPayException), getErrorMsg(wxPayException));
+    public static PayResponse createPayClosedResponse(String outTradeNo, WxPayException wxPayException) {
+        return (PayResponse) new PayResponse()
+                .setPayStatus(PayStatus.CLOSED)
+                .setOutTradeNo(outTradeNo)
+                .setErrorCode(getErrorCode(wxPayException))
+                .setErrorMsg(getErrorMsg(wxPayException))
+                .setRawData(wxPayException.getXmlString());
     }
 
     /**
      * 创建支付响应
      *
-     * @param payStatus  支付状态
-     * @param outTradeNo 外部交易订单号
-     * @param rawData    原始数据
-     * @param errorCode  错误编码
-     * @param errorMsg   错误信息
+     * @param payStatus   支付状态
+     * @param outTradeNo  外部交易订单号
+     * @param clientId    客户端ID
+     * @param rawData     原始数据
+     * @param successTime 成功时间
      * @return 支付响应
      */
-    public static PayResponse createPayResponse(String payStatus, String outTradeNo, Object rawData, String errorCode,
-                                                String errorMsg) {
+    public static PayResponse createPayResponse(PayStatus payStatus, String outTradeNo, String clientId,
+                                                Object rawData, Date successTime) {
         return (PayResponse) new PayResponse()
                 .setPayStatus(payStatus)
                 .setOutTradeNo(outTradeNo)
+                .setClientId(clientId)
                 .setRawData(rawData)
-                .setErrorCode(errorCode)
-                .setErrorMsg(errorMsg);
+                .setSuccessTime(successTime);
     }
 
     /**
@@ -159,8 +162,11 @@ public class WxPayUtil {
      * @return 失败响应
      */
     public static RefundResponse createRefundFailedResponse(String outRefundNo, WxPayException wxPayException) {
-        return createRefundResponse(REFUND_STATUS_FAILED, outRefundNo, null, wxPayException,
-                getErrorCode(wxPayException), getErrorMsg(wxPayException), null);
+        return (RefundResponse) new RefundResponse()
+                .setRefundStatus(RefundStatus.FAILED)
+                .setOutRefundNo(outRefundNo)
+                .setErrorCode(getErrorCode(wxPayException))
+                .setErrorMsg(getErrorMsg(wxPayException));
     }
 
     /**
@@ -171,8 +177,10 @@ public class WxPayUtil {
      * @return 失败响应
      */
     public static RefundResponse createRefundFailedResponse(String outRefundNo, Object rawData) {
-        return createRefundResponse(REFUND_STATUS_FAILED, outRefundNo, null, rawData,
-                null, null, null);
+        return (RefundResponse) new RefundResponse()
+                .setRefundStatus(RefundStatus.FAILED)
+                .setOutRefundNo(outRefundNo)
+                .setRawData(rawData);
     }
 
 
@@ -185,7 +193,11 @@ public class WxPayUtil {
      * @return 待退款响应
      */
     public static RefundResponse createRefundWaitingResponse(String outRefundNo, String refundNo, Object rawData) {
-        return createRefundResponse(REFUND_STATUS_WAITING, outRefundNo, refundNo, rawData, null, null, null);
+        return (RefundResponse) new RefundResponse()
+                .setRefundStatus(RefundStatus.WAITING)
+                .setOutRefundNo(outRefundNo)
+                .setRefundNo(refundNo)
+                .setRawData(rawData);
     }
 
     /**
@@ -198,7 +210,12 @@ public class WxPayUtil {
      * @return 退款成功响应
      */
     public static RefundResponse createRefundSuccessResponse(String outRefundNo, String refundNo, Object rawData, Date successTime) {
-        return createRefundResponse(REFUND_STATUS_SUCCESS, outRefundNo, refundNo, rawData, null, null, successTime);
+        return (RefundResponse) new RefundResponse()
+                .setRefundStatus(RefundStatus.SUCCESS)
+                .setOutRefundNo(outRefundNo)
+                .setRefundNo(refundNo)
+                .setRawData(rawData)
+                .setSuccessTime(successTime);
     }
 
     /**
@@ -208,20 +225,16 @@ public class WxPayUtil {
      * @param outRefundNo  外部退款订单号
      * @param refundNo     退款订单号
      * @param rawData      原始数据
-     * @param errorCode    错误编码
-     * @param errorMsg     错误信息
      * @param successTime  成功时间
      * @return 退款响应
      */
-    public static RefundResponse createRefundResponse(String refundStatus, String outRefundNo, String refundNo,
-                                                      Object rawData, String errorCode, String errorMsg, Date successTime) {
+    public static RefundResponse createRefundResponse(RefundStatus refundStatus, String outRefundNo, String refundNo,
+                                                      Object rawData, Date successTime) {
         return (RefundResponse) new RefundResponse()
                 .setRefundStatus(refundStatus)
                 .setOutRefundNo(outRefundNo)
                 .setRefundNo(refundNo)
                 .setRawData(rawData)
-                .setErrorCode(errorCode)
-                .setErrorMsg(errorMsg)
                 .setSuccessTime(successTime);
     }
 
@@ -273,7 +286,7 @@ public class WxPayUtil {
             case "CLOSED":
             case "REVOKED":
             case "PAYERROR":
-                return PayStatus.FAILED;
+                return PayStatus.CLOSED;
             default:
                 throw new BizRuntimeException(StrUtil.format("未知的交易状态:{}", tradeState));
         }
@@ -286,7 +299,7 @@ public class WxPayUtil {
      * @return 格式化金额
      */
     public static int formatFee(BigDecimal amount) {
-        BigDecimal fenAmount = MoneyHelper.yuanToFen(amount);
+        BigDecimal fenAmount = MoneyUtil.yuanToFen(amount);
         return fenAmount.intValue();
     }
 
@@ -329,6 +342,9 @@ public class WxPayUtil {
      * @return 解析时间
      */
     public static Date parseExpireTimeV2(String expireTime) {
+        if (StrUtil.isBlank(expireTime)) {
+            return null;
+        }
         return DateUtil.parse(expireTime, PURE_DATETIME_PATTERN);
     }
 
@@ -349,6 +365,9 @@ public class WxPayUtil {
      * @return 解析时间
      */
     public static Date parseExpireTimeV3(String expireTime) {
+        if (StrUtil.isBlank(expireTime)) {
+            return null;
+        }
         return DateUtil.parse(expireTime, UTC_WITH_XXX_OFFSET_PATTERN);
     }
 
@@ -361,8 +380,8 @@ public class WxPayUtil {
     public static WxPayConfig createWxPayconfig(WxPayParams wxPayParams, TradeType tradeType) {
         WxPayConfig wxPayConfig = new WxPayConfig();
         wxPayConfig.setAppId(wxPayParams.getAppId());
-        wxPayConfig.setMchId(wxPayConfig.getMchId());
-        wxPayConfig.setMchKey(wxPayConfig.getMchKey());
+        wxPayConfig.setMchId(wxPayParams.getMchId());
+        wxPayConfig.setMchKey(wxPayParams.getMchKey());
         wxPayConfig.setSubAppId(wxPayParams.getSubAppId());
         wxPayConfig.setSubMchId(wxPayParams.getSubMchId());
         // apiclient_cert.p12证书存储格式为Base64
@@ -404,4 +423,5 @@ public class WxPayUtil {
         }
         return wxPayConfig;
     }
+
 }

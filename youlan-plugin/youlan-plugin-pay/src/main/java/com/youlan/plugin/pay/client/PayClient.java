@@ -1,5 +1,6 @@
 package com.youlan.plugin.pay.client;
 
+import com.youlan.plugin.pay.entity.PayConfig;
 import com.youlan.plugin.pay.entity.request.PayQueryRequest;
 import com.youlan.plugin.pay.entity.request.PayRequest;
 import com.youlan.plugin.pay.entity.request.RefundQueryRequest;
@@ -63,9 +64,14 @@ public interface PayClient {
     RefundNotifyResponse refundNotifyParse(Map<String, String> params, String body);
 
     /**
-     * 初始化
+     * 启动客户端
      */
-    void init();
+    void startClient();
+
+    /**
+     * 停止客户端
+     */
+    void stopClient();
 
     /**
      * 交易类型
@@ -74,4 +80,10 @@ public interface PayClient {
      */
     TradeType tradeType();
 
+    /**
+     * 支付配置
+     *
+     * @return 支付配置
+     */
+    PayConfig payConfig();
 }

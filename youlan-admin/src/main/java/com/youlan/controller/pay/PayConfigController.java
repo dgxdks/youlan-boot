@@ -95,13 +95,4 @@ public class PayConfigController extends BaseController {
         return toSuccess();
     }
 
-    @SaCheckPermission("pay:payConfig:remove")
-    @Operation(summary = "支付配置缓存刷新")
-    @PostMapping("/refreshPayConfigCache")
-    @OperationLog(name = "支付配置", type = OperationLogType.OPERATION_LOG_TYPE_REMOVE)
-    public ApiResult refreshPayConfigCache() {
-        payConfigService.refreshPayConfigCache();
-        return toSuccess();
-    }
-
 }

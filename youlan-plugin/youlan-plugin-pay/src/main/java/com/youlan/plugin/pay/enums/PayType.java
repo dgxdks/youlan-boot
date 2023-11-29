@@ -26,8 +26,8 @@ public enum PayType {
     public static ConcurrentHashMap<String, PayType> createPayConfigTypeCache() {
         ConcurrentHashMap<String, PayType> payConfigTypeCache = new ConcurrentHashMap<>();
         Arrays.stream(PayType.values())
-                .forEach(smsSupplierEnum -> {
-                    payConfigTypeCache.put(smsSupplierEnum.code, smsSupplierEnum);
+                .forEach(payShowType -> {
+                    payConfigTypeCache.put(payShowType.code, payShowType);
                 });
         return payConfigTypeCache;
     }

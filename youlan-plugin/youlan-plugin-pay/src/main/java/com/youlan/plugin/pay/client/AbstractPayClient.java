@@ -25,11 +25,11 @@ public abstract class AbstractPayClient<Params extends PayParams> implements Pay
      */
     protected final PayConfig payConfig;
 
-
     /**
      * 支付参数
      */
     protected final Params payParams;
+
 
     public AbstractPayClient(PayConfig payConfig, Params payParams) {
         this.payConfig = payConfig;
@@ -93,9 +93,14 @@ public abstract class AbstractPayClient<Params extends PayParams> implements Pay
     protected abstract RefundNotifyResponse doRefundNotifyParse(Map<String, String> params, String body) throws Exception;
 
     /**
-     * 执行初始化
+     * 执行启动客户端
      */
-    protected abstract void doInit();
+    protected abstract void doStartClient();
+
+    /**
+     * 执行停止客户端
+     */
+    protected abstract void doStopClient();
 
     @Override
     public final PayResponse pay(PayRequest payRequest) {
@@ -106,7 +111,7 @@ public abstract class AbstractPayClient<Params extends PayParams> implements Pay
             throw e;
         } catch (Exception e) {
             log.error("支付异常: {configId: {}, payRequest: {}}", payConfig.getId(), JSONUtil.toJsonStr(payRequest), e);
-            throw ApiResultCode.B0021.getException();
+            throw ApiResultCode.E0001.getException();
         }
     }
 
@@ -119,7 +124,7 @@ public abstract class AbstractPayClient<Params extends PayParams> implements Pay
             throw e;
         } catch (Exception e) {
             log.error("退款异常: {configId: {}, refundRequest: {}}", payConfig.getId(), JSONUtil.toJsonStr(refundRequest), e);
-            throw ApiResultCode.B0022.getException();
+            throw ApiResultCode.E0002.getException();
         }
     }
 
@@ -132,7 +137,7 @@ public abstract class AbstractPayClient<Params extends PayParams> implements Pay
             throw e;
         } catch (Exception e) {
             log.error("支付查询异常: {configId: {}, payQueryRequest: {}}", payConfig.getId(), JSONUtil.toJsonStr(payQueryRequest), e);
-            throw ApiResultCode.B0023.getException();
+            throw ApiResultCode.E0003.getException();
         }
     }
 
@@ -144,7 +149,7 @@ public abstract class AbstractPayClient<Params extends PayParams> implements Pay
             throw e;
         } catch (Exception e) {
             log.error("支付回调解析调异常: {configId: {}, params: {}, body: {}}", payConfig.getId(), params, body);
-            throw ApiResultCode.B0024.getException();
+            throw ApiResultCode.E0004.getException();
         }
     }
 
@@ -157,7 +162,7 @@ public abstract class AbstractPayClient<Params extends PayParams> implements Pay
             throw e;
         } catch (Exception e) {
             log.error("退款查询异常: {configId: {}, refundQueryRequest: {}}", payConfig.getId(), JSONUtil.toJsonStr(refundQueryRequest), e);
-            throw ApiResultCode.B0025.getException();
+            throw ApiResultCode.E0005.getException();
         }
     }
 
@@ -169,13 +174,25 @@ public abstract class AbstractPayClient<Params extends PayParams> implements Pay
             throw e;
         } catch (Exception e) {
             log.error("退款回调解析调异常: {configId: {}, params: {}, body: {}}", payConfig.getId(), params, body);
-            throw ApiResultCode.B0026.getException();
+            throw ApiResultCode.E0006.getException();
         }
     }
 
     @Override
-    public final void init() {
-        log.info("初始化支付客户端: {configId: {}}", payConfig.getId());
-        doInit();
+    public final void startClient() {
+        log.info("启动支付客户端: {configId: {}, tradeType: {}}", payConfig.getId(), tradeType());
+        doStartClient();
     }
+
+    @Override
+    public void stopClient() {
+        log.info("停止支付客户端: {configId: {}, tradeType: {}}", payConfig.getId(), tradeType());
+        this.doStopClient();
+    }
+
+    @Override
+    public PayConfig payConfig() {
+        return payConfig;
+    }
+
 }

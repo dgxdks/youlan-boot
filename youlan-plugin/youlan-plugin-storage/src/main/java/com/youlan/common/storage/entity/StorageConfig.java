@@ -45,7 +45,6 @@ public class StorageConfig extends PageDTO {
     @ExcelEnumProperty(StorageType.class)
     @NotNull(message = "存储类型不能为空")
     @Schema(description = "存储类型(字典类型[storage_type])")
-    @EnumValue
     private StorageType type;
 
     @ExcelProperty(value = "平台名称")

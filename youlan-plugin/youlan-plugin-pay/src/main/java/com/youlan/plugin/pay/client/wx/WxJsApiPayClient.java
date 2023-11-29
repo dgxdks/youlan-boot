@@ -10,6 +10,7 @@ import com.youlan.plugin.pay.constant.PayConstant;
 import com.youlan.plugin.pay.entity.PayConfig;
 import com.youlan.plugin.pay.entity.request.PayRequest;
 import com.youlan.plugin.pay.entity.response.PayResponse;
+import com.youlan.plugin.pay.enums.PayShowType;
 import com.youlan.plugin.pay.enums.TradeType;
 import com.youlan.plugin.pay.params.WxPayParams;
 import com.youlan.plugin.pay.utils.WxPayUtil;
@@ -30,7 +31,7 @@ public class WxJsApiPayClient extends AbstractWxPayClient {
         // 创建支付订单
         WxPayMpOrderResult wxPayMpOrderResult = wxPayService.createOrder(unifiedOrderRequest);
         // 返回支付响应
-        return WxPayUtil.createPayWaitingResponse(payRequest.getOutTradeNo(), wxPayMpOrderResult);
+        return WxPayUtil.createPayWaitingResponse(payRequest.getOutTradeNo(), wxPayMpOrderResult, PayShowType.CUSTOM, wxPayMpOrderResult);
     }
 
     @Override
@@ -45,7 +46,7 @@ public class WxJsApiPayClient extends AbstractWxPayClient {
         // 创建支付订单
         WxPayUnifiedOrderV3Result.JsapiResult jsapiResult = wxPayService.createOrderV3(TradeTypeEnum.JSAPI, unifiedOrderV3Request);
         // 返回支付响应
-        return WxPayUtil.createPayWaitingResponse(payRequest.getOutTradeNo(), jsapiResult);
+        return WxPayUtil.createPayWaitingResponse(payRequest.getOutTradeNo(), jsapiResult, PayShowType.CUSTOM, jsapiResult);
     }
 
     @Override

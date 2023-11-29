@@ -2,6 +2,20 @@ package com.youlan.plugin.pay.constant;
 
 public class PayConstant {
 
+    // ******************** 缓存前缀 ********************
+    /**
+     * 订单编号缓存前缀
+     */
+    public static final String REDIS_PREFIX_ORDER_NO = "pay:order_no:";
+    /**
+     * 支付配置缓存前缀
+     */
+    public static final String REDIS_PREFIX_PAY_CONFIG = "pay:config:";
+    /**
+     * 支付通道缓存前缀
+     */
+    public static final String REDIS_PREFIX_PAY_CHANNEL = "pay:channel";
+
     // ******************** 参数键名 ********************
     public static final String PARAM_KEY_OPEN_ID = "openid";
 
@@ -15,17 +29,13 @@ public class PayConstant {
      */
     public static final String PAY_STATUS_SUCCESS = "2";
     /**
-     * 已失败
-     */
-    public static final String PAY_STATUS_FAILED = "3";
-    /**
      * 已关闭
      */
-    public static final String PAY_STATUS_CLOSED = "4";
+    public static final String PAY_STATUS_CLOSED = "3";
     /**
      * 已退款
      */
-    public static final String PAY_STATUS_REFUND = "5";
+    public static final String PAY_STATUS_REFUND = "4";
 
     // ******************** 退款状态 ********************
     /**

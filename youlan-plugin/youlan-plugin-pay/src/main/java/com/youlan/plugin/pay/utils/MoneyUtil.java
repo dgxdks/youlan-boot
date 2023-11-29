@@ -1,10 +1,10 @@
-package com.youlan.plugin.pay.helper;
+package com.youlan.plugin.pay.utils;
 
 import cn.hutool.core.util.NumberUtil;
 
 import java.math.BigDecimal;
 
-public class MoneyHelper {
+public class MoneyUtil {
 
     /**
      * 元转分

@@ -2,6 +2,7 @@ package com.youlan.plugin.pay.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.youlan.common.db.constant.DBConstant;
+import com.youlan.plugin.pay.enums.PayStatus;
 import com.youlan.plugin.pay.enums.TradeType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -22,15 +23,20 @@ public class PayOrder {
     @Schema(description = "商户订单号")
     private String mchOrderId;
 
-    @Schema(description = "支付状态((1-待支付 2-已支付 3-已失败 4-已关闭 5-已退款))")
-    private String payStatus;
+    @Schema(description = "外部交易订单号")
+    private String outTradeNo;
+
+    @Schema(description = "交易订单号")
+    private String tradeNo;
+
+    @Schema(description = "支付状态(1-待支付 2-已支付 3-已关闭 4-已退款)")
+    private PayStatus payStatus;
 
     @Schema(description = "交易类型")
-    @EnumValue
     private TradeType tradeType;
 
     @Schema(description = "支付金额")
-    private String payAmount;
+    private BigDecimal payAmount;
 
     @Schema(description = "过期时间")
     private Date expireTime;
@@ -41,8 +47,14 @@ public class PayOrder {
     @Schema(description = "退款金额")
     private BigDecimal refundAmount;
 
+    @Schema(description = "支付通道ID")
+    private Long channelId;
+
     @Schema(description = "支付配置ID")
     private Long configId;
+
+    @Schema(description = "支付记录ID")
+    private Long recordId;
 
     @Schema(description = "商品标题")
     private String subject;

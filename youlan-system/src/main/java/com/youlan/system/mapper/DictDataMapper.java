@@ -8,5 +8,5 @@ import java.util.List;
 
 @Mapper
 public interface DictDataMapper extends BaseMapper<DictData> {
-    List<DictData> getCacheList();
+    List<DictData> getDictList();
 }

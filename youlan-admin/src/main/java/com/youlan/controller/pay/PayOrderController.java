@@ -4,12 +4,15 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.core.restful.enums.ApiResultCode;
+import com.youlan.common.core.servlet.helper.ServletHelper;
 import com.youlan.common.db.entity.dto.ListDTO;
 import com.youlan.controller.base.BaseController;
 import com.youlan.plugin.pay.entity.PayOrder;
 import com.youlan.plugin.pay.entity.dto.CreatePayOrderDTO;
+import com.youlan.plugin.pay.entity.dto.SubmitPayOrderDTO;
 import com.youlan.plugin.pay.service.biz.PayBizService;
 import com.youlan.system.anno.OperationLog;
 import com.youlan.system.constant.OperationLogType;
@@ -37,11 +40,15 @@ public class PayOrderController extends BaseController {
         return toSuccess(payBizService.createPayOrder(dto));
     }
 
-    @SaCheckPermission("pay:payOrder:submit")
+    @SaIgnore
+//    @SaCheckPermission("pay:payOrder:submit")
     @Operation(summary = "支付订单提交")
     @PostMapping("/submitPayOrder")
-    public ApiResult submitPayOrder(@Validated @RequestBody PayOrder payOrder) {
-        return toSuccess();
+    public ApiResult submitPayOrder(@RequestBody SubmitPayOrderDTO dto) {
+        if (StrUtil.isBlank(dto.getClientIp())) {
+            dto.setClientIp(ServletHelper.getClientIp());
+        }
+        return toSuccess(payBizService.submitPayOrder(dto));
     }
 
     @SaCheckPermission("pay:payOrder:add")

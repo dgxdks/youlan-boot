@@ -1,16 +1,17 @@
 package com.youlan.plugin.pay.params;
 
-import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.validator.helper.ValidatorHelper;
 import com.youlan.plugin.pay.enums.WxApiVersion;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Data
+@EqualsAndHashCode
 public class WxPayParams implements PayParams {
 
     @Schema(description = "应用ID")
@@ -22,7 +23,6 @@ public class WxPayParams implements PayParams {
 
     @NotNull(message = "API版本不能为空", groups = {V2.class, V3.class})
     @Schema(description = "API版本")
-    @EnumValue
     private WxApiVersion apiVersion;
 
     @NotBlank(message = "商户密钥不能为空", groups = {V2.class})

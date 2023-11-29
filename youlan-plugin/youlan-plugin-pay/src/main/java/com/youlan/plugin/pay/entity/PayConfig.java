@@ -6,15 +6,15 @@ import com.youlan.common.db.entity.dto.PageDTO;
 import com.youlan.plugin.pay.enums.PayType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import org.hibernate.validator.constraints.URL;
+import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
-import java.util.Objects;
 
 @Data
 @TableName("t_pay_config")
+@EqualsAndHashCode(callSuper = true)
 public class PayConfig extends PageDTO {
 
     @Schema(description = DBConstant.DESC_ID)
@@ -27,18 +27,7 @@ public class PayConfig extends PageDTO {
 
     @NotNull(message = "支付类型不能为空")
     @Schema(description = "支付类型(数据字典[pay_type])")
-    @EnumValue
     private PayType type;
-
-    @URL(message = "支付回调地址必须是合法URL")
-    @NotBlank(message = "支付回调地址不能为空")
-    @Schema(description = "支付回调地址")
-    private String payNotifyUrl;
-
-    @URL(message = "退款回调地址必须是合法URL")
-    @NotBlank(message = "退款回调地址不能为空")
-    @Schema(description = "退款回调地址")
-    private String refundNotifyUrl;
 
     @NotBlank(message = "配置参数不能为空")
     @Schema(description = "支付类型(JSON格式)")
@@ -75,17 +64,4 @@ public class PayConfig extends PageDTO {
     @TableField(fill = FieldFill.UPDATE)
     private Date updateTime;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof PayConfig)) return false;
-        if (!super.equals(o)) return false;
-        PayConfig payConfig = (PayConfig) o;
-        return Objects.equals(getId(), payConfig.getId()) && Objects.equals(getName(), payConfig.getName()) && Objects.equals(getType(), payConfig.getType()) && Objects.equals(getPayNotifyUrl(), payConfig.getPayNotifyUrl()) && Objects.equals(getRefundNotifyUrl(), payConfig.getRefundNotifyUrl()) && Objects.equals(getParams(), payConfig.getParams()) && Objects.equals(getStatus(), payConfig.getStatus());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), getId(), getName(), getType(), getPayNotifyUrl(), getRefundNotifyUrl(), getParams(), getStatus());
-    }
 }

@@ -22,4 +22,13 @@ public class PayProperties {
     @URL(message = "退款回调地址必须是URL格式")
     private String refundNotifyUrl;
 
+    /**
+     * 支付订单前缀
+     */
+    private String payOrderPrefix = "P";
+
+    /**
+     * 退款订单前缀
+     */
+    private String refundOrderPrefix = "R";
 }
