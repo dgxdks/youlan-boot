@@ -30,7 +30,13 @@
         <base-add-button v-has-perm="['system:role:add']" plain @click="handleAddUser">添加用户</base-add-button>
       </el-col>
       <el-col :span="1.5">
-        <base-remove-button v-has-perm="['system:role:remove']" plain :disabled="tableNoSelected" @click="handleCancelAuthUserBatch">批量取消授权</base-remove-button>
+        <base-remove-button
+          v-has-perm="['system:role:remove']"
+          plain
+          :disabled="tableNoSelected"
+          @click="handleCancelAuthUserBatch"
+        >批量取消授权
+        </base-remove-button>
       </el-col>
       <el-col :span="1.5">
         <base-close-button plain @click="handleClose">关闭</base-close-button>
@@ -52,7 +58,9 @@
       <el-table-column align="center" label="创建时间" prop="createTime" width="160" />
       <el-table-column align="center" class-name="small-padding fixed-width" label="操作">
         <template slot-scope="scope">
-          <base-close-button v-has-perm="['system:role:remove']" type="text" @click="handleCancelAuthUser(scope.row)">取消授权</base-close-button>
+          <base-close-button v-has-perm="['system:role:remove']" type="text" @click="handleCancelAuthUser(scope.row)">
+            取消授权
+          </base-close-button>
         </template>
       </el-table-column>
     </el-table>

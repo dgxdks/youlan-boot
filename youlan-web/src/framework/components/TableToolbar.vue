@@ -2,13 +2,13 @@
   <div class="top-right-btn" :style="style">
     <el-row>
       <el-tooltip v-if="queryEnabled" class="item" effect="dark" :content="queryContent" placement="top">
-        <el-button size="mini" circle icon="el-icon-search" @click="handleSearch" />
+        <el-button size="mini" circle icon="el-icon-search" @click="handleSearch"/>
       </el-tooltip>
       <el-tooltip v-if="refreshEnabled" class="item" effect="dark" content="刷新" placement="top">
-        <el-button size="mini" circle icon="el-icon-refresh" @click="handleRefresh" />
+        <el-button size="mini" circle icon="el-icon-refresh" @click="handleRefresh"/>
       </el-tooltip>
       <el-tooltip v-if="columnEnabled || columns" class="item" effect="dark" content="显隐列" placement="top">
-        <el-button size="mini" circle icon="el-icon-menu" @click="handleColumn" />
+        <el-button size="mini" circle icon="el-icon-menu" @click="handleColumn"/>
       </el-tooltip>
     </el-row>
     <el-dialog title="显示/隐藏" :visible.sync="columnOpen" append-to-body>
@@ -43,7 +43,8 @@ export default {
     },
     columns: {
       type: Object,
-      default: () => {}
+      default: () => {
+      }
     },
     search: {
       type: Boolean,
@@ -95,12 +96,12 @@ export default {
         const columnConf = this.columns[columnKey]
         const key = columnKey
         if (this.$obj.isString(columnConf)) {
-          columns[key] = { key, label: columnConf, show: true }
+          columns[key] = {key, label: columnConf, show: true}
         }
         if (this.$obj.isObject(columnConf)) {
           const show = this.$obj.isEmpty(columnConf.show) ? true : columnConf.show
           const label = columnConf.label
-          columns[key] = { key, show, label }
+          columns[key] = {key, show, label}
         }
       }
       this.columnData = Object.keys(columns).map(key => columns[key])
@@ -127,6 +128,7 @@ export default {
   display: block;
   margin-left: 0px;
 }
+
 ::v-deep .el-transfer__button:first-child {
   margin-bottom: 10px;
 }

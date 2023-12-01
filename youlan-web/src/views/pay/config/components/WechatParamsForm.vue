@@ -36,11 +36,13 @@
     </el-form-item>
     <el-form-item v-if="isV3" label="appclient_key.pem证书" prop="privateKeyContent">
       <base-form-label slot="label" content="appclient_key.pem证书文件" label="appclient_key.pem证书"/>
-      <file-upload-drag ref="privateKeyContent" :limit="1" accept=".pem" @onChange="handlePrivateKeyContent"></file-upload-drag>
+      <file-upload-drag ref="privateKeyContent" :limit="1" accept=".pem"
+                        @onChange="handlePrivateKeyContent"></file-upload-drag>
     </el-form-item>
     <el-form-item v-if="isV3" label="appclient_cert.pem证书" prop="privateCertContent">
       <base-form-label slot="label" content="appclient_cert.pem证书文件" label="appclient_cert.pem证书"/>
-      <file-upload-drag ref="privateCertContent" :limit="1" accept=".pem" @onChange="handlePrivateCertContent"></file-upload-drag>
+      <file-upload-drag ref="privateCertContent" :limit="1" accept=".pem"
+                        @onChange="handlePrivateCertContent"></file-upload-drag>
     </el-form-item>
   </el-form>
 </template>

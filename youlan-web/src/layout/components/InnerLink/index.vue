@@ -34,12 +34,12 @@ export default {
     // iframe页面loading控制
     if (iframe.attachEvent) {
       this.loading = true
-      iframe.attachEvent('onload', function() {
+      iframe.attachEvent('onload', function () {
         _this.loading = false
       })
     } else {
       this.loading = true
-      iframe.onload = function() {
+      iframe.onload = function () {
         _this.loading = false
       }
     }

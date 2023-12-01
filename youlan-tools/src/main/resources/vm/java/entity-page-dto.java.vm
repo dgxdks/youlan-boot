@@ -1,28 +1,28 @@
 package ${packageName}.entity.dto;
 
 #foreach(${package} in ${pageDtoPackages})
-${package}
+    ${package}
 #end
 #foreach(${package} in ${basePackages})
-${package}
+    ${package}
 #end
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class ${EntityName}PageDTO extends PageDTO {
 
-#foreach($column in ${pageDtoColumns})
-    #if(${column.queryAnno})
-    ${column.queryAnno}
-    #if(${column.apiModelPropertyAnno})
-    ${column.apiModelPropertyAnno}
-    #end
-    #if(${column.isCollection} == "1")
-    private List<$column.javaType> $column.javaField;
-    #else
-    private $column.javaType $column.javaField;
-    #end
+    #foreach($column in ${pageDtoColumns})
+        #if(${column.queryAnno})
+            ${column.queryAnno}
+            #if(${column.apiModelPropertyAnno})
+                ${column.apiModelPropertyAnno}
+            #end
+            #if(${column.isCollection} == "1")
+                private List<$column.javaType> $column.javaField;
+            #else
+                private $column.javaType $column.javaField;
+            #end
 
+        #end
     #end
-#end
 }

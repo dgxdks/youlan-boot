@@ -6,7 +6,7 @@
     :preview-src-list="realSrcList"
   >
     <div slot="error" class="image-slot">
-      <i class="el-icon-picture-outline" />
+      <i class="el-icon-picture-outline"/>
     </div>
   </el-image>
 </template>

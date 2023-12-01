@@ -10,7 +10,7 @@ import org.mapstruct.factory.Mappers;
 public interface PayOrderConvert {
     PayOrderConvert INSTANCE = Mappers.getMapper(PayOrderConvert.class);
 
-    @Mapping(source = "id", target = "orderId")
+    @Mapping(target = "orderId", source = "id")
     CreatePayOrderVO convertToCreatePayOrderVO(PayOrder payOrder);
 
 }

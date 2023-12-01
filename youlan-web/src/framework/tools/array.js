@@ -1,4 +1,4 @@
-import { ObjectUtil } from '@/framework/tools/index'
+import {ObjectUtil} from '@/framework/tools/index'
 
 export default {
   // 数组为空

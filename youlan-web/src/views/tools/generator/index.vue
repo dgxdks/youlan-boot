@@ -28,16 +28,30 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <base-download-button v-has-perm="['tools:generator:code']" plain type="primary" @click="handleGenerateCode">生成</base-download-button>
+        <base-download-button v-has-perm="['tools:generator:code']" plain type="primary" @click="handleGenerateCode">
+          生成
+        </base-download-button>
       </el-col>
       <el-col :span="1.5">
-        <base-upload-button v-has-perm="['tools:generator:update']" plain type="info" @click="handleImportDbTable">导入</base-upload-button>
+        <base-upload-button v-has-perm="['tools:generator:update']" plain type="info" @click="handleImportDbTable">
+          导入
+        </base-upload-button>
       </el-col>
       <el-col :span="1.5">
-        <base-update-button v-has-perm="['tools:generator:update']" :disabled="!tableSelectOne" plain @click="handleUpdate" />
+        <base-update-button
+          v-has-perm="['tools:generator:update']"
+          :disabled="!tableSelectOne"
+          plain
+          @click="handleUpdate"
+        />
       </el-col>
       <el-col :span="1.5">
-        <base-remove-button v-has-perm="['tools:generator:remove']" :disabled="tableNoSelected" plain @click="handleDelete" />
+        <base-remove-button
+          v-has-perm="['tools:generator:remove']"
+          :disabled="tableNoSelected"
+          plain
+          @click="handleDelete"
+        />
       </el-col>
       <table-toolbar :query-show.sync="queryShow" @refresh="getList" />
     </el-row>
@@ -129,13 +143,7 @@
 </template>
 
 <script>
-import {
-  getTablePageList,
-  previewCode,
-  removeTable,
-  syncDbTable,
-  writeCode
-} from '@/api/tools/generator'
+import { getTablePageList, previewCode, removeTable, syncDbTable, writeCode } from '@/api/tools/generator'
 import importTable from './importTable'
 import crud from '@/framework/mixin/crud'
 

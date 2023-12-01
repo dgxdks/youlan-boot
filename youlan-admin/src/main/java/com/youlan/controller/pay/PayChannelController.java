@@ -6,9 +6,11 @@ import cn.hutool.core.util.ObjectUtil;
 import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.db.entity.dto.ListDTO;
+import com.youlan.common.db.helper.DBHelper;
 import com.youlan.controller.base.BaseController;
 import com.youlan.plugin.pay.entity.PayChannel;
 import com.youlan.plugin.pay.service.PayChannelService;
+import com.youlan.plugin.pay.service.biz.PayChannelBizService;
 import com.youlan.system.anno.OperationLog;
 import com.youlan.system.constant.OperationLogType;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,13 +21,14 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 @Tag(name = "支付通道")
 @RestController
 @RequestMapping("/pay/payChannel")
 @AllArgsConstructor
 public class PayChannelController extends BaseController {
-
+    private final PayChannelBizService payChannelBizService;
     private final PayChannelService payChannelService;
 
     @SaCheckPermission("pay:payChannel:add")
@@ -33,6 +36,7 @@ public class PayChannelController extends BaseController {
     @OperationLog(name = "支付通道", type = OperationLogType.OPERATION_LOG_TYPE_ADD)
     @PostMapping("/addPayChannel")
     public ApiResult addPayChannel(@Validated @RequestBody PayChannel payChannel) {
+        payChannelBizService.addPayChannel(payChannel);
         return toSuccess();
     }
 
@@ -44,6 +48,7 @@ public class PayChannelController extends BaseController {
         if (ObjectUtil.isNull(payChannel.getId())) {
             return toError(ApiResultCode.C0001);
         }
+        payChannelBizService.updatePayChannel(payChannel);
         return toSuccess();
     }
 
@@ -55,6 +60,7 @@ public class PayChannelController extends BaseController {
         if (CollectionUtil.isEmpty(dto.getList())) {
             return toSuccess();
         }
+        payChannelBizService.removePayChannel(dto.getList());
         return toSuccess();
     }
 
@@ -62,7 +68,7 @@ public class PayChannelController extends BaseController {
     @Operation(summary = "支付通道详情")
     @PostMapping("/loadPayChannel")
     public ApiResult loadPayChannel(@RequestParam Long id) {
-        return toSuccess();
+        return toSuccess(payChannelBizService.loadPayChannel(id));
     }
 
     @SaCheckPermission("pay:payChannel:list")
@@ -70,7 +76,15 @@ public class PayChannelController extends BaseController {
     @PostMapping("/getPayChannelPageList")
     @OperationLog(name = "支付通道", type = OperationLogType.OPERATION_LOG_TYPE_PAGE_LIST)
     public ApiResult getPayChannelPageList(@RequestBody PayChannel payChannel) {
-        return toSuccess();
+        return toSuccess(payChannelBizService.getPayChannelPageList(payChannel));
+    }
+
+    @SaCheckPermission("pay:payChannel:list")
+    @Operation(summary = "支付通道列表")
+    @PostMapping("/getPayChannelList")
+    @OperationLog(name = "支付通道", type = OperationLogType.OPERATION_LOG_TYPE_LIST)
+    public ApiResult getPayChannelList(@RequestBody PayChannel payChannel) {
+        return toSuccess(payChannelService.loadMore(DBHelper.getQueryWrapper(payChannel)));
     }
 
     @SaCheckPermission("pay:payChannel:export")
@@ -78,7 +92,8 @@ public class PayChannelController extends BaseController {
     @PostMapping("/exportPayChannelList")
     @OperationLog(name = "支付通道", type = OperationLogType.OPERATION_LOG_TYPE_EXPORT)
     public void exportPayChannelList(@RequestBody PayChannel payChannel, HttpServletResponse response) throws IOException {
-        return;
+        List<PayChannel> payChannels = payChannelService.loadMore(DBHelper.getQueryWrapper(payChannel));
+        toExcel("支付通道.xlsx", "支付通道", PayChannel.class, payChannels, response);
     }
 
     @SaCheckPermission("pay:payChannel:update")
@@ -86,7 +101,7 @@ public class PayChannelController extends BaseController {
     @PostMapping("/updatePayChannelStatus")
     @OperationLog(name = "支付通道", type = OperationLogType.OPERATION_LOG_TYPE_UPDATE)
     public ApiResult updatePayChannelStatus(@RequestParam Long id, @RequestParam String status) {
-        return toSuccess();
+        return toSuccess(payChannelService.updateStatus(id, status));
     }
 
 }

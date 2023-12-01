@@ -1,4 +1,4 @@
-import { JSONUtil, ObjectUtil, StrUtil } from '@/framework/tools/index'
+import {JSONUtil, ObjectUtil, StrUtil} from '@/framework/tools/index'
 
 export default {
   objectToQuery(params) {

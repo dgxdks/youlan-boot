@@ -15,4 +15,12 @@ public interface PayClientFactory {
      */
     PayClient createPayClient(PayConfig payConfig, TradeType tradeType);
 
+    /**
+     * 获取支付客户端
+     *
+     * @param configId  支付配置ID
+     * @param tradeType 交易类型
+     * @return 支付客户端
+     */
+    PayClient getPayClient(Long configId, TradeType tradeType);
 }

@@ -21,7 +21,7 @@
       list-type="picture-card"
       multiple
     >
-      <i slot="default" class="el-icon-plus" />
+      <i slot="default" class="el-icon-plus"/>
       <div slot="file" slot-scope="{file}">
         <img class="el-upload-list__item-thumbnail" :src="file.url" alt="">
         <span class="el-upload-list__item-actions">
@@ -30,21 +30,21 @@
             class="el-upload-list__item-preview"
             @click="handlePreview(file)"
           >
-            <i class="el-icon-zoom-in" />
+            <i class="el-icon-zoom-in"/>
           </span>
           <span
             v-if="showDownload"
             class="el-upload-list__item-delete"
             @click="handleDownload(file)"
           >
-            <i class="el-icon-download" />
+            <i class="el-icon-download"/>
           </span>
           <span
             v-if="showRemove"
             class="el-upload-list__item-delete"
             @click="handleRemove(file)"
           >
-            <i class="el-icon-delete" />
+            <i class="el-icon-delete"/>
           </span>
         </span>
       </div>

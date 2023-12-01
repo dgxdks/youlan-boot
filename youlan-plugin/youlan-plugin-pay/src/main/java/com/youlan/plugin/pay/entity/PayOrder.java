@@ -2,10 +2,12 @@ package com.youlan.plugin.pay.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.youlan.common.db.constant.DBConstant;
+import com.youlan.common.db.entity.dto.PageDTO;
 import com.youlan.plugin.pay.enums.PayStatus;
 import com.youlan.plugin.pay.enums.TradeType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
@@ -14,7 +16,8 @@ import java.util.Date;
 @Data
 @Accessors(chain = true)
 @TableName("t_pay_order")
-public class PayOrder {
+@EqualsAndHashCode(callSuper = true)
+public class PayOrder extends PageDTO {
 
     @Schema(description = "支付订单ID")
     @TableId(type = IdType.ASSIGN_ID)
@@ -97,5 +100,4 @@ public class PayOrder {
     @Schema(description = DBConstant.DESC_UPDATE_TIME)
     @TableField(fill = FieldFill.UPDATE)
     private Date updateTime;
-
 }

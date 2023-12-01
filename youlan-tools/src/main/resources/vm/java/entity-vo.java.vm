@@ -1,10 +1,10 @@
 package ${packageName}.entity.vo;
 
 #foreach(${package} in ${voPackages})
-${package}
+    ${package}
 #end
 #foreach(${package} in ${basePackages})
-${package}
+    ${package}
 #end
 
 @Data
@@ -13,23 +13,23 @@ ${package}
 @ExcelIgnoreUnannotated
 public class ${EntityName}VO {
 
-#foreach($column in ${voColumns})
-    #foreach($excelAnno in ${column.excelAnnoList})
-    $excelAnno
-    #end
-    #if(${column.apiModelPropertyAnno})
-    ${column.apiModelPropertyAnno}
-    #end
-    private $column.javaType $column.javaField;
+    #foreach($column in ${voColumns})
+        #foreach($excelAnno in ${column.excelAnnoList})
+            $excelAnno
+        #end
+        #if(${column.apiModelPropertyAnno})
+            ${column.apiModelPropertyAnno}
+        #end
+        private $column.javaType $column.javaField;
 
-#end
-#if(${templateType} == "2")
+    #end
+    #if(${templateType} == "2")
     @Schema(description = "${featureName}子集")
-    #if(${needVo})
-    private List<${EntityName}VO> children = new ArrayList();
-    #else
-    private List<${EntityName}> children = new ArrayList();
-    #end
+        #if(${needVo})
+        private List<${EntityName}VO> children = new ArrayList();
+        #else
+            private List<${EntityName}> children = new ArrayList();
+        #end
 
-#end
+    #end
 }

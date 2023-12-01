@@ -8,7 +8,7 @@
     :wrapper-closable="wrapperClosable"
     show-close
   >
-    <slot />
+    <slot/>
   </el-drawer>
 </template>
 
@@ -52,8 +52,6 @@ export default {
   },
   mounted() {
   },
-  methods: {
-
-  }
+  methods: {}
 }
 </script>

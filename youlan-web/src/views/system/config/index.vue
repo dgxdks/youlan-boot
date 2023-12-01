@@ -20,7 +20,13 @@
         />
       </el-form-item>
       <el-form-item label="系统内置" prop="configType">
-        <dict-select v-model="queryForm.configType" dict-type="db_yes_no" clearable placeholder="系统内置" style="width: 240px" />
+        <dict-select
+          v-model="queryForm.configType"
+          dict-type="db_yes_no"
+          clearable
+          placeholder="系统内置"
+          style="width: 240px"
+        />
       </el-form-item>
       <el-form-item label="创建时间" prop="createTimeRange">
         <base-date-range-picker v-model="queryForm.createTimeRange" style="width: 240px" />
@@ -36,16 +42,28 @@
         <base-add-button v-has-perm="['system:config:add']" plain @click="handleAdd" />
       </el-col>
       <el-col :span="1.5">
-        <base-update-button v-has-perm="['system:config:update']" plain :disabled="!tableSelectOne" @click="handleUpdate" />
+        <base-update-button
+          v-has-perm="['system:config:update']"
+          plain
+          :disabled="!tableSelectOne"
+          @click="handleUpdate"
+        />
       </el-col>
       <el-col :span="1.5">
-        <base-remove-button v-has-perm="['system:config:remove']" plain :disabled="tableNoSelected" @click="handleDelete" />
+        <base-remove-button
+          v-has-perm="['system:config:remove']"
+          plain
+          :disabled="tableNoSelected"
+          @click="handleDelete"
+        />
       </el-col>
       <el-col :span="1.5">
-        <base-download-button v-has-perm="['system:config:export']" plain @click="handleExport">导出</base-download-button>
+        <base-download-button v-has-perm="['system:config:export']" plain @click="handleExport">导出
+        </base-download-button>
       </el-col>
       <el-col :span="1.5">
-        <base-remove-button v-has-perm="['system:config:remove']" plain @click="handleRefreshCache">刷新缓存</base-remove-button>
+        <base-remove-button v-has-perm="['system:config:remove']" plain @click="handleRefreshCache">刷新缓存
+        </base-remove-button>
       </el-col>
       <table-toolbar :query-show.sync="queryShow" @refresh="getList" />
     </el-row>
@@ -80,7 +98,13 @@
     />
 
     <!-- 参数配置编辑对话框 -->
-    <base-dialog :title="editTitle" :open.sync="editOpen" width="600px" @confirm="handleEditSubmit" @cancel="handleEditCancel">
+    <base-dialog
+      :title="editTitle"
+      :open.sync="editOpen"
+      width="600px"
+      @confirm="handleEditSubmit"
+      @cancel="handleEditCancel"
+    >
       <el-form ref="editForm" :model="editForm" :rules="editRules" label-width="100px">
         <el-form-item label="参数名称" prop="configName">
           <el-input v-model="editForm.configName" placeholder="请输入参数名称" />
@@ -106,7 +130,8 @@
 import {
   addConfig,
   getConfigPageList,
-  loadConfig, refreshConfigCache,
+  loadConfig,
+  refreshConfigCache,
   removeConfig,
   updateConfig
 } from '@/api/system/config'

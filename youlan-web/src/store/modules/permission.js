@@ -1,6 +1,6 @@
-import router, { constantRoutes, dynamicRoutes } from '@/router'
-import { getMenuTreeList } from '@/api/system/login'
-import { ArrayUtil, AuthUtil, EnvUtil, StrUtil } from '@/framework/tools'
+import router, {constantRoutes, dynamicRoutes} from '@/router'
+import {getMenuTreeList} from '@/api/system/login'
+import {ArrayUtil, AuthUtil, EnvUtil, StrUtil} from '@/framework/tools'
 import Layout from '@/layout'
 import InnerLink from '@/layout/components/InnerLink/index.vue'
 import ParentView from '@/components/ParentView/index.vue'
@@ -30,7 +30,7 @@ const permission = {
   },
   actions: {
     // 生成路由
-    GenerateRoutes({ commit }) {
+    GenerateRoutes({commit}) {
       return new Promise(resolve => {
         // 向后端请求路由数据
         getMenuTreeList().then(res => {
@@ -44,7 +44,7 @@ const permission = {
           commit('SET_DEFAULT_ROUTES', menuRoutes)
           commit('SET_TOPBAR_ROUTES', menuRoutes)
           // 设置最终生成的路由并返回
-          const generateRoutes = menuRoutes.concat({ path: '*', redirect: '/404', hidden: true })
+          const generateRoutes = menuRoutes.concat({path: '*', redirect: '/404', hidden: true})
           commit('SET_ROUTES', generateRoutes)
           resolve(generateRoutes)
         })

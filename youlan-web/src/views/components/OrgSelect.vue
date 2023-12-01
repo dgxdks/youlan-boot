@@ -12,11 +12,11 @@
 <script>
 import TreeSelect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
-import { getOrgTreeList } from '@/api/system/org'
+import {getOrgTreeList} from '@/api/system/org'
 
 export default {
   name: 'OrgSelect',
-  components: { TreeSelect },
+  components: {TreeSelect},
   props: {
     value: {
       type: [Number, Array],

@@ -1,6 +1,13 @@
 <template>
   <!-- 导入表 -->
-  <base-dialog title="导入表" :open.sync="visible" width="800px" top="5vh" @confirm="handleImportDBTable" @cancel="handleImportCancel">
+  <base-dialog
+    title="导入表"
+    :open.sync="visible"
+    width="800px"
+    top="5vh"
+    @confirm="handleImportDBTable"
+    @cancel="handleImportCancel"
+  >
     <el-form ref="queryForm" :model="queryForm" size="small" :inline="true">
       <el-form-item label="表名称" prop="tableName">
         <el-input
@@ -24,7 +31,13 @@
       </el-form-item>
     </el-form>
     <el-row>
-      <el-table ref="table" :data="dbTableList" height="260px" @row-click="handleRowClick" @selection-change="handleSelectionChange">
+      <el-table
+        ref="table"
+        :data="dbTableList"
+        height="260px"
+        @row-click="handleRowClick"
+        @selection-change="handleSelectionChange"
+      >
         <el-table-column type="selection" width="55" />
         <el-table-column prop="tableName" label="表名称" show-overflow-tooltip />
         <el-table-column prop="tableComment" label="表描述" show-overflow-tooltip />
@@ -45,6 +58,7 @@
 <script>
 import { getDbTablePageList, importDbTableList } from '@/api/tools/generator'
 import crud from '@/framework/mixin/crud'
+
 export default {
   mixins: [crud],
   data() {

@@ -1,6 +1,6 @@
 import store from '@/store'
-import { ArrayUtil, StrUtil } from '@/framework/tools/index'
-import { getDictDataListByTypeKey } from '@/api/system/dict/data'
+import {ArrayUtil, StrUtil} from '@/framework/tools/index'
+import {getDictDataListByTypeKey} from '@/api/system/dict/data'
 
 const fieldMapping = {
   // 字典类型映射字段
@@ -23,17 +23,23 @@ const fieldMapping = {
  */
 const staticDict = {
   sms_type: [
-    { type: 'sms_type', value: '1', ui: 'primary', name: '标准短信' },
-    { type: 'sms_type', value: '2', ui: 'info', name: '异步短信' },
-    { type: 'sms_type', value: '3', ui: 'warning', name: '延迟短信' }
+    {type: 'sms_type', value: '1', ui: 'primary', name: '标准短信'},
+    {type: 'sms_type', value: '2', ui: 'info', name: '异步短信'},
+    {type: 'sms_type', value: '3', ui: 'warning', name: '延迟短信'}
   ],
   sms_send_type: [
-    { type: 'sms_send_type', value: '1', ui: 'primary', name: '单个发送' },
-    { type: 'sms_send_type', value: '2', ui: 'danger', name: '批量发送' }
+    {type: 'sms_send_type', value: '1', ui: 'primary', name: '单个发送'},
+    {type: 'sms_send_type', value: '2', ui: 'danger', name: '批量发送'}
   ],
   sms_send_status: [
-    { type: 'sms_send_status', value: '1', name: '成功', ui: 'success' },
-    { type: 'sms_send_status', value: '2', name: '失败', ui: 'danger' }
+    {type: 'sms_send_status', value: '1', name: '成功', ui: 'success'},
+    {type: 'sms_send_status', value: '2', name: '失败', ui: 'danger'}
+  ],
+  pay_status: [
+    {type: 'pay_status', value: '1', name: '待支付', ui: 'warning'},
+    {type: 'pay_status', value: '2', name: '已支付', ui: 'success'},
+    {type: 'pay_status', value: '3', name: '已关闭', ui: 'info'},
+    {type: 'pay_status', value: '4', name: '已退款', ui: 'danger'}
   ]
 }
 // 管理数据字典加载状态
@@ -64,7 +70,7 @@ export default {
       return
     }
     loadingStatus[typeKey] = true
-    getDictDataListByTypeKey({ typeKey }).then(res => {
+    getDictDataListByTypeKey({typeKey}).then(res => {
       if (ArrayUtil.isNotEmpty(res.data)) {
         store.commit('dict/SET_DICT', {
           type: typeKey,
@@ -89,9 +95,9 @@ export default {
   // 刷新字典缓存
   refreshDict(typeKey) {
     // 未指定typeKey则刷新所有
-    const dict = typeKey ? { typeKey: [] } : store.getters.dict
+    const dict = typeKey ? {typeKey: []} : store.getters.dict
     for (const typeKey in dict) {
-      getDictDataListByTypeKey({ typeKey }).then(res => {
+      getDictDataListByTypeKey({typeKey}).then(res => {
         if (ArrayUtil.isNotEmpty(res.data)) {
           store.commit('dict/SET_DICT', {
             type: typeKey,

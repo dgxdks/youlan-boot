@@ -3,11 +3,16 @@ package com.youlan.plugin.pay.service;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.core.restful.enums.ApiResultCode;
+import com.youlan.common.db.helper.DBHelper;
 import com.youlan.common.db.service.BaseServiceImpl;
 import com.youlan.plugin.pay.entity.PayOrder;
+import com.youlan.plugin.pay.entity.dto.PayOrderDTO;
+import com.youlan.plugin.pay.entity.vo.PayOrderVO;
 import com.youlan.plugin.pay.enums.PayStatus;
 import com.youlan.plugin.pay.mapper.PayOrderMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -87,5 +92,17 @@ public class PayOrderService extends BaseServiceImpl<PayOrderMapper, PayOrder> {
             throw new BizRuntimeException(ApiResultCode.E0007);
         }
         return payOrder;
+    }
+
+    /**
+     * 获取支付订单分页
+     *
+     * @param dto 支付订单查询参数
+     * @return 支付订单分页
+     */
+    public IPage<PayOrderVO> getPayOrderPageList(PayOrderDTO dto) {
+        List<String> sortColumns = List.of("create_time");
+        Page<PayOrderVO> page = DBHelper.getPage(dto, sortColumns);
+        return this.getBaseMapper().getPayOrderPageList(page, dto);
     }
 }

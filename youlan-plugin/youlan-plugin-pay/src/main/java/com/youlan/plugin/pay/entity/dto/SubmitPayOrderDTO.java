@@ -1,10 +1,6 @@
 package com.youlan.plugin.pay.entity.dto;
 
-import com.youlan.plugin.pay.entity.PayRecord;
 import com.youlan.plugin.pay.enums.TradeType;
-import io.github.linpeilie.annotations.AutoMapMapper;
-import io.github.linpeilie.annotations.AutoMapper;
-import io.github.linpeilie.annotations.AutoMappers;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -16,9 +12,6 @@ import java.util.Map;
 
 @Data
 @Accessors(chain = true)
-@AutoMappers({
-        @AutoMapper(target = PayRecord.class)
-})
 public class SubmitPayOrderDTO {
 
     @NotNull(message = "支付订单ID不能为空")

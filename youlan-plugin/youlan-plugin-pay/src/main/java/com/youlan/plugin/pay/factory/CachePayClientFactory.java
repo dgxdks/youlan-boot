@@ -5,13 +5,20 @@ import cn.hutool.core.util.StrUtil;
 import com.youlan.plugin.pay.client.PayClient;
 import com.youlan.plugin.pay.entity.PayConfig;
 import com.youlan.plugin.pay.enums.TradeType;
+import com.youlan.plugin.pay.service.PayConfigService;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
+@Slf4j
 public class CachePayClientFactory extends DefaultPayClientFactory {
     private static final ReentrantLock LOCK = new ReentrantLock();
     private static final ConcurrentHashMap<String, PayClient> PAY_CLIENT_CACHE = new ConcurrentHashMap<>();
+
+    public CachePayClientFactory(PayConfigService payConfigService) {
+        super(payConfigService);
+    }
 
     @Override
     public PayClient createPayClient(PayConfig payConfig, TradeType tradeType) {
@@ -34,6 +41,7 @@ public class CachePayClientFactory extends DefaultPayClientFactory {
             PAY_CLIENT_CACHE.put(clientCacheKey, newPayClient);
             // 停止旧客户端
             oldPayClient.stopClient();
+            log.info("更新支付客户端：{configId: {}, tradeType: {}}", payConfig.getId(), tradeType);
         } finally {
             LOCK.unlock();
         }

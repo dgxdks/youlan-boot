@@ -64,7 +64,13 @@
     </el-table>
 
     <!-- 部门编辑对话框 -->
-    <base-dialog :title="editTitle" :open.sync="editOpen" width="600px" @confirm="handleEditSubmit" @cancel="handleEditCancel">
+    <base-dialog
+      :title="editTitle"
+      :open.sync="editOpen"
+      width="600px"
+      @confirm="handleEditSubmit"
+      @cancel="handleEditCancel"
+    >
       <el-form ref="editForm" :model="editForm" :rules="editRules" label-width="80px">
         <el-form-item label="上级机构" prop="parentOrgId">
           <treeselect
@@ -100,13 +106,7 @@
 </template>
 
 <script>
-import {
-  addDept,
-  getDeptTreeList,
-  loadDept,
-  removeDept,
-  updateDept
-} from '@/api/system/dept'
+import { addDept, getDeptTreeList, loadDept, removeDept, updateDept } from '@/api/system/dept'
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import crud from '@/framework/mixin/crud'

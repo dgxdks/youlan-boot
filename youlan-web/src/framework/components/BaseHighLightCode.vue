@@ -1,11 +1,11 @@
 <template>
   <pre>
-    <code class="hljs" v-html="highLightCode" />
+    <code class="hljs" v-html="highLightCode"/>
   </pre>
 </template>
 
 <script>
-import { LANGUAGE_JAVA } from '@/framework/tools/highlight'
+import {LANGUAGE_JAVA} from '@/framework/tools/highlight'
 
 export default {
   name: 'BaseHighLightCode',

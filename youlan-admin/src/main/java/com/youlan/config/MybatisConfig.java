@@ -8,8 +8,8 @@ import com.baomidou.mybatisplus.extension.plugins.inner.DataPermissionIntercepto
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.youlan.common.db.constant.DBConstant;
-import com.youlan.system.helper.SystemAuthHelper;
 import com.youlan.system.handler.SystemDataPermissionHandler;
+import com.youlan.system.helper.SystemAuthHelper;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;

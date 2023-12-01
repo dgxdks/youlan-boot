@@ -15,7 +15,11 @@
               <el-input v-model="generatorTable.entityName" placeholder="请输入实体类名称" />
             </el-form-item>
             <el-form-item label="作者" prop="authorName">
-              <base-form-label slot="label" content="如果填写作者会在类上方生成Java注解@author authorName" label="作者" />
+              <base-form-label
+                slot="label"
+                content="如果填写作者会在类上方生成Java注解@author authorName"
+                label="作者"
+              />
               <el-input v-model="generatorTable.authorName" placeholder="请输入作者名称" />
             </el-form-item>
           </base-row-split2>
@@ -103,15 +107,27 @@
               <el-input v-model="generatorTable.packageName" />
             </el-form-item>
             <el-form-item prop="moduleName">
-              <base-form-label slot="label" content="英文的模块名称，例如 system，包路径为com.youlan，则最终代码会生成在com.youlan.system下" label="模块名称" />
+              <base-form-label
+                slot="label"
+                content="英文的模块名称，例如 system，包路径为com.youlan，则最终代码会生成在com.youlan.system下"
+                label="模块名称"
+              />
               <el-input v-model="generatorTable.moduleName" />
             </el-form-item>
             <el-form-item prop="bizName">
-              <base-form-label slot="label" content="英文的业务名称, 例如 user，则方法和接口路径的命名都会包含此名称，例如 getUserList" label="业务名称" />
+              <base-form-label
+                slot="label"
+                content="英文的业务名称, 例如 user，则方法和接口路径的命名都会包含此名称，例如 getUserList"
+                label="业务名称"
+              />
               <el-input v-model="generatorTable.bizName" />
             </el-form-item>
             <el-form-item prop="featureName">
-              <base-form-label slot="label" content="中英文的功能名称，例如 用户，则方法注释等文字性描述都会包含此名称" label="生成功能名" />
+              <base-form-label
+                slot="label"
+                content="中英文的功能名称，例如 用户，则方法注释等文字性描述都会包含此名称"
+                label="生成功能名"
+              />
               <el-input v-model="generatorTable.featureName" />
             </el-form-item>
             <el-form-item prop="parentMenuId">
@@ -142,15 +158,27 @@
               </el-popover>
             </el-form-item>
             <el-form-item prop="entityDto">
-              <base-form-label slot="label" content="实体类DTO只包含参与页面新增修改的字段，例如 数据新增、数据编辑，数据库实体类字段较多时建议使用" label="实体类DTO" />
+              <base-form-label
+                slot="label"
+                content="实体类DTO只包含参与页面新增修改的字段，例如 数据新增、数据编辑，数据库实体类字段较多时建议使用"
+                label="实体类DTO"
+              />
               <dict-radio v-model="generatorTable.entityDto" dict-type="db_yes_no" />
             </el-form-item>
             <el-form-item prop="entityPageDto">
-              <base-form-label slot="label" content="实体类分页DTO只包含参与页面列表相关查询的字段，例如 分页查询、列表查询、列表导出，数据库实体类字段较多时建议使用" label="实体类PageDTO" />
+              <base-form-label
+                slot="label"
+                content="实体类分页DTO只包含参与页面列表相关查询的字段，例如 分页查询、列表查询、列表导出，数据库实体类字段较多时建议使用"
+                label="实体类PageDTO"
+              />
               <dict-radio v-model="generatorTable.entityPageDto" dict-type="db_yes_no" />
             </el-form-item>
             <el-form-item prop="entityVo">
-              <base-form-label slot="label" content="实体类VO只包含参与接口返回数据的字段，例如 各种查询返回的数据、Excel表格导出，数据库实体类字段较多时建议使用" label="实体类VO" />
+              <base-form-label
+                slot="label"
+                content="实体类VO只包含参与接口返回数据的字段，例如 各种查询返回的数据、Excel表格导出，数据库实体类字段较多时建议使用"
+                label="实体类VO"
+              />
               <dict-radio v-model="generatorTable.entityVo" dict-type="db_yes_no" />
             </el-form-item>
             <el-form-item prop="generatorType">
@@ -160,7 +188,11 @@
             </el-form-item>
           </base-row-split2>
           <el-form-item v-if="generatorTable.generatorType === '2'" prop="generatorType">
-            <base-form-label slot="label" content="建议填写磁盘绝对路径，若不填写，则会生成到当前项目下" label="自定义路径" />
+            <base-form-label
+              slot="label"
+              content="建议填写磁盘绝对路径，若不填写，则会生成到当前项目下"
+              label="自定义路径"
+            />
             <el-input v-model="generatorTable.generatorPath">
               <el-dropdown slot="append">
                 <el-button type="primary">
@@ -168,7 +200,8 @@
                   <i class="el-icon-arrow-down el-icon--right" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item @click.native="generatorTable.genPath = '/'">恢复默认的生成基础路径</el-dropdown-item>
+                  <el-dropdown-item @click.native="generatorTable.genPath = '/'">恢复默认的生成基础路径
+                  </el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </el-input>
@@ -177,8 +210,17 @@
             <h4 class="form-header">树表信息</h4>
             <base-row-split2>
               <el-form-item>
-                <base-form-label slot="label" content="树结构表列名，一般都是主键或者能够保证唯一的列， 如：org_id" label="树表列名" />
-                <el-select v-model="generatorTable.columnName" clearable placeholder="请选择树表列名" style="width: 100%;">
+                <base-form-label
+                  slot="label"
+                  content="树结构表列名，一般都是主键或者能够保证唯一的列， 如：org_id"
+                  label="树表列名"
+                />
+                <el-select
+                  v-model="generatorTable.columnName"
+                  clearable
+                  placeholder="请选择树表列名"
+                  style="width: 100%;"
+                >
                   <el-option
                     v-for="column in generatorColumnList"
                     :key="column.columnName"
@@ -188,8 +230,17 @@
                 </el-select>
               </el-form-item>
               <el-form-item>
-                <base-form-label slot="label" content="树结构表指向父级的列名称， 如：子parent_org_id -> 父org_id" label="树表父列名" />
-                <el-select v-model="generatorTable.parentColumnName" clearable placeholder="请选择树表父列名" style="width: 100%;">
+                <base-form-label
+                  slot="label"
+                  content="树结构表指向父级的列名称， 如：子parent_org_id -> 父org_id"
+                  label="树表父列名"
+                />
+                <el-select
+                  v-model="generatorTable.parentColumnName"
+                  clearable
+                  placeholder="请选择树表父列名"
+                  style="width: 100%;"
+                >
                   <el-option
                     v-for="column in generatorColumnList"
                     :key="column.columnName"
@@ -199,8 +250,17 @@
                 </el-select>
               </el-form-item>
               <el-form-item>
-                <base-form-label slot="label" content="如果需要对表数据进行排序排序则可指定排序列，列对应的Java类型需要实现Comparable接口，默认升序， 如：org_sort" label="树表排序列名" />
-                <el-select v-model="generatorTable.sortColumnName" clearable placeholder="树表排序列名" style="width: 100%;">
+                <base-form-label
+                  slot="label"
+                  content="如果需要对表数据进行排序排序则可指定排序列，列对应的Java类型需要实现Comparable接口，默认升序， 如：org_sort"
+                  label="树表排序列名"
+                />
+                <el-select
+                  v-model="generatorTable.sortColumnName"
+                  clearable
+                  placeholder="树表排序列名"
+                  style="width: 100%;"
+                >
                   <el-option
                     v-for="column in generatorColumnList"
                     :key="column.columnName"

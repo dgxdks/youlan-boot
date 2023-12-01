@@ -3,12 +3,14 @@ package com.youlan.controller.pay;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.db.entity.dto.ListDTO;
 import com.youlan.common.db.helper.DBHelper;
 import com.youlan.controller.base.BaseController;
 import com.youlan.plugin.pay.entity.PayConfig;
+import com.youlan.plugin.pay.service.PayChannelConfigService;
 import com.youlan.plugin.pay.service.PayConfigService;
 import com.youlan.system.anno.OperationLog;
 import com.youlan.system.constant.OperationLogType;
@@ -28,6 +30,7 @@ import java.util.List;
 @AllArgsConstructor
 public class PayConfigController extends BaseController {
     private final PayConfigService payConfigService;
+    private final PayChannelConfigService payChannelConfigService;
 
     @SaCheckPermission("pay:payConfig:add")
     @Operation(summary = "支付配置新增")
@@ -58,6 +61,11 @@ public class PayConfigController extends BaseController {
         if (CollectionUtil.isEmpty(dto.getList())) {
             return toSuccess();
         }
+        // 判断支付配置是否已被绑定
+        boolean exists = payChannelConfigService.existsByConfigIds(dto.getList());
+        if (exists) {
+            throw new BizRuntimeException(ApiResultCode.E0023);
+        }
         payConfigService.removeBatchByIds(dto.getList());
         return toSuccess();
     }
@@ -75,6 +83,14 @@ public class PayConfigController extends BaseController {
     @OperationLog(name = "支付配置", type = OperationLogType.OPERATION_LOG_TYPE_PAGE_LIST)
     public ApiResult getPayConfigPageList(@RequestBody PayConfig PayConfig) {
         return toSuccess(payConfigService.loadPage(PayConfig, DBHelper.getQueryWrapper(PayConfig)));
+    }
+
+    @SaCheckPermission("pay:payConfig:list")
+    @Operation(summary = "支付配置列表")
+    @PostMapping("/getPayConfigList")
+    @OperationLog(name = "支付配置", type = OperationLogType.OPERATION_LOG_TYPE_LIST)
+    public ApiResult getPayConfigList(@RequestBody PayConfig PayConfig) {
+        return toSuccess(payConfigService.loadMore(DBHelper.getQueryWrapper(PayConfig)));
     }
 
     @SaCheckPermission("pay:payConfig:export")

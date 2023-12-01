@@ -12,7 +12,9 @@ import com.youlan.common.db.entity.dto.ListDTO;
 import com.youlan.controller.base.BaseController;
 import com.youlan.plugin.pay.entity.PayOrder;
 import com.youlan.plugin.pay.entity.dto.CreatePayOrderDTO;
+import com.youlan.plugin.pay.entity.dto.PayOrderDTO;
 import com.youlan.plugin.pay.entity.dto.SubmitPayOrderDTO;
+import com.youlan.plugin.pay.service.PayOrderService;
 import com.youlan.plugin.pay.service.biz.PayBizService;
 import com.youlan.system.anno.OperationLog;
 import com.youlan.system.constant.OperationLogType;
@@ -30,6 +32,7 @@ import java.io.IOException;
 @RequestMapping("/pay/payOrder")
 @AllArgsConstructor
 public class PayOrderController extends BaseController {
+    private final PayOrderService payOrderService;
     private final PayBizService payBizService;
 
     @SaIgnore
@@ -92,15 +95,15 @@ public class PayOrderController extends BaseController {
     @Operation(summary = "支付订单分页")
     @PostMapping("/getPayOrderPageList")
     @OperationLog(name = "支付订单", type = OperationLogType.OPERATION_LOG_TYPE_PAGE_LIST)
-    public ApiResult getPayOrderPageList(@RequestBody PayOrder PayOrder) {
-        return toSuccess();
+    public ApiResult getPayOrderPageList(@RequestBody PayOrderDTO dto) {
+        return toSuccess(payOrderService.getPayOrderPageList(dto));
     }
 
     @SaCheckPermission("pay:payOrder:export")
     @Operation(summary = "支付订单导出")
     @PostMapping("/exportPayOrderList")
     @OperationLog(name = "支付订单", type = OperationLogType.OPERATION_LOG_TYPE_EXPORT)
-    public void exportPayOrderList(@RequestBody PayOrder PayOrder, HttpServletResponse response) throws IOException {
+    public void exportPayOrderList(@RequestBody PayOrder payOrder, HttpServletResponse response) throws IOException {
         return;
     }
 

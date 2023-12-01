@@ -8,7 +8,7 @@
     :style="style"
     @click="handleClick"
   >
-    <slot />
+    <slot/>
   </el-button>
 </template>
 

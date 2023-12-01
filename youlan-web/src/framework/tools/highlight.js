@@ -17,7 +17,7 @@ highlight.registerLanguage(LANGUAGE_JAVASCRIPT, require('highlight.js/lib/langua
 highlight.registerLanguage(LANGUAGE_SQL, require('highlight.js/lib/languages/sql'))
 export default {
   highlight(content, language) {
-    const result = highlight.highlight(content, { language: language || LANGUAGE_JAVA, ignoreIllegals: true })
+    const result = highlight.highlight(content, {language: language || LANGUAGE_JAVA, ignoreIllegals: true})
     return result.value || EMPTY_CONTENT
   },
   highlightJava(content) {

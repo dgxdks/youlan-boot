@@ -21,4 +21,12 @@ public interface PayChannelConfigMapper extends BaseMapper<PayChannelConfig> {
      */
     List<PayConfig> getPayConfigList(@Param("channelId") Long channelId, @Param("tradeType") TradeType tradeType);
 
+
+    /**
+     * 获取支付配置列表
+     *
+     * @param channelIds 支付通道ID列表
+     * @return 支付配置列表
+     */
+    List<PayChannelConfig> getListByChannelIds(@Param("channelIds") List<Long> channelIds);
 }

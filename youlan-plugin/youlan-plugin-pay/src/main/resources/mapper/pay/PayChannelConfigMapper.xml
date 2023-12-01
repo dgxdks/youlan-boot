@@ -4,6 +4,19 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.youlan.plugin.pay.mapper.PayChannelConfigMapper">
 
+    <select id="getListByChannelIds" resultType="com.youlan.plugin.pay.entity.PayChannelConfig">
+        select channel_config.*, config.type as payType
+        from t_pay_channel_config as channel_config left join t_pay_config as config on channel_config.config_id = config.id
+        <where>
+            <if test="channelIds!= null">
+                channel_config.channel_id in
+                <foreach collection="channelIds" item="channelId" open="(" separator="," close=")">
+                    #{channelId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
     <select id="getPayConfigList" resultType="com.youlan.plugin.pay.entity.PayConfig">
         select config.*
         from t_pay_channel_config as channel_config

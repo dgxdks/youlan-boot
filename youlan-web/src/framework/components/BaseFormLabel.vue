@@ -1,7 +1,7 @@
 <template>
   <span>
     <el-tooltip v-if="content" :content="content" :placement="placement">
-      <i :class="icon" />
+      <i :class="icon"/>
     </el-tooltip>
     {{ label }}
   </span>

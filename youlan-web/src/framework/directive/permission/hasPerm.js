@@ -1,8 +1,8 @@
-import { ArrayUtil, AuthUtil } from '../../tools'
+import {ArrayUtil, AuthUtil} from '../../tools'
 
 export default {
   inserted(el, binding, vnode) {
-    const { value } = binding
+    const {value} = binding
     if (ArrayUtil.isNotEmpty(value)) {
       const hasPermissions = value.some(AuthUtil.hasPermission)
       if (!hasPermissions) {

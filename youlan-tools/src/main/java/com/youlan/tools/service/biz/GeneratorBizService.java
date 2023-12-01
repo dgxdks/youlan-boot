@@ -10,7 +10,6 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.youlan.common.core.exception.BizRuntimeException;
@@ -39,7 +38,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayOutputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.zip.ZipOutputStream;
@@ -166,13 +168,14 @@ public class GeneratorBizService {
                     if (generatorColumn == null) {
                         return null;
                     }
-                    return generatorColumn.setColumnComment(dbColumn.getColumnComment())
+                    generatorColumn.setColumnComment(dbColumn.getColumnComment())
                             .setColumnType(dbColumn.getColumnType())
-                            .setJavaType(GeneratorConstant.JAVA_TYPE_STRING)
                             .setJavaField(StrUtil.toCamelCase(dbColumn.getColumnName()))
                             .setIsPk(DBConstant.boolean2YesNo(GeneratorUtil.columnIsPk(dbColumn.getColumnKey())))
                             .setIsIncrement(DBConstant.boolean2YesNo(GeneratorUtil.columnIsIncrement(dbColumn.getExtra())))
                             .setIsRequired(DBConstant.boolean2YesNo(GeneratorUtil.columnIsRequired(dbColumn.getIsNullable())));
+                    GeneratorUtil.setJavaTypeComponentType(generatorColumn);
+                    return generatorColumn;
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());

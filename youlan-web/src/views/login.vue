@@ -9,7 +9,7 @@
           placeholder="账号"
           type="text"
         >
-          <svg-icon slot="prefix" class="el-input__icon input-icon" icon-class="user" />
+          <svg-icon slot="prefix" class="el-input__icon input-icon" icon-class="user"/>
         </el-input>
       </el-form-item>
       <el-form-item prop="userPassword">
@@ -20,7 +20,7 @@
           type="password"
           @keyup.enter.native="handleLogin"
         >
-          <svg-icon slot="prefix" class="el-input__icon input-icon" icon-class="password" />
+          <svg-icon slot="prefix" class="el-input__icon input-icon" icon-class="password"/>
         </el-input>
       </el-form-item>
       <el-form-item v-if="captchaEnabled" prop="captchaCode">
@@ -31,7 +31,7 @@
           style="width: 63%"
           @keyup.enter.native="handleLogin"
         >
-          <svg-icon slot="prefix" class="el-input__icon input-icon" icon-class="validCode" />
+          <svg-icon slot="prefix" class="el-input__icon input-icon" icon-class="validCode"/>
         </el-input>
         <div class="login-code">
           <img :src="captchaImg" alt="" class="login-code-img" @click="getCode">
@@ -56,14 +56,14 @@
     </el-form>
     <!--  底部  -->
     <div class="el-login-footer">
-      <span v-html="$store.state.settings.loginFooter" />
+      <span v-html="$store.state.settings.loginFooter"/>
     </div>
   </div>
 </template>
 
 <script>
 
-import { getImageCaptcha } from '@/api/system/captcha'
+import {getImageCaptcha} from '@/api/system/captcha'
 
 export default {
   name: 'Login',
@@ -79,12 +79,12 @@ export default {
       },
       loginRules: {
         userName: [
-          { required: true, trigger: 'blur', message: '请输入您的账号' }
+          {required: true, trigger: 'blur', message: '请输入您的账号'}
         ],
         userPassword: [
-          { required: true, trigger: 'blur', message: '请输入您的密码' }
+          {required: true, trigger: 'blur', message: '请输入您的密码'}
         ],
-        captchaCode: [{ required: true, trigger: 'change', message: '请输入验证码' }]
+        captchaCode: [{required: true, trigger: 'change', message: '请输入验证码'}]
       },
       loading: false,
       // 验证码开关
@@ -96,7 +96,7 @@ export default {
   },
   watch: {
     $route: {
-      handler: function(route) {
+      handler: function (route) {
         this.redirect = route.query && route.query.redirect
       },
       immediate: true
@@ -142,7 +142,7 @@ export default {
               this.$cookie.removeUserPassword()
               this.$cookie.removeRememberMe()
             }
-            this.$router.push({ path: this.redirect || '/' }).catch(error => {
+            this.$router.push({path: this.redirect || '/'}).catch(error => {
               console.log(error)
             })
           }).catch(error => {

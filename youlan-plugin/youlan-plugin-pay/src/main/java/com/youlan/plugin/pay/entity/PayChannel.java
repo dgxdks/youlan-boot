@@ -1,8 +1,10 @@
 package com.youlan.plugin.pay.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.youlan.common.db.anno.Query;
 import com.youlan.common.db.constant.DBConstant;
 import com.youlan.common.db.entity.dto.PageDTO;
+import com.youlan.common.db.enums.QueryType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -10,6 +12,7 @@ import org.hibernate.validator.constraints.URL;
 
 import javax.validation.constraints.NotBlank;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @TableName("t_pay_channel")
@@ -20,6 +23,8 @@ public class PayChannel extends PageDTO {
     @TableId(type = IdType.AUTO)
     private Long id;
 
+    @NotBlank(message = "通道名称不能为空")
+    @Query(type = QueryType.LIKE)
     @NotBlank(message = "通道名称不能为空")
     @Schema(description = "通道名称")
     private String name;
@@ -34,6 +39,7 @@ public class PayChannel extends PageDTO {
     @Schema(description = "退款回调地址")
     private String refundNotifyUrl;
 
+    @Query
     @Schema(description = DBConstant.DESC_STATUS)
     @TableField(fill = FieldFill.INSERT)
     private String status;
@@ -64,5 +70,9 @@ public class PayChannel extends PageDTO {
     @Schema(description = DBConstant.DESC_UPDATE_TIME)
     @TableField(fill = FieldFill.UPDATE)
     private Date updateTime;
+
+    @Schema(description = "支付通道配置列表")
+    @TableField(exist = false)
+    private List<PayChannelConfig> payChannelConfigs;
 
 }

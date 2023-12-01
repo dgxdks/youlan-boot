@@ -24,8 +24,10 @@ import com.youlan.plugin.pay.entity.vo.CreatePayOrderVO;
 import com.youlan.plugin.pay.entity.vo.SubmitPayOrderVO;
 import com.youlan.plugin.pay.enums.PayStatus;
 import com.youlan.plugin.pay.factory.PayClientFactory;
-import com.youlan.plugin.pay.params.PayParams;
-import com.youlan.plugin.pay.service.*;
+import com.youlan.plugin.pay.service.PayChannelService;
+import com.youlan.plugin.pay.service.PayConfigService;
+import com.youlan.plugin.pay.service.PayOrderService;
+import com.youlan.plugin.pay.service.PayRecordService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -39,7 +41,7 @@ import java.util.List;
 public class PayBizService {
     private final PayConfigService payConfigService;
     private final PayChannelService payChannelService;
-    private final PayChannelConfigService payChannelConfigService;
+    private final PayChannelBizService payChannelBizService;
     private final PayOrderService payOrderService;
     private final PayRecordService payRecordService;
     private final PayClientFactory payClientFactory;
@@ -86,7 +88,7 @@ public class PayBizService {
         // 获取可以使用的支付通道
         PayChannel payChannel = this.payChannelService.loadPayChannelEnabled(dto.getChannelId());
         // 获取可以使用的支付配置
-        PayConfig payConfig = this.payChannelService.loadPayConfigEnabled(dto.getChannelId(), dto.getTradeType());
+        PayConfig payConfig = this.payChannelBizService.loadPayConfigEnabled(dto.getChannelId(), dto.getTradeType());
         // 获取支付客户端
         PayClient payClient = payClientFactory.createPayClient(payConfig, dto.getTradeType());
         // 创建支付记录

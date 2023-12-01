@@ -9,6 +9,7 @@ export function getDictDataListByTypeKey(params) {
     canRepeatSubmit: true
   })
 }
+
 // 查询字典数据列表
 export function getDictDataPageList(data) {
   return request({

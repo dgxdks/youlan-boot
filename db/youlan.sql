@@ -507,6 +507,34 @@ values (20800, '配置新增', '3', 'pay:payConfig:add', 401, '', '', '', '1', '
         '1', '', 100, 'admin', 0, '', sysdate(), null),
        (20805, '配置导出', '3', 'pay:payConfig:export', 401, '', '', '', '1', '', '2', 6, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null);
+-- 支付通道按钮
+insert into t_sys_menu
+values (20850, '通道新增', '3', 'pay:payChannel:add', 402, '', '', '', '1', '', '2', 1, '1', '1',
+        '', 100, 'admin', 0, '', sysdate(), null),
+       (20851, '通道修改', '3', 'pay:payChannel:update', 402, '', '', '', '1', '', '2', 2, '1', '1',
+        '', 100, 'admin', 0, '', sysdate(), null),
+       (20852, '通道删除', '3', 'pay:payChannel:remove', 402, '', '', '', '1', '', '2', 3, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (20853, '通道详情', '3', 'pay:payChannel:load', 402, '', '', '', '1', '', '2', 4, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (20854, '通道列表', '3', 'pay:payChannel:list', 402, '', '', '', '1', '', '2', 5, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (20855, '通道导出', '3', 'pay:payChannel:export', 402, '', '', '', '1', '', '2', 6, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null);
+-- 支付通道按钮
+insert into t_sys_menu
+values (20900, '订单新增', '3', 'pay:payOrder:add', 403, '', '', '', '1', '', '2', 1, '1', '1',
+        '', 100, 'admin', 0, '', sysdate(), null),
+       (20901, '订单修改', '3', 'pay:payOrder:update', 403, '', '', '', '1', '', '2', 2, '1', '1',
+        '', 100, 'admin', 0, '', sysdate(), null),
+       (20902, '订单删除', '3', 'pay:payOrder:remove', 403, '', '', '', '1', '', '2', 3, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (20903, '订单详情', '3', 'pay:payOrder:load', 403, '', '', '', '1', '', '2', 4, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (20904, '订单列表', '3', 'pay:payOrder:list', 403, '', '', '', '1', '', '2', 5, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (20905, '订单导出', '3', 'pay:payOrder:export', 403, '', '', '', '1', '', '2', 6, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null);
 
 -- ----------------------------
 -- 角色关联菜单表
@@ -639,7 +667,19 @@ values (101, 100),
        (101, 20804),
        (101, 20805),
        (101, 402),
+       (101, 20850),
+       (101, 20851),
+       (101, 20852),
+       (101, 20853),
+       (101, 20854),
+       (101, 20855),
        (101, 403),
+       (101, 20900),
+       (101, 20901),
+       (101, 20902),
+       (101, 20903),
+       (101, 20904),
+       (101, 20905),
        (101, 404),
        (101, 405);
 -- ----------------------------
@@ -962,7 +1002,6 @@ create table t_pay_channel
 (
     id                bigint       not null auto_increment comment '主键ID',
     name              varchar(32)  not null comment '通道名称',
-    type              varchar(16)  not null comment '支付类型(数据字典[pay_type])',
     pay_notify_url    varchar(256) not null comment '支付回调地址',
     refund_notify_url varchar(256) not null comment '退款回调地址',
     status            varchar(4)   default '1' comment '状态(1-正常 2-停用)',

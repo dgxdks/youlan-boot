@@ -1,7 +1,7 @@
 /**
-* v-dialogDrag 弹窗拖拽
-* Copyright (c) 2019 ruoyi
-*/
+ * v-dialogDrag 弹窗拖拽
+ * Copyright (c) 2019 ruoyi
+ */
 
 export default {
   bind(el, binding, vnode, oldVnode) {
@@ -41,7 +41,7 @@ export default {
       }
 
       // 鼠标拖拽事件
-      document.onmousemove = function(e) {
+      document.onmousemove = function (e) {
         // 通过事件委托，计算移动的距离 （开始拖拽至结束拖拽的距离）
         const l = e.clientX - disX
         const t = e.clientY - disY
@@ -54,7 +54,7 @@ export default {
         dragDom.style.top = `${finallyT}px`
       }
 
-      document.onmouseup = function(e) {
+      document.onmouseup = function (e) {
         document.onmousemove = null
         document.onmouseup = null
       }

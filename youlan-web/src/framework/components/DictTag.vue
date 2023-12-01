@@ -11,7 +11,9 @@
       </template>
     </template>
     <template v-if="noMatchAny && showDefault">
-      {{ defaultTag }}
+      <el-tag type="info">
+        {{ defaultTag }}
+      </el-tag>
     </template>
   </div>
 </template>
@@ -38,8 +40,7 @@ export default {
     }
   },
   data() {
-    return {
-    }
+    return {}
   },
   computed: {
     noMatchAny() {
@@ -48,7 +49,7 @@ export default {
           return item.value === this.value
         }).length === 0
       }
-      return false
+      return true
     }
   },
   created() {

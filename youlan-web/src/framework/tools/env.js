@@ -1,4 +1,4 @@
-import { StrUtil } from '@/framework/tools/index'
+import {StrUtil} from '@/framework/tools/index'
 
 export default {
   isDevEnv() {

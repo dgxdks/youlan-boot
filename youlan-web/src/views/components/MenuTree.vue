@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { getMenuTreeList } from '@/api/system/menu'
+import {getMenuTreeList} from '@/api/system/menu'
 import tree from '@/framework/mixin/tree'
 
 export default {

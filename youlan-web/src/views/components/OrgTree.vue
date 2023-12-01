@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import { getOrgTreeList } from '@/api/system/org'
+import {getOrgTreeList} from '@/api/system/org'
 import tree from '@/framework/mixin/tree'
 
 export default {

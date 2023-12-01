@@ -1,226 +1,227 @@
 <template>
   <div class="app-container">
     <el-form v-show="queryShow" ref="queryForm" inline :model="queryForm" size="small">
-      #foreach($column in ${queryColumns})
-      <el-form-item label="${column.columnComment}" prop="${column.javaField}">
-        #if(${column.typeKey} && ${column.typeKey} != "")
-        <dict-select
-          v-model="queryForm.${column.javaField}"
-          dict-type="${column.typeKey}"
-          placeholder="请选择${column.columnComment}"
-          clearable
-          style="width: 240px"
-        />
-        #if(${column.componentType} == "SELECT" || ${column.componentType} == "CHECKBOX" || ${column.componentType} == "RADIO")
-        <el-select
-          v-model="queryForm.${column.javaField}"
-          placeholder="请选择${column.columnComment}"
-          clearable
-          style="width: 240px"
-        />
+        #foreach($column in ${queryColumns})
+          <el-form-item label="${column.columnComment}" prop="${column.javaField}">
+              #if(${column.typeKey} && ${column.typeKey} != "")
+                <dict-select
+                    v-model="queryForm.${column.javaField}"
+                    dict-type="${column.typeKey}"
+                    placeholder="请选择${column.columnComment}"
+                    clearable
+                    style="width: 240px"
+                />
+                  #if(${column.componentType} == "SELECT" || ${column.componentType} ==
+                      "CHECKBOX" || ${column.componentType} == "RADIO")
+                    <el-select
+                        v-model="queryForm.${column.javaField}"
+                        placeholder="请选择${column.columnComment}"
+                        clearable
+                        style="width: 240px"
+                    />
+                  #end
+              #elseif(${column.componentType} == "DATE")
+                <base-date-range-picker v-model="queryForm.${column.javaField}" type="date" style="width: 240px"/>
+              #elseif(${column.componentType} == "DATE_RANGE")
+                <base-date-range-picker v-model="queryForm.${column.javaField}" style="width: 240px"/>
+              #elseif(${column.componentType} == "DATETIME")
+                <base-date-range-picker v-model="queryForm.${column.javaField}" type="datetime" style="width: 340px"/>
+              #elseif(${column.componentType}  == "DATETIME_RANGE")
+                <base-date-range-picker v-model="queryForm.${column.javaField}" style="width: 340px"/>
+              #else
+                <el-input
+                    v-model="queryForm.${column.javaField}"
+                    placeholder="请输入${column.columnComment}"
+                    clearable
+                    style="width: 240px"
+                    @keyup.enter.native="handleQuery"
+                />
+              #end
+          </el-form-item>
         #end
-        #elseif(${column.componentType} == "DATE")
-        <base-date-range-picker v-model="queryForm.${column.javaField}" type="date" style="width: 240px" />
-        #elseif(${column.componentType} == "DATE_RANGE")
-        <base-date-range-picker v-model="queryForm.${column.javaField}" style="width: 240px" />
-        #elseif(${column.componentType} == "DATETIME")
-        <base-date-range-picker v-model="queryForm.${column.javaField}" type="datetime" style="width: 340px" />
-        #elseif(${column.componentType}  == "DATETIME_RANGE")
-        <base-date-range-picker v-model="queryForm.${column.javaField}" style="width: 340px" />
-        #else
-        <el-input
-          v-model="queryForm.${column.javaField}"
-          placeholder="请输入${column.columnComment}"
-          clearable
-          style="width: 240px"
-          @keyup.enter.native="handleQuery"
-        />
-        #end
-      </el-form-item>
-      #end
       <el-form-item>
-        <base-search-button @click="handleQuery" />
-        <base-reset-button @click="handleResetQuery" />
+        <base-search-button @click="handleQuery"/>
+        <base-reset-button @click="handleResetQuery"/>
       </el-form-item>
     </el-form>
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <base-add-button v-has-perm="['${moduleName}:${bizName}:add']" plain @click="handleAdd" />
+        <base-add-button v-has-perm="['${moduleName}:${bizName}:add']" plain @click="handleAdd"/>
       </el-col>
       <el-col :span="1.5">
-        <base-update-button v-has-perm="['${moduleName}:${bizName}:update']" plain :disabled="!tableSelectOne" @click="handleUpdate" />
+        <base-update-button v-has-perm="['${moduleName}:${bizName}:update']" plain :disabled="!tableSelectOne"
+                            @click="handleUpdate"/>
       </el-col>
       <el-col :span="1.5">
-        <base-remove-button v-has-perm="['${moduleName}:${bizName}:remove']" plain :disabled="tableNoSelected" @click="handleDelete" />
+        <base-remove-button v-has-perm="['${moduleName}:${bizName}:remove']" plain :disabled="tableNoSelected"
+                            @click="handleDelete"/>
       </el-col>
       <el-col :span="1.5">
-        <base-download-button v-has-perm="['${moduleName}:${bizName}:export']" plain :disabled="tableNoSelected" @click="handleExport">导出</base-download-button>
+        <base-download-button v-has-perm="['${moduleName}:${bizName}:export']" plain :disabled="tableNoSelected"
+                              @click="handleExport">导出
+        </base-download-button>
       </el-col>
-      <table-toolbar :query-show.sync="queryShow" @refresh="getList" />
+      <table-toolbar :query-show.sync="queryShow" @refresh="getList"/>
     </el-row>
 
     <el-table v-loading="tableLoading" :data="${bizName}List" @selection-change="handleSelectionChange">
-      <el-table-column align="center" type="selection" width="55" />
-      #foreach($column in $tableColumns)
-      #if(${column.javaType} == "Date")
-      <el-table-column label="${column.columnComment}" prop="${column.javaField}" align="center" width="160" />
-      #elseif(${column.componentType} == "IMAGE_UPLOAD" || ${column.componentType}  == "IMAGE_SHOW")
-      <el-table-column label="${column.columnComment}" prop="${column.javaField}" align="center" width="100">
-        <template slot-scope="scope">
-          <image-preview :src="scope.row.${column.javaField}" :width="50" :height="50" />
-        </template>
-      </el-table-column>
-      #elseif(${column.typeKey} && ${column.typeKey} != "")
-      <el-table-column label="${column.columnComment}" prop="${column.javaField}" align="center">
-        <template slot-scope="scope">
-          <dict-tag v-model="scope.row.${column.javaField}" dict-type="${column.typeKey}" />
-        </template>
-      </el-table-column>
-      #else
-      <el-table-column label="${column.columnComment}" prop="${column.javaField}" align="center" />
-      #end
-      #end
+      <el-table-column align="center" type="selection" width="55"/>
+        #foreach($column in $tableColumns)
+            #if(${column.javaType} == "Date")
+              <el-table-column label="${column.columnComment}" prop="${column.javaField}" align="center" width="160"/>
+            #elseif(${column.componentType} == "IMAGE_UPLOAD" || ${column.componentType}  == "IMAGE_SHOW")
+              <el-table-column label="${column.columnComment}" prop="${column.javaField}" align="center" width="100">
+                <template slot-scope="scope">
+                  <image-preview :src="scope.row.${column.javaField}" :width="50" :height="50"/>
+                </template>
+              </el-table-column>
+            #elseif(${column.typeKey} && ${column.typeKey} != "")
+              <el-table-column label="${column.columnComment}" prop="${column.javaField}" align="center">
+                <template slot-scope="scope">
+                  <dict-tag v-model="scope.row.${column.javaField}" dict-type="${column.typeKey}"/>
+                </template>
+              </el-table-column>
+            #else
+              <el-table-column label="${column.columnComment}" prop="${column.javaField}" align="center"/>
+            #end
+        #end
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="160">
         <template slot-scope="scope">
-          <base-update-button v-has-perm="['${moduleName}:${bizName}:update']" type="text" @click="handleUpdate(scope.row)" />
-          <base-remove-button v-has-perm="['${moduleName}:${bizName}:remove']" type="text" @click="handleDelete(scope.row)" />
+          <base-update-button v-has-perm="['${moduleName}:${bizName}:update']" type="text"
+                              @click="handleUpdate(scope.row)"/>
+          <base-remove-button v-has-perm="['${moduleName}:${bizName}:remove']" type="text"
+                              @click="handleDelete(scope.row)"/>
         </template>
       </el-table-column>
     </el-table>
 
-    #if(${templateType} != "2")
-    <pagination
-      v-show="pageTotal>0"
-      :limit.sync="queryForm.pageSize"
-      :page.sync="queryForm.pageNum"
-      :total="pageTotal"
-      @pagination="getList"
-    />
-    #end
+      #if(${templateType} != "2")
+        <pagination
+            v-show="pageTotal>0"
+            :limit.sync="queryForm.pageSize"
+            :page.sync="queryForm.pageNum"
+            :total="pageTotal"
+            @pagination="getList"
+        />
+      #end
 
     <!-- ${featureName}编辑对话框 -->
-    <base-dialog :title="editTitle" :open.sync="editOpen" width="600px" @confirm="handleEditSubmit" @cancel="handleEditCancel">
+    <base-dialog :title="editTitle" :open.sync="editOpen" width="600px" @confirm="handleEditSubmit"
+                 @cancel="handleEditCancel">
       <el-form ref="editForm" :model="editForm" :rules="editRules" label-width="100px">
-        #foreach(${column} in ${editColumns})
-        #set($componentType = $column.componentType)
-        #set($javaField = $column.javaField)
-        #set($typeKey = $column.typeKey)
-        #set($columnComment = $column.columnComment)
-        #if($componentType == "IMAGE_UPLOAD")
-        <el-form-item label="$columnComment" prop="$javaField">
-          <image-upload v-model="editForm.$javaField" />
-        </el-form-item>
-        #elseif($componentType == "FILE_UPLOAD")
-        <el-form-item label="$columnComment" prop="$javaField">
-          <file-upload v-model="editForm.$javaField" />
-        </el-form-item>
-        #elseif($componentType == "RICH_TEXT")
-        <el-form-item label="$columnComment" prop="$javaField">
-          <editor v-model="editForm.$javaField" :min-height="192" />
-        </el-form-item>
-        #elseif($componentType == "SELEC" && (!$typeKey || $typeKey == ""))
-        <el-form-item label="$columnComment" prop="$javaField">
-          <el-select v-model="editForm.$javaField" placeholder="$columnComment" />
-        </el-form-item>
-        #elseif($componentType == "SELECT" && $typeKey && $typeKey != "")
-        <el-form-item label="$columnComment" prop="$javaField">
-          <dict-select v-model="editForm.$javaField" dict-type="$typeKey" placeholder="$columnComment" />
-        </el-form-item>
-        #elseif($componentType == "RADIO" && (!$typeKey || $typeKey == ""))
-        <el-form-item label="$columnComment" prop="$javaField">
-          <dict-radio v-model="editForm.$javaField" dict-type="$typeKey" />
-        </el-form-item>
-        #elseif($componentType == "RADIO" && $typeKey && $typeKey != "")
-        <el-form-item label="$columnComment" prop="$javaField">
-          <el-radio-group v-model="editForm.$javaField" />
-        </el-form-item>
-        #elseif($componentType == "CHECKBOX" && (!$typeKey || $typeKey == ""))
-        <el-form-item label="$columnComment" prop="$javaField">
-          <dict-checkbox v-model="editForm.$javaField" dict-type="$typeKey" />
-        </el-form-item>
-        #elseif($componentType == "CHECKBOX" && $typeKey && $typeKey != "")
-        <el-form-item label="$columnComment" prop="$javaField">
-          <el-checkbox v-model="editForm.$javaField" />
-        </el-form-item>
-        #elseif($componentType == "DATE")
-        <el-form-item label="$columnComment" prop="$javaField">
-          <base-date-range-picker v-model="editForm.${column.javaField}" type="date" style="width: 240px" />
-        </el-form-item>
-        #elseif($componentType == "DATE_RANGE")
-        <el-form-item label="$columnComment" prop="$javaField">
-          <base-date-range-picker v-model="editForm.${column.javaField}" style="width: 240px" />
-        </el-form-item>
-        #elseif($componentType == "DATE_TIME")
-        <el-form-item label="$columnComment" prop="$javaField">
-          <base-date-time-range-picker v-model="editForm.${column.javaField}" type="date" style="width: 340px" />
-        </el-form-item>
-        #elseif($componentType == "DATE_TIME_RANGE")
-        <el-form-item label="$columnComment" prop="$javaField">
-          <base-date-time-range-picker v-model="editForm.${column.javaField}" style="width: 340px" />
-        </el-form-item>
-        #elseif($componentType == "TEXTAREA")
-        <el-form-item label="$columnComment" prop="$javaField">
-          <el-input v-model="editForm.${column.javaField}" type="textarea" placeholder="$columnComment" />
-        </el-form-item>
-        #else
-        <el-form-item label="$columnComment" prop="$javaField">
-          <el-input v-model="editForm.${column.javaField}" placeholder="$columnComment" />
-        </el-form-item>
-        #end
-        #end
+          #foreach(${column} in ${editColumns})
+              #set($componentType = $column.componentType)
+              #set($javaField = $column.javaField)
+              #set($typeKey = $column.typeKey)
+              #set($columnComment = $column.columnComment)
+              #if($componentType == "IMAGE_UPLOAD")
+                <el-form-item label="$columnComment" prop="$javaField">
+                  <image-upload v-model="editForm.$javaField"/>
+                </el-form-item>
+              #elseif($componentType == "FILE_UPLOAD")
+                <el-form-item label="$columnComment" prop="$javaField">
+                  <file-upload v-model="editForm.$javaField"/>
+                </el-form-item>
+              #elseif($componentType == "RICH_TEXT")
+                <el-form-item label="$columnComment" prop="$javaField">
+                  <editor v-model="editForm.$javaField" :min-height="192"/>
+                </el-form-item>
+              #elseif($componentType == "SELEC" && (!$typeKey || $typeKey == ""))
+                <el-form-item label="$columnComment" prop="$javaField">
+                  <el-select v-model="editForm.$javaField" placeholder="$columnComment"/>
+                </el-form-item>
+              #elseif($componentType == "SELECT" && $typeKey && $typeKey != "")
+                <el-form-item label="$columnComment" prop="$javaField">
+                  <dict-select v-model="editForm.$javaField" dict-type="$typeKey" placeholder="$columnComment"/>
+                </el-form-item>
+              #elseif($componentType == "RADIO" && (!$typeKey || $typeKey == ""))
+                <el-form-item label="$columnComment" prop="$javaField">
+                  <dict-radio v-model="editForm.$javaField" dict-type="$typeKey"/>
+                </el-form-item>
+              #elseif($componentType == "RADIO" && $typeKey && $typeKey != "")
+                <el-form-item label="$columnComment" prop="$javaField">
+                  <el-radio-group v-model="editForm.$javaField"/>
+                </el-form-item>
+              #elseif($componentType == "CHECKBOX" && (!$typeKey || $typeKey == ""))
+                <el-form-item label="$columnComment" prop="$javaField">
+                  <dict-checkbox v-model="editForm.$javaField" dict-type="$typeKey"/>
+                </el-form-item>
+              #elseif($componentType == "CHECKBOX" && $typeKey && $typeKey != "")
+                <el-form-item label="$columnComment" prop="$javaField">
+                  <el-checkbox v-model="editForm.$javaField"/>
+                </el-form-item>
+              #elseif($componentType == "DATE")
+                <el-form-item label="$columnComment" prop="$javaField">
+                  <base-date-range-picker v-model="editForm.${column.javaField}" type="date" style="width: 240px"/>
+                </el-form-item>
+              #elseif($componentType == "DATE_RANGE")
+                <el-form-item label="$columnComment" prop="$javaField">
+                  <base-date-range-picker v-model="editForm.${column.javaField}" style="width: 240px"/>
+                </el-form-item>
+              #elseif($componentType == "DATE_TIME")
+                <el-form-item label="$columnComment" prop="$javaField">
+                  <base-date-time-range-picker v-model="editForm.${column.javaField}" type="date" style="width: 340px"/>
+                </el-form-item>
+              #elseif($componentType == "DATE_TIME_RANGE")
+                <el-form-item label="$columnComment" prop="$javaField">
+                  <base-date-time-range-picker v-model="editForm.${column.javaField}" style="width: 340px"/>
+                </el-form-item>
+              #elseif($componentType == "TEXTAREA")
+                <el-form-item label="$columnComment" prop="$javaField">
+                  <el-input v-model="editForm.${column.javaField}" type="textarea" placeholder="$columnComment"/>
+                </el-form-item>
+              #else
+                <el-form-item label="$columnComment" prop="$javaField">
+                  <el-input v-model="editForm.${column.javaField}" placeholder="$columnComment"/>
+                </el-form-item>
+              #end
+          #end
       </el-form>
     </base-dialog>
   </div>
 </template>
 
 <script>
-import {
-  add${BizName},
-  update${BizName},
-  load${BizName},
-  remove${BizName},
-  get${BizName}PageList,
-  get${BizName}List
-} from '@/api/${moduleName}/${bizName}'
-import crud from '@/framework/mixin/crud'
+  import {add${BizName}, load${BizName}, remove${BizName}, update${BizName}} from '@/api/'
+  import crud from '@/framework/mixin/crud'
 
-export default {
-  name: '${BizName}',
-  mixins: [crud],
-  data() {
-    return {
-      // ${featureName}表格数据
-      ${bizName}List: [],
-      // ${featureName}查询参数
-      queryForm: {
-        pageNum: 1,
-        pageSize: 10,
-        #foreach(${column} in ${queryColumns})
-        ${column.javaField}: null,
-        #end
-      },
-      // ${featureName}编辑校验
-      editRules: {
-        #foreach(${column} in ${editColumns})
-        #set($validator = "$validator")
-        #set($message = "'" + "$column.columnComment" + "不能为空'")
-        #if($column.isRequired == "1" && $column.isPk != "1")
-        ${column.javaField}: [
-          this.${validator}.requiredRule($message)
-        ],
-        #end
-        #end
+  export default {
+    name: '${BizName}',
+    mixins: [crud],
+    data() {
+      return {
+        // ${featureName}表格数据
+              ${bizName}List: [],
+        // ${featureName}查询参数
+        queryForm: {
+          pageNum: 1,
+          pageSize: 10,
+            #foreach(${column} in ${queryColumns})
+                    ${column.javaField}: null,
+            #end
+        },
+        // ${featureName}编辑校验
+        editRules: {
+            #foreach(${column} in ${editColumns})
+                #set($validator = "$validator")
+                #set($message = "'" + "$column.columnComment" + "不能为空'")
+                #if($column.isRequired == "1" && $column.isPk != "1")
+                        ${column.javaField}: [
+                    this.${validator}.requiredRule($message)
+                  ],
+                #end
+            #end
+        }
       }
-    }
-  },
-  created() {
-    this.getList()
-  },
-  methods: {
-    #set($refs = "$refs")
-    #set($modal = "$modal")
-    #set($getTime = "${" + "new Date().getTime()" + "}")
+    },
+    created() {
+      this.getList()
+    },
+    methods: {
+      #set($refs = "$refs")
+      #set($modal = "$modal")
+      #set($getTime = "${" + "new Date().getTime()" + "}")
     #set($download = "$download")
     // ${featureName}列表查询
     getList() {
@@ -230,81 +231,100 @@ export default {
         this.pageTotal = res.data.total
         this.closeTableLoading()
       })
-    },
-    // 查询按钮
-    handleQuery() {
-      this.resetPageNum()
+  },
+  // 查询按钮
+  handleQuery()
+  {
+    this.resetPageNum()
+    this.getList()
+  }
+  ,
+  // 查询重置按钮
+  handleResetQuery()
+  {
+    this.${refs}.queryForm && this.$refs.queryForm.resetFields()
+    this.handleQuery()
+  }
+  ,
+  // 新增按钮
+  handleAdd()
+  {
+    this.openEdit('新增${featureName}')
+  }
+  ,
+  // 修改按钮
+  handleUpdate(row)
+  {
+    const id = row.id || this.tableIds[0]
+    load${BizName}({id}).then(res => {
+      this.openEdit('修改${featureName}')
+      this.editForm = res.data
+    })
+  }
+  ,
+  // 删除按钮
+  handleDelete(row)
+  {
+    const list = (row.id && [row.id]) || this.tableIds
+    this.${modal}.confirm('是否确认删除${pkColumnComment}为"' + list + '"的数据项？').then(res => {
+      return remove${BizName}({list})
+    }).then(() => {
       this.getList()
-    },
-    // 查询重置按钮
-    handleResetQuery() {
-      this.${refs}.queryForm && this.$refs.queryForm.resetFields()
-      this.handleQuery()
-    },
-    // 新增按钮
-    handleAdd() {
-      this.openEdit('新增${featureName}')
-    },
-    // 修改按钮
-    handleUpdate(row) {
-      const id = row.id || this.tableIds[0]
-      load${BizName}({ id }).then(res => {
-        this.openEdit('修改${featureName}')
-        this.editForm = res.data
-      })
-    },
-    // 删除按钮
-    handleDelete(row) {
-      const list = (row.id && [row.id]) || this.tableIds
-      this.${modal}.confirm('是否确认删除${pkColumnComment}为"' + list + '"的数据项？').then(res => {
-        return remove${BizName}({ list })
-      }).then(() => {
-        this.getList()
-        this.${modal}.success('删除成功')
-      }).catch(error => {
-        console.log(error)
-      })
-    },
-    // 编辑提交按钮
-    handleEditSubmit() {
-      this.${refs}.editForm.validate(valid => {
-        if (valid) {
-          if (this.editForm.${pkJavaField}) {
-            update${BizName}(this.editForm).then(res => {
-              this.${modal}.success('修改成功')
-              this.closeEdit()
-              this.getList()
-            })
-          } else {
-            add${BizName}(this.editForm).then(res => {
-              this.${modal}.success('新增成功')
-              this.closeEdit()
-              this.getList()
-            })
-          }
+      this.${modal}.success('删除成功')
+    }).catch(error => {
+      console.log(error)
+    })
+  }
+  ,
+  // 编辑提交按钮
+  handleEditSubmit()
+  {
+    this.${refs}.editForm.validate(valid => {
+      if (valid) {
+        if (this.editForm.${pkJavaField}) {
+          update${BizName}(this.editForm).then(res => {
+            this.${modal}.success('修改成功')
+            this.closeEdit()
+            this.getList()
+          })
+        } else {
+          add${BizName}(this.editForm).then(res => {
+            this.${modal}.success('新增成功')
+            this.closeEdit()
+            this.getList()
+          })
         }
-      })
-    },
-    // 编辑取消按钮
-    handleEditCancel() {
-      this.closeEdit()
-    },
-    // 重置编辑数据
-    resetEditForm() {
-      this.editForm = {
-        #foreach(${column} in ${editColumns})
-        ${column.javaField}: null,
-        #end
       }
-    },
-    // 导出按钮
-    handleExport() {
-      this.${download}('/${moduleName}/${bizName}/export${BizName}List', {}, this.queryForm, `${bizName}_${getTime}.xlsx`)
-    },
-    // 多选框选中数据
-    handleSelectionChange(selection) {
-      this.tableIds = selection.map(item => item.${pkJavaField})
+    })
+  }
+  ,
+  // 编辑取消按钮
+  handleEditCancel()
+  {
+    this.closeEdit()
+  }
+  ,
+  // 重置编辑数据
+  resetEditForm()
+  {
+    this.editForm = {
+        #foreach(${column} in ${editColumns})
+                ${column.javaField}: null,
+        #end
     }
   }
-}
+  ,
+  // 导出按钮
+  handleExport()
+  {
+    this.${download}('/${moduleName}/${bizName}/export${BizName}List', {}, this.queryForm, `${bizName}_${getTime}.xlsx`)
+  }
+  ,
+  // 多选框选中数据
+  handleSelectionChange(selection)
+  {
+    this.tableIds = selection.map(item => item.${pkJavaField})
+  }
+  }
+  }
 </script>

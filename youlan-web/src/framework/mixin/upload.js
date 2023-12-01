@@ -1,4 +1,3 @@
-
 export default {
   props: {
     value: {
@@ -40,7 +39,8 @@ export default {
     },
     paramsData: {
       type: Object,
-      default: () => {}
+      default: () => {
+      }
     },
     formData: {
       type: Object,
@@ -89,10 +89,11 @@ export default {
   methods: {
     mergeUrls(urls) {
       if (this.$str.isBlank(urls)) {
+        this.fileList = []
         return
       }
-      urls.split(',').map(url => {
-        const file = this.fileList.some(file => file.url === url)
+      this.fileList = urls.split(',').map(url => {
+        const file = this.fileList.find(item => item.url === url)
         if (file) {
           return file
         } else {
@@ -130,7 +131,7 @@ export default {
       this.$modal.loadingClose()
       this.fileList = fileList.map(item => {
         // 取完整文件访问地址
-        const url = item.response && this.$download.parseSrcUrl(item.response.url)
+        const url = item.response && item.response.data && this.$download.parseSrcUrl(item.response.data.url)
         return {
           ...item,
           url: url || item.url
@@ -147,7 +148,8 @@ export default {
       this.$modal.loadingClose()
       this.$emit('onExceed', files, fileList)
     },
-    onPreview(file) { },
+    onPreview(file) {
+    },
     onChange(file, fileList) {
       this.fileList = fileList
       // 非自动提交时需要替代beforeUpload执行校验，校验失败则删除文件
@@ -164,14 +166,17 @@ export default {
       this.$modal.loading('正在上传中, 请稍等...')
     },
     httpRequest(context) {
-      const { action } = context
+      const {action} = context
       const formData = new FormData()
       formData.append('platform', this.$str.isNotBlank(this.platform) ? this.platform : '')
       formData.append(this.fileName, context.file)
       for (const key in this.formData) {
         formData.append(key, this.formData[key])
       }
-      this.$upload.upload(action, formData, this.paramsData, this.headers, { timeout: this.timeout, canRepeatSubmit: true }).then(res => {
+      this.$upload.upload(action, formData, this.paramsData, this.headers, {
+        timeout: this.timeout,
+        canRepeatSubmit: true
+      }).then(res => {
         context.onSuccess(res)
       }).catch(error => {
         console.log(error)

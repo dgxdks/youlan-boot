@@ -1,23 +1,23 @@
 package ${packageName}.entity.dto;
 
 #foreach(${package} in ${dtoPackages})
-${package}
+    ${package}
 #end
 #foreach(${package} in ${basePackages})
-${package}
+    ${package}
 #end
 
 @Data
 public class ${EntityName}DTO {
 
-#foreach($column in ${dtoColumns})
-    #foreach($validatorAnno in ${column.validatorAnnoList})
-    $validatorAnno
-    #end
-    #if(${column.apiModelPropertyAnno})
-    ${column.apiModelPropertyAnno}
-    #end
-    private $column.javaType $column.javaField;
+    #foreach($column in ${dtoColumns})
+        #foreach($validatorAnno in ${column.validatorAnnoList})
+            $validatorAnno
+        #end
+        #if(${column.apiModelPropertyAnno})
+            ${column.apiModelPropertyAnno}
+        #end
+        private $column.javaType $column.javaField;
 
-#end
+    #end
 }

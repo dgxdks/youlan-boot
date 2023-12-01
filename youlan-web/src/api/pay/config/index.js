@@ -9,6 +9,15 @@ export function getPayConfigPageList(data) {
   })
 }
 
+// 支付配置列表
+export function getPayConfigList(data) {
+  return request({
+    url: '/pay/payConfig/getPayConfigList',
+    method: 'post',
+    data
+  })
+}
+
 // 支付配置详情
 export function loadPayConfig(params) {
   return request({
@@ -28,9 +37,9 @@ export function removePayConfig(data) {
 }
 
 // 支付配置导出
-export function exportPayConfig(data) {
+export function exportPayConfigList(data) {
   return request({
-    url: '/pay/payConfig/exportPayConfig',
+    url: '/pay/payConfig/exportPayConfigList',
     method: 'post',
     data
   })

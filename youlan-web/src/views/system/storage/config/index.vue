@@ -20,7 +20,13 @@
         />
       </el-form-item>
       <el-form-item label="存储类型" prop="type">
-        <dict-select v-model="queryForm.type" dict-type="storage_type" style="width: 240px" placeholder="存储类型" clearable />
+        <dict-select
+          v-model="queryForm.type"
+          dict-type="storage_type"
+          style="width: 240px"
+          placeholder="存储类型"
+          clearable
+        />
       </el-form-item>
       <el-form-item>
         <base-search-button @click="handleQuery" />
@@ -33,16 +39,28 @@
         <base-add-button v-has-perm="['system:storageConfig:add']" plain @click="handleAdd" />
       </el-col>
       <el-col :span="1.5">
-        <base-update-button v-has-perm="['system:storageConfig:update']" plain :disabled="!tableSelectOne" @click="handleUpdate" />
+        <base-update-button
+          v-has-perm="['system:storageConfig:update']"
+          plain
+          :disabled="!tableSelectOne"
+          @click="handleUpdate"
+        />
       </el-col>
       <el-col :span="1.5">
-        <base-remove-button v-has-perm="['system:storageConfig:remove']" plain :disabled="tableNoSelected" @click="handleDelete" />
+        <base-remove-button
+          v-has-perm="['system:storageConfig:remove']"
+          plain
+          :disabled="tableNoSelected"
+          @click="handleDelete"
+        />
       </el-col>
       <el-col :span="1.5">
-        <base-download-button v-has-perm="['system:storageConfig:export']" plain @click="handleExport">导出</base-download-button>
+        <base-download-button v-has-perm="['system:storageConfig:export']" plain @click="handleExport">导出
+        </base-download-button>
       </el-col>
       <el-col :span="1.5">
-        <base-remove-button v-has-perm="['system:storageConfig:remove']" plain @click="handleRefreshCache">刷新缓存</base-remove-button>
+        <base-remove-button v-has-perm="['system:storageConfig:remove']" plain @click="handleRefreshCache">刷新缓存
+        </base-remove-button>
       </el-col>
       <table-toolbar :query-show.sync="queryShow" @refresh="getList" />
     </el-row>
@@ -71,8 +89,16 @@
       <el-table-column align="center" label="创建时间" prop="createTime" width="160" />
       <el-table-column align="center" class-name="small-padding fixed-width" label="操作" width="160">
         <template slot-scope="scope">
-          <base-update-button v-has-perm="['system:storageConfig:update']" type="text" @click="handleUpdate(scope.row)" />
-          <base-remove-button v-has-perm="['system:storageConfig:remove']" type="text" @click="handleDelete(scope.row)" />
+          <base-update-button
+            v-has-perm="['system:storageConfig:update']"
+            type="text"
+            @click="handleUpdate(scope.row)"
+          />
+          <base-remove-button
+            v-has-perm="['system:storageConfig:remove']"
+            type="text"
+            @click="handleDelete(scope.row)"
+          />
         </template>
       </el-table-column>
     </el-table>
@@ -86,7 +112,13 @@
     />
 
     <!-- 存储配置编辑对话框 -->
-    <base-dialog :title="editTitle" :open.sync="editOpen" width="700px" @confirm="handleEditSubmit" @cancel="handleEditCancel">
+    <base-dialog
+      :title="editTitle"
+      :open.sync="editOpen"
+      width="700px"
+      @confirm="handleEditSubmit"
+      @cancel="handleEditCancel"
+    >
       <el-form ref="editForm" :model="editForm" :rules="editRules" label-width="100px">
         <base-row-split2>
           <el-form-item label="配置名称" prop="name">

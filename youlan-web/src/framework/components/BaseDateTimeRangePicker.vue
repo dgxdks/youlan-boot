@@ -30,7 +30,7 @@ export default {
     },
     defaultTime: {
       type: [String, Array],
-      default: function() {
+      default: function () {
         if (this.type === 'datetimerange') {
           return ['00:00:00', '23:59:59']
         } else {

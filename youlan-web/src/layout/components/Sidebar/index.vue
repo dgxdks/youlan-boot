@@ -3,7 +3,7 @@
     :class="{'has-logo':showLogo}"
     :style="{ backgroundColor: settings.sideTheme === 'theme-dark' ? variables.menuBackground : variables.menuLightBackground }"
   >
-    <logo v-if="showLogo" :collapse="isCollapse" />
+    <logo v-if="showLogo" :collapse="isCollapse"/>
     <el-scrollbar :class="settings.sideTheme" wrap-class="scrollbar-wrapper">
       <el-menu
         :active-text-color="settings.theme"
@@ -27,19 +27,19 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
+import {mapGetters, mapState} from 'vuex'
 import Logo from './Logo'
 import SidebarItem from './SidebarItem'
 import variables from '@/assets/styles/variables.scss'
 
 export default {
-  components: { SidebarItem, Logo },
+  components: {SidebarItem, Logo},
   computed: {
     ...mapState(['settings']),
     ...mapGetters(['sidebarRouters', 'sidebar']),
     activeMenu() {
       const route = this.$route
-      const { meta, path } = route
+      const {meta, path} = route
       // if set path, the sidebar will highlight the path you set
       if (meta.activeMenu) {
         return meta.activeMenu

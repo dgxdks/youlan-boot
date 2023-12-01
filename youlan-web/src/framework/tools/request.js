@@ -1,8 +1,8 @@
 import axios from 'axios'
-import { Message, MessageBox } from 'element-ui'
+import {Message, MessageBox} from 'element-ui'
 import store from '@/store'
-import { canRepeatSubmit, canRepeatSubmitMinInterval, tokenValuePrefix } from '@/settings'
-import { StorageUtil, JSONUtil, ObjectUtil } from '@/framework/tools/index'
+import {canRepeatSubmit, canRepeatSubmitMinInterval, tokenValuePrefix} from '@/settings'
+import {JSONUtil, ObjectUtil, StorageUtil} from '@/framework/tools/index'
 
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
 // 创建axios实例
@@ -99,7 +99,7 @@ service.interceptors.response.use(response => {
   return Promise.reject(new Error(errorMsg))
 }, error => {
   console.log(error)
-  let { message } = error
+  let {message} = error
   if (message === 'Network Error') {
     message = '后端接口连接异常'
   } else if (message.includes('timeout')) {
@@ -107,7 +107,7 @@ service.interceptors.response.use(response => {
   } else if (message.includes('Request failed with status code')) {
     message = '系统接口' + message.substr(message.length - 3) + '异常'
   }
-  Message.error({ message: message, duration: 5 * 1000 })
+  Message.error({message: message, duration: 5 * 1000})
   return Promise.reject(error)
 })
 

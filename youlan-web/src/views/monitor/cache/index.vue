@@ -5,7 +5,7 @@
         <el-card>
           <el-descriptions direction="horizontal" :column="4" border>
             <div slot="title">
-              <el-icon name="el-icon-monitor" class="el-icon-monitor" />
+              <el-icon name="el-icon-monitor" class="el-icon-monitor"/>
               基本信息
             </div>
             <el-descriptions-item label="Redis版本">{{ cacheMonitorInfo.redis_version }}</el-descriptions-item>
@@ -17,26 +17,32 @@
             <el-descriptions-item label="使用CPU">{{ cacheMonitorInfo.used_cpu_user_children }}</el-descriptions-item>
             <el-descriptions-item label="内存配置">{{ cacheMonitorInfo.maxmemory_human }}</el-descriptions-item>
             <el-descriptions-item label="AOF是否开启">{{ getAofEnabled(cacheMonitorInfo) }}</el-descriptions-item>
-            <el-descriptions-item label="RDB是否成功">{{ cacheMonitorInfo.rdb_last_bgsave_status }}</el-descriptions-item>
+            <el-descriptions-item label="RDB是否成功">{{
+                cacheMonitorInfo.rdb_last_bgsave_status
+              }}
+            </el-descriptions-item>
             <el-descriptions-item label="Key数量">{{ cacheMonitorInfo.dbSize }}</el-descriptions-item>
-            <el-descriptions-item label="网络入口/出口">{{ getInputOutputKbps(cacheMonitorInfo) }}</el-descriptions-item>
+            <el-descriptions-item label="网络入口/出口">{{
+                getInputOutputKbps(cacheMonitorInfo)
+              }}
+            </el-descriptions-item>
           </el-descriptions>
         </el-card>
       </el-col>
       <el-col :span="12" class="card-box">
         <el-card>
-          <div slot="header"><span><i class="el-icon-pie-chart" /> 命令统计</span></div>
+          <div slot="header"><span><i class="el-icon-pie-chart"/> 命令统计</span></div>
           <div class="el-table el-table--enable-row-hover el-table--medium">
-            <div ref="commandStats" style="height: 420px" />
+            <div ref="commandStats" style="height: 420px"/>
           </div>
         </el-card>
       </el-col>
 
       <el-col :span="12" class="card-box">
         <el-card>
-          <div slot="header"><span><i class="el-icon-odometer" /> 内存信息</span></div>
+          <div slot="header"><span><i class="el-icon-odometer"/> 内存信息</span></div>
           <div class="el-table el-table--enable-row-hover el-table--medium">
-            <div ref="usedMemory" style="height: 420px" />
+            <div ref="usedMemory" style="height: 420px"/>
           </div>
         </el-card>
       </el-col>
@@ -45,7 +51,7 @@
 </template>
 
 <script>
-import { getCacheMonitorInfo } from '@/api/monitor/cache'
+import {getCacheMonitorInfo} from '@/api/monitor/cache'
 import * as echarts from 'echarts'
 
 export default {
@@ -57,8 +63,7 @@ export default {
       // 使用内存
       usedMemory: null,
       // 缓存监控信息
-      cacheMonitorInfo: {
-      }
+      cacheMonitorInfo: {}
     }
   },
   created() {

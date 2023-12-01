@@ -1,6 +1,6 @@
-import { accountLogin, logout, getLoginInfo } from '@/api/system/login'
-import { ArrayUtil, CookieUtil, DownloadUtil, StrUtil } from '@/framework/tools'
-import { tokenValuePrefix } from '@/settings'
+import {accountLogin, getLoginInfo, logout} from '@/api/system/login'
+import {ArrayUtil, CookieUtil, DownloadUtil, StrUtil} from '@/framework/tools'
+import {tokenValuePrefix} from '@/settings'
 
 function getTokenHeaders() {
   return {
@@ -43,7 +43,7 @@ const user = {
 
   actions: {
     // 登录
-    AccountLogin({ commit }, loginForm) {
+    AccountLogin({commit}, loginForm) {
       const data = {
         userName: loginForm.userName.trim(),
         userPassword: loginForm.userPassword,
@@ -61,7 +61,7 @@ const user = {
     },
 
     // 获取用户登录信息
-    GetLoginInfo({ commit, state }) {
+    GetLoginInfo({commit, state}) {
       return new Promise((resolve, reject) => {
         getLoginInfo().then(res => {
           const user = res.data.user
@@ -83,7 +83,7 @@ const user = {
       })
     },
     // 退出系统
-    Logout({ commit, state }) {
+    Logout({commit, state}) {
       return new Promise((resolve, reject) => {
         logout(state.token).then(() => {
           commit('SET_TOKEN', '')
