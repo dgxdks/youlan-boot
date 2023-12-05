@@ -128,7 +128,7 @@
             />
             <el-input v-model="editForm.componentPath" placeholder="请输入组件路径" />
           </el-form-item>
-          <el-form-item v-if="isMenu(editForm)" prop="menuPerms">
+          <el-form-item v-if="isBtn(editForm)" prop="menuPerms">
             <base-form-label
               slot="label"
               content="控制器中定义的权限字符，如：@PreAuthorize(`@ss.hasPermi('system:user:list')`)"

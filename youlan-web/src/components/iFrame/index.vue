@@ -23,7 +23,7 @@ export default {
       url: this.src
     }
   },
-  mounted: function () {
+  mounted: function() {
     setTimeout(() => {
       this.loading = false
     }, 300)

@@ -1,8 +1,8 @@
-import {JSONUtil, StrUtil} from '@/framework/tools/index'
+import { JSONUtil, StrUtil } from '@/framework/tools/index'
 import Cookies from 'js-cookie'
 
 export default {
-  set(key, value, {options}) {
+  set(key, value, { options }) {
     Cookies.set(key, value, options)
   },
   get(key) {
@@ -21,7 +21,7 @@ export default {
     return this.get('userName')
   },
   setUserName(userName) {
-    this.set('userName', userName, {expires: 30})
+    this.set('userName', userName, { expires: 30 })
   },
   removeUserName() {
     return this.remove('userName')
@@ -30,7 +30,7 @@ export default {
     return this.get('userPassword')
   },
   setUserPassword(userPassword) {
-    this.set('userPassword', userPassword, {expires: 30})
+    this.set('userPassword', userPassword, { expires: 30 })
   },
   removeUserPassword() {
     return this.remove('userPassword')
@@ -39,7 +39,7 @@ export default {
     return this.getBoolean('rememberMe')
   },
   setRememberMe(rememberMe) {
-    this.set('rememberMe', StrUtil.toBoolean(rememberMe), {expires: 30})
+    this.set('rememberMe', StrUtil.toBoolean(rememberMe), { expires: 30 })
   },
   removeRememberMe() {
     return this.remove('rememberMe')

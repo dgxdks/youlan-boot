@@ -1,4 +1,4 @@
-import {JSONUtil} from '@/framework/tools/index'
+import { JSONUtil } from '@/framework/tools/index'
 
 export default {
   setLocalStorage(key, value) {

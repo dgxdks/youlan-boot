@@ -1,4 +1,4 @@
-import {mapGetters} from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
   computed: {
@@ -8,6 +8,8 @@ export default {
     if (this.$options && this.$array.isNotEmpty(this.$options.dictTypes)) {
       this.$dict.loadDictList(this.$options.dictTypes)
     }
-    return {}
+    return {
+
+    }
   }
 }

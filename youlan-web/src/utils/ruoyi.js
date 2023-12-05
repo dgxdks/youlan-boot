@@ -40,10 +40,8 @@ export function selectDictLabel(datas, value) {
 
 // 字符串格式化(%s )
 export function sprintf(str) {
-  var args = arguments;
-  var flag = true;
-  var i = 1
-  str = str.replace(/%s/g, function () {
+  var args = arguments; var flag = true; var i = 1
+  str = str.replace(/%s/g, function() {
     var arg = args[i++]
     if (typeof arg === 'undefined') {
       flag = false

@@ -7,7 +7,7 @@
     :underline="false"
     icon="el-icon-document-copy"
   >
-    <slot/>
+    <slot />
   </el-link>
 </template>
 

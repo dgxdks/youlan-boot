@@ -29,7 +29,7 @@ export default {
       // 表单数据
       editForm: {},
       // 表单校验规则
-      editRules: {}
+      editRules: []
     }
   },
   computed: {
@@ -93,7 +93,7 @@ export default {
       this.tableIds = selection.map(item => item.id)
     },
     // 表排序变化
-    handleSortChange({column, prop, order}) {
+    handleSortChange({ column, prop, order }) {
 
     },
     // 排序字符是否是升序

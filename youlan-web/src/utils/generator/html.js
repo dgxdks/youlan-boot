@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import {trigger} from './config'
+import { trigger } from './config'
 
 let confGlobal
 let someSpanIsNot24
@@ -140,7 +140,7 @@ const tags = {
     return `<${el.tag} ${vModel} ${type} ${placeholder} ${maxlength} ${showWordLimit} ${readonly} ${disabled} ${clearable} ${prefixIcon} ${suffixIcon} ${showPassword} ${autosize} ${width}>${child}</${el.tag}>`
   },
   'el-input-number': el => {
-    const {disabled, vModel, placeholder} = attrBuilder(el)
+    const { disabled, vModel, placeholder } = attrBuilder(el)
     const controlsPosition = el['controls-position'] ? `controls-position=${el['controls-position']}` : ''
     const min = el.min ? `:min='${el.min}'` : ''
     const max = el.max ? `:max='${el.max}'` : ''
@@ -162,7 +162,7 @@ const tags = {
     return `<${el.tag} ${vModel} ${placeholder} ${disabled} ${multiple} ${filterable} ${clearable} ${width}>${child}</${el.tag}>`
   },
   'el-radio-group': el => {
-    const {disabled, vModel} = attrBuilder(el)
+    const { disabled, vModel } = attrBuilder(el)
     const size = `size="${el.size}"`
     let child = buildElRadioGroupChild(el)
 
@@ -170,7 +170,7 @@ const tags = {
     return `<${el.tag} ${vModel} ${size} ${disabled}>${child}</${el.tag}>`
   },
   'el-checkbox-group': el => {
-    const {disabled, vModel} = attrBuilder(el)
+    const { disabled, vModel } = attrBuilder(el)
     const size = `size="${el.size}"`
     const min = el.min ? `:min="${el.min}"` : ''
     const max = el.max ? `:max="${el.max}"` : ''
@@ -180,7 +180,7 @@ const tags = {
     return `<${el.tag} ${vModel} ${min} ${max} ${size} ${disabled}>${child}</${el.tag}>`
   },
   'el-switch': el => {
-    const {disabled, vModel} = attrBuilder(el)
+    const { disabled, vModel } = attrBuilder(el)
     const activeText = el['active-text'] ? `active-text="${el['active-text']}"` : ''
     const inactiveText = el['inactive-text'] ? `inactive-text="${el['inactive-text']}"` : ''
     const activeColor = el['active-color'] ? `active-color="${el['active-color']}"` : ''
@@ -203,7 +203,7 @@ const tags = {
     return `<${el.tag} ${vModel} ${options} ${props} ${width} ${showAllLevels} ${placeholder} ${separator} ${filterable} ${clearable} ${disabled}></${el.tag}>`
   },
   'el-slider': el => {
-    const {disabled, vModel} = attrBuilder(el)
+    const { disabled, vModel } = attrBuilder(el)
     const min = el.min ? `:min='${el.min}'` : ''
     const max = el.max ? `:max='${el.max}'` : ''
     const step = el.step ? `:step='${el.step}'` : ''
@@ -241,7 +241,7 @@ const tags = {
     return `<${el.tag} ${type} ${vModel} ${format} ${valueFormat} ${width} ${placeholder} ${startPlaceholder} ${endPlaceholder} ${rangeSeparator} ${clearable} ${readonly} ${disabled}></${el.tag}>`
   },
   'el-rate': el => {
-    const {disabled, vModel} = attrBuilder(el)
+    const { disabled, vModel } = attrBuilder(el)
     // eslint-disable-next-line no-unused-vars
     const max = el.max ? `:max='${el.max}'` : ''
     const allowHalf = el['allow-half'] ? 'allow-half' : ''
@@ -251,7 +251,7 @@ const tags = {
     return `<${el.tag} ${vModel} ${allowHalf} ${showText} ${showScore} ${disabled}></${el.tag}>`
   },
   'el-color-picker': el => {
-    const {disabled, vModel} = attrBuilder(el)
+    const { disabled, vModel } = attrBuilder(el)
     const size = `size="${el.size}"`
     const showAlpha = el['show-alpha'] ? 'show-alpha' : ''
     const colorFormat = el['color-format'] ? `color-format="${el['color-format']}"` : ''

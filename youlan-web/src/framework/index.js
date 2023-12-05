@@ -34,9 +34,7 @@ import Tools, {
   DateUtil,
   DictUtil,
   DownloadUtil,
-  EnvUtil,
-  HighLightUtil,
-  JSONUtil,
+  EnvUtil, HighLightUtil, JSONUtil,
   ModalUtil,
   ObjectUtil,
   StorageUtil,
@@ -168,7 +166,7 @@ function mountPrototype() {
   Vue.prototype.$tools = Tools
 }
 
-const install = function (Vue) {
+const install = function(Vue) {
   mountPrototype()
   mountDirective()
   mountMixin()

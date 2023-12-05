@@ -21,7 +21,7 @@
     <template v-if="showTips" slot="tip">
       <div slot="tip" class="el-upload__tip ">
         <div slot="tip" class="el-upload__tip">
-          <slot v-if="$slots.tip" name="tip"/>
+          <slot v-if="$slots.tip" name="tip" />
           <template v-else>
             请上传
             <template v-if="fileSize"> 大小不超过 <b style="color: #f56c6c">{{ fileSize }}MB</b></template>
@@ -29,7 +29,7 @@
             的文件
           </template>
         </div>
-        <slot/>
+        <slot />
       </div>
     </template>
   </el-upload>

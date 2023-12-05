@@ -1,6 +1,6 @@
 import CryptoJs from 'crypto-js'
 import JSEncrypt from 'jsencrypt/bin/jsencrypt.min'
-import {StrUtil} from '@/framework/tools/index'
+import { StrUtil } from '@/framework/tools/index'
 import md5 from 'js-md5'
 
 const defaultAesKey = '85SylH6RnDL9H9a/yoqXew=='

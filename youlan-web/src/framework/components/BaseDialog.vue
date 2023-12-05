@@ -1,6 +1,5 @@
 <template>
   <el-dialog
-    v-dialog-drag
     :title="title"
     :visible.sync="visible"
     :append-to-body="appendToBody"
@@ -8,7 +7,7 @@
     :width="width"
     :close-on-click-modal="closeOnClickModal"
   >
-    <slot/>
+    <slot />
     <div slot="footer" class="dialog-footer">
       <el-button v-if="!confirmBtnDisabled" type="primary" @click="confirm">确 定</el-button>
       <el-button v-if="!cancelBtnDisabled" @click="cancel">取 消</el-button>

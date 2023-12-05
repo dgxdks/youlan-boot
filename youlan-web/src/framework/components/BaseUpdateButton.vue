@@ -9,7 +9,7 @@
     @click="handleClick"
   >
     <template v-if="$slots.default && $slots.default.length > 0">
-      <slot/>
+      <slot />
     </template>
     <template v-else>
       修改

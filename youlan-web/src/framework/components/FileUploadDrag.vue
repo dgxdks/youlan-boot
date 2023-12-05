@@ -18,14 +18,14 @@
     :multiple="multiple"
     drag
   >
-    <i class="el-icon-upload"/>
+    <i class="el-icon-upload" />
     <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
     <template v-if="showTips" slot="tip">
       <div slot="tip" class="el-upload__tip text-center">
         <div slot="tip" class="el-upload__tip">
-          <slot name="tip"/>
+          <slot name="tip" />
         </div>
-        <slot/>
+        <slot />
       </div>
     </template>
   </el-upload>

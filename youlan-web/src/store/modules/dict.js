@@ -1,10 +1,12 @@
-import {ArrayUtil, StrUtil} from '@/framework/tools'
+import { ArrayUtil, StrUtil } from '@/framework/tools'
 
 const state = {
-  dict: {}
+  dict: {
+
+  }
 }
 const mutations = {
-  SET_DICT: (state, {type, values}) => {
+  SET_DICT: (state, { type, values }) => {
     if (StrUtil.isNotBlank(type) && ArrayUtil.isNotEmpty(values)) {
       state.dict = {
         ...state.dict,
@@ -27,15 +29,15 @@ const mutations = {
 
 const actions = {
   // 设置字典
-  SetDict({commit}, data) {
+  SetDict({ commit }, data) {
     commit('SET_DICT', data)
   },
   // 删除字典
-  RemoveDict({commit}, key) {
+  RemoveDict({ commit }, key) {
     commit('REMOVE_DICT', key)
   },
   // 清空字典
-  CleanDict({commit}) {
+  CleanDict({ commit }) {
     commit('CLEAN_DICT')
   }
 }

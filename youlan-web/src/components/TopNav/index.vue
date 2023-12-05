@@ -11,7 +11,7 @@
         :index="item.path"
         :style="{'--theme': theme}"
       >
-        <svg-icon :icon-class="item.meta.icon"/>
+        <svg-icon :icon-class="item.meta.icon" />
         {{ item.meta.title }}
       </el-menu-item>
     </template>
@@ -25,7 +25,7 @@
           :key="index"
           :index="item.path"
         >
-          <svg-icon :icon-class="item.meta.icon"/>
+          <svg-icon :icon-class="item.meta.icon" />
           {{ item.meta.title }}
         </el-menu-item>
       </template>
@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import {constantRoutes} from '@/router'
+import { constantRoutes } from '@/router'
 
 // 隐藏侧边栏路由
 const hideList = ['/index', '/user/profile']
@@ -135,9 +135,9 @@ export default {
         const routeMenu = this.childrenMenus.find(item => item.path === key)
         if (routeMenu && routeMenu.query) {
           const query = JSON.parse(routeMenu.query)
-          this.$router.push({path: key, query: query})
+          this.$router.push({ path: key, query: query })
         } else {
-          this.$router.push({path: key})
+          this.$router.push({ path: key })
         }
         this.$store.dispatch('app/toggleSideBarHide', true)
       } else {

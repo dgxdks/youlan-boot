@@ -15,19 +15,16 @@
     <el-form-item>
       <el-radio v-model="radioValue" :label="3">
         周期从
-        <el-input-number v-model="cycle01" :min="fullYear" :max="2098"/>
-        -
-        <el-input-number v-model="cycle02" :min="cycle01 ? cycle01 + 1 : fullYear + 1" :max="2099"/>
+        <el-input-number v-model="cycle01" :min="fullYear" :max="2098" /> -
+        <el-input-number v-model="cycle02" :min="cycle01 ? cycle01 + 1 : fullYear + 1" :max="2099" />
       </el-radio>
     </el-form-item>
 
     <el-form-item>
       <el-radio v-model="radioValue" :label="4">
         从
-        <el-input-number v-model="average01" :min="fullYear" :max="2098"/>
-        年开始，每
-        <el-input-number v-model="average02" :min="1" :max="2099 - average01 || fullYear"/>
-        年执行一次
+        <el-input-number v-model="average01" :min="fullYear" :max="2098" /> 年开始，每
+        <el-input-number v-model="average02" :min="1" :max="2099 - average01 || fullYear" /> 年执行一次
       </el-radio>
 
     </el-form-item>
@@ -36,7 +33,7 @@
       <el-radio v-model="radioValue" :label="5">
         指定
         <el-select v-model="checkboxList" clearable placeholder="可多选" multiple>
-          <el-option v-for="item in 9" :key="item" :value="item - 1 + fullYear" :label="item -1 + fullYear"/>
+          <el-option v-for="item in 9" :key="item" :value="item - 1 + fullYear" :label="item -1 + fullYear" />
         </el-select>
       </el-radio>
     </el-form-item>
@@ -61,19 +58,19 @@ export default {
   },
   computed: {
     // 计算两个周期值
-    cycleTotal: function () {
+    cycleTotal: function() {
       const cycle01 = this.checkNum(this.cycle01, this.fullYear, 2098)
       const cycle02 = this.checkNum(this.cycle02, cycle01 ? cycle01 + 1 : this.fullYear + 1, 2099)
       return cycle01 + '-' + cycle02
     },
     // 计算平均用到的值
-    averageTotal: function () {
+    averageTotal: function() {
       const average01 = this.checkNum(this.average01, this.fullYear, 2098)
       const average02 = this.checkNum(this.average02, 1, 2099 - average01 || this.fullYear)
       return average01 + '/' + average02
     },
     // 计算勾选的checkbox值合集
-    checkboxString: function () {
+    checkboxString: function() {
       const str = this.checkboxList.join()
       return str
     }
@@ -84,7 +81,7 @@ export default {
     'averageTotal': 'averageChange',
     'checkboxString': 'checkboxChange'
   },
-  mounted: function () {
+  mounted: function() {
     // 仅获取当前年份
     this.fullYear = Number(new Date().getFullYear())
     this.cycle01 = this.fullYear

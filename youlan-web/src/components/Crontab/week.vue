@@ -22,8 +22,7 @@
             :label="item.value"
             :value="item.key"
             :disabled="item.key === 1"
-          >{{ item.value }}
-          </el-option>
+          >{{ item.value }}</el-option>
         </el-select>
         -
         <el-select v-model="cycle02" clearable>
@@ -33,8 +32,7 @@
             :label="item.value"
             :value="item.key"
             :disabled="item.key < cycle01 && item.key !== 1"
-          >{{ item.value }}
-          </el-option>
+          >{{ item.value }}</el-option>
         </el-select>
       </el-radio>
     </el-form-item>
@@ -42,13 +40,9 @@
     <el-form-item>
       <el-radio v-model="radioValue" :label="4">
         第
-        <el-input-number v-model="average01" :min="1" :max="4"/>
-        周的星期
+        <el-input-number v-model="average01" :min="1" :max="4" /> 周的星期
         <el-select v-model="average02" clearable>
-          <el-option v-for="(item,index) of weekList" :key="index" :label="item.value" :value="item.key">{{
-              item.value
-            }}
-          </el-option>
+          <el-option v-for="(item,index) of weekList" :key="index" :label="item.value" :value="item.key">{{ item.value }}</el-option>
         </el-select>
       </el-radio>
     </el-form-item>
@@ -57,10 +51,7 @@
       <el-radio v-model="radioValue" :label="5">
         本月最后一个星期
         <el-select v-model="weekday" clearable>
-          <el-option v-for="(item,index) of weekList" :key="index" :label="item.value" :value="item.key">{{
-              item.value
-            }}
-          </el-option>
+          <el-option v-for="(item,index) of weekList" :key="index" :label="item.value" :value="item.key">{{ item.value }}</el-option>
         </el-select>
       </el-radio>
     </el-form-item>
@@ -69,9 +60,7 @@
       <el-radio v-model="radioValue" :label="6">
         指定
         <el-select v-model="checkboxList" clearable placeholder="可多选" multiple style="width:100%">
-          <el-option v-for="(item,index) of weekList" :key="index" :label="item.value" :value="String(item.key)">
-            {{ item.value }}
-          </el-option>
+          <el-option v-for="(item,index) of weekList" :key="index" :label="item.value" :value="String(item.key)">{{ item.value }}</el-option>
         </el-select>
       </el-radio>
     </el-form-item>
@@ -127,7 +116,7 @@ export default {
   },
   computed: {
     // 计算两个周期值
-    cycleTotal: function () {
+    cycleTotal: function() {
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       this.cycle01 = this.checkNum(this.cycle01, 1, 7)
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
@@ -135,7 +124,7 @@ export default {
       return this.cycle01 + '-' + this.cycle02
     },
     // 计算平均用到的值
-    averageTotal: function () {
+    averageTotal: function() {
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       this.average01 = this.checkNum(this.average01, 1, 4)
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
@@ -143,13 +132,13 @@ export default {
       return this.average02 + '#' + this.average01
     },
     // 最近的工作日（格式）
-    weekdayCheck: function () {
+    weekdayCheck: function() {
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       this.weekday = this.checkNum(this.weekday, 1, 7)
       return this.weekday
     },
     // 计算勾选的checkbox值合集
-    checkboxString: function () {
+    checkboxString: function() {
       const str = this.checkboxList.join()
       return str === '' ? '*' : str
     }
