@@ -104,7 +104,7 @@
         </el-row>
       </el-col>
     </el-row>
-    <el-divider/>
+    <el-divider />
   </div>
 </template>
 

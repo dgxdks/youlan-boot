@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import {getPostList} from '@/api/system/post'
+import { getPostList } from '@/api/system/post'
 
 export default {
   name: 'PostSelect',

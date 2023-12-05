@@ -1,28 +1,28 @@
 <template>
   <el-form ref="editForm" :model="editForm" :rules="editRules" label-width="120px">
     <el-form-item label="JSAPI支付" prop="status">
-      <base-form-label slot="label" content="微信JSAPI支付配置" label="JSAPI支付"/>
-      <pay-config-select v-model="editForm.WX_JSAPI" :pay-configs="payConfigs" placeholder="请关联微信JSAPI支付配置"/>
+      <base-form-label slot="label" content="微信JSAPI支付配置" label="JSAPI支付" />
+      <pay-config-select v-model="editForm.WX_JSAPI" :pay-configs="payConfigs" placeholder="请关联微信JSAPI支付配置" />
     </el-form-item>
     <el-form-item label="APP支付" prop="status">
-      <base-form-label slot="label" content="微信APP支付配置" label="APP支付"/>
-      <pay-config-select v-model="editForm.WX_APP" :pay-configs="payConfigs" placeholder="请关联微信APP支付配置"/>
+      <base-form-label slot="label" content="微信APP支付配置" label="APP支付" />
+      <pay-config-select v-model="editForm.WX_APP" :pay-configs="payConfigs" placeholder="请关联微信APP支付配置" />
     </el-form-item>
     <el-form-item label="H5支付" prop="status">
-      <base-form-label slot="label" content="微信H5支付配置" label="H5支付"/>
-      <pay-config-select v-model="editForm.WX_H5" :pay-configs="payConfigs" placeholder="请关联微信H5支付配置"/>
+      <base-form-label slot="label" content="微信H5支付配置" label="H5支付" />
+      <pay-config-select v-model="editForm.WX_H5" :pay-configs="payConfigs" placeholder="请关联微信H5支付配置" />
     </el-form-item>
     <el-form-item label="Native支付" prop="status">
-      <base-form-label slot="label" content="微信Native支付配置" label="Native支付"/>
-      <pay-config-select v-model="editForm.WX_NATIVE" :pay-configs="payConfigs" placeholder="请关联微信Native支付配置"/>
+      <base-form-label slot="label" content="微信Native支付配置" label="Native支付" />
+      <pay-config-select v-model="editForm.WX_NATIVE" :pay-configs="payConfigs" placeholder="请关联微信Native支付配置" />
     </el-form-item>
     <el-form-item label="小程序支付" prop="status">
-      <base-form-label slot="label" content="微信小程序支付配置" label="小程序支付"/>
-      <pay-config-select v-model="editForm.WX_MINI" :pay-configs="payConfigs" placeholder="请关联微信小程序支付配置"/>
+      <base-form-label slot="label" content="微信小程序支付配置" label="小程序支付" />
+      <pay-config-select v-model="editForm.WX_MINI" :pay-configs="payConfigs" placeholder="请关联微信小程序支付配置" />
     </el-form-item>
     <el-form-item label="付款码支付" prop="status">
-      <base-form-label slot="label" content="微信付款码支付配置" label="付款码支付"/>
-      <pay-config-select v-model="editForm.WX_SCAN" :pay-configs="payConfigs" placeholder="请关联微信付款码支付配置"/>
+      <base-form-label slot="label" content="微信付款码支付配置" label="付款码支付" />
+      <pay-config-select v-model="editForm.WX_SCAN" :pay-configs="payConfigs" placeholder="请关联微信付款码支付配置" />
     </el-form-item>
   </el-form>
 </template>
@@ -30,11 +30,11 @@
 <script>
 import crud from '@/framework/mixin/crud'
 import PayConfigSelect from '@/views/pay/components/PayConfigSelect.vue'
-import {getPayConfigList} from '@/api/pay/config'
+import { getPayConfigList } from '@/api/pay/config'
 
 export default {
   name: 'WechatConfigForm',
-  components: {PayConfigSelect},
+  components: { PayConfigSelect },
   mixins: [crud],
   props: {
     value: {
@@ -69,7 +69,7 @@ export default {
   },
   methods: {
     getPayConfigList() {
-      getPayConfigList({payType: '1'}).then(res => {
+      getPayConfigList({ payType: '1' }).then(res => {
         this.payConfigs = res.data
       })
     },

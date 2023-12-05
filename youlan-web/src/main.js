@@ -11,7 +11,7 @@ import './permission'
 // 头部标签组件
 import VueMeta from 'vue-meta'
 import framework from '@/framework'
-import {CookieUtil} from '@/framework/tools'
+import { CookieUtil } from '@/framework/tools'
 import VueClipboard from 'vue-clipboard2'
 
 Vue.use(framework)

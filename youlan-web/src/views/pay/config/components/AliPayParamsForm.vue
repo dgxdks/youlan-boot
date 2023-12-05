@@ -4,7 +4,9 @@ export default {
 }
 </script>
 
-<template/>
+<template>
+  <div />
+</template>
 
 <style scoped lang="scss">
 

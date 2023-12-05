@@ -4,7 +4,7 @@
       <el-col :span="8">
         <el-card style="height: calc(100vh - 125px)">
           <div slot="header">
-            <span><i class="el-icon-collection"/> 缓存列表</span>
+            <span><i class="el-icon-collection" /> 缓存列表</span>
             <el-button
               style="float: right; padding: 3px 0"
               type="text"
@@ -62,7 +62,7 @@
       <el-col :span="8">
         <el-card style="height: calc(100vh - 125px)">
           <div slot="header">
-            <span><i class="el-icon-key"/> 键名列表</span>
+            <span><i class="el-icon-key" /> 键名列表</span>
             <el-button
               style="float: right; padding: 3px 0"
               type="text"
@@ -111,7 +111,7 @@
       <el-col :span="8">
         <el-card :bordered="false" style="height: calc(100vh - 125px)">
           <div slot="header">
-            <span><i class="el-icon-document"/> 缓存内容</span>
+            <span><i class="el-icon-document" /> 缓存内容</span>
             <el-button
               style="float: right; padding: 3px 0"
               type="text"
@@ -124,12 +124,12 @@
             <el-row :gutter="32">
               <el-col :offset="1" :span="22">
                 <el-form-item label="缓存名称:" prop="cacheName">
-                  <el-input v-model="cacheForm.cacheName" :read-only="true"/>
+                  <el-input v-model="cacheForm.cacheName" :read-only="true" />
                 </el-form-item>
               </el-col>
               <el-col :offset="1" :span="22">
                 <el-form-item label="缓存键名:" prop="cacheKey">
-                  <el-input v-model="cacheForm.cacheKey" :read-only="true"/>
+                  <el-input v-model="cacheForm.cacheKey" :read-only="true" />
                 </el-form-item>
               </el-col>
               <el-col :offset="1" :span="22">

@@ -6,27 +6,22 @@
 
     <select id="getDbTablePageList" parameterType="com.youlan.tools.entity.DBTable"
             resultType="com.youlan.tools.entity.DBTable">
-        select tables.table_name, tables.table_comment, tables.create_time, tables.update_time
-        from information_schema.tables as tables
-        left join t_tools_generator_table as gen_table on tables.table_name = gen_table.table_name
-        where gen_table.table_name is null and table_schema = (select database())
+        select table_name, table_comment, create_time, update_time
+        from information_schema.tables
+        where table_schema = (select database())
+        and table_name not in (select table_name from t_tools_generator_table)
+        and table_name not like 't_tools_generator%'
         <if test="dt.tableName != null and dt.tableName != ''">
-            and lower(tables.table_name) like lower(concat('%', #{dt.tableName}, '%'))
+            and lower(table_name) like lower(concat('%', #{dt.tableName}, '%'))
         </if>
         <if test="dt.tableComment != null and dt.tableComment != ''">
-            and lower(tables.table_comment) like lower(concat('%', #{dt.tableComment}, '%'))
+            and lower(table_comment) like lower(concat('%', #{dt.tableComment}, '%'))
         </if>
         <if test="dt.createTime != null">
-            and tables.create_time &gt;= #{dt.createTime}
+            and create_time &gt;= #{dt.createTime}
         </if>
         <if test="dt.updateTime != null">
-            and tables.update_time &lt;= #{dt.updateTime}
-        </if>
-        <if test="dt.tableExclude != null">
-            and tables.table_name not in
-            <foreach collection="dt.tableExclude" item="name" open="(" close=")" separator=",">
-                #{name}
-            </foreach>
+            and update_time &lt;= #{dt.updateTime}
         </if>
     </select>
 

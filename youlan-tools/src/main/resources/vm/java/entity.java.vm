@@ -1,25 +1,25 @@
 package ${packageName}.entity;
 
 #foreach(${package} in ${entityPackages})
-    ${package}
+${package}
 #end
 #if(!${needVo})
-    #foreach(${package} in ${voPackages})
-        ${package}
-    #end
+#foreach(${package} in ${voPackages})
+${package}
+#end
 #end
 #if(!${needPageDto})
-    #foreach(${package} in ${pageDtoPackages})
-        ${package}
-    #end
+#foreach(${package} in ${pageDtoPackages})
+${package}
+#end
 #end
 #if(!${needDto})
-    #foreach(${package} in ${dtoPackages})
-        ${package}
-    #end
+#foreach(${package} in ${dtoPackages})
+${package}
+#end
 #end
 #foreach(${package} in ${basePackages})
-    ${package}
+${package}
 #end
 
 @Data
@@ -27,34 +27,34 @@ package ${packageName}.entity;
 #if(${needPageDto})
 public class ${EntityName} {
 #else
-    #if(!${needVo})
-    @ColumnWidth(20)
-    @HeadFontStyle(fontHeightInPoints = 12)
-    @ExcelIgnoreUnannotated
-    #end
+#if(!${needVo})
+@ColumnWidth(20)
+@HeadFontStyle(fontHeightInPoints = 12)
+@ExcelIgnoreUnannotated
+#end
 @EqualsAndHashCode(callSuper = true)
-public class ${EntityName} extends PageDTO{
+public class ${EntityName} extends PageDTO {
 #end
 
 #foreach($column in ${entityColumns})
     #if(${column.excelAnnoList})
-        #foreach($excelAnno in ${column.excelAnnoList})
-            $excelAnno
-        #end
+    #foreach($excelAnno in ${column.excelAnnoList})
+    $excelAnno
+    #end
     #end
     #if(${column.queryAnno})
-        ${column.queryAnno}
+    ${column.queryAnno}
     #end
     #if(${column.validatorAnnoList})
-        #foreach($validatorAnno in ${column.validatorAnnoList})
-            $validatorAnno
-        #end
+    #foreach($validatorAnno in ${column.validatorAnnoList})
+    $validatorAnno
+    #end
     #end
     #if(${column.apiModelPropertyAnno})
-        ${column.apiModelPropertyAnno}
+    ${column.apiModelPropertyAnno}
     #end
     #if(${column.tableFieldAnno})
-        ${column.tableFieldAnno}
+    ${column.tableFieldAnno}
     #end
     #if(${column.isCollection} == "1")
     private List<$column.javaType> $column.javaField;
@@ -64,13 +64,13 @@ public class ${EntityName} extends PageDTO{
 
 #end
 #if(${templateType} == "2")
-@Schema(description = "${featureName}子集")
-@TableField(exist = false)
+    @Schema(description = "${featureName}子集")
+    @TableField(exist = false)
     #if(${needVo})
-    private List<${EntityName}VO> children=new ArrayList();
+    private List<${EntityName}VO> children = new ArrayList();
     #else
     private List<${EntityName}> children = new ArrayList();
     #end
 
 #end
-        }
+}

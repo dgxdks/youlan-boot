@@ -10,20 +10,20 @@
         />
       </el-form-item>
       <el-form-item>
-        <base-search-button @click="handleQuery"/>
-        <base-reset-button @click="handleResetQuery"/>
+        <base-search-button @click="handleQuery" />
+        <base-reset-button @click="handleResetQuery" />
       </el-form-item>
 
     </el-form>
     <el-table v-loading="tableLoading" :data="onlineList">
-      <el-table-column show-overflow-tooltip align="center" label="会话编号" prop="tokenValue"/>
-      <el-table-column show-overflow-tooltip align="center" label="用户名称" prop="userName"/>
-      <el-table-column align="center" label="组织机构" prop="orgName"/>
-      <el-table-column show-overflow-tooltip align="center" label="主机" prop="loginIp"/>
-      <el-table-column show-overflow-tooltip align="center" label="登录地点" prop="loginLocation"/>
-      <el-table-column align="center" label="浏览器" prop="browser"/>
-      <el-table-column align="center" label="操作系统" prop="os"/>
-      <el-table-column align="center" label="登录时间" prop="loginTime" width="160"/>
+      <el-table-column show-overflow-tooltip align="center" label="会话编号" prop="tokenValue" />
+      <el-table-column show-overflow-tooltip align="center" label="用户名称" prop="userName" />
+      <el-table-column align="center" label="组织机构" prop="orgName" />
+      <el-table-column show-overflow-tooltip align="center" label="主机" prop="loginIp" />
+      <el-table-column show-overflow-tooltip align="center" label="登录地点" prop="loginLocation" />
+      <el-table-column align="center" label="浏览器" prop="browser" />
+      <el-table-column align="center" label="操作系统" prop="os" />
+      <el-table-column align="center" label="登录时间" prop="loginTime" width="160" />
       <el-table-column align="center" class-name="small-padding fixed-width" label="操作">
         <template slot-scope="scope">
           <base-remove-button v-has-perm="['monitor:onlineUser:kickout']" type="text" @click="handleKickout(scope.row)">
@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import {getOnlineUserPageList, kickoutOnlineUser} from '@/api/monitor/online'
+import { getOnlineUserPageList, kickoutOnlineUser } from '@/api/monitor/online'
 import crud from '@/framework/mixin/crud'
 
 export default {
@@ -85,8 +85,8 @@ export default {
     },
     // 强踢按钮
     handleKickout(row) {
-      this.$modal.confirm('是否确认强踢名称为"' + row.userName + '"的用户？').then(function () {
-        return kickoutOnlineUser({tokenValue: row.tokenValue})
+      this.$modal.confirm('是否确认强踢名称为"' + row.userName + '"的用户？').then(function() {
+        return kickoutOnlineUser({ tokenValue: row.tokenValue })
       }).then(() => {
         this.getList()
         this.$modal.success('强退成功')

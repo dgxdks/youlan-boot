@@ -11,54 +11,72 @@
         />
       </el-form-item>
       <el-form-item label="支付类型" prop="type">
-        <dict-select v-model="queryForm.type" dict-type="pay_type" style="width: 240px" placeholder="支付类型"
-                     clearable/>
+        <dict-select
+          v-model="queryForm.type"
+          dict-type="pay_type"
+          style="width: 240px"
+          placeholder="支付类型"
+          clearable
+        />
       </el-form-item>
       <el-form-item label="配置状态" prop="status">
-        <dict-select v-model="queryForm.status" dict-type="db_status" style="width: 240px" placeholder="支付配置状态"
-                     clearable/>
+        <dict-select
+          v-model="queryForm.status"
+          dict-type="db_status"
+          style="width: 240px"
+          placeholder="支付配置状态"
+          clearable
+        />
       </el-form-item>
       <el-form-item>
-        <base-search-button @click="handleQuery"/>
-        <base-reset-button @click="resetQuery"/>
+        <base-search-button @click="handleQuery" />
+        <base-reset-button @click="resetQuery" />
       </el-form-item>
     </el-form>
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <base-add-button v-has-perm="['pay:payConfig:add']" plain @click="handleAdd"/>
+        <base-add-button v-has-perm="['pay:payConfig:add']" plain @click="handleAdd" />
       </el-col>
       <el-col :span="1.5">
-        <base-update-button v-has-perm="['pay:payConfig:update']" plain :disabled="!tableSelectOne"
-                            @click="handleUpdate"/>
+        <base-update-button
+          v-has-perm="['pay:payConfig:update']"
+          plain
+          :disabled="!tableSelectOne"
+          @click="handleUpdate"
+        />
       </el-col>
       <el-col :span="1.5">
-        <base-remove-button v-has-perm="['pay:payConfig:remove']" plain :disabled="tableNoSelected"
-                            @click="handleDelete"/>
+        <base-remove-button
+          v-has-perm="['pay:payConfig:remove']"
+          plain
+          :disabled="tableNoSelected"
+          @click="handleDelete"
+        />
       </el-col>
-      <table-toolbar :query-show.sync="queryShow" @refresh="getList"/>
+      <table-toolbar :query-show.sync="queryShow" @refresh="getList" />
     </el-row>
 
     <el-table v-loading="tableLoading" :data="configList" @selection-change="handleSelectionChange">
-      <el-table-column align="center" type="selection" width="55"/>
-      <el-table-column align="center" label="配置编号" prop="id"/>
-      <el-table-column show-overflow-tooltip align="center" label="配置名称" prop="name"/>
+      <el-table-column align="center" type="selection" width="55" />
+      <el-table-column align="center" label="配置编号" prop="id" />
+      <el-table-column show-overflow-tooltip align="center" label="配置名称" prop="name" />
       <el-table-column show-overflow-tooltip align="center" label="支付类型" prop="type">
         <template slot-scope="scope">
-          <dict-tag v-model="scope.row.type" dict-type="pay_type"/>
+          <dict-tag v-model="scope.row.type" dict-type="pay_type" />
         </template>
       </el-table-column>
       <el-table-column align="center" label="状态" prop="status">
         <template slot-scope="scope">
-          <base-switch v-model="scope.row.status" @change="handleStatusChange(scope.row)"/>
+          <base-switch v-model="scope.row.status" @change="handleStatusChange(scope.row)" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip align="center" label="备注" prop="remark"/>
-      <el-table-column align="center" label="创建时间" prop="createTime" width="160"/>
+      <el-table-column show-overflow-tooltip align="center" label="备注" prop="remark" />
+      <el-table-column align="center" label="创建时间" prop="createTime" width="160" />
       <el-table-column align="center" class-name="small-padding fixed-width" label="操作" width="160">
         <template slot-scope="scope">
-          <base-update-button v-has-perm="['pay:payConfig:update']" type="text" @click="handleUpdate(scope.row)"/>
-          <base-remove-button v-has-perm="['pay:payConfig:remove']" type="text" @click="handleDelete(scope.row)"/>
+          <base-update-button v-has-perm="['pay:payConfig:update']" type="text" @click="handleUpdate(scope.row)" />
+          <base-remove-button v-has-perm="['pay:payConfig:remove']" type="text" @click="handleDelete(scope.row)" />
         </template>
       </el-table-column>
     </el-table>
@@ -72,24 +90,29 @@
     />
 
     <!-- 存储配置编辑对话框 -->
-    <base-dialog :title="editTitle" :open.sync="editOpen" width="850px" @confirm="handleEditSubmit"
-                 @cancel="handleEditCancel">
+    <base-dialog
+      :title="editTitle"
+      :open.sync="editOpen"
+      width="850px"
+      @confirm="handleEditSubmit"
+      @cancel="handleEditCancel"
+    >
       <el-form ref="editForm" :model="editForm" :rules="editRules" label-width="120px">
         <base-row-split2>
           <el-form-item label="配置名称" prop="name">
-            <el-input v-model="editForm.name" placeholder="请输入支付配置名称"/>
+            <el-input v-model="editForm.name" placeholder="请输入支付配置名称" />
           </el-form-item>
           <el-form-item label="支付类型" prop="type">
-            <dict-select v-model="editForm.type" placeholder="请选择支付类型" dict-type="pay_type"/>
+            <dict-select v-model="editForm.type" placeholder="请选择支付类型" dict-type="pay_type" />
           </el-form-item>
           <el-form-item label="配置状态" prop="status">
-            <dict-radio v-model="editForm.status" dict-type="db_status"/>
+            <dict-radio v-model="editForm.status" dict-type="db_status" />
           </el-form-item>
           <el-form-item label="备注" prop="remark">
-            <el-input v-model="editForm.remark" placeholder="请输入内容" type="textarea"/>
+            <el-input v-model="editForm.remark" placeholder="请输入内容" type="textarea" />
           </el-form-item>
         </base-row-split2>
-        <wechat-params-form v-if="editForm.type === 'WECHAT'" ref="paramsForm" :params.sync="editForm.params"/>
+        <wechat-params-form v-if="editForm.type === 'WECHAT'" ref="paramsForm" :params.sync="editForm.params" />
       </el-form>
     </base-dialog>
   </div>
@@ -109,7 +132,7 @@ import WechatParamsForm from '@/views/pay/config/components/WechatParamsForm.vue
 
 export default {
   name: 'PayConfig',
-  components: {WechatParamsForm},
+  components: { WechatParamsForm },
   mixins: [crud],
   data() {
     return {
@@ -161,7 +184,7 @@ export default {
     // 修改按钮
     handleUpdate(row) {
       const id = row.id || this.tableIds[0]
-      loadPayConfig({id}).then(res => {
+      loadPayConfig({ id }).then(res => {
         this.openEdit('修改配置')
         this.editForm = res.data
       })
@@ -169,8 +192,8 @@ export default {
     // 删除按钮
     handleDelete(row) {
       const list = (row.id && [row.id]) || this.tableIds
-      this.$modal.confirm('是否确认删除配置编号为"' + list + '"的数据项？').then(function () {
-        return removePayConfig({list})
+      this.$modal.confirm('是否确认删除配置编号为"' + list + '"的数据项？').then(function() {
+        return removePayConfig({ list })
       }).then(() => {
         this.getList()
         this.$modal.success('删除成功')

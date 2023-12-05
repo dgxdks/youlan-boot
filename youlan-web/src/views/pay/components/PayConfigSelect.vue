@@ -1,6 +1,12 @@
 <template>
-  <el-select v-model="data" clearable :placeholder="placeholder" style="width: 100%" :disabled="disabled"
-             @change="handleChange">
+  <el-select
+    v-model="data"
+    clearable
+    :placeholder="placeholder"
+    style="width: 100%"
+    :disabled="disabled"
+    @change="handleChange"
+  >
     <el-option v-for="item in payConfigs" :key="item.id" :label="item.name" :value="item.id">
       {{ item.name }}
     </el-option>

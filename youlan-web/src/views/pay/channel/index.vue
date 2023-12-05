@@ -20,14 +20,14 @@
         />
       </el-form-item>
       <el-form-item>
-        <base-search-button @click="handleQuery"/>
-        <base-reset-button @click="resetQuery"/>
+        <base-search-button @click="handleQuery" />
+        <base-reset-button @click="resetQuery" />
       </el-form-item>
     </el-form>
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <base-add-button v-has-perm="['pay:payConfig:add']" plain @click="handleAdd"/>
+        <base-add-button v-has-perm="['pay:payConfig:add']" plain @click="handleAdd" />
       </el-col>
       <el-col :span="1.5">
         <base-update-button
@@ -45,24 +45,24 @@
           @click="handleDelete"
         />
       </el-col>
-      <table-toolbar :query-show.sync="queryShow" @refresh="getList"/>
+      <table-toolbar :query-show.sync="queryShow" @refresh="getList" />
     </el-row>
 
     <el-table v-loading="tableLoading" :data="channelList" @selection-change="handleSelectionChange">
-      <el-table-column align="center" type="selection" width="55"/>
-      <el-table-column align="center" label="通道编号" prop="id"/>
-      <el-table-column show-overflow-tooltip align="center" label="通道名称" prop="name"/>
+      <el-table-column align="center" type="selection" width="55" />
+      <el-table-column align="center" label="通道编号" prop="id" />
+      <el-table-column show-overflow-tooltip align="center" label="通道名称" prop="name" />
       <el-table-column align="center" label="状态" prop="status">
         <template slot-scope="scope">
-          <base-switch v-model="scope.row.status" @change="handleStatusChange(scope.row)"/>
+          <base-switch v-model="scope.row.status" @change="handleStatusChange(scope.row)" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip align="center" label="备注" prop="remark"/>
-      <el-table-column align="center" label="创建时间" prop="createTime" width="160"/>
+      <el-table-column show-overflow-tooltip align="center" label="备注" prop="remark" />
+      <el-table-column align="center" label="创建时间" prop="createTime" width="160" />
       <el-table-column align="center" class-name="small-padding fixed-width" label="操作" width="160">
         <template slot-scope="scope">
-          <base-update-button v-has-perm="['pay:payConfig:update']" type="text" @click="handleUpdate(scope.row)"/>
-          <base-remove-button v-has-perm="['pay:payConfig:remove']" type="text" @click="handleDelete(scope.row)"/>
+          <base-update-button v-has-perm="['pay:payConfig:update']" type="text" @click="handleUpdate(scope.row)" />
+          <base-remove-button v-has-perm="['pay:payConfig:remove']" type="text" @click="handleDelete(scope.row)" />
         </template>
       </el-table-column>
     </el-table>
@@ -88,56 +88,74 @@
           <el-form ref="editForm" :model="editForm" :rules="editRules" label-width="120px">
             <base-row-split2>
               <el-form-item label="通道名称" prop="name">
-                <el-input v-model="editForm.name" placeholder="请输入支付配置名称"/>
+                <el-input v-model="editForm.name" placeholder="请输入支付配置名称" />
               </el-form-item>
               <el-form-item label="配置状态" prop="status">
-                <dict-radio v-model="editForm.status" dict-type="db_status"/>
+                <dict-radio v-model="editForm.status" dict-type="db_status" />
               </el-form-item>
             </base-row-split2>
             <el-form-item label="备注" prop="remark">
-              <el-input v-model="editForm.remark" placeholder="请输入内容" type="textarea"/>
+              <el-input v-model="editForm.remark" placeholder="请输入内容" type="textarea" />
             </el-form-item>
             <el-form-item label="支付回调" prop="payNotifyUrl">
-              <base-form-label slot="label" content="支付回调地址，必须是完成URL格式" label="支付回调"/>
-              <el-input v-model="editForm.payNotifyUrl" placeholder="请输入支付回调地址"/>
+              <base-form-label slot="label" content="支付回调地址，必须是完成URL格式" label="支付回调" />
+              <el-input v-model="editForm.payNotifyUrl" placeholder="请输入支付回调地址" />
             </el-form-item>
             <el-form-item label="退款回调" prop="refundNotifyUrl">
-              <base-form-label slot="label" content="退款回调地址，必须是完成URL格式" label="退款回调"/>
-              <el-input v-model="editForm.refundNotifyUrl" placeholder="请输入退款回调地址"/>
+              <base-form-label slot="label" content="退款回调地址，必须是完成URL格式" label="退款回调" />
+              <el-input v-model="editForm.refundNotifyUrl" placeholder="请输入退款回调地址" />
             </el-form-item>
           </el-form>
         </el-tab-pane>
         <el-tab-pane label="微信支付配置" name="wechat">
           <el-form label-width="120px">
             <el-form-item label="JSAPI支付" prop="status">
-              <base-form-label slot="label" content="微信JSAPI支付配置" label="JSAPI支付"/>
-              <pay-config-select v-model="payChannelConfig.wechat.WX_JSAPI" :pay-configs="payConfig.wechat"
-                                 placeholder="请关联微信JSAPI支付配置"/>
+              <base-form-label slot="label" content="微信JSAPI支付配置" label="JSAPI支付" />
+              <pay-config-select
+                v-model="payChannelConfig.wechat.WX_JSAPI"
+                :pay-configs="payConfig.wechat"
+                placeholder="请关联微信JSAPI支付配置"
+              />
             </el-form-item>
             <el-form-item label="APP支付" prop="status">
-              <base-form-label slot="label" content="微信APP支付配置" label="APP支付"/>
-              <pay-config-select v-model="payChannelConfig.wechat.WX_APP" :pay-configs="payConfig.wechat"
-                                 placeholder="请关联微信APP支付配置"/>
+              <base-form-label slot="label" content="微信APP支付配置" label="APP支付" />
+              <pay-config-select
+                v-model="payChannelConfig.wechat.WX_APP"
+                :pay-configs="payConfig.wechat"
+                placeholder="请关联微信APP支付配置"
+              />
             </el-form-item>
             <el-form-item label="H5支付" prop="status">
-              <base-form-label slot="label" content="微信H5支付配置" label="H5支付"/>
-              <pay-config-select v-model="payChannelConfig.wechat.WX_H5" :pay-configs="payConfig.wechat"
-                                 placeholder="请关联微信H5支付配置"/>
+              <base-form-label slot="label" content="微信H5支付配置" label="H5支付" />
+              <pay-config-select
+                v-model="payChannelConfig.wechat.WX_H5"
+                :pay-configs="payConfig.wechat"
+                placeholder="请关联微信H5支付配置"
+              />
             </el-form-item>
             <el-form-item label="Native支付" prop="status">
-              <base-form-label slot="label" content="微信Native支付配置" label="Native支付"/>
-              <pay-config-select v-model="payChannelConfig.wechat.WX_NATIVE" :pay-configs="payConfig.wechat"
-                                 placeholder="请关联微信Native支付配置"/>
+              <base-form-label slot="label" content="微信Native支付配置" label="Native支付" />
+              <pay-config-select
+                v-model="payChannelConfig.wechat.WX_NATIVE"
+                :pay-configs="payConfig.wechat"
+                placeholder="请关联微信Native支付配置"
+              />
             </el-form-item>
             <el-form-item label="小程序支付" prop="status">
-              <base-form-label slot="label" content="微信小程序支付配置" label="小程序支付"/>
-              <pay-config-select v-model="payChannelConfig.wechat.WX_MINI" :pay-configs="payConfig.wechat"
-                                 placeholder="请关联微信小程序支付配置"/>
+              <base-form-label slot="label" content="微信小程序支付配置" label="小程序支付" />
+              <pay-config-select
+                v-model="payChannelConfig.wechat.WX_MINI"
+                :pay-configs="payConfig.wechat"
+                placeholder="请关联微信小程序支付配置"
+              />
             </el-form-item>
             <el-form-item label="付款码支付" prop="status">
-              <base-form-label slot="label" content="微信付款码支付配置" label="付款码支付"/>
-              <pay-config-select v-model="payChannelConfig.wechat.WX_SCAN" :pay-configs="payConfig.wechat"
-                                 placeholder="请关联微信付款码支付配置"/>
+              <base-form-label slot="label" content="微信付款码支付配置" label="付款码支付" />
+              <pay-config-select
+                v-model="payChannelConfig.wechat.WX_SCAN"
+                :pay-configs="payConfig.wechat"
+                placeholder="请关联微信付款码支付配置"
+              />
             </el-form-item>
           </el-form>
         </el-tab-pane>
@@ -157,11 +175,11 @@ import {
   updatePayChannelStatus
 } from '@/api/pay/channel'
 import PayConfigSelect from '@/views/pay/components/PayConfigSelect.vue'
-import {getPayConfigList} from '@/api/pay/config'
+import { getPayConfigList } from '@/api/pay/config'
 
 export default {
   name: 'PayChannel',
-  components: {PayConfigSelect},
+  components: { PayConfigSelect },
   mixins: [crud],
   data() {
     return {
@@ -241,7 +259,7 @@ export default {
       // 刷新支付配置
       this.getPayConfigList()
       const id = row.id || this.tableIds[0]
-      loadPayChannel({id}).then(res => {
+      loadPayChannel({ id }).then(res => {
         this.openEdit('修改通道')
         this.editForm = res.data
         this.setPayChannelConfig()
@@ -250,8 +268,8 @@ export default {
     // 删除按钮
     handleDelete(row) {
       const list = (row.id && [row.id]) || this.tableIds
-      this.$modal.confirm('是否确认删除通道编号为"' + list + '"的数据项？').then(function () {
-        return removePayChannel({list})
+      this.$modal.confirm('是否确认删除通道编号为"' + list + '"的数据项？').then(function() {
+        return removePayChannel({ list })
       }).then(() => {
         this.getList()
         this.$modal.success('删除成功')
@@ -330,7 +348,7 @@ export default {
       return Object.keys(payChannelConfig).filter(tradeType => {
         return !!payChannelConfig[tradeType]
       }).map(tradeType => {
-        return {channelId, configId: payChannelConfig[tradeType], tradeType}
+        return { channelId, configId: payChannelConfig[tradeType], tradeType }
       })
     },
     // 设置通道配置

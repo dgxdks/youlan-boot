@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import {getRoleList} from '@/api/system/role'
+import { getRoleList } from '@/api/system/role'
 
 export default {
   name: 'Role',
