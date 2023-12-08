@@ -50,6 +50,7 @@ public class PayOrderService extends BaseServiceImpl<PayOrderMapper, PayOrder> {
         if (!update) {
             throw new BizRuntimeException(ApiResultCode.E0009);
         }
+        log.info("支付订单更新为已支付状态：{id: {}}", id);
     }
 
     /**

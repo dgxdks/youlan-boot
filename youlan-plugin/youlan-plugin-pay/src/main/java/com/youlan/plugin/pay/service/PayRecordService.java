@@ -6,13 +6,9 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.db.service.BaseServiceImpl;
-import com.youlan.plugin.pay.entity.PayConfig;
-import com.youlan.plugin.pay.entity.PayOrder;
 import com.youlan.plugin.pay.entity.PayRecord;
-import com.youlan.plugin.pay.entity.dto.SubmitPayOrderDTO;
 import com.youlan.plugin.pay.enums.PayStatus;
 import com.youlan.plugin.pay.mapper.PayRecordMapper;
-import com.youlan.plugin.pay.utils.PayUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -51,6 +47,7 @@ public class PayRecordService extends BaseServiceImpl<PayRecordMapper, PayRecord
         if (!update) {
             throw new BizRuntimeException(ApiResultCode.E0016);
         }
+        log.info("支付记录更新为已支付状态：{id: {}}", id);
     }
 
     /**
@@ -82,28 +79,7 @@ public class PayRecordService extends BaseServiceImpl<PayRecordMapper, PayRecord
         if (!update) {
             throw new BizRuntimeException(ApiResultCode.E0016);
         }
-    }
-
-    /**
-     * 创建支付记录
-     *
-     * @param submitPayOrderDTO 提交支付订单参数
-     * @param payOrder          支付订单
-     * @param payConfig         支付配置
-     * @return 支付记录
-     */
-    public PayRecord createPayRecord(SubmitPayOrderDTO submitPayOrderDTO, PayOrder payOrder, PayConfig payConfig) {
-        String outTradeNo = PayUtil.generatePayOrderNo();
-        PayRecord payRecord = new PayRecord()
-                .setOutTradeNo(outTradeNo)
-                .setOrderId(payOrder.getId())
-                .setConfigId(payConfig.getId())
-                .setTradeType(submitPayOrderDTO.getTradeType())
-                .setClientIp(submitPayOrderDTO.getClientIp())
-                .setPayStatus(PayStatus.WAITING)
-                .setExtraParams(submitPayOrderDTO.getExtraParams());
-        this.save(payRecord);
-        return payRecord;
+        log.info("支付记录更新为已关闭状态：{id: {}}", id);
     }
 
     /**

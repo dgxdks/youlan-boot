@@ -1,5 +1,7 @@
 package com.youlan.common.core.restful;
 
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.json.JSONUtil;
 import com.youlan.common.core.restful.enums.ApiResultCode;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -63,4 +65,13 @@ public class ApiResult {
                 .setStatus(ApiResultCode.ERROR.getStatus())
                 .setErrorMsg(ApiResultCode.ERROR.getErrorMsg());
     }
+
+    public boolean isOk() {
+        return ObjectUtil.equal(ApiResultCode.OK.getStatus(), getStatus());
+    }
+
+    public String toString() {
+        return JSONUtil.toJsonStr(this);
+    }
+
 }

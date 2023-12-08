@@ -26,10 +26,10 @@ public class WxJsApiPayClient extends AbstractWxPayClient {
         // 获取openid
         String openId = payRequest.getExtraParamIfExists(PayConstant.PARAM_KEY_OPEN_ID);
         // 初始化V2请求
-        WxPayUnifiedOrderRequest unifiedOrderRequest = initOrderRequestV2(payRequest)
+        WxPayUnifiedOrderRequest orderRequest = initOrderRequestV2(payRequest)
                 .setOpenid(openId);
         // 创建支付订单
-        WxPayMpOrderResult wxPayMpOrderResult = wxPayService.createOrder(unifiedOrderRequest);
+        WxPayMpOrderResult wxPayMpOrderResult = wxPayService.createOrder(orderRequest);
         // 返回支付响应
         return WxPayUtil.createPayWaitingResponse(payRequest.getOutTradeNo(), wxPayMpOrderResult, PayShowType.CUSTOM, wxPayMpOrderResult);
     }
@@ -38,15 +38,15 @@ public class WxJsApiPayClient extends AbstractWxPayClient {
     public PayResponse doPayV3(PayRequest payRequest) throws WxPayException {
         // 获取openid
         String openId = payRequest.getExtraParamIfExists(PayConstant.PARAM_KEY_OPEN_ID);
-        WxPayUnifiedOrderV3Request.Payer unifiedOrderPayer = new WxPayUnifiedOrderV3Request.Payer()
+        WxPayUnifiedOrderV3Request.Payer payer = new WxPayUnifiedOrderV3Request.Payer()
                 .setOpenid(openId);
         // 初始化V3请求
-        WxPayUnifiedOrderV3Request unifiedOrderV3Request = initOrderRequestV3(payRequest)
-                .setPayer(unifiedOrderPayer);
+        WxPayUnifiedOrderV3Request orderRequest = initOrderRequestV3(payRequest)
+                .setPayer(payer);
         // 创建支付订单
-        WxPayUnifiedOrderV3Result.JsapiResult jsapiResult = wxPayService.createOrderV3(TradeTypeEnum.JSAPI, unifiedOrderV3Request);
+        WxPayUnifiedOrderV3Result.JsapiResult orderResult = wxPayService.createOrderV3(TradeTypeEnum.JSAPI, orderRequest);
         // 返回支付响应
-        return WxPayUtil.createPayWaitingResponse(payRequest.getOutTradeNo(), jsapiResult, PayShowType.CUSTOM, jsapiResult);
+        return WxPayUtil.createPayWaitingResponse(payRequest.getOutTradeNo(), orderResult, PayShowType.CUSTOM, orderResult);
     }
 
     @Override

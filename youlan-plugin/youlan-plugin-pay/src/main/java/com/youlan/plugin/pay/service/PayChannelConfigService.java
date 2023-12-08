@@ -17,12 +17,12 @@ import java.util.stream.Collectors;
 public class PayChannelConfigService extends BaseServiceImpl<PayChannelConfigMapper, PayChannelConfig> {
 
     /**
-     * 根据支付配置ID列表判断是否存在
+     * 根据支付配置ID列表删除通道配置
      */
-    public boolean existsByConfigIds(List<Long> configIds) {
-        return this.lambdaQuery()
-                .in(PayChannelConfig::getConfigId, configIds)
-                .exists();
+    public void removeByConfigIds(List<Long> configIds) {
+        LambdaQueryWrapper<PayChannelConfig> queryWrapper = Wrappers.<PayChannelConfig>lambdaQuery()
+                .in(PayChannelConfig::getConfigId, configIds);
+        this.remove(queryWrapper);
     }
 
     /**

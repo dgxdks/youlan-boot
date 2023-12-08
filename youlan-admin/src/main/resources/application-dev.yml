@@ -67,3 +67,9 @@ spring:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+--- # 插件模块
+youlan:
+  pay:
+    # 回调调度Cron表达式
+    notify-schedule-cron: '0/30 * * * * ?'

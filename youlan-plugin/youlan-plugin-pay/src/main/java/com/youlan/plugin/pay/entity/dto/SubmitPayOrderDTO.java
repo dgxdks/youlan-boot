@@ -18,10 +18,6 @@ public class SubmitPayOrderDTO {
     @Schema(description = "支付订单ID")
     private Long orderId;
 
-    @NotNull(message = "支付通道ID不能为空")
-    @Schema(description = "支付通道ID")
-    private Long channelId;
-
     @NotNull(message = "交易类型不能为空")
     @Schema(description = "交易类型")
     private TradeType tradeType;

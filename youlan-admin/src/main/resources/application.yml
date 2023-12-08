@@ -85,9 +85,17 @@ youlan:
     restricted: false
   pay:
     # 支付回调地址
-    pay-notify-url:
+    pay-notify-url: http://localhost:4085/pay/payNotify/order
     # 退款回调地址
-    refund-notify-url:
+    refund-notify-url: http://localhost:4085/pay/payNotify/refund
+    # 支付订单前缀
+    pay-order-prefix: P
+    # 退款订单前缀
+    refund-order-prefix: R
+    # 是否启用回调(只有接收回调的服务才需要开启)
+    notify-enabled: true
+    # 回调调度Cron表达式
+    notify-schedule-cron: '* * * * * ?'
 
 # 服务配置
 server:

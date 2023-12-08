@@ -53,7 +53,6 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5" />
       <table-toolbar :query-show.sync="queryShow" @refresh="getList" />
     </el-row>
 
@@ -88,6 +87,7 @@
       <el-table-column align="center" class-name="small-padding fixed-width" label="操作" width="160" fixed="right">
         <template slot-scope="scope">
           <base-detail-button v-has-perm="['pay:payOrder:load']" type="text" @click="handleDetail(scope.row)" />
+          <base-remove-button v-has-perm="['pay:payOrder:remove']" type="text" @click="handleDelete(scope.row)" />
         </template>
       </el-table-column>
     </el-table>
@@ -158,7 +158,7 @@ import PayConfigSelect from '@/views/pay/components/PayConfigSelect.vue'
 import { getPayConfigList } from '@/api/pay/config'
 import { getPayChannelList } from '@/api/pay/channel'
 import PayChannelSelect from '@/views/pay/components/PayChannelSelect.vue'
-import { getPayOrderPageList } from '@/api/pay/order'
+import { getPayOrderPageList, removePayOrder } from '@/api/pay/order'
 
 export default {
   name: 'PayOrder',
@@ -265,6 +265,17 @@ export default {
         { column: prop, asc: this.orderStrIsAsc(order) }
       ]
       this.getList()
+    },
+    // 删除按钮
+    handleDelete(row) {
+      const list = (row.id && [row.id]) || this.tableIds
+      this.$modal.confirm('是否确认删除支付单号为"' + list + '"的数据项？').then(function() {
+        return removePayOrder({ list })
+      }).then(() => {
+        this.getList()
+        this.$modal.success('删除成功')
+      }).catch(() => {
+      })
     }
   }
 }

@@ -115,6 +115,7 @@ public class WxPayUtil {
      */
     public static PayResponse createPayWaitingResponse(String outTradeNo, Object rawData, PayShowType payShowType, Object payInfo) {
         return (PayResponse) new PayResponse()
+                .setPayStatus(PayStatus.WAITING)
                 .setOutTradeNo(outTradeNo)
                 .setPayShowType(payShowType)
                 .setPayInfo(payInfo)
@@ -138,20 +139,21 @@ public class WxPayUtil {
     }
 
     /**
-     * 创建支付响应
+     * 创建支付成功响应
      *
-     * @param payStatus   支付状态
      * @param outTradeNo  外部交易订单号
+     * @param tradeNo     交易订单号
      * @param clientId    客户端ID
      * @param rawData     原始数据
      * @param successTime 成功时间
-     * @return 支付响应
+     * @return 支付成功响应
      */
-    public static PayResponse createPayResponse(PayStatus payStatus, String outTradeNo, String clientId,
-                                                Object rawData, Date successTime) {
+    public static PayResponse createPaySuccessResponse(String outTradeNo, String tradeNo, String clientId, Object rawData, PayShowType payShowType, Date successTime) {
         return (PayResponse) new PayResponse()
-                .setPayStatus(payStatus)
+                .setPayStatus(PayStatus.SUCCESS)
                 .setOutTradeNo(outTradeNo)
+                .setTradeNo(tradeNo)
+                .setPayShowType(payShowType)
                 .setClientId(clientId)
                 .setRawData(rawData)
                 .setSuccessTime(successTime);

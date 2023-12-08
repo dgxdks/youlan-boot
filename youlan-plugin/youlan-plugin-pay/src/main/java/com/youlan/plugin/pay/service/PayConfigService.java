@@ -7,8 +7,6 @@ import com.youlan.common.db.constant.DBConstant;
 import com.youlan.common.db.service.BaseServiceImpl;
 import com.youlan.plugin.pay.entity.PayConfig;
 import com.youlan.plugin.pay.mapper.PayConfigMapper;
-import com.youlan.plugin.pay.params.PayParams;
-import com.youlan.plugin.pay.utils.PayUtil;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,39 +27,6 @@ public class PayConfigService extends BaseServiceImpl<PayConfigMapper, PayConfig
     public PayConfig loadPayConfigIfExists(Long id) {
         return this.loadOneOpt(id)
                 .orElseThrow(() -> new BizRuntimeException(ApiResultCode.E0013));
-    }
-
-    /**
-     * 新增支付配置
-     */
-    public void addPayConfig(PayConfig payConfig) {
-        beforeAddOrUpdatePayConfig(payConfig);
-        this.save(payConfig);
-    }
-
-    /**
-     * 修改支付配置
-     */
-    public void updatePayConfig(PayConfig payConfig) {
-        beforeAddOrUpdatePayConfig(payConfig);
-        this.updateById(payConfig);
-    }
-
-    /**
-     * 修改微信支付配置状态
-     */
-    public void updatePayConfigStatus(Long id, String status) {
-        updateStatus(id, status);
-        this.updateStatus(id, status);
-    }
-
-    /**
-     * 新增或修改微信配置前置操作
-     */
-    public void beforeAddOrUpdatePayConfig(PayConfig payConfig) {
-        PayParams payParams = PayUtil.parsePayParams(payConfig);
-        // 校验操作
-        payParams.validate();
     }
 
 }

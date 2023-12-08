@@ -7,14 +7,9 @@ import com.youlan.plugin.pay.client.PayClient;
 import com.youlan.plugin.pay.entity.PayConfig;
 import com.youlan.plugin.pay.enums.TradeType;
 import com.youlan.plugin.pay.params.PayParams;
-import com.youlan.plugin.pay.service.PayConfigService;
-import com.youlan.plugin.pay.service.biz.PayChannelBizService;
 import com.youlan.plugin.pay.utils.PayUtil;
-import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
 public class DefaultPayClientFactory implements PayClientFactory {
-    private final PayConfigService payConfigService;
 
     @Override
     public PayClient createPayClient(PayConfig payConfig, TradeType tradeType) {
@@ -26,9 +21,4 @@ public class DefaultPayClientFactory implements PayClientFactory {
         return payClient;
     }
 
-    @Override
-    public PayClient getPayClient(Long configId, TradeType tradeType) {
-        PayConfig payConfig = payConfigService.loadPayConfigEnabled(configId);
-        return createPayClient(payConfig, tradeType);
-    }
 }

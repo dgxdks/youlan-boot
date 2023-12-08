@@ -15,7 +15,7 @@ import com.youlan.plugin.pay.entity.dto.CreatePayOrderDTO;
 import com.youlan.plugin.pay.entity.dto.PayOrderDTO;
 import com.youlan.plugin.pay.entity.dto.SubmitPayOrderDTO;
 import com.youlan.plugin.pay.service.PayOrderService;
-import com.youlan.plugin.pay.service.biz.PayBizService;
+import com.youlan.plugin.pay.service.biz.PayOrderBizService;
 import com.youlan.system.anno.OperationLog;
 import com.youlan.system.constant.OperationLogType;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,7 +25,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 @Tag(name = "支付订单")
 @RestController
@@ -33,14 +32,14 @@ import java.io.IOException;
 @AllArgsConstructor
 public class PayOrderController extends BaseController {
     private final PayOrderService payOrderService;
-    private final PayBizService payBizService;
+    private final PayOrderBizService payOrderBizService;
 
     @SaIgnore
     // @SaCheckPermission("pay:payOrder:create")
     @Operation(summary = "支付订单创建")
     @PostMapping("/createPayOrder")
     public ApiResult createPayOrder(@Validated @RequestBody CreatePayOrderDTO dto) {
-        return toSuccess(payBizService.createPayOrder(dto));
+        return toSuccess(payOrderBizService.createPayOrder(dto));
     }
 
     @SaIgnore
@@ -51,15 +50,7 @@ public class PayOrderController extends BaseController {
         if (StrUtil.isBlank(dto.getClientIp())) {
             dto.setClientIp(ServletHelper.getClientIp());
         }
-        return toSuccess(payBizService.submitPayOrder(dto));
-    }
-
-    @SaCheckPermission("pay:payOrder:add")
-    @Operation(summary = "支付订单新增")
-    @OperationLog(name = "支付订单", type = OperationLogType.OPERATION_LOG_TYPE_ADD)
-    @PostMapping("/addPayOrder")
-    public ApiResult addPayOrder(@Validated @RequestBody PayOrder payOrder) {
-        return toSuccess();
+        return toSuccess(payOrderBizService.submitPayOrder(dto));
     }
 
     @SaCheckPermission("pay:payOrder:update")
@@ -81,6 +72,7 @@ public class PayOrderController extends BaseController {
         if (CollectionUtil.isEmpty(dto.getList())) {
             return toSuccess();
         }
+        payOrderService.removeByIds(dto.getList());
         return toSuccess();
     }
 
@@ -88,7 +80,7 @@ public class PayOrderController extends BaseController {
     @Operation(summary = "支付订单详情")
     @PostMapping("/loadPayOrder")
     public ApiResult loadPayOrder(@RequestParam Long id) {
-        return toSuccess();
+        return toSuccess(payOrderService.loadOne(id));
     }
 
     @SaCheckPermission("pay:payOrder:list")
@@ -103,23 +95,6 @@ public class PayOrderController extends BaseController {
     @Operation(summary = "支付订单导出")
     @PostMapping("/exportPayOrderList")
     @OperationLog(name = "支付订单", type = OperationLogType.OPERATION_LOG_TYPE_EXPORT)
-    public void exportPayOrderList(@RequestBody PayOrder payOrder, HttpServletResponse response) throws IOException {
-        return;
-    }
-
-    @SaCheckPermission("pay:payOrder:update")
-    @Operation(summary = "支付订单状态修改")
-    @PostMapping("/updatePayOrderStatus")
-    @OperationLog(name = "支付订单", type = OperationLogType.OPERATION_LOG_TYPE_UPDATE)
-    public ApiResult updatePayOrderStatus(@RequestParam Long id, @RequestParam String status) {
-        return toSuccess();
-    }
-
-    @SaCheckPermission("pay:payOrder:remove")
-    @Operation(summary = "支付订单缓存刷新")
-    @PostMapping("/refreshPayOrderCache")
-    @OperationLog(name = "支付订单", type = OperationLogType.OPERATION_LOG_TYPE_REMOVE)
-    public ApiResult refreshPayOrderCache() {
-        return toSuccess();
+    public void exportPayOrderList(@RequestBody PayOrder payOrder, HttpServletResponse response) {
     }
 }

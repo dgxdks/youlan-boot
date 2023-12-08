@@ -23,10 +23,10 @@
         left join t_pay_config as config on config.id = channel_config.config_id
         <where>
             <if test="channelId != null">
-                channel_config.channel_id = #{channelId}
+                and channel_config.channel_id = #{channelId}
             </if>
             <if test="tradeType != null">
-                channel_config.trade_type = #{tradeType}
+                and channel_config.trade_type = #{tradeType}
             </if>
         </where>
     </select>

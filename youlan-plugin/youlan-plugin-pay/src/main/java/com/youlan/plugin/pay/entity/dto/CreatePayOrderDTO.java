@@ -37,7 +37,6 @@ public class CreatePayOrderDTO {
     @DecimalMin(value = "0", inclusive = false, message = "支付金额必须大于零")
     private BigDecimal payAmount;
 
-    @NotNull(message = "过期时间不能为空")
     @Schema(description = "过期时间")
     private Date expireTime;
 

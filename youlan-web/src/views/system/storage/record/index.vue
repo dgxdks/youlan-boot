@@ -54,12 +54,7 @@
         <base-upload-button type="primary" plain @click="handleImageUpload">图片上传</base-upload-button>
       </el-col>
       <el-col :span="1.5">
-        <base-remove-button
-          v-has-perm="['system:storageRecord:remove']"
-          plain
-          :disabled="tableNoSelected"
-          @click="handleDelete"
-        />
+        <base-remove-button v-has-perm="['system:storageRecord:remove']" plain :disabled="tableNoSelected" @click="handleDelete" />
       </el-col>
       <el-col :span="1.5">
         <base-remove-button v-has-perm="['system:storageRecord:remove']" plain @click="handleClean">清空

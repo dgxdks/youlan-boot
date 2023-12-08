@@ -12,6 +12,7 @@ import com.youlan.controller.base.BaseController;
 import com.youlan.plugin.pay.entity.PayConfig;
 import com.youlan.plugin.pay.service.PayChannelConfigService;
 import com.youlan.plugin.pay.service.PayConfigService;
+import com.youlan.plugin.pay.service.biz.PayConfigBizService;
 import com.youlan.system.anno.OperationLog;
 import com.youlan.system.constant.OperationLogType;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,15 +30,16 @@ import java.util.List;
 @RequestMapping("/pay/payConfig")
 @AllArgsConstructor
 public class PayConfigController extends BaseController {
+
     private final PayConfigService payConfigService;
-    private final PayChannelConfigService payChannelConfigService;
+    private final PayConfigBizService payConfigBizService;
 
     @SaCheckPermission("pay:payConfig:add")
     @Operation(summary = "支付配置新增")
     @OperationLog(name = "支付配置", type = OperationLogType.OPERATION_LOG_TYPE_ADD)
     @PostMapping("/addPayConfig")
     public ApiResult addPayConfig(@Validated @RequestBody PayConfig payConfig) {
-        payConfigService.addPayConfig(payConfig);
+        payConfigBizService.addPayConfig(payConfig);
         return toSuccess();
     }
 
@@ -49,7 +51,7 @@ public class PayConfigController extends BaseController {
         if (ObjectUtil.isNull(payConfig.getId())) {
             return toError(ApiResultCode.C0001);
         }
-        payConfigService.updatePayConfig(payConfig);
+        payConfigBizService.updatePayConfig(payConfig);
         return toSuccess();
     }
 
@@ -61,12 +63,7 @@ public class PayConfigController extends BaseController {
         if (CollectionUtil.isEmpty(dto.getList())) {
             return toSuccess();
         }
-        // 判断支付配置是否已被绑定
-        boolean exists = payChannelConfigService.existsByConfigIds(dto.getList());
-        if (exists) {
-            throw new BizRuntimeException(ApiResultCode.E0023);
-        }
-        payConfigService.removeBatchByIds(dto.getList());
+        payConfigBizService.removePayConfig(dto.getList());
         return toSuccess();
     }
 
@@ -107,7 +104,7 @@ public class PayConfigController extends BaseController {
     @PostMapping("/updatePayConfigStatus")
     @OperationLog(name = "支付配置", type = OperationLogType.OPERATION_LOG_TYPE_UPDATE)
     public ApiResult updatePayConfigStatus(@RequestParam Long id, @RequestParam String status) {
-        payConfigService.updatePayConfigStatus(id, status);
+        payConfigService.updateStatus(id, status);
         return toSuccess();
     }
 
