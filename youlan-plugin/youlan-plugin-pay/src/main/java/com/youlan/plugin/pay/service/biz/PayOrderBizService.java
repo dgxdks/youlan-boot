@@ -14,16 +14,18 @@ import com.youlan.plugin.pay.entity.PayChannel;
 import com.youlan.plugin.pay.entity.PayConfig;
 import com.youlan.plugin.pay.entity.PayOrder;
 import com.youlan.plugin.pay.entity.PayRecord;
-import com.youlan.plugin.pay.entity.dto.CreatePayOrderDTO;
-import com.youlan.plugin.pay.entity.dto.SubmitPayOrderDTO;
+import com.youlan.plugin.pay.entity.dto.CreatePayDTO;
+import com.youlan.plugin.pay.entity.dto.SubmitPayDTO;
 import com.youlan.plugin.pay.entity.request.PayQueryRequest;
 import com.youlan.plugin.pay.entity.request.PayRequest;
+import com.youlan.plugin.pay.entity.response.PayNotifyResponse;
 import com.youlan.plugin.pay.entity.response.PayQueryResponse;
 import com.youlan.plugin.pay.entity.response.PayResponse;
-import com.youlan.plugin.pay.entity.vo.CreatePayOrderVO;
-import com.youlan.plugin.pay.entity.vo.SubmitPayOrderVO;
+import com.youlan.plugin.pay.entity.vo.CreatePayVO;
+import com.youlan.plugin.pay.entity.vo.SubmitOrderVO;
 import com.youlan.plugin.pay.enums.NotifyType;
 import com.youlan.plugin.pay.enums.PayStatus;
+import com.youlan.plugin.pay.enums.TradeType;
 import com.youlan.plugin.pay.factory.PayClientFactory;
 import com.youlan.plugin.pay.service.PayChannelService;
 import com.youlan.plugin.pay.service.PayConfigService;
@@ -36,26 +38,27 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
 @AllArgsConstructor
 public class PayOrderBizService {
-    private final PayConfigService payConfigService;
-    private final PayChannelService payChannelService;
-    private final PayChannelBizService payChannelBizService;
     private final PayOrderService payOrderService;
     private final PayRecordService payRecordService;
+    private final PayChannelService payChannelService;
+    private final PayConfigService payConfigService;
     private final PayClientFactory payClientFactory;
+    private final PayChannelBizService payChannelBizService;
     private final PayNotifyBizService payNotifyBizService;
 
     /**
-     * 创建支付订单
+     * 支付创建
      *
-     * @param dto 创建支付订单参数
-     * @return 支付订单
+     * @param dto 支付创建参数
+     * @return 支付创建结果
      */
-    public CreatePayOrderVO createPayOrder(CreatePayOrderDTO dto) {
+    public CreatePayVO createPayOrder(CreatePayDTO dto) {
         // 校验创建支付订单参数
         ValidatorHelper.validateWithThrow(dto);
         // 获取可用的支付通道
@@ -80,12 +83,12 @@ public class PayOrderBizService {
     }
 
     /**
-     * 提交支付订单
+     * 支付提交
      *
-     * @param dto 提交支付订单参数
-     * @return 支付订单
+     * @param dto 支付提交参数
+     * @return 支付提交结果
      */
-    public SubmitPayOrderVO submitPayOrder(SubmitPayOrderDTO dto) {
+    public SubmitOrderVO submitPayOrder(SubmitPayDTO dto) {
         // 获取可以提交的支付订单
         PayOrder payOrder = this.getPayOrderCanSubmit(dto);
         // 获取可以使用的支付通道
@@ -106,6 +109,13 @@ public class PayOrderBizService {
                 .setClientIp(dto.getClientIp())
                 .setExtraParams(dto.getExtraParams());
         PayResponse payResponse = payClient.pay(payRequest);
+        // 支付响应不能是空的
+        Assert.notNull(payResponse, ApiResultCode.E0001::getException);
+        // 支付响应不能包含错误码和错误信息
+        if (!StrUtil.isAllBlank(payResponse.getErrorCode(), payResponse.getErrorMsg())) {
+            Object[] args = {payResponse.getErrorCode(), payResponse.getErrorMsg()};
+            throw new BizRuntimeException(ApiResultCode.E0014, args);
+        }
         // 正常发起支付请求后创建支付记录，避免创建无用的支付记录
         PayRecord payRecord = new PayRecord()
                 .setOutTradeNo(payRequest.getOutTradeNo())
@@ -115,82 +125,77 @@ public class PayOrderBizService {
                 .setClientIp(dto.getClientIp())
                 .setPayStatus(PayStatus.WAITING)
                 .setExtraParams(dto.getExtraParams())
-                .setRawData(payResponse.getRawData());
+                .setRawData(payResponse.getRawData())
+                .setNotifyUrl(payRequest.getNotifyUrl());
         this.payRecordService.save(payRecord);
-        // 支付响应不能是空的
-        Assert.notNull(payResponse, ApiResultCode.E0001::getException);
-        // 支付响应不能包含错误码和错误信息
-        if (!StrUtil.isAllBlank(payResponse.getErrorCode(), payResponse.getErrorMsg())) {
-            Object[] args = {payResponse.getErrorCode(), payResponse.getErrorMsg()};
-            throw new BizRuntimeException(ApiResultCode.E0014, args);
-        }
         // 根据支付状态处理对应逻辑
         PayStatus payStatus = payResponse.getPayStatus();
         switch (payStatus) {
             case SUCCESS:
                 // 已支付处理逻辑
-                this.getSelf().updatePayOrderSuccess(payOrder, payRecord, payResponse);
+                getSelf().doPayOrderSuccess(payOrder, payRecord, payResponse);
                 break;
             case CLOSED:
                 // 已关闭处理逻辑
-                this.getSelf().updatePayOrderClosed(payRecord.getId(), payResponse);
+                getSelf().doPayOrderClosed(payRecord.getId(), payResponse);
                 break;
             default:
                 // 其他状态不处理
                 break;
         }
         // 获取订单最新数据
-        payOrder = this.payOrderService.loadPayOrderIfExists(payOrder.getId());
-        return new SubmitPayOrderVO()
+        payOrder = this.payOrderService.loadPayOrderNotNull(payOrder.getId());
+        return new SubmitOrderVO()
                 .setPayStatus(payOrder.getPayStatus())
                 .setPayShowType(payResponse.getPayShowType())
                 .setPayInfo(payResponse.getPayInfo());
     }
 
     /**
-     * 更新支付订单为已支付状态
+     * 支付回调
      *
-     * @param payOrder    支付订单
-     * @param payRecord   支付记录
-     * @param payResponse 支付响应
+     * @param configId  支付配置ID
+     * @param tradeType 交易类型
+     * @param params    请求参数
+     * @param body      请求体
      */
-    @Transactional(rollbackFor = Exception.class)
-    public void updatePayOrderSuccess(PayOrder payOrder, PayRecord payRecord, PayResponse payResponse) {
-        // 更新支付记录
-        PayRecord updatePayRecord = new PayRecord()
-                .setPayStatus(PayStatus.SUCCESS)
-                .setRawData(payResponse);
-        this.payRecordService.updatePayStatusSuccess(payRecord.getId(), updatePayRecord);
-        // 更新支付订单
-        PayOrder updatePayOrder = new PayOrder()
-                .setPayStatus(PayStatus.SUCCESS)
-                .setConfigId(payOrder.getConfigId())
-                .setTradeType(payOrder.getTradeType())
-                .setSuccessTime(payResponse.getSuccessTime())
-                .setRecordId(payRecord.getId())
-                .setOutTradeNo(payRecord.getOutTradeNo())
-                .setTradeNo(payOrder.getTradeNo())
-                .setClientId(payResponse.getClientId());
-        this.payOrderService.updatePayOrderSuccess(payOrder.getId(), updatePayOrder);
-        // 创建支付回调通知
-        payNotifyBizService.createPayNotify(NotifyType.PAY, payOrder);
+    public void payNotify(Long configId, TradeType tradeType, Map<String, String> params, String body) {
+        log.info("支付回调：{configId: {}, tradeType: {}, params: {}, body: {}}", configId, tradeType,
+                JSONUtil.toJsonStr(params), body);
+        PayConfig payConfig = payConfigService.loadPayConfigNotNull(configId);
+        PayClient payClient = payClientFactory.createPayClient(payConfig, tradeType);
+        PayNotifyResponse payNotifyResponse = payClient.payNotifyParse(params, body);
+        PayStatus payStatus = payNotifyResponse.getPayStatus();
+        String outTradeNo = payNotifyResponse.getOutTradeNo();
+        // 获取支付记录
+        PayRecord payRecord = payRecordService.loadPayRecordByOutTradeNoNotNull(outTradeNo);
+        switch (payStatus) {
+            // 已支付处理逻辑
+            case SUCCESS:
+                PayOrder payOrder = payOrderService.loadPayOrderNotNull(payRecord.getOrderId());
+                getSelf().doPayOrderSuccess(payOrder, payRecord, payNotifyResponse);
+                break;
+            // 已关闭处理逻辑
+            case CLOSED:
+                // 已关闭处理逻辑
+                getSelf().doPayOrderClosed(payRecord.getId(), payNotifyResponse);
+                break;
+            default:
+                log.info("支付回调不支持此支付状态：{configId: {}, tradeType: {}, params: {}, body: {}}",
+                        configId, tradeType, JSONUtil.toJsonStr(params), body);
+        }
     }
 
     /**
-     * 更新支付订单为已关闭状态
+     * 退款回调
      *
-     * @param recordId    支付记录ID
-     * @param payResponse 支付响应
+     * @param configId  支付配置ID
+     * @param tradeType 交易类型
+     * @param params    请求参数
+     * @param body      请求体
      */
-    @Transactional(rollbackFor = Exception.class)
-    public void updatePayOrderClosed(Long recordId, PayResponse payResponse) {
-        // 更新支付记录
-        PayRecord updatePayRecord = new PayRecord()
-                .setPayStatus(PayStatus.CLOSED)
-                .setRawData(JSONUtil.toJsonStr(payResponse))
-                .setErrorCode(payResponse.getErrorCode())
-                .setErrorMsg(payResponse.getErrorMsg());
-        this.payRecordService.updatePayStatusClosed(recordId, updatePayRecord);
+    public void refundNotify(Long configId, TradeType tradeType, Map<String, String> params, String body) {
+
     }
 
     /**
@@ -199,11 +204,11 @@ public class PayOrderBizService {
      * @param dto 支付订单提交参数
      * @return 支付订单
      */
-    private PayOrder getPayOrderCanSubmit(SubmitPayOrderDTO dto) {
+    private PayOrder getPayOrderCanSubmit(SubmitPayDTO dto) {
         // 提交参数校验
         ValidatorHelper.validateWithThrow(dto);
         // 查询支付订单
-        PayOrder payOrder = this.payOrderService.loadPayOrderIfExists(dto.getOrderId());
+        PayOrder payOrder = this.payOrderService.loadPayOrderNotNull(dto.getOrderId());
         // 订单不能是成功状态
         if (payOrder.getPayStatus().isSuccess()) {
             throw new BizRuntimeException(ApiResultCode.E0008);
@@ -234,9 +239,65 @@ public class PayOrderBizService {
     }
 
     /**
-     * 获取当前业务对象
+     * 更新支付订单为已支付状态
      *
-     * @return 当前业务对象
+     * @param payOrder    支付订单
+     * @param payRecord   支付记录
+     * @param payResponse 支付回调响应
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void doPayOrderSuccess(PayOrder payOrder, PayRecord payRecord, PayResponse payResponse) {
+        // 创建更新支付记录
+        PayRecord updatePayRecord = new PayRecord()
+                .setPayStatus(PayStatus.SUCCESS)
+                .setTradeNo(payResponse.getTradeNo());
+        // 根据支付响应类型设置原始数据
+        if (payResponse instanceof PayNotifyResponse) {
+            updatePayRecord.setNotifyRawData(payResponse);
+        } else {
+            updatePayRecord.setRawData(payResponse);
+        }
+        this.payRecordService.updatePayStatusSuccess(payRecord.getId(), updatePayRecord);
+        // 创建更新支付订单
+        PayOrder updatePayOrder = new PayOrder()
+                .setPayStatus(PayStatus.SUCCESS)
+                .setConfigId(payRecord.getConfigId())
+                .setTradeType(payRecord.getTradeType())
+                .setSuccessTime(payResponse.getSuccessTime())
+                .setRecordId(payRecord.getId())
+                .setOutTradeNo(payRecord.getOutTradeNo())
+                .setTradeNo(payResponse.getTradeNo())
+                .setClientId(payResponse.getClientId());
+        this.payOrderService.updatePayOrderSuccess(payOrder.getId(), updatePayOrder);
+        // 创建支付回调通知
+        this.payNotifyBizService.createPayNotify(NotifyType.PAY, payOrder);
+    }
+
+
+    /**
+     * 更新支付订单为已关闭状态
+     *
+     * @param recordId    支付记录ID
+     * @param payResponse 支付响应
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void doPayOrderClosed(Long recordId, PayResponse payResponse) {
+        // 更新支付记录
+        PayRecord updatePayRecord = new PayRecord()
+                .setPayStatus(PayStatus.CLOSED)
+                .setErrorCode(payResponse.getErrorCode())
+                .setErrorMsg(payResponse.getErrorMsg());
+        // 根据支付响应类型设置原始数据
+        if (payResponse instanceof PayNotifyResponse) {
+            updatePayRecord.setNotifyRawData(payResponse);
+        } else {
+            updatePayRecord.setRawData(payResponse);
+        }
+        this.payRecordService.updatePayStatusClosed(recordId, updatePayRecord);
+    }
+
+    /**
+     * 获取当前实例
      */
     public PayOrderBizService getSelf() {
         return SpringUtil.getBean(PayOrderBizService.class);

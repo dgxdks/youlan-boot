@@ -17,15 +17,15 @@ public class PayChannelService extends BaseServiceImpl<PayChannelMapper, PayChan
      * 获取可用的支付渠道
      */
     public PayChannel loadPayChannelEnabled(Long id) {
-        PayChannel payChannel = this.loadPayChannelIfExists(id);
+        PayChannel payChannel = this.loadPayChannelNotNull(id);
         Assert.equals(DBConstant.VAL_STATUS_ENABLED, payChannel.getStatus(), ApiResultCode.E0021::getException);
         return payChannel;
     }
 
     /**
-     * 如果存在获取支付渠道
+     * 获取支付渠道且不为空
      */
-    public PayChannel loadPayChannelIfExists(Long id) {
+    public PayChannel loadPayChannelNotNull(Long id) {
         return this.loadOneOpt(id)
                 .orElseThrow(ApiResultCode.E0020::getException);
     }

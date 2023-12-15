@@ -25,6 +25,9 @@ public class PayRecord {
     @Schema(description = "外部交易订单号")
     private String outTradeNo;
 
+    @Schema(description = "交易订单号")
+    private String tradeNo;
+
     @Schema(description = "支付订单ID")
     private Long orderId;
 
@@ -43,6 +46,9 @@ public class PayRecord {
     @Schema(description = "额外参数(JSON格式)")
     @TableField(typeHandler = JacksonTypeHandler.class)
     private Map<String, String> extraParams;
+
+    @Schema(description = "回调地址")
+    private String notifyUrl;
 
     @Schema(description = "回调原始数据")
     @TableField(typeHandler = JSONObjectTypeHandler.class)

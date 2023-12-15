@@ -2,21 +2,20 @@ package com.youlan.plugin.pay.entity.response;
 
 import com.youlan.plugin.pay.enums.PayStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-@NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class PayQueryResponse extends BaseResponse {
+public class PayQueryResponse extends PayResponse {
 
     @Schema(description = "支付状态")
     private PayStatus payStatus;
+
+    @Schema(description = "外部交易订单号")
+    private String outTradeNo;
 
     @Schema(description = "交易订单号")
     private String tradeNo;

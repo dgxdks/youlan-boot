@@ -1,7 +1,7 @@
 package com.youlan.plugin.pay.convert;
 
 import com.youlan.plugin.pay.entity.PayOrder;
-import com.youlan.plugin.pay.entity.vo.CreatePayOrderVO;
+import com.youlan.plugin.pay.entity.vo.CreatePayVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -11,6 +11,6 @@ public interface PayOrderConvert {
     PayOrderConvert INSTANCE = Mappers.getMapper(PayOrderConvert.class);
 
     @Mapping(target = "orderId", source = "id")
-    CreatePayOrderVO convertToCreatePayOrderVO(PayOrder payOrder);
+    CreatePayVO convertToCreatePayOrderVO(PayOrder payOrder);
 
 }

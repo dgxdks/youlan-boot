@@ -14,6 +14,12 @@ youlan:
         # swagger相关
         - /*/api-docs
         - /*/api-docs/**
+        # 支付相关
+        - /pay/payOrder/createPay
+        - /pay/payOrder/submitPay
+        - /pay/payNotify/channel/**
+        - /pay/payNotify/pay/**
+        - /pay/payNotify/refund/**
 
 --- # 系统模块
 youlan:
@@ -85,9 +91,9 @@ youlan:
     restricted: false
   pay:
     # 支付回调地址
-    pay-notify-url: http://localhost:4085/pay/payNotify/order
+    pay-notify-url: http://localhost/pay/payNotify/pay
     # 退款回调地址
-    refund-notify-url: http://localhost:4085/pay/payNotify/refund
+    refund-notify-url: http://localhost/pay/payNotify/refund
     # 支付订单前缀
     pay-order-prefix: P
     # 退款订单前缀
@@ -162,6 +168,54 @@ spring:
     # 是否开启arthas
     enabled: false
 
+--- # Redis配置
+spring:
+  redis:
+    # 连接超时时间
+    timeout: 10s
+    # 是否开启ssl
+    ssl: false
+
+--- # 数据库配置
+spring:
+  # 数据库配置
+  datasource:
+    # 数据源类型
+    type: com.zaxxer.hikari.HikariDataSource
+    # 数据源驱动
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # 动态数据源配置
+    dynamic:
+      # 设置默认的数据源或者数据源组，默认值master
+      primary: master
+      # 严格模式，匹配不到数据源则报错
+      strict: true
+    # hikari配置
+    hikari:
+      # 最大连接池数
+      maximum-pool-size: 20
+      # 最小空闲线程数
+      minimum-idle: 10
+      # 连接超时时间
+      connection-timeout: 30000
+      # 校验超时时间
+      validation-timeout: 5000
+      # 空闲连接最大存活时间，默认10分钟
+      idle-timeout: 600000
+      # 连接池中连接最长生命周期，0为无限生命周期，默认30分钟
+      max-lifetime: 1800000
+      # 连接测试语句
+      connection-test-query: SELECT 1
+      # 多久检查一次连接的活性
+      keepalive-time: 30000
+
+--- # Redisson配置(https://github.com/redisson/redisson/wiki/2.-Configuration)
+redisson:
+  # 线程池数量
+  threads: 16
+  # netty线程池数量
+  netty-thread: 32
+
 # MyBatisPlus配置
 mybatis-plus:
   # 实体扫描，多个package用逗号或者分号分隔
@@ -216,6 +270,9 @@ springdoc:
     - group: '3.支付管理'
       paths-to-match: '/**'
       packages-to-scan: 'com.youlan.controller.pay'
+    - group: '4.样例测试'
+      paths-to-match: '/**'
+      packages-to-scan: 'com.youlan.controller.demo'
 
 # Knife4j配置
 knife4j:

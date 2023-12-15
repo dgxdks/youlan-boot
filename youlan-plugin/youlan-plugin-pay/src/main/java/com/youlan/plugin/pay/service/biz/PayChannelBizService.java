@@ -3,7 +3,6 @@ package com.youlan.plugin.pay.service.biz;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.core.helper.ListHelper;
@@ -16,7 +15,6 @@ import com.youlan.plugin.pay.entity.PayConfig;
 import com.youlan.plugin.pay.enums.TradeType;
 import com.youlan.plugin.pay.service.PayChannelConfigService;
 import com.youlan.plugin.pay.service.PayChannelService;
-import com.youlan.plugin.pay.service.PayConfigService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +27,6 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class PayChannelBizService {
-
     private final PayChannelService payChannelService;
     private final PayChannelConfigService payChannelConfigService;
 
@@ -37,15 +34,15 @@ public class PayChannelBizService {
      * 获取可用的支付配置
      */
     public PayConfig loadPayConfigEnabled(Long channelId, TradeType tradeType) {
-        PayConfig payConfig = this.loadPayConfigIfExists(channelId, tradeType);
+        PayConfig payConfig = this.loadPayConfigNotNull(channelId, tradeType);
         Assert.equals(DBConstant.VAL_STATUS_ENABLED, payConfig.getStatus(), ApiResultCode.E0012::getException);
         return payConfig;
     }
 
     /**
-     * 如果存在获取支付配置
+     * 获取支付配置且不为空
      */
-    public PayConfig loadPayConfigIfExists(Long channelId, TradeType tradeType) {
+    public PayConfig loadPayConfigNotNull(Long channelId, TradeType tradeType) {
         PayConfig payConfig = this.loadPayConfig(channelId, tradeType);
         if (ObjectUtil.isNull(payConfig)) {
             throw new BizRuntimeException(ApiResultCode.E0022, new Object[]{channelId, tradeType});
@@ -86,7 +83,7 @@ public class PayChannelBizService {
      * 支付通道详情
      */
     public PayChannel loadPayChannel(Long id) {
-        PayChannel payChannel = payChannelService.loadPayChannelIfExists(id);
+        PayChannel payChannel = payChannelService.loadPayChannelNotNull(id);
         this.setPayChannelConfigList(Collections.singletonList(payChannel));
         return payChannel;
     }

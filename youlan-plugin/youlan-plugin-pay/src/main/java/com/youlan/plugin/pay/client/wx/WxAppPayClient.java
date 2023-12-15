@@ -12,7 +12,7 @@ import com.youlan.plugin.pay.entity.response.PayResponse;
 import com.youlan.plugin.pay.enums.PayShowType;
 import com.youlan.plugin.pay.enums.TradeType;
 import com.youlan.plugin.pay.params.WxPayParams;
-import com.youlan.plugin.pay.utils.WxPayUtil;
+import com.youlan.plugin.pay.utils.PayClientUtil;
 
 public class WxAppPayClient extends AbstractWxPayClient {
 
@@ -27,7 +27,7 @@ public class WxAppPayClient extends AbstractWxPayClient {
         // 创建支付订单
         WxPayAppOrderResult orderResult = wxPayService.createOrder(orderRequest);
         // 返回支付响应
-        return WxPayUtil.createPayWaitingResponse(payRequest.getOutTradeNo(), orderResult, PayShowType.CUSTOM, orderResult);
+        return PayClientUtil.createPayWaitingResponse(payRequest.getOutTradeNo(), orderResult, PayShowType.CUSTOM, orderResult);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class WxAppPayClient extends AbstractWxPayClient {
         // 创建支付订单
         WxPayUnifiedOrderV3Result orderResult = wxPayService.createOrderV3(TradeTypeEnum.APP, orderRequest);
         // 返回支付响应
-        return WxPayUtil.createPayWaitingResponse(payRequest.getOutTradeNo(), orderResult, PayShowType.CUSTOM, orderResult);
+        return PayClientUtil.createPayWaitingResponse(payRequest.getOutTradeNo(), orderResult, PayShowType.CUSTOM, orderResult);
     }
 
     @Override

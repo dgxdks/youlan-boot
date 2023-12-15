@@ -87,7 +87,7 @@ public class DictBizService {
      */
     public void beforeAddOrgUpdateDictData(DictData dictData) {
         // 必须指定字典类型键名
-        DictType dictType = dictTypeService.loadDictTypeByTypeKeyIfExists(dictData.getTypeKey());
+        DictType dictType = dictTypeService.loadDictTypeByTypeKeyNotNull(dictData.getTypeKey());
         // 新增时字典类型不能被禁用
         if (ObjectUtil.isNull(dictData.getId()) && DBConstant.VAL_STATUS_DISABLED.equals(dictType.getStatus())) {
             throw new BizRuntimeException(ApiResultCode.B0015);
@@ -131,7 +131,7 @@ public class DictBizService {
     @Transactional(rollbackFor = Exception.class)
     public void updateDictType(DictType dictType) {
         beforeAddOrgUpdateDictType(dictType);
-        DictType oldDictType = dictTypeService.loadDictTypeIfExists(dictType.getId());
+        DictType oldDictType = dictTypeService.loadDictTypeNotNull(dictType.getId());
         // 如果前后typeKey不一致则字典值表也需要同步
         if (ObjectUtil.notEqual(oldDictType.getTypeKey(), dictType.getTypeKey())) {
             // 更新字典值中的typeKey
@@ -155,7 +155,7 @@ public class DictBizService {
     public void removeDictType(List<Long> ids) {
         List<String> typeKeyList = new ArrayList<>();
         for (Long id : ids) {
-            DictType dictType = dictTypeService.loadDictTypeIfExists(id);
+            DictType dictType = dictTypeService.loadDictTypeNotNull(id);
             boolean dictTypeExists = dictDataService.lambdaQuery()
                     .eq(DictData::getTypeKey, dictType.getTypeKey())
                     .exists();

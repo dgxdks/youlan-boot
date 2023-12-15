@@ -64,7 +64,7 @@ public class PayRequest {
      * @param paramKey 参数键名
      * @return 参数
      */
-    public String getExtraParamIfExists(String paramKey) {
+    public String getExtraParamNotNull(String paramKey) {
         String extraParam = getExtraParam(paramKey);
         Assert.notBlank(extraParam, () -> new BizRuntimeException(StrUtil.format("extraParams中没有{}参数", paramKey)));
         return extraParam;

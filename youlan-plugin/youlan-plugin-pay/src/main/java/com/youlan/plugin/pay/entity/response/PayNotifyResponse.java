@@ -7,6 +7,6 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
-public class PayNotifyResponse extends PayQueryResponse {
+public class PayNotifyResponse extends PayResponse {
 
 }

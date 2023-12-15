@@ -67,8 +67,8 @@ public class OperationLogAspect {
             String method = joinPoint.getSignature().getName();
             String logName = operationAnno.name();
             String logType = operationAnno.type();
-            Long logUser = SystemAuthHelper.getUserId();
-            String logBy = SystemAuthHelper.getUserName();
+            Long logUser = SystemAuthHelper.getUserIdIfExists();
+            String logBy = SystemAuthHelper.getUserNameIfExists();
             String httpMethod = httpServletRequest.getMethod();
             String httpQuery = httpServletRequest.getQueryString();
             String httpUrl = httpServletRequest.getRequestURI();

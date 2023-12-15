@@ -33,7 +33,7 @@ public class ConfigService extends BaseServiceImpl<ConfigMapper, Config> {
      * 获取布尔类型配置值
      */
     public boolean getConfigValueBoolean(String configKey) {
-        Config config = this.loadConfigCacheByConfigKeyIfExists(configKey);
+        Config config = this.loadConfigCacheByConfigKeyNotNull(configKey);
         String configValue = config.getConfigValue();
         Boolean configValueBoolean = Convert.toBool(configValue, null);
         if (ObjectUtil.isNull(configValueBoolean)) {
@@ -46,7 +46,7 @@ public class ConfigService extends BaseServiceImpl<ConfigMapper, Config> {
      * 获取数字类型配置值
      */
     public Number getConfigValueNumber(String configKey) {
-        Config config = this.loadConfigCacheByConfigKeyIfExists(configKey);
+        Config config = this.loadConfigCacheByConfigKeyNotNull(configKey);
         String configValue = config.getConfigValue();
         Number configValueNumber = Convert.toNumber(configValue, null);
         if (ObjectUtil.isNull(configValueNumber)) {
@@ -59,7 +59,7 @@ public class ConfigService extends BaseServiceImpl<ConfigMapper, Config> {
      * 获取字符类型配置值
      */
     public String getConfigValueString(String configKey) {
-        Config config = this.loadConfigCacheByConfigKeyIfExists(configKey);
+        Config config = this.loadConfigCacheByConfigKeyNotNull(configKey);
         String configValue = config.getConfigValue();
         if (StrUtil.isBlank(configValue)) {
             throw new BizRuntimeException(StrUtil.format("获取配置键值为[{}]的字符配置值失败", configKey));
@@ -68,16 +68,16 @@ public class ConfigService extends BaseServiceImpl<ConfigMapper, Config> {
     }
 
     /**
-     * 根据配置键名获取配置(支持缓存)
+     * 根据配置键名获取配置缓存且不为空
      */
-    public Config loadConfigCacheByConfigKeyIfExists(String configKey) {
+    public Config loadConfigCacheByConfigKeyNotNull(String configKey) {
         if (StrUtil.isBlank(configKey)) {
             return null;
         }
         String redisKey = SystemUtil.getConfigRedisKey(configKey);
         Config config = RedisHelper.getCacheObject(redisKey);
         if (ObjectUtil.isNull(config)) {
-            config = loadConfigByConfigKeyIfExists(configKey);
+            config = loadConfigByConfigKeyNotNull(configKey);
         }
         if (ObjectUtil.isNotNull(config)) {
             RedisHelper.setCacheObject(redisKey, config);
@@ -125,17 +125,17 @@ public class ConfigService extends BaseServiceImpl<ConfigMapper, Config> {
     }
 
     /**
-     * 如果存在获取配置
+     * 获取配置且不为空
      */
-    public Config loadConfigIfExists(Serializable id) {
+    public Config loadConfigNotNull(Serializable id) {
         return loadOneOpt(id)
                 .orElseThrow(ApiResultCode.B0016::getException);
     }
 
     /**
-     * 根据配置键名查询配置
+     * 根据配置键名查询配置且不为空
      */
-    public Config loadConfigByConfigKeyIfExists(String configKey) {
+    public Config loadConfigByConfigKeyNotNull(String configKey) {
         Config config = loadConfigByConfigKey(configKey);
         Assert.notNull(config, ApiResultCode.B0016::getException);
         return config;
@@ -166,7 +166,7 @@ public class ConfigService extends BaseServiceImpl<ConfigMapper, Config> {
     public void updateConfig(Config config) {
         beforeAddOrUpdateConfig(config);
         // 如果前后configKey不一致则需要删除旧的configKey缓存
-        Config oldConfig = this.loadConfigIfExists(config.getId());
+        Config oldConfig = this.loadConfigNotNull(config.getId());
         boolean update = this.updateById(config);
         if (update) {
             removeConfigCache(oldConfig.getConfigKey());
@@ -178,7 +178,7 @@ public class ConfigService extends BaseServiceImpl<ConfigMapper, Config> {
         List<String> configKeyList = new ArrayList<>();
         for (Long id : idList) {
             //判断参数类型，内置参数不能删除
-            Config config = this.loadConfigIfExists(id);
+            Config config = this.loadConfigNotNull(id);
             if (SystemConstant.CONFIG_TYPE_INNER.equals(config.getConfigType())) {
                 throw new BizRuntimeException(ApiResultCode.B0017);
             }

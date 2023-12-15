@@ -7,5 +7,5 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
-public class RefundNotifyResponse extends RefundQueryResponse {
+public class RefundNotifyResponse extends RefundResponse {
 }

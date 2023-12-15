@@ -82,10 +82,6 @@ public class PayConstant {
     // ******************** 回调频率 ********************
     public static final int[] NOTIFY_FREQUENCY = {15, 15, 30, 180, 1800, 1800, 1800, 3600};
 
-    // ******************** 回调线程池 ********************
-    public static final String NOTIFY_THREAD_PREFIX = "pay-notify-";
-    public static final String NOTIFY_THREAD_POOL_BEAN_NAME = "payNotifyThreadPool";
-
     // ******************** 交易类型 ********************
     /**
      * 微信JSAPI支付
@@ -112,6 +108,9 @@ public class PayConstant {
      */
     public static final String TRADE_TYPE_WX_SCAN = "WX_SCAN";
 
+    // ******************** 线程池 ********************
+    public static final String PYA_NOTIFY_THREAD_POOL_NAME = "payNotifyThreadPool";
+    public static final String PAY_NOTIFY_THREAD_NAME_PREFIX = "pay-notify-";
 
     // ******************** 币类型 ********************
     public static final String CURRENCY_CNY = "CNY";

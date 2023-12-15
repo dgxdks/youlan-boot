@@ -11,9 +11,9 @@ import com.youlan.common.core.servlet.helper.ServletHelper;
 import com.youlan.common.db.entity.dto.ListDTO;
 import com.youlan.controller.base.BaseController;
 import com.youlan.plugin.pay.entity.PayOrder;
-import com.youlan.plugin.pay.entity.dto.CreatePayOrderDTO;
+import com.youlan.plugin.pay.entity.dto.CreatePayDTO;
 import com.youlan.plugin.pay.entity.dto.PayOrderDTO;
-import com.youlan.plugin.pay.entity.dto.SubmitPayOrderDTO;
+import com.youlan.plugin.pay.entity.dto.SubmitPayDTO;
 import com.youlan.plugin.pay.service.PayOrderService;
 import com.youlan.plugin.pay.service.biz.PayOrderBizService;
 import com.youlan.system.anno.OperationLog;
@@ -35,18 +35,16 @@ public class PayOrderController extends BaseController {
     private final PayOrderBizService payOrderBizService;
 
     @SaIgnore
-    // @SaCheckPermission("pay:payOrder:create")
     @Operation(summary = "支付订单创建")
-    @PostMapping("/createPayOrder")
-    public ApiResult createPayOrder(@Validated @RequestBody CreatePayOrderDTO dto) {
+    @PostMapping("/createPay")
+    public ApiResult createPayOrder(@Validated @RequestBody CreatePayDTO dto) {
         return toSuccess(payOrderBizService.createPayOrder(dto));
     }
 
     @SaIgnore
-//    @SaCheckPermission("pay:payOrder:submit")
     @Operation(summary = "支付订单提交")
-    @PostMapping("/submitPayOrder")
-    public ApiResult submitPayOrder(@RequestBody SubmitPayOrderDTO dto) {
+    @PostMapping("/submitPay")
+    public ApiResult submitPayOrder(@RequestBody SubmitPayDTO dto) {
         if (StrUtil.isBlank(dto.getClientIp())) {
             dto.setClientIp(ServletHelper.getClientIp());
         }

@@ -19,29 +19,33 @@ import com.youlan.plugin.pay.entity.PayOrder;
 import com.youlan.plugin.pay.entity.dto.NotifyDTO;
 import com.youlan.plugin.pay.enums.NotifyStatus;
 import com.youlan.plugin.pay.enums.NotifyType;
-import com.youlan.plugin.pay.service.*;
+import com.youlan.plugin.pay.service.PayNotifyRecordService;
+import com.youlan.plugin.pay.service.PayNotifyService;
 import com.youlan.plugin.pay.utils.PayUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
+import javax.annotation.Resource;
 import java.time.Duration;
 import java.util.Date;
 import java.util.List;
+
+import static com.youlan.plugin.pay.constant.PayConstant.PYA_NOTIFY_THREAD_POOL_NAME;
 
 @Slf4j
 @Service
 @AllArgsConstructor
 public class PayNotifyBizService {
+    @Resource(name = PYA_NOTIFY_THREAD_POOL_NAME)
+    private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
     private final PayProperties payProperties;
     private final PayNotifyService payNotifyService;
     private final PayNotifyRecordService payNotifyRecordService;
-    private final PayChannelService payChannelService;
-    private final PayOrderService payOrderService;
-    private final PayRefundOrderService payRefundOrderService;
 
     /**
      * 创建回调通知
@@ -85,6 +89,15 @@ public class PayNotifyBizService {
         if (CollectionUtil.isEmpty(payNotifyList)) {
             return;
         }
+        log.info("调度支付回调：{回调总条数: {}}", payNotifyList.size());
+        payNotifyList.forEach(payNotify -> threadPoolTaskExecutor.execute(() -> {
+            try {
+                // 执行支付回调
+                schedulePayNotify(payNotify);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+        }));
     }
 
     /**
@@ -95,7 +108,7 @@ public class PayNotifyBizService {
     public void schedulePayNotify(PayNotify payNotify) {
         String payNotifyRedisKey = PayUtil.getPayNotifyRedisKey(payNotify.getId());
         RedisHelper.underLock(payNotifyRedisKey, () -> {
-            PayNotify newPayNotify = payNotifyService.loadPayNotifyIfExists(payNotify.getId());
+            PayNotify newPayNotify = payNotifyService.loadPayNotifyNotNull(payNotify.getId());
             // 加锁不能完全保证同一条支付回调只会被执行一次，需要通过查询库里最新的回调次数，只有前后一致才能保证此支付回调不会被重复执行
             if (ObjectUtil.notEqual(payNotify.getNotifyTimes(), newPayNotify.getNotifyTimes())) {
                 log.warn("支付回调次数与实际不一致被忽略，可能存在锁竞争: {支付回调: {}, 实际回调次数: {}}", JSONUtil.toJsonStr(payNotify),

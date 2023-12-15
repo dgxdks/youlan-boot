@@ -14,12 +14,12 @@ import java.util.List;
 public class PayNotifyService extends BaseServiceImpl<PayNotifyMapper, PayNotify> {
 
     /**
-     * 如果存在获取支付回调
+     * 获取支付回调且不为空
      *
      * @param id 支付回调ID
      * @return 支付回调
      */
-    public PayNotify loadPayNotifyIfExists(Long id) {
+    public PayNotify loadPayNotifyNotNull(Long id) {
         return this.loadOneOpt(id)
                 .orElseThrow(() -> new BizRuntimeException("支付回调不存在"));
     }

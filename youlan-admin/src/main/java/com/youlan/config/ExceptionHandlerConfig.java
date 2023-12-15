@@ -145,7 +145,7 @@ public class ExceptionHandlerConfig {
     }
 
     /**
-     * 如果存在{@link BizRuntimeException}则优先处理
+     * 如果存在目标异常则优先处理
      */
     public ApiResult handleTargetExceptionIfExists(Throwable throwable, HttpServletRequest request, Supplier<ApiResult> defaultSupplier) {
         Throwable exception = ExceptionUtil.getCausedBy(throwable, BizException.class, BizRuntimeException.class, NotLoginException.class);

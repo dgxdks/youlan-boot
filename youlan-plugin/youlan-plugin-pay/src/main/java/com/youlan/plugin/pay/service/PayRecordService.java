@@ -28,7 +28,7 @@ public class PayRecordService extends BaseServiceImpl<PayRecordMapper, PayRecord
      * @param updatePayRecord 支付记录更新值
      */
     public void updatePayStatusSuccess(Long id, PayRecord updatePayRecord) {
-        PayRecord payRecord = this.loadPayRecordIfExists(id);
+        PayRecord payRecord = this.loadPayRecordNotNull(id);
         PayStatus payStatus = payRecord.getPayStatus();
         switch (payStatus) {
             case SUCCESS:
@@ -57,7 +57,7 @@ public class PayRecordService extends BaseServiceImpl<PayRecordMapper, PayRecord
      * @param updatePayRecord 支付记录更新值
      */
     public void updatePayStatusClosed(Long id, PayRecord updatePayRecord) {
-        PayRecord payRecord = this.loadPayRecordIfExists(id);
+        PayRecord payRecord = this.loadPayRecordNotNull(id);
         PayStatus payStatus = payRecord.getPayStatus();
         switch (payStatus) {
             case CLOSED:
@@ -98,12 +98,23 @@ public class PayRecordService extends BaseServiceImpl<PayRecordMapper, PayRecord
     }
 
     /**
-     * 如果存在获取支付记录
+     * 根据外部交易订单号获取支付记录且不为空
+     *
+     * @param outTradeNo 外部交易订单号
+     * @return 支付记录
+     */
+    public PayRecord loadPayRecordByOutTradeNoNotNull(String outTradeNo) {
+        return this.loadOneOpt(PayRecord::getOutTradeNo, outTradeNo)
+                .orElseThrow(() -> new BizRuntimeException(ApiResultCode.E0015));
+    }
+
+    /**
+     * 获取支付记录且不为空
      *
      * @param id 支付记录ID
      * @return 支付记录
      */
-    public PayRecord loadPayRecordIfExists(Serializable id) {
+    public PayRecord loadPayRecordNotNull(Serializable id) {
         return this.loadOneOpt(id)
                 .orElseThrow(() -> new BizRuntimeException(ApiResultCode.E0015));
     }

@@ -14,17 +14,17 @@ import java.io.Serializable;
 public class DictTypeService extends BaseServiceImpl<DictTypeMapper, DictType> {
 
     /**
-     * 根据类型键名获取字典类型
+     * 根据类型键名获取字典类型且不为空
      */
-    public DictType loadDictTypeByTypeKeyIfExists(String typeKey) {
+    public DictType loadDictTypeByTypeKeyNotNull(String typeKey) {
         return this.loadOneOpt(DictType::getTypeKey, typeKey)
                 .orElseThrow(ApiResultCode.B0014::getException);
     }
 
     /**
-     * 如果存在返回字典类型
+     * 获取字典类型且不为空
      */
-    public DictType loadDictTypeIfExists(Serializable id) {
+    public DictType loadDictTypeNotNull(Serializable id) {
         return this.loadOneOpt(id)
                 .orElseThrow(ApiResultCode.B0014::getException);
     }

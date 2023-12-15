@@ -26,6 +26,7 @@ import com.youlan.plugin.pay.enums.PayStatus;
 import com.youlan.plugin.pay.enums.RefundStatus;
 import com.youlan.plugin.pay.enums.WxApiVersion;
 import com.youlan.plugin.pay.params.WxPayParams;
+import com.youlan.plugin.pay.utils.PayClientUtil;
 import com.youlan.plugin.pay.utils.WxPayUtil;
 import lombok.Getter;
 
@@ -58,10 +59,10 @@ public abstract class AbstractWxPayClient extends AbstractPayClient<WxPayParams>
         String resultCode = refundResult.getResultCode();
         // V2版本退款是异步回调通知，如果退款成功则返回等待退款状态
         if (StrUtil.equals("SUCCESS", resultCode)) {
-            return WxPayUtil.createRefundWaitingResponse(refundRequest.getOutRefundNo(), refundResult.getRefundId(),
+            return PayClientUtil.createRefundWaitingResponse(refundRequest.getOutRefundNo(), refundResult.getRefundId(),
                     refundResult);
         }
-        return WxPayUtil.createRefundFailedResponse(refundRequest.getOutRefundNo(), refundResult);
+        return PayClientUtil.createRefundFailedResponse(refundRequest.getOutRefundNo(), null, null, refundResult);
     }
 
     protected RefundResponse doRefundV3(RefundRequest refundRequest) throws WxPayException {
@@ -78,12 +79,12 @@ public abstract class AbstractWxPayClient extends AbstractPayClient<WxPayParams>
         switch (status) {
             case "SUCCESS":
                 // V3版本退款为同步请求，如果退款成功则返回退款成功状态
-                return WxPayUtil.createRefundSuccessResponse(refundRequest.getOutRefundNo(), refundResult.getRefundId(),
+                return PayClientUtil.createRefundSuccessResponse(refundRequest.getOutRefundNo(), refundResult.getRefundId(),
                         refundResult, WxPayUtil.parseExpireTimeV3(refundResult.getSuccessTime()));
             case "PROCESSING":
-                return WxPayUtil.createRefundWaitingResponse(refundRequest.getOutRefundNo(), refundResult.getRefundId(), refundResult);
+                return PayClientUtil.createRefundWaitingResponse(refundRequest.getOutRefundNo(), refundResult.getRefundId(), refundResult);
             default:
-                return WxPayUtil.createRefundFailedResponse(refundRequest.getOutRefundNo(), refundRequest);
+                return PayClientUtil.createRefundFailedResponse(refundRequest.getOutRefundNo(), null, null, refundResult);
         }
     }
 
@@ -97,7 +98,7 @@ public abstract class AbstractWxPayClient extends AbstractPayClient<WxPayParams>
         // 转换支付状态
         PayStatus payStatus = WxPayUtil.tradeStateToPayStatus(tradeState);
         // 返回支付查询响应
-        return WxPayUtil.createPayQueryResponse(payStatus, queryRequest.getTransactionId(), queryResult.getOpenid(),
+        return PayClientUtil.createPayQueryResponse(payStatus, queryResult.getOutTradeNo(), queryRequest.getTransactionId(), queryResult.getOpenid(),
                 queryResult, WxPayUtil.parseExpireTimeV2(queryResult.getTimeEnd()));
     }
 
@@ -111,7 +112,7 @@ public abstract class AbstractWxPayClient extends AbstractPayClient<WxPayParams>
         PayStatus payStatus = WxPayUtil.tradeStateToPayStatus(tradeState);
         // 返回支付查询响应
         String openId = ObjectUtil.isNotNull(queryResult.getPayer()) ? queryResult.getPayer().getOpenid() : null;
-        return WxPayUtil.createPayQueryResponse(payStatus, queryResult.getTransactionId(), openId,
+        return PayClientUtil.createPayQueryResponse(payStatus, queryResult.getOutTradeNo(), queryResult.getTransactionId(), openId,
                 queryResult, WxPayUtil.parseExpireTimeV3(queryResult.getSuccessTime()));
     }
 
@@ -122,7 +123,7 @@ public abstract class AbstractWxPayClient extends AbstractPayClient<WxPayParams>
         // 转换支付状态
         PayStatus payStatus = StrUtil.equals("SUCCESS", resultCode) ? PayStatus.SUCCESS : PayStatus.CLOSED;
         // 返回支付回调
-        return WxPayUtil.createPayNotifyResponse(payStatus, notifyResult.getTransactionId(), notifyResult.getOpenid(),
+        return PayClientUtil.createPayNotifyResponse(payStatus, notifyResult.getOutTradeNo(), notifyResult.getTransactionId(), notifyResult.getOpenid(),
                 notifyResult, WxPayUtil.parseExpireTimeV2(notifyResult.getTimeEnd()));
     }
 
@@ -135,7 +136,7 @@ public abstract class AbstractWxPayClient extends AbstractPayClient<WxPayParams>
         PayStatus payStatus = WxPayUtil.tradeStateToPayStatus(tradeState);
         // 返回支付回调
         String openId = ObjectUtil.isNotNull(notifyResult.getPayer()) ? notifyResult.getPayer().getOpenid() : null;
-        return WxPayUtil.createPayNotifyResponse(payStatus, notifyResult.getTransactionId(),
+        return PayClientUtil.createPayNotifyResponse(payStatus, notifyResult.getOutTradeNo(), notifyResult.getTransactionId(),
                 openId, notifyResult, WxPayUtil.parseExpireTimeV3(notifyResult.getSuccessTime()));
     }
 
@@ -149,14 +150,14 @@ public abstract class AbstractWxPayClient extends AbstractPayClient<WxPayParams>
         // 先判断响应是否成功
         String resultCode = refundQueryResult.getResultCode();
         if (!StrUtil.equals("SUCCESS", resultCode)) {
-            return WxPayUtil.createRefundQueryResponse(RefundStatus.WAITING, refundQueryRequest.getOutRefundNo(),
+            return PayClientUtil.createRefundQueryResponse(RefundStatus.WAITING, refundQueryRequest.getOutRefundNo(),
                     null, refundQueryResult, null);
         }
         // 判断退款是否成功
         WxPayRefundQueryResult.RefundRecord refundRecord = CollUtil.findOne(refundQueryResult.getRefundRecords(), record -> StrUtil.equals(refundQueryRequest.getOutRefundNo(), record.getOutRefundNo()));
         // 未找到退款记录则返回退款失败
         if (ObjectUtil.isNull(refundRecord)) {
-            return WxPayUtil.createRefundQueryResponse(RefundStatus.FAILED, refundQueryRequest.getOutRefundNo(),
+            return PayClientUtil.createRefundQueryResponse(RefundStatus.FAILED, refundQueryRequest.getOutRefundNo(),
                     null, refundQueryResult, null);
         }
         // 返回退款查询相应
@@ -164,17 +165,17 @@ public abstract class AbstractWxPayClient extends AbstractPayClient<WxPayParams>
         switch (refundStatus) {
             // 退款成功
             case "SUCCESS":
-                return WxPayUtil.createRefundQueryResponse(RefundStatus.SUCCESS, refundRecord.getOutRefundNo(),
+                return PayClientUtil.createRefundQueryResponse(RefundStatus.SUCCESS, refundRecord.getOutRefundNo(),
                         refundRecord.getRefundId(), refundQueryResult, WxPayUtil.parseExpireTimeV2(refundRecord.getRefundSuccessTime()));
             // 退款处理中
             case "PROCESSING":
-                return WxPayUtil.createRefundQueryResponse(RefundStatus.WAITING, refundRecord.getOutRefundNo(),
+                return PayClientUtil.createRefundQueryResponse(RefundStatus.WAITING, refundRecord.getOutRefundNo(),
                         refundRecord.getRefundId(), refundQueryResult, null);
             // 退款失败
             case "FAIL":
                 // 转入代发
             case "CHANGE":
-                return WxPayUtil.createRefundQueryResponse(RefundStatus.FAILED, refundRecord.getOutRefundNo(),
+                return PayClientUtil.createRefundQueryResponse(RefundStatus.FAILED, refundRecord.getOutRefundNo(),
                         null, refundQueryResult, null);
             default:
                 throw new BizRuntimeException(StrUtil.format("未知的退款状态：{}", refundStatus));
@@ -189,14 +190,14 @@ public abstract class AbstractWxPayClient extends AbstractPayClient<WxPayParams>
         String status = refundedQueryResult.getStatus();
         switch (status) {
             case "SUCCESS":
-                return WxPayUtil.createRefundQueryResponse(RefundStatus.SUCCESS, refundQueryRequest.getOutRefundNo(),
+                return PayClientUtil.createRefundQueryResponse(RefundStatus.SUCCESS, refundQueryRequest.getOutRefundNo(),
                         refundedQueryResult.getRefundId(), refundedQueryResult, WxPayUtil.parseExpireTimeV3(refundedQueryResult.getSuccessTime()));
             case "PROCESSING":
-                return WxPayUtil.createRefundQueryResponse(RefundStatus.WAITING, refundQueryRequest.getOutRefundNo(),
+                return PayClientUtil.createRefundQueryResponse(RefundStatus.WAITING, refundQueryRequest.getOutRefundNo(),
                         refundedQueryResult.getRefundId(), refundedQueryResult, null);
             case "ABNORMAL":
             case "CLOSED":
-                return WxPayUtil.createRefundQueryResponse(RefundStatus.FAILED, refundQueryRequest.getOutRefundNo(),
+                return PayClientUtil.createRefundQueryResponse(RefundStatus.FAILED, refundQueryRequest.getOutRefundNo(),
                         null, refundedQueryResult, null);
             default:
                 throw new BizRuntimeException(StrUtil.format("未知的退款状态：{}", status));
@@ -209,10 +210,10 @@ public abstract class AbstractWxPayClient extends AbstractPayClient<WxPayParams>
         WxPayRefundNotifyResult.ReqInfo reqInfo = refundNotifyResult.getReqInfo();
         // 返回退款回调响应
         if (StrUtil.equals("SUCCESS", reqInfo.getRefundStatus())) {
-            return WxPayUtil.createRefundNotifyResponse(RefundStatus.SUCCESS, reqInfo.getOutRefundNo(),
+            return PayClientUtil.createRefundNotifyResponse(RefundStatus.SUCCESS, reqInfo.getOutRefundNo(),
                     reqInfo.getRefundId(), refundNotifyResult, WxPayUtil.parseExpireTimeV2(reqInfo.getSuccessTime()));
         }
-        return WxPayUtil.createRefundNotifyResponse(RefundStatus.FAILED, reqInfo.getOutRefundNo(),
+        return PayClientUtil.createRefundNotifyResponse(RefundStatus.FAILED, reqInfo.getOutRefundNo(),
                 null, refundNotifyResult, null);
     }
 
@@ -220,10 +221,10 @@ public abstract class AbstractWxPayClient extends AbstractPayClient<WxPayParams>
         WxPayRefundNotifyV3Result refundNotifyResult = wxPayService.parseRefundNotifyV3Result(body, null);
         WxPayRefundNotifyV3Result.DecryptNotifyResult notifyResult = refundNotifyResult.getResult();
         if (StrUtil.equals("SUCCESS", notifyResult.getRefundStatus())) {
-            return WxPayUtil.createRefundNotifyResponse(RefundStatus.SUCCESS, notifyResult.getOutRefundNo(),
+            return PayClientUtil.createRefundNotifyResponse(RefundStatus.SUCCESS, notifyResult.getOutRefundNo(),
                     notifyResult.getRefundId(), refundNotifyResult, WxPayUtil.parseExpireTimeV3(notifyResult.getSuccessTime()));
         }
-        return WxPayUtil.createRefundNotifyResponse(RefundStatus.FAILED, notifyResult.getOutRefundNo(),
+        return PayClientUtil.createRefundNotifyResponse(RefundStatus.FAILED, notifyResult.getOutRefundNo(),
                 null, refundNotifyResult, null);
     }
 
@@ -265,7 +266,8 @@ public abstract class AbstractWxPayClient extends AbstractPayClient<WxPayParams>
                     throw new BizRuntimeException(ApiResultCode.E0010);
             }
         } catch (WxPayException e) {
-            return WxPayUtil.createRefundFailedResponse(refundRequest.getOutRefundNo(), e);
+            return PayClientUtil.createRefundFailedResponse(refundRequest.getOutRefundNo(), WxPayUtil.getErrorCode(e),
+                    WxPayUtil.getErrorMsg(e), e.getXmlString());
         }
     }
 
@@ -282,7 +284,8 @@ public abstract class AbstractWxPayClient extends AbstractPayClient<WxPayParams>
                     throw new BizRuntimeException(ApiResultCode.E0010);
             }
         } catch (WxPayException e) {
-            return WxPayUtil.createPayClosedResponse(payRequest.getOutTradeNo(), e);
+            return PayClientUtil.createPayClosedResponse(payRequest.getOutTradeNo(), WxPayUtil.getErrorCode(e),
+                    WxPayUtil.getErrorMsg(e), e.getXmlString());
         }
     }
 
@@ -301,7 +304,7 @@ public abstract class AbstractWxPayClient extends AbstractPayClient<WxPayParams>
         } catch (WxPayException e) {
             // 需要拦截订单不存在的异常
             if (StrUtil.equalsAny(e.getErrCode(), "ORDERNOTEXIST", "ORDER_NOT_EXIST")) {
-                return (PayQueryResponse) WxPayUtil.createPayQueryResponse(PayStatus.CLOSED, null, null, e.getXmlString(), null)
+                return (PayQueryResponse) PayClientUtil.createPayQueryResponse(PayStatus.CLOSED, null, null, null, e.getXmlString(), null)
                         .setErrorCode(WxPayUtil.getErrorCode(e))
                         .setErrorMsg(WxPayUtil.getErrorMsg(e));
             }

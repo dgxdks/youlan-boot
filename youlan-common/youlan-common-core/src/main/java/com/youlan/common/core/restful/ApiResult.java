@@ -3,6 +3,7 @@ package com.youlan.common.core.restful;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONUtil;
 import com.youlan.common.core.restful.enums.ApiResultCode;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -66,6 +67,7 @@ public class ApiResult {
                 .setErrorMsg(ApiResultCode.ERROR.getErrorMsg());
     }
 
+    @Hidden
     public boolean isOk() {
         return ObjectUtil.equal(ApiResultCode.OK.getStatus(), getStatus());
     }

@@ -31,7 +31,7 @@ public class PayOrderService extends BaseServiceImpl<PayOrderMapper, PayOrder> {
      * @param updatePayOrder 支付订单更新值
      */
     public void updatePayOrderSuccess(Long id, PayOrder updatePayOrder) {
-        PayOrder payOrder = this.loadPayOrderIfExists(id);
+        PayOrder payOrder = this.loadPayOrderNotNull(id);
         PayStatus payStatus = payOrder.getPayStatus();
         switch (payStatus) {
             case SUCCESS:
@@ -82,12 +82,12 @@ public class PayOrderService extends BaseServiceImpl<PayOrderMapper, PayOrder> {
     }
 
     /**
-     * 如果存在获取支付订单
+     * 获取支付订单且不为空
      *
      * @param id 订单ID
      * @return 支付订单
      */
-    public PayOrder loadPayOrderIfExists(Long id) {
+    public PayOrder loadPayOrderNotNull(Long id) {
         PayOrder payOrder = this.getById(id);
         if (ObjectUtil.isNull(payOrder)) {
             throw new BizRuntimeException(ApiResultCode.E0007);

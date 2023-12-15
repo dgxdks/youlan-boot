@@ -15,6 +15,7 @@ import com.youlan.plugin.pay.entity.response.PayResponse;
 import com.youlan.plugin.pay.enums.PayShowType;
 import com.youlan.plugin.pay.enums.TradeType;
 import com.youlan.plugin.pay.params.WxPayParams;
+import com.youlan.plugin.pay.utils.PayClientUtil;
 import com.youlan.plugin.pay.utils.WxPayUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -43,7 +44,7 @@ public class WxScanPayClient extends AbstractWxPayClient {
     @Override
     protected PayResponse doPayV2(PayRequest payRequest) throws WxPayException {
         // 获取授权码
-        String authCode = payRequest.getExtraParamIfExists(PayConstant.PARAM_KEY_AUTH_CODE);
+        String authCode = payRequest.getExtraParamNotNull(PayConstant.PARAM_KEY_AUTH_CODE);
         // 创建默认过期时间
         Date expireTime = DateUtil.offsetSecond(new Date(), AUTH_CODE_EXPIRE_SECONDS);
         // 如果默认过期时间晚于请求过期时间，则使用请求过期时间
@@ -66,7 +67,7 @@ public class WxScanPayClient extends AbstractWxPayClient {
             try {
                 // 付款码支付结果
                 WxPayMicropayResult orderResult = wxPayService.micropay(orderRequest);
-                return WxPayUtil.createPaySuccessResponse(orderResult.getOutTradeNo(), orderResult.getTransactionId(),
+                return PayClientUtil.createPaySuccessResponse(orderResult.getOutTradeNo(), orderResult.getTransactionId(),
                         orderResult.getOpenid(), orderResult, PayShowType.BAR_CODE, WxPayUtil.parseExpireTimeV2(orderResult.getTimeEnd()));
             } catch (WxPayException e) {
                 lastException = e;

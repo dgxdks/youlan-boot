@@ -1,6 +1,6 @@
 import router, { constantRoutes, dynamicRoutes } from '@/router'
 import { getMenuTreeList } from '@/api/system/login'
-import { ArrayUtil, AuthUtil, EnvUtil, StrUtil } from '@/framework/tools'
+import { ArrayUtil, AuthUtil, EnvUtil, StrUtil, UrlUtil } from '@/framework/tools'
 import Layout from '@/layout'
 import InnerLink from '@/layout/components/InnerLink/index.vue'
 import ParentView from '@/components/ParentView/index.vue'
@@ -106,7 +106,7 @@ function menuListConvertToRoutes(menuList, parentMenu) {
     }
     // iframe处理逻辑
     if (isFrame(menu.isFrame)) {
-      // 如果菜单是菜单类型被指定为iframe则需要走内部链接打开
+      route.component = InnerLink
       if (isRouteMenu(menuType)) {
         let path = routePath.replace(/http:\/\//g, '')
         path = path.replace(/https:\/\//g, '')

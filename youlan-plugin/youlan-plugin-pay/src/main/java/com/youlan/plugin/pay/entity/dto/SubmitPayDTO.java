@@ -12,7 +12,7 @@ import java.util.Map;
 
 @Data
 @Accessors(chain = true)
-public class SubmitPayOrderDTO {
+public class SubmitPayDTO {
 
     @NotNull(message = "支付订单ID不能为空")
     @Schema(description = "支付订单ID")
