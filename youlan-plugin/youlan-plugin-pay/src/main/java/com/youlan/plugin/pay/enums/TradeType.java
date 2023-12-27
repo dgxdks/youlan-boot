@@ -1,13 +1,13 @@
 package com.youlan.plugin.pay.enums;
 
-import cn.hutool.core.lang.Assert;
+import com.youlan.common.core.helper.EnumHelper;
 import com.youlan.plugin.pay.client.AbstractPayClient;
 import com.youlan.plugin.pay.client.wx.*;
 import com.youlan.plugin.pay.params.PayParams;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
 
 import static com.youlan.plugin.pay.constant.PayConstant.*;
 
@@ -22,29 +22,10 @@ public enum TradeType {
     WX_MINI(TRADE_TYPE_WX_MINI, "微信小程序支付", WxMiniPayClient.class),
     WX_SCAN(TRADE_TYPE_WX_SCAN, "微信付款码支付", WxScanPayClient.class);
 
-    private static final ConcurrentHashMap<String, TradeType> TRADE_TYPE_CACHE = createTradeTypeCache();
+    private static final Map<String, TradeType> TRADE_TYPE_CACHE = EnumHelper.getEnumMap(TradeType.class, TradeType::getCode);
 
     private final String code;
     private final String text;
     private final Class<? extends AbstractPayClient<? extends PayParams>> clientClass;
-
-    public static ConcurrentHashMap<String, TradeType> createTradeTypeCache() {
-        return new ConcurrentHashMap<>() {{
-            for (TradeType tradeType : TradeType.values()) {
-                put(tradeType.code, tradeType);
-            }
-        }};
-    }
-
-    public static TradeType getTradeType(String type) {
-        TradeType tradeType = TRADE_TYPE_CACHE.get(type);
-        Assert.notNull(tradeType, "交易类型不存在");
-        return tradeType;
-    }
-
-    public static Class<? extends AbstractPayClient<? extends PayParams>> getClientClass(String type) {
-        TradeType tradeType = getTradeType(type);
-        return tradeType.clientClass;
-    }
 
 }

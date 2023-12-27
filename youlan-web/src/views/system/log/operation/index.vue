@@ -47,12 +47,7 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <base-remove-button
-          v-has-perm="['system:operationLog:remove']"
-          plain
-          :disabled="tableNoSelected"
-          @click="handleDelete"
-        />
+        <base-remove-button v-has-perm="['system:operationLog:remove']" plain :disabled="tableNoSelected" @click="handleDelete" />
       </el-col>
       <el-col :span="1.5">
         <base-remove-button v-has-perm="['system:operationLog:remove']" plain @click="handleClean">清空
@@ -81,14 +76,7 @@
           <dict-tag v-model="scope.row.logType" dict-type="sys_operation_log_type" />
         </template>
       </el-table-column>
-      <el-table-column
-        show-overflow-tooltip
-        align="center"
-        label="操作人员"
-        prop="logBy"
-        width="110"
-        sortable="custom"
-      />
+      <el-table-column show-overflow-tooltip align="center" label="操作人员" prop="logBy" width="110" sortable="custom" />
       <el-table-column show-overflow-tooltip align="center" label="来源IP" prop="sourceIp" width="130" />
       <el-table-column show-overflow-tooltip align="center" label="操作地点" prop="sourceLocation" />
       <el-table-column align="center" label="日志状态" prop="logStatus">

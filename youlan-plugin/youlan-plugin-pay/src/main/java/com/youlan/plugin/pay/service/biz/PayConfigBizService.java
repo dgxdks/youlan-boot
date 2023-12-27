@@ -1,6 +1,13 @@
 package com.youlan.plugin.pay.service.biz;
 
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.ObjectUtil;
+import com.youlan.common.core.exception.BizRuntimeException;
+import com.youlan.common.core.restful.enums.ApiResultCode;
+import com.youlan.common.db.constant.DBConstant;
 import com.youlan.plugin.pay.entity.PayConfig;
+import com.youlan.plugin.pay.enums.TradeType;
 import com.youlan.plugin.pay.params.PayParams;
 import com.youlan.plugin.pay.service.PayChannelConfigService;
 import com.youlan.plugin.pay.service.PayConfigService;
@@ -16,6 +23,35 @@ import java.util.List;
 public class PayConfigBizService {
     private final PayConfigService payConfigService;
     private final PayChannelConfigService payChannelConfigService;
+
+    /**
+     * 获取可用的支付配置
+     */
+    public PayConfig loadPayConfigEnabled(Long channelId, TradeType tradeType) {
+        PayConfig payConfig = this.loadPayConfigNotNull(channelId, tradeType);
+        Assert.equals(DBConstant.VAL_STATUS_ENABLED, payConfig.getStatus(), ApiResultCode.E0012::getException);
+        return payConfig;
+    }
+
+    /**
+     * 获取支付配置且不为空
+     */
+    public PayConfig loadPayConfigNotNull(Long channelId, TradeType tradeType) {
+        PayConfig payConfig = this.loadPayConfig(channelId, tradeType);
+        if (ObjectUtil.isNull(payConfig)) {
+            throw new BizRuntimeException(ApiResultCode.E0022, new Object[]{channelId, tradeType});
+        }
+        return payConfig;
+    }
+
+    /**
+     * 获取支付配置
+     */
+    public PayConfig loadPayConfig(Long channelId, TradeType tradeType) {
+        List<PayConfig> payConfigList = payChannelConfigService.getBaseMapper()
+                .getPayConfigList(channelId, tradeType);
+        return CollectionUtil.getFirst(payConfigList);
+    }
 
     /**
      * 删除支付配置

@@ -8,7 +8,7 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-public class SubmitOrderVO {
+public class SubmitPayOrderVO {
 
     @Schema(description = "支付状态(1-待支付 2-已支付 3-已关闭 4-已退款)")
     private PayStatus payStatus;

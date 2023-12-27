@@ -36,3 +36,9 @@ youlan:
   pay:
     # 是否启用回调(只有接收回调的服务才需要开启)
     notify-enabled: false
+    # 是否启用支付记录同步(启用后将会定期向支付平台同步支付记录和支付订单状态)
+    record-sync-enabled: false
+    # 是否启用支付订单过期(启用后将会定期关闭过期的支付订单)
+    order-expire-enabled: false
+    # 是否启用退款订单同步(启用后将会定期向支付平台同步退款订单状态)
+    refund-order-sync-enabled: false

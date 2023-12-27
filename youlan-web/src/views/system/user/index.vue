@@ -55,66 +55,26 @@
             <base-add-button v-has-perm="['system:user:add']" plain @click="handleAdd('用户新增')" />
           </el-col>
           <el-col :span="1.5">
-            <base-update-button
-              v-has-perm="['system:user:update']"
-              plain
-              :disabled="!tableSelectOne"
-              @click="handleUpdate"
-            />
+            <base-update-button v-has-perm="['system:user:update']" plain :disabled="!tableSelectOne" @click="handleUpdate" />
           </el-col>
           <el-col :span="1.5">
-            <base-remove-button
-              v-has-perm="['system:user:remove']"
-              plain
-              :disabled="tableNoSelected"
-              @click="handleDelete"
-            />
+            <base-remove-button v-has-perm="['system:user:remove']" plain :disabled="tableNoSelected" @click="handleDelete" />
           </el-col>
           <el-col :span="1.5">
-            <base-upload-button v-has-perm="['system:user:import']" plain @click="handleImport">导入
-            </base-upload-button>
+            <base-upload-button v-has-perm="['system:user:import']" plain @click="handleImport">导入</base-upload-button>
           </el-col>
           <el-col :span="1.5">
-            <base-download-button v-has-perm="['system:user:export']" plain @click="handleExport">导出
-            </base-download-button>
+            <base-download-button v-has-perm="['system:user:export']" plain @click="handleExport">导出</base-download-button>
           </el-col>
           <table-toolbar :columns.sync="columns" :query-show.sync="queryShow" @refresh="getList" />
         </el-row>
         <el-table v-loading="tableLoading" :data="userList" @selection-change="handleSelectionChange">
           <el-table-column align="center" type="selection" :selectable="tableSelectEnabled" width="50" />
           <el-table-column v-if="columns.id.show" key="id" align="center" label="用户编号" prop="id" />
-          <el-table-column
-            v-if="columns.userName.show"
-            key="userName"
-            show-overflow-tooltip
-            align="center"
-            label="用户名称"
-            prop="userName"
-          />
-          <el-table-column
-            v-if="columns.nickName.show"
-            key="nickName"
-            show-overflow-tooltip
-            align="center"
-            label="用户昵称"
-            prop="nickName"
-          />
-          <el-table-column
-            v-if="columns.orgName.show"
-            key="orgName"
-            show-overflow-tooltip
-            align="center"
-            label="组织机构"
-            prop="orgName"
-          />
-          <el-table-column
-            v-if="columns.userMobile.show"
-            key="userMobile"
-            align="center"
-            label="手机号码"
-            prop="userMobile"
-            width="120"
-          />
+          <el-table-column v-if="columns.userName.show" key="userName" show-overflow-tooltip align="center" label="用户名称" prop="userName" />
+          <el-table-column v-if="columns.nickName.show" key="nickName" show-overflow-tooltip align="center" label="用户昵称" prop="nickName" />
+          <el-table-column v-if="columns.orgName.show" key="orgName" show-overflow-tooltip align="center" label="组织机构" prop="orgName" />
+          <el-table-column v-if="columns.userMobile.show" key="userMobile" align="center" label="手机号码" prop="userMobile" width="120" />
           <el-table-column v-if="columns.status.show" key="status" align="center" label="状态">
             <template slot-scope="scope">
               <base-switch
@@ -124,19 +84,8 @@
               />
             </template>
           </el-table-column>
-          <el-table-column
-            v-if="columns.createTime.show"
-            align="center"
-            label="创建时间"
-            prop="createTime"
-            width="160"
-          />
-          <el-table-column
-            align="center"
-            class-name="small-padding fixed-width"
-            label="操作"
-            width="160"
-          >
+          <el-table-column v-if="columns.createTime.show" align="center" label="创建时间" prop="createTime" width="160" />
+          <el-table-column align="center" class-name="small-padding fixed-width" label="操作" width="160">
             <template v-if="!$auth.isAdmin(scope.row.id)" slot-scope="scope">
               <base-update-button v-has-perm="['system:user:update']" type="text" @click="handleUpdate(scope.row)" />
               <base-remove-button v-has-perm="['system:user:remove']" type="text" @click="handleDelete(scope.row)" />
@@ -189,13 +138,7 @@
             <el-input v-model="editForm.userName" maxlength="30" placeholder="请输入用户名称" />
           </el-form-item>
           <el-form-item v-if="!editForm.id" label="用户密码" prop="userPassword">
-            <el-input
-              v-model="editForm.userPassword"
-              maxlength="20"
-              placeholder="请输入用户密码"
-              show-password
-              type="password"
-            />
+            <el-input v-model="editForm.userPassword" maxlength="20" placeholder="请输入用户密码" show-password type="password" />
           </el-form-item>
           <el-form-item label="用户性别">
             <dict-select v-model="editForm.sex" dict-type="sys_user_sex" placeholder="请选择性别" />

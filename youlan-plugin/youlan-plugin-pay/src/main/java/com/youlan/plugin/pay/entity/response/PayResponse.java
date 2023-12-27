@@ -2,6 +2,7 @@ package com.youlan.plugin.pay.entity.response;
 
 import com.youlan.plugin.pay.enums.PayShowType;
 import com.youlan.plugin.pay.enums.PayStatus;
+import com.youlan.plugin.pay.enums.ResponseSource;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

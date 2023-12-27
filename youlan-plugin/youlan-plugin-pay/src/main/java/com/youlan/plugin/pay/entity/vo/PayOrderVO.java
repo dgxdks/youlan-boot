@@ -5,11 +5,13 @@ import com.youlan.plugin.pay.enums.PayStatus;
 import com.youlan.plugin.pay.enums.TradeType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
+@Accessors(chain = true)
 public class PayOrderVO {
 
     @Schema(description = "支付订单ID")
@@ -27,7 +29,7 @@ public class PayOrderVO {
     @Schema(description = "支付状态(1-待支付 2-已支付 3-已关闭 4-已退款)")
     private PayStatus payStatus;
 
-    @Schema(description = "交易类型")
+    @Schema(description = "交易类型(数据字典[pay_trade_type])")
     private TradeType tradeType;
 
     @Schema(description = "支付金额")
@@ -95,5 +97,8 @@ public class PayOrderVO {
 
     @Schema(description = "回调原始数据")
     private Object notifyRawData;
+
+    @Schema(description = "原始数据")
+    private Object rawData;
 
 }

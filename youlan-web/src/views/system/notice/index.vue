@@ -83,13 +83,7 @@
     />
 
     <!-- 参数配置编辑对话框 -->
-    <base-dialog
-      :title="editTitle"
-      :open.sync="editOpen"
-      width="800px"
-      @confirm="handleEditSubmit"
-      @cancel="handleEditCancel"
-    >
+    <base-dialog :title="editTitle" :open.sync="editOpen" width="800px" @confirm="handleEditSubmit" @cancel="handleEditCancel">
       <el-form ref="editForm" :model="editForm" :rules="editRules" label-width="100px">
         <base-row-split2>
           <el-form-item label="通知标题" prop="title">

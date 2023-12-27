@@ -26,9 +26,9 @@ public class ${EntityName}VO {
 #if(${templateType} == "2")
     @Schema(description = "${featureName}子集")
     #if(${needVo})
-    private List<${EntityName}VO> children = new ArrayList();
+    private final List<${EntityName}VO> children = new ArrayList();
     #else
-    private List<${EntityName}> children = new ArrayList();
+    private final List<${EntityName}> children = new ArrayList();
     #end
 
 #end

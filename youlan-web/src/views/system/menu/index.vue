@@ -67,13 +67,7 @@
     </el-table>
 
     <!-- 菜单编辑对话框 -->
-    <base-dialog
-      :title="editTitle"
-      :open.sync="editOpen"
-      width="680px"
-      @confirm="handleEditSubmit"
-      @cancel="handleEditCancel"
-    >
+    <base-dialog :title="editTitle" :open.sync="editOpen" width="680px" @confirm="handleEditSubmit" @cancel="handleEditCancel">
       <el-form ref="editForm" :model="editForm" :rules="editRules" label-width="100px">
         <el-form-item label="上级菜单" prop="parentId">
           <treeselect

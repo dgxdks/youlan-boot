@@ -13,6 +13,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.youlan.common.redis.constant.RedisConstant.*;
@@ -391,6 +392,23 @@ public class RedisHelper {
         try {
             lock.lock(duration.toMillis(), TimeUnit.MILLISECONDS);
             runnable.run();
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * 锁下操作
+     *
+     * @param key      缓存键名
+     * @param supplier 业务逻辑
+     * @param duration 锁超时时间
+     */
+    public static <T> T underLock(final String key, Supplier<T> supplier, final Duration duration) {
+        RLock lock = getLock(key);
+        try {
+            lock.lock(duration.toMillis(), TimeUnit.MILLISECONDS);
+            return supplier.get();
         } finally {
             lock.unlock();
         }

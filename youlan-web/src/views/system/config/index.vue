@@ -42,20 +42,10 @@
         <base-add-button v-has-perm="['system:config:add']" plain @click="handleAdd" />
       </el-col>
       <el-col :span="1.5">
-        <base-update-button
-          v-has-perm="['system:config:update']"
-          plain
-          :disabled="!tableSelectOne"
-          @click="handleUpdate"
-        />
+        <base-update-button v-has-perm="['system:config:update']" plain :disabled="!tableSelectOne" @click="handleUpdate" />
       </el-col>
       <el-col :span="1.5">
-        <base-remove-button
-          v-has-perm="['system:config:remove']"
-          plain
-          :disabled="tableNoSelected"
-          @click="handleDelete"
-        />
+        <base-remove-button v-has-perm="['system:config:remove']" plain :disabled="tableNoSelected" @click="handleDelete" />
       </el-col>
       <el-col :span="1.5">
         <base-download-button v-has-perm="['system:config:export']" plain @click="handleExport">导出
@@ -98,13 +88,7 @@
     />
 
     <!-- 参数配置编辑对话框 -->
-    <base-dialog
-      :title="editTitle"
-      :open.sync="editOpen"
-      width="600px"
-      @confirm="handleEditSubmit"
-      @cancel="handleEditCancel"
-    >
+    <base-dialog :title="editTitle" :open.sync="editOpen" width="600px" @confirm="handleEditSubmit" @cancel="handleEditCancel">
       <el-form ref="editForm" :model="editForm" :rules="editRules" label-width="100px">
         <el-form-item label="参数名称" prop="configName">
           <el-input v-model="editForm.configName" placeholder="请输入参数名称" />

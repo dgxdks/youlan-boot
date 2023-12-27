@@ -9,7 +9,9 @@ import com.youlan.plugin.pay.entity.request.PayQueryRequest;
 import com.youlan.plugin.pay.entity.request.PayRequest;
 import com.youlan.plugin.pay.entity.request.RefundQueryRequest;
 import com.youlan.plugin.pay.entity.request.RefundRequest;
-import com.youlan.plugin.pay.entity.response.*;
+import com.youlan.plugin.pay.entity.response.PayResponse;
+import com.youlan.plugin.pay.entity.response.RefundResponse;
+import com.youlan.plugin.pay.enums.ResponseSource;
 import com.youlan.plugin.pay.params.PayParams;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -49,20 +51,20 @@ public abstract class AbstractPayClient<Params extends PayParams> implements Pay
      * 发起支付查询
      *
      * @param payQueryRequest 支付查询请求
-     * @return 支付查询响应
+     * @return 支付响应
      * @throws Exception 异常信息
      */
-    protected abstract PayQueryResponse doPayQuery(PayQueryRequest payQueryRequest) throws Exception;
+    protected abstract PayResponse doPayQuery(PayQueryRequest payQueryRequest) throws Exception;
 
     /**
      * 发起支付回调解析
      *
      * @param params 路径参数
      * @param body   请求体
-     * @return 支付回调响应
+     * @return 支付响应
      * @throws Exception 异常信息
      */
-    protected abstract PayNotifyResponse doPayNotifyParse(Map<String, String> params, String body) throws Exception;
+    protected abstract PayResponse doPayNotifyParse(Map<String, String> params, String body) throws Exception;
 
     /**
      * 发起退款
@@ -77,20 +79,20 @@ public abstract class AbstractPayClient<Params extends PayParams> implements Pay
      * 发起退款查询
      *
      * @param refundQueryRequest 退款查询请求
-     * @return 退款查询响应
+     * @return 退款响应
      * @throws Exception 异常信息
      */
-    protected abstract RefundQueryResponse doRefundQuery(RefundQueryRequest refundQueryRequest) throws Exception;
+    protected abstract RefundResponse doRefundQuery(RefundQueryRequest refundQueryRequest) throws Exception;
 
     /**
      * 发起退款回调解析
      *
      * @param params 路径参数
      * @param body   请求体
-     * @return 退款回调响应
+     * @return 退款响应
      * @throws Exception 异常信息
      */
-    protected abstract RefundNotifyResponse doRefundNotifyParse(Map<String, String> params, String body) throws Exception;
+    protected abstract RefundResponse doRefundNotifyParse(Map<String, String> params, String body) throws Exception;
 
     /**
      * 执行启动客户端
@@ -106,7 +108,8 @@ public abstract class AbstractPayClient<Params extends PayParams> implements Pay
     public final PayResponse pay(PayRequest payRequest) {
         ValidatorHelper.validateWithThrow(payRequest);
         try {
-            return this.doPay(payRequest);
+            return (PayResponse) this.doPay(payRequest)
+                    .setResponseSource(ResponseSource.PAY);
         } catch (BizRuntimeException e) {
             throw e;
         } catch (Exception e) {
@@ -119,7 +122,8 @@ public abstract class AbstractPayClient<Params extends PayParams> implements Pay
     public final RefundResponse refund(RefundRequest refundRequest) {
         ValidatorHelper.validateWithThrow(refundRequest);
         try {
-            return this.doRefund(refundRequest);
+            return (RefundResponse) this.doRefund(refundRequest)
+                    .setResponseSource(ResponseSource.REFUND);
         } catch (BizRuntimeException e) {
             throw e;
         } catch (Exception e) {
@@ -129,10 +133,11 @@ public abstract class AbstractPayClient<Params extends PayParams> implements Pay
     }
 
     @Override
-    public final PayQueryResponse payQuery(PayQueryRequest payQueryRequest) {
+    public final PayResponse payQuery(PayQueryRequest payQueryRequest) {
         ValidatorHelper.validateWithThrow(payQueryRequest);
         try {
-            return doPayQuery(payQueryRequest);
+            return (PayResponse) doPayQuery(payQueryRequest)
+                    .setResponseSource(ResponseSource.PAY_QUERY);
         } catch (BizRuntimeException e) {
             throw e;
         } catch (Exception e) {
@@ -142,9 +147,10 @@ public abstract class AbstractPayClient<Params extends PayParams> implements Pay
     }
 
     @Override
-    public final PayNotifyResponse payNotifyParse(Map<String, String> params, String body) {
+    public final PayResponse payNotifyParse(Map<String, String> params, String body) {
         try {
-            return doPayNotifyParse(params, body);
+            return (PayResponse) doPayNotifyParse(params, body)
+                    .setResponseSource(ResponseSource.PAY_NOTIFY);
         } catch (BizRuntimeException e) {
             throw e;
         } catch (Exception e) {
@@ -154,10 +160,11 @@ public abstract class AbstractPayClient<Params extends PayParams> implements Pay
     }
 
     @Override
-    public final RefundQueryResponse refundQuery(RefundQueryRequest refundQueryRequest) {
+    public final RefundResponse refundQuery(RefundQueryRequest refundQueryRequest) {
         ValidatorHelper.validateWithThrow(refundQueryRequest);
         try {
-            return doRefundQuery(refundQueryRequest);
+            return (RefundResponse) doRefundQuery(refundQueryRequest)
+                    .setResponseSource(ResponseSource.REFUND_QUERY);
         } catch (BizRuntimeException e) {
             throw e;
         } catch (Exception e) {
@@ -167,9 +174,10 @@ public abstract class AbstractPayClient<Params extends PayParams> implements Pay
     }
 
     @Override
-    public final RefundNotifyResponse refundNotifyParse(Map<String, String> params, String body) {
+    public final RefundResponse refundNotifyParse(Map<String, String> params, String body) {
         try {
-            return doRefundNotifyParse(params, body);
+            return (RefundResponse) doRefundNotifyParse(params, body)
+                    .setResponseSource(ResponseSource.REFUND_NOTIFY);
         } catch (BizRuntimeException e) {
             throw e;
         } catch (Exception e) {

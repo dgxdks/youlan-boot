@@ -26,21 +26,21 @@
         <el-input v-model="editForm.subMchId" placeholder="请输入子商户ID"/>
       </el-form-item>
     </base-row-split2>
-    <el-form-item v-if="isV2" label="商户秘钥" prop="mchKey">
+    <el-form-item label="商户秘钥" prop="mchKey">
       <base-form-label slot="label" content="微信支付商户密钥" label="商户秘钥"/>
       <el-input type="textarea" v-model="editForm.mchKey" placeholder="请输入商户秘钥" rows="5"/>
     </el-form-item>
     <el-form-item v-if="isV2" label="appclient_cert.p12证书" prop="keyContent">
-      <base-form-label slot="label" content="apiclient_cert.p12证书文件" label="appclient_cert.p12证书"/>
+      <base-form-label slot="label" content="apiclient_cert.p12证书文件(编辑时不重新上传证书会使用之前上传的证书)" label="appclient_cert.p12证书"/>
       <file-upload-drag ref="keyContent" :limit="1" accept=".p12" @onChange="handleKeyContent"></file-upload-drag>
     </el-form-item>
     <el-form-item v-if="isV3" label="appclient_key.pem证书" prop="privateKeyContent">
-      <base-form-label slot="label" content="appclient_key.pem证书文件" label="appclient_key.pem证书"/>
+      <base-form-label slot="label" content="appclient_key.pem证书文件(编辑时不重新上传证书会使用之前上传的证书)" label="appclient_key.pem证书"/>
       <file-upload-drag ref="privateKeyContent" :limit="1" accept=".pem"
                         @onChange="handlePrivateKeyContent"></file-upload-drag>
     </el-form-item>
     <el-form-item v-if="isV3" label="appclient_cert.pem证书" prop="privateCertContent">
-      <base-form-label slot="label" content="appclient_cert.pem证书文件" label="appclient_cert.pem证书"/>
+      <base-form-label slot="label" content="appclient_cert.pem证书文件(编辑时不重新上传证书会使用之前上传的证书)" label="appclient_cert.pem证书"/>
       <file-upload-drag ref="privateCertContent" :limit="1" accept=".pem"
                         @onChange="handlePrivateCertContent"></file-upload-drag>
     </el-form-item>

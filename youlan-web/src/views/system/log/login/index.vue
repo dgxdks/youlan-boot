@@ -39,12 +39,7 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <base-remove-button
-          v-has-perm="['system:loginLog:remove']"
-          plain
-          :disabled="tableNoSelected"
-          @click="handleDelete"
-        />
+        <base-remove-button v-has-perm="['system:loginLog:remove']" plain :disabled="tableNoSelected" @click="handleDelete" />
       </el-col>
       <el-col :span="1.5">
         <base-remove-button v-has-perm="['system:loginLog:remove']" plain @click="handleClean">清空</base-remove-button>
@@ -56,8 +51,7 @@
           icon="el-icon-unlock"
           :disabled="!tableSelectOne"
           @click="handleUnlock"
-        >解锁
-        </base-add-button>
+        >解锁</base-add-button>
       </el-col>
       <el-col :span="1.5">
         <base-download-button v-has-perm="['system:loginLog:export']" plain @click="handleExport">导出
@@ -66,14 +60,7 @@
       <table-toolbar :query-show.sync="queryShow" @refresh="getList" />
     </el-row>
 
-    <el-table
-      ref="table"
-      v-loading="tableLoading"
-      :data="logList"
-      :default-sort="defaultSort"
-      @selection-change="handleSelectionChange"
-      @sort-change="handleSortChange"
-    >
+    <el-table ref="table" v-loading="tableLoading" :data="logList" :default-sort="defaultSort" @selection-change="handleSelectionChange" @sort-change="handleSortChange">
       <el-table-column align="center" type="selection" width="55" />
       <el-table-column align="center" label="登录编号" prop="id" />
       <el-table-column show-overflow-tooltip align="center" label="用户名称" prop="userName" sortable="custom" />

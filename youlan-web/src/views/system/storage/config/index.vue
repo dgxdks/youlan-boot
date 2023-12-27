@@ -39,24 +39,13 @@
         <base-add-button v-has-perm="['system:storageConfig:add']" plain @click="handleAdd" />
       </el-col>
       <el-col :span="1.5">
-        <base-update-button
-          v-has-perm="['system:storageConfig:update']"
-          plain
-          :disabled="!tableSelectOne"
-          @click="handleUpdate"
-        />
+        <base-update-button v-has-perm="['system:storageConfig:update']" plain :disabled="!tableSelectOne" @click="handleUpdate" />
       </el-col>
       <el-col :span="1.5">
-        <base-remove-button
-          v-has-perm="['system:storageConfig:remove']"
-          plain
-          :disabled="tableNoSelected"
-          @click="handleDelete"
-        />
+        <base-remove-button v-has-perm="['system:storageConfig:remove']" plain :disabled="tableNoSelected" @click="handleDelete" />
       </el-col>
       <el-col :span="1.5">
-        <base-download-button v-has-perm="['system:storageConfig:export']" plain @click="handleExport">导出
-        </base-download-button>
+        <base-download-button v-has-perm="['system:storageConfig:export']" plain @click="handleExport">导出</base-download-button>
       </el-col>
       <el-col :span="1.5">
         <base-remove-button v-has-perm="['system:storageConfig:remove']" plain @click="handleRefreshCache">刷新缓存
@@ -112,13 +101,7 @@
     />
 
     <!-- 存储配置编辑对话框 -->
-    <base-dialog
-      :title="editTitle"
-      :open.sync="editOpen"
-      width="700px"
-      @confirm="handleEditSubmit"
-      @cancel="handleEditCancel"
-    >
+    <base-dialog :title="editTitle" :open.sync="editOpen" width="700px" @confirm="handleEditSubmit" @cancel="handleEditCancel">
       <el-form ref="editForm" :model="editForm" :rules="editRules" label-width="100px">
         <base-row-split2>
           <el-form-item label="配置名称" prop="name">

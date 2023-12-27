@@ -9,6 +9,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
+import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.redis.helper.RedisHelper;
 import com.youlan.plugin.pay.config.PayProperties;
@@ -16,11 +17,15 @@ import com.youlan.plugin.pay.constant.PayConstant;
 import com.youlan.plugin.pay.entity.PayNotify;
 import com.youlan.plugin.pay.entity.PayNotifyRecord;
 import com.youlan.plugin.pay.entity.PayOrder;
-import com.youlan.plugin.pay.entity.dto.NotifyDTO;
+import com.youlan.plugin.pay.entity.PayRefundOrder;
+import com.youlan.plugin.pay.entity.dto.ChannelPayNotifyDTO;
+import com.youlan.plugin.pay.entity.dto.ChannelRefundNotifyDTO;
 import com.youlan.plugin.pay.enums.NotifyStatus;
 import com.youlan.plugin.pay.enums.NotifyType;
 import com.youlan.plugin.pay.service.PayNotifyRecordService;
 import com.youlan.plugin.pay.service.PayNotifyService;
+import com.youlan.plugin.pay.service.PayOrderService;
+import com.youlan.plugin.pay.service.PayRefundOrderService;
 import com.youlan.plugin.pay.utils.PayUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,26 +51,26 @@ public class PayNotifyBizService {
     private final PayProperties payProperties;
     private final PayNotifyService payNotifyService;
     private final PayNotifyRecordService payNotifyRecordService;
+    private final PayOrderService payOrderService;
+    private final PayRefundOrderService payRefundOrderService;
 
     /**
-     * 创建回调通知
+     * 创建支付回调
      *
-     * @param payOrder   支付订单
      * @param notifyType 回调类型
+     * @param orderId    订单ID(支付回调时-支付订单ID 退款回调时-退款订单ID)
+     * @param notifyUrl  回调地址
      */
     @Transactional(rollbackFor = Exception.class)
-    public void createPayNotify(NotifyType notifyType, PayOrder payOrder) {
-        Assert.notNull(payOrder, "订单不能为空");
+    public void createPayNotify(NotifyType notifyType, Long orderId, String notifyUrl) {
         Assert.notNull(notifyType, "回调类型不能为空");
-        Assert.notNull(payOrder.getId(), "订单ID不能为空");
-        Assert.notNull(payOrder.getMchOrderId(), "商户订单ID不能为空");
-        Assert.notNull(payOrder.getNotifyUrl(), "回调地址不能为空");
-        final PayNotify payNotify = new PayNotify()
+        Assert.notNull(orderId, "订单ID不能为空");
+        Assert.notNull(notifyUrl, "回调地址不能为空");
+        PayNotify payNotify = new PayNotify()
                 .setNotifyType(notifyType)
                 .setNotifyStatus(NotifyStatus.NOTIFY_WAITING)
-                .setOrderId(payOrder.getId())
-                .setMchOrderId(payOrder.getMchOrderId())
-                .setNotifyUrl(payOrder.getNotifyUrl())
+                .setOrderId(orderId)
+                .setNotifyUrl(notifyUrl)
                 .setNotifyTimes(0)
                 .setNextNotifyTime(new Date());
         // 保存支付回调
@@ -89,7 +94,7 @@ public class PayNotifyBizService {
         if (CollectionUtil.isEmpty(payNotifyList)) {
             return;
         }
-        log.info("调度支付回调：{回调总条数: {}}", payNotifyList.size());
+        log.info("支付回调调度任务：{回调总数: {}}", payNotifyList.size());
         payNotifyList.forEach(payNotify -> threadPoolTaskExecutor.execute(() -> {
             try {
                 // 执行支付回调
@@ -127,10 +132,33 @@ public class PayNotifyBizService {
      */
     @Transactional(rollbackFor = Exception.class)
     public void doPayNotify(PayNotify payNotify) {
-        NotifyDTO notifyDTO = new NotifyDTO(payNotify.getMchOrderId(), payNotify.getOrderId());
+        NotifyType notifyType = payNotify.getNotifyType();
+        Object notifyDTO;
+        switch (notifyType) {
+            case PAY:
+                PayOrder payOrder = payOrderService.loadPayOrderNotNull(payNotify.getOrderId());
+                notifyDTO = new ChannelPayNotifyDTO()
+                        .setOrderId(payOrder.getId())
+                        .setMchOrderId(payOrder.getMchOrderId())
+                        .setPayStatus(payOrder.getPayStatus());
+                break;
+            case REFUND:
+                PayRefundOrder payRefundOrder = payRefundOrderService.loadRefundOrderNotNull(payNotify.getOrderId());
+                notifyDTO = new ChannelRefundNotifyDTO()
+                        .setRefundId(payRefundOrder.getId())
+                        .setOrderId(payRefundOrder.getOrderId())
+                        .setMchOrderId(payRefundOrder.getMchOrderId())
+                        .setMchRefundId(payRefundOrder.getMchRefundId())
+                        .setRefundStatus(payRefundOrder.getRefundStatus());
+                break;
+            default:
+                throw new BizRuntimeException("回调类型不支持");
+        }
         HttpResponse httpResponse = null;
         ApiResult apiResult = null;
         Exception notifyException = null;
+        // 响应体
+        String responseBody = null;
         // 创建请求体
         String requestBody = JSONUtil.toJsonStr(notifyDTO);
         try {
@@ -139,7 +167,8 @@ public class PayNotifyBizService {
                     .body(requestBody)
                     .timeout(payProperties.getNotifyTimeout() * 1000)
                     .execute();
-            apiResult = JSONUtil.toBean(httpResponse.body(), ApiResult.class);
+            responseBody = httpResponse.body();
+            apiResult = JSONUtil.toBean(responseBody, ApiResult.class);
         } catch (Exception e) {
             notifyException = e;
         } finally {
@@ -154,7 +183,7 @@ public class PayNotifyBizService {
                 .setNotifyStatus(notifyStatus)
                 .setNotifyTimes(notifyTimes)
                 .setRequestBody(requestBody)
-                .setResponseBody(ObjectUtil.isNull(apiResult) ? null : apiResult.toString())
+                .setResponseBody(ObjectUtil.isNull(apiResult) ? responseBody : apiResult.toString())
                 .setErrorMsg(ObjectUtil.isNull(notifyException) ? null : ExceptionUtil.getRootCauseMessage(notifyException));
         // 保存支付回调记录
         this.payNotifyRecordService.save(payNotifyRecord);

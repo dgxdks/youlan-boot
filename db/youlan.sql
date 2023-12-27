@@ -521,7 +521,7 @@ values (20850, '通道新增', '3', 'pay:payChannel:add', 402, '', '', '', '1', 
         '1', '', 100, 'admin', 0, '', sysdate(), null),
        (20855, '通道导出', '3', 'pay:payChannel:export', 402, '', '', '', '1', '', '2', 6, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null);
--- 支付通道按钮
+-- 支付订单按钮
 insert into t_sys_menu
 values (20900, '订单新增', '3', 'pay:payOrder:add', 403, '', '', '', '1', '', '2', 1, '1', '1',
         '', 100, 'admin', 0, '', sysdate(), null),
@@ -534,6 +534,34 @@ values (20900, '订单新增', '3', 'pay:payOrder:add', 403, '', '', '', '1', ''
        (20904, '订单列表', '3', 'pay:payOrder:list', 403, '', '', '', '1', '', '2', 5, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null),
        (20905, '订单导出', '3', 'pay:payOrder:export', 403, '', '', '', '1', '', '2', 6, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null);
+-- 支付回调按钮
+insert into t_sys_menu
+values (20950, '回调新增', '3', 'pay:payNotify:add', 405, '', '', '', '1', '', '2', 1, '1', '1',
+        '', 100, 'admin', 0, '', sysdate(), null),
+       (20951, '回调修改', '3', 'pay:payNotify:update', 405, '', '', '', '1', '', '2', 2, '1', '1',
+        '', 100, 'admin', 0, '', sysdate(), null),
+       (20952, '回调删除', '3', 'pay:payNotify:remove', 405, '', '', '', '1', '', '2', 3, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (20953, '回调详情', '3', 'pay:payNotify:load', 405, '', '', '', '1', '', '2', 4, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (20954, '回调列表', '3', 'pay:payNotify:list', 405, '', '', '', '1', '', '2', 5, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (20955, '回调导出', '3', 'pay:payNotify:export', 405, '', '', '', '1', '', '2', 6, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null);
+-- 退款订单按钮
+insert into t_sys_menu
+values (21000, '订单新增', '3', 'pay:payRefundOrder:add', 404, '', '', '', '1', '', '2', 1, '1', '1',
+        '', 100, 'admin', 0, '', sysdate(), null),
+       (21001, '订单修改', '3', 'pay:payRefundOrder:update', 404, '', '', '', '1', '', '2', 2, '1', '1',
+        '', 100, 'admin', 0, '', sysdate(), null),
+       (21002, '订单删除', '3', 'pay:payRefundOrder:remove', 404, '', '', '', '1', '', '2', 3, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (21003, '订单详情', '3', 'pay:payRefundOrder:load', 404, '', '', '', '1', '', '2', 4, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (21004, '订单列表', '3', 'pay:payRefundOrder:list', 404, '', '', '', '1', '', '2', 5, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (21005, '订单导出', '3', 'pay:payRefundOrder:export', 404, '', '', '', '1', '', '2', 6, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null);
 
 -- ----------------------------
@@ -681,7 +709,19 @@ values (101, 100),
        (101, 20904),
        (101, 20905),
        (101, 404),
-       (101, 405);
+       (101, 405),
+       (101, 20950),
+       (101, 20951),
+       (101, 20952),
+       (101, 20953),
+       (101, 20954),
+       (101, 20955),
+       (101, 21000),
+       (101, 21001),
+       (101, 21002),
+       (101, 21003),
+       (101, 21004),
+       (101, 21005);
 -- ----------------------------
 -- 系统操作日志表
 -- ----------------------------
@@ -1024,7 +1064,7 @@ create table t_pay_channel_config
     id         bigint(20)  not null auto_increment comment '主键ID',
     channel_id bigint(20)  not null comment '支付通道ID',
     config_id  bigint(20)  not null comment '支付配置ID',
-    trade_type varchar(16) not null comment '交易类型(数据字典[trade_type])',
+    trade_type varchar(16) not null comment '交易类型(数据字典[pay_trade_type])',
     primary key (id)
 ) auto_increment = 100 comment '支付通道配置表';
 
@@ -1039,7 +1079,7 @@ create table t_pay_order
     out_trade_no  varchar(64) comment '外部交易订单号',
     trade_no      varchar(64) comment '交易订单号',
     pay_status    varchar(4)     default '1' comment '支付状态(1-待支付 2-已支付 3-已关闭 4-已退款)',
-    trade_type    varchar(16) comment '交易类型',
+    trade_type    varchar(16) comment '交易类型(数据字典[pay_trade_type])',
     pay_amount    decimal(18, 2) not null comment '支付金额',
     expire_time   datetime       not null comment '过期时间',
     success_time  datetime comment '成功时间',
@@ -1068,8 +1108,9 @@ create table t_pay_order
 drop table if exists t_pay_record;
 create table t_pay_record
 (
-    id              bigint(20)  not null comment '主键ID',
+    id              bigint(20)  not null auto_increment comment '主键ID',
     out_trade_no    varchar(64) not null comment '外部交易订单号',
+    trade_no        varchar(64) comment '交易订单号',
     order_id        bigint(20)  not null comment '支付订单ID',
     config_id       bigint(20)  not null comment '支付配置ID',
     trade_type      varchar(16) not null comment '交易类型',
@@ -1096,15 +1137,20 @@ create table t_pay_record
 drop table if exists t_pay_notify;
 create table t_pay_notify
 (
-    id               bigint(20)   not null comment '主键ID',
+    id               bigint(20)   not null auto_increment comment '主键ID',
     notify_type      varchar(4)   not null comment '回调类型(1-支付回调 2-退款回调)',
-    notify_status    varchar(4) default '1' comment '回调状态(1-等待回调 2-回调成功 3-回调失败 4-请求成功 5-请求失败)',
+    notify_status    varchar(4)  default '1' comment '回调状态(1-等待回调 2-回调成功 3-回调失败 4-请求成功 5-请求失败)',
     order_id         bigint(20)   not null comment '订单ID(支付回调时-支付订单ID 退款回调时-退款订单ID)',
-    mch_order_id     varchar(64)  not null comment '商户订单号',
     notify_url       varchar(256) not null comment '回调地址',
-    notify_times     int(11)    default 0 comment '回调次数',
+    notify_times     int(11)     default 0 comment '回调次数',
     next_notify_time datetime comment '下次回调时间',
     last_notify_time datetime comment '最后回调时间',
+    create_id        bigint(20)  default 0 comment '创建用户ID',
+    create_by        varchar(64) default '' comment '创建用户',
+    update_id        bigint(20)  default 0 comment '修改用户ID',
+    update_by        varchar(64) default '' comment '修改用户',
+    create_time      datetime comment '创建时间',
+    update_time      datetime comment '修改时间',
     primary key (id)
 ) auto_increment = 100 comment '支付回调表';
 
@@ -1114,15 +1160,57 @@ create table t_pay_notify
 drop table if exists t_pay_notify_record;
 create table t_pay_notify_record
 (
-    id            bigint(20) not null comment '主键ID',
+    id            bigint(20) not null auto_increment comment '主键ID',
     notify_id     bigint(20) not null comment '回调ID',
-    notify_times  int(11)    default 0 comment '回调次数',
-    requestBody   longtext comment '请求体',
-    responseBody  longtext comment '响应体',
-    notify_status varchar(4) default '1' comment '回调状态(1-等待回调 2-回调成功 3-回调失败 4-请求成功 5-请求失败)',
+    notify_times  int(11)     default 0 comment '回调次数',
+    request_body  longtext comment '请求体',
+    response_body longtext comment '响应体',
+    notify_status varchar(4)  default '1' comment '回调状态(1-等待回调 2-回调成功 3-回调失败 4-请求成功 5-请求失败)',
     error_msg     longtext comment '错误信息',
+    create_id     bigint(20)  default 0 comment '创建用户ID',
+    create_by     varchar(64) default '' comment '创建用户',
+    update_id     bigint(20)  default 0 comment '修改用户ID',
+    update_by     varchar(64) default '' comment '修改用户',
+    create_time   datetime comment '创建时间',
+    update_time   datetime comment '修改时间',
     primary key (id)
 ) auto_increment = 100 comment '支付回调记录表';
+
+-- ----------------------------
+-- 支付退款订单表
+-- ----------------------------
+drop table if exists t_pay_refund_order;
+create table t_pay_refund_order
+(
+    id              bigint(20)     not null comment '主键ID',
+    mch_order_id    varchar(64)    not null comment '商户订单号',
+    mch_refund_id   varchar(64)    not null comment '商户退款号',
+    refund_amount   decimal(10, 2) not null comment '退款金额',
+    refund_status   varchar(4)     not null comment '退款状态(1-待退款 2-已退款 3-已失败)',
+    order_id        bigint(20)     not null comment '支付订单ID',
+    out_trade_no    varchar(64)    not null comment '外部交易订单号',
+    trade_no        varchar(64)    not null comment '交易订单号',
+    trade_type      varchar(16)    not null comment '交易类型(数据字典[pay_trade_type])',
+    out_refund_no   varchar(64)    not null comment '外部退款编号',
+    refund_no       varchar(64) comment '退款编号',
+    refund_reason   varchar(256)   not null comment '退款原因',
+    channel_id      bigint(20)     not null comment '支付通道ID',
+    config_id       bigint(20) comment '支付配置ID',
+    success_time    datetime comment '成功时间',
+    error_code      varchar(32) comment '错误码',
+    error_msg       varchar(128) comment '错误信息',
+    raw_data        longtext comment '原始数据',
+    notify_url      varchar(256) default '' comment '回调地址',
+    notify_raw_data longtext comment '回调原始数据',
+    remark          varchar(128) default '' comment '备注',
+    create_id       bigint(20)   default 0 comment '创建用户ID',
+    create_by       varchar(64)  default '' comment '创建用户',
+    update_id       bigint(20)   default 0 comment '修改用户ID',
+    update_by       varchar(64)  default '' comment '修改用户',
+    create_time     datetime comment '创建时间',
+    update_time     datetime comment '修改时间',
+    primary key (id)
+) auto_increment = 100 comment '支付退款订单表';
 
 -- ----------------------------
 -- 字典类型表
@@ -1165,7 +1253,12 @@ values ('机构类型', 'sys_org_type', '机构类型列表', 100, 'admin', sysd
        ('短信类型', 'sms_type', '短信类型列表', 100, 'admin', sysdate()),
        ('短信发送类型', 'sms_send_type', '短信发送类型', 100, 'admin', sysdate()),
        ('短信发送状态', 'sms_send_status', '短信发送类型列表', 100, 'admin', sysdate()),
-       ('支付类型', 'pay_type', '支付类型列表', 100, 'admin', sysdate());
+       ('支付类型', 'pay_type', '支付类型列表', 100, 'admin', sysdate()),
+       ('支付状态', 'pay_status', '支付状态列表', 100, 'admin', sysdate()),
+       ('支付交易类型', 'pay_trade_type', '支付交易类型列表', 100, 'admin', sysdate()),
+       ('支付回调类型', 'pay_notify_type', '支付回调类型列表', 100, 'admin', sysdate()),
+       ('支付回调状态', 'pay_notify_status', '支付回调状态列表', 100, 'admin', sysdate()),
+       ('支付退款状态', 'pay_refund_status', '支付退款状态列表', 100, 'admin', sysdate());
 
 -- ----------------------------
 -- 字典值表
@@ -1298,4 +1391,24 @@ values ('sys_org_type', '平台', '0', '', '', '2', 100, 'admin', sysdate()),
        ('sms_send_status', '成功', '1', 'success', '', '2', 100, 'admin', sysdate()),
        ('sms_send_status', '失败', '2', 'danger', '', '2', 100, 'admin', sysdate()),
        ('pay_type', '微信', 'WECHAT', '', '', '1', 100, 'admin', sysdate()),
-       ('pay_type', '支付宝', 'ALIPAY', '', '', '2', 100, 'admin', sysdate());
+       ('pay_type', '支付宝', 'ALIPAY', '', '', '2', 100, 'admin', sysdate()),
+       ('pay_status', '待支付', '1', 'warning', '', '1', 100, 'admin', sysdate()),
+       ('pay_status', '已支付', '2', 'success', '', '2', 100, 'admin', sysdate()),
+       ('pay_status', '已关闭', '3', 'info', '', '2', 100, 'admin', sysdate()),
+       ('pay_status', '已退款', '4', 'danger', '', '2', 100, 'admin', sysdate()),
+       ('pay_trade_type', '微信JSAPI支付', 'WX_JSAPI', 'primary', '', '1', 100, 'admin', sysdate()),
+       ('pay_trade_type', '微信APP支付', 'WX_APP', 'primary', '', '2', 100, 'admin', sysdate()),
+       ('pay_trade_type', '微信H5支付', 'WX_H5', 'primary', '', '2', 100, 'admin', sysdate()),
+       ('pay_trade_type', '微信Native支付', 'WX_NATIVE', 'primary', '', '2', 100, 'admin', sysdate()),
+       ('pay_trade_type', '微信小程序支付', 'WX_MINI', 'primary', '', '2', 100, 'admin', sysdate()),
+       ('pay_trade_type', '微信付款码支付', 'WX_SCAN', 'primary', '', '2', 100, 'admin', sysdate()),
+       ('pay_notify_type', '支付回调', '1', 'primary', '', '1', 100, 'admin', sysdate()),
+       ('pay_notify_type', '退款回调', '2', 'danger', '', '2', 100, 'admin', sysdate()),
+       ('pay_notify_status', '等待回调', '1', 'primary', '', '1', 100, 'admin', sysdate()),
+       ('pay_notify_status', '回调成功', '2', 'success', '', '2', 100, 'admin', sysdate()),
+       ('pay_notify_status', '回调失败', '3', 'danger', '', '2', 100, 'admin', sysdate()),
+       ('pay_notify_status', '请求成功', '4', 'warning', '', '2', 100, 'admin', sysdate()),
+       ('pay_notify_status', '请求失败', '5', 'info', '', '2', 100, 'admin', sysdate()),
+       ('pay_refund_status', '待退款', '1', 'primary', '', '1', 100, 'admin', sysdate()),
+       ('pay_refund_status', '已退款', '2', 'success', '', '2', 100, 'admin', sysdate()),
+       ('pay_refund_status', '已失败', '3', 'danger', '', '2', 100, 'admin', sysdate());

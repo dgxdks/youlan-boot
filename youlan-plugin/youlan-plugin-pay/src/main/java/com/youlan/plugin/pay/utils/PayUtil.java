@@ -7,13 +7,11 @@ import cn.hutool.core.text.StrPool;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
-import cn.hutool.http.HttpResponse;
 import cn.hutool.json.JSONUtil;
 import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.redis.helper.RedisHelper;
 import com.youlan.plugin.pay.config.PayProperties;
 import com.youlan.plugin.pay.entity.PayConfig;
-import com.youlan.plugin.pay.enums.NotifyStatus;
 import com.youlan.plugin.pay.enums.PayType;
 import com.youlan.plugin.pay.enums.TradeType;
 import com.youlan.plugin.pay.params.PayParams;
@@ -21,8 +19,7 @@ import com.youlan.plugin.pay.params.PayParams;
 import java.time.Duration;
 import java.util.Date;
 
-import static com.youlan.plugin.pay.constant.PayConstant.REDIS_PREFIX_ORDER_NO;
-import static com.youlan.plugin.pay.constant.PayConstant.REDIS_PREFIX_PAY_NOTIFY;
+import static com.youlan.plugin.pay.constant.PayConstant.*;
 
 public class PayUtil {
     private static final PayProperties payProperties = SpringUtil.getBean(PayProperties.class);
@@ -135,4 +132,13 @@ public class PayUtil {
         return REDIS_PREFIX_PAY_NOTIFY + notifyId;
     }
 
+    /**
+     * 获取退款订单同步redis key
+     *
+     * @param orderId 订单ID
+     * @return 退款订单同步redis key
+     */
+    public static String getRefundOrderSyncRedisKey(Long orderId) {
+        return REDIS_PREFIX_REFUND_ORDER_SYNC + orderId;
+    }
 }

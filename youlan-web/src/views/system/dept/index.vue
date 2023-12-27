@@ -28,13 +28,7 @@
       <table-toolbar :query-show.sync="queryShow" @refresh="getList" />
     </el-row>
 
-    <el-table
-      ref="queryTable"
-      v-loading="tableLoading"
-      :data="deptList"
-      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
-      row-key="id"
-    >
+    <el-table ref="queryTable" v-loading="tableLoading" :data="deptList" :tree-props="{children: 'children', hasChildren: 'hasChildren'}" row-key="id">
       <el-table-column label="部门名称" prop="orgName" width="260" />
       <el-table-column label="机构编码" prop="orgId" />
       <el-table-column label="机构类型" prop="orgType">
@@ -64,13 +58,7 @@
     </el-table>
 
     <!-- 部门编辑对话框 -->
-    <base-dialog
-      :title="editTitle"
-      :open.sync="editOpen"
-      width="600px"
-      @confirm="handleEditSubmit"
-      @cancel="handleEditCancel"
-    >
+    <base-dialog :title="editTitle" :open.sync="editOpen" width="600px" @confirm="handleEditSubmit" @cancel="handleEditCancel">
       <el-form ref="editForm" :model="editForm" :rules="editRules" label-width="80px">
         <el-form-item label="上级机构" prop="parentOrgId">
           <treeselect

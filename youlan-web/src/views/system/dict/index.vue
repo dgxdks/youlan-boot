@@ -36,20 +36,10 @@
         <base-add-button v-has-perm="['system:dict:add']" plain @click="handleAdd" />
       </el-col>
       <el-col :span="1.5">
-        <base-update-button
-          v-has-perm="['system:dict:update']"
-          plain
-          :disabled="!tableSelectOne"
-          @click="handleUpdate"
-        />
+        <base-update-button v-has-perm="['system:dict:update']" plain :disabled="!tableSelectOne" @click="handleUpdate" />
       </el-col>
       <el-col :span="1.5">
-        <base-remove-button
-          v-has-perm="['system:dict:remove']"
-          plain
-          :disabled="tableNoSelected"
-          @click="handleDelete"
-        />
+        <base-remove-button v-has-perm="['system:dict:remove']" plain :disabled="tableNoSelected" @click="handleDelete" />
       </el-col>
       <el-col :span="1.5">
         <base-download-button v-has-perm="['system:dict:export']" plain @click="handleExport">导出
@@ -97,23 +87,13 @@
     />
 
     <!-- 字典类型对话框 -->
-    <base-dialog
-      :title="editTitle"
-      :open.sync="editOpen"
-      width="500px"
-      @confirm="handleEditSubmit"
-      @cancel="handleEditCancel"
-    >
+    <base-dialog :title="editTitle" :open.sync="editOpen" width="500px" @confirm="handleEditSubmit" @cancel="handleEditCancel">
       <el-form ref="editForm" :model="editForm" :rules="editRules" label-width="100px">
         <el-form-item label="字典名称" prop="typeName">
           <el-input v-model="editForm.typeName" placeholder="请输入字典名称" />
         </el-form-item>
         <el-form-item label="字典类型" prop="typeKey">
-          <base-form-label
-            slot="label"
-            content="字典类型必须以字母开头，且只能为（小写字母，数字，下滑线）"
-            label="字典类型"
-          />
+          <base-form-label slot="label" content="字典类型必须以字母开头，且只能为（小写字母，数字，下滑线）" label="字典类型" />
           <el-input v-model="editForm.typeKey" placeholder="请输入字典类型" />
         </el-form-item>
         <el-form-item label="状态" prop="status">

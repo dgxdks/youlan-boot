@@ -21,7 +21,7 @@ import java.io.IOException;
 @Slf4j
 @AllArgsConstructor
 @NoArgsConstructor
-public class EncryptFiledJsonSerializer extends JsonSerializer<String> implements ContextualSerializer {
+public class EncryptFiledSerializer extends JsonSerializer<String> implements ContextualSerializer {
     private EncryptField encryptField;
 
     @Override
@@ -52,6 +52,6 @@ public class EncryptFiledJsonSerializer extends JsonSerializer<String> implement
         if (ObjectUtil.notEqual(property.getType().getRawClass(), String.class) || ObjectUtil.isNull(encryptField)) {
             return prov.findValueSerializer(property.getType(), property);
         }
-        return new EncryptFiledJsonSerializer(encryptField);
+        return new EncryptFiledSerializer(encryptField);
     }
 }

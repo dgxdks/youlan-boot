@@ -110,14 +110,7 @@
 
     <!-- 存储记录详细 -->
     <base-drawer title="存储记录详情" :open.sync="editOpen" size="80%" wrapper-closable>
-      <el-form
-        ref="editForm"
-        :model="editForm"
-        label-width="100px"
-        size="mini"
-        label-position="left"
-        style="padding: 10px"
-      >
+      <el-form ref="editForm" :model="editForm" label-width="100px" size="mini" label-position="left" style="padding: 10px">
         <base-row-split2>
           <el-form-item label="平台名称：" prop="platform">
             {{ editForm.platform }}
@@ -193,12 +186,7 @@
       @confirm="handleUploadFileSubmit"
       @cancel="handleUploadFileCancel"
     >
-      <file-upload-drag
-        ref="fileUpload"
-        :limit="1"
-        @onSuccess="handleFileUploadSuccess"
-        @onError="handleFileUploadError"
-      />
+      <file-upload-drag ref="fileUpload" :limit="1" @onSuccess="handleFileUploadSuccess" @onError="handleFileUploadError" />
     </base-dialog>
     <base-dialog
       :title="imageUpload.title"
@@ -207,13 +195,7 @@
       @confirm="handleUploadImageSubmit"
       @cancel="handleUploadImageCancel"
     >
-      <image-upload
-        ref="imageUpload"
-        :limit="3"
-        :file-size="5"
-        @onSuccess="handleImageUploadSuccess"
-        @onError="handleImageUploadError"
-      />
+      <image-upload ref="imageUpload" :limit="3" :file-size="5" @onSuccess="handleImageUploadSuccess" @onError="handleImageUploadError" />
     </base-dialog>
   </div>
 </template>

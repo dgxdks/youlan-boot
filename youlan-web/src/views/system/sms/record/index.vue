@@ -57,16 +57,10 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <base-remove-button
-          v-has-perm="['system:smsRecord:remove']"
-          plain
-          :disabled="tableNoSelected"
-          @click="handleDelete"
-        />
+        <base-remove-button v-has-perm="['system:smsRecord:remove']" plain :disabled="tableNoSelected" @click="handleDelete" />
       </el-col>
       <el-col :span="1.5">
-        <base-remove-button v-has-perm="['system:smsRecord:remove']" plain @click="handleClean">清空
-        </base-remove-button>
+        <base-remove-button v-has-perm="['system:smsRecord:remove']" plain @click="handleClean">清空</base-remove-button>
       </el-col>
       <table-toolbar :query-show.sync="queryShow" @refresh="getList" />
     </el-row>
@@ -118,14 +112,7 @@
 
     <!-- 短信记录详细 -->
     <base-drawer title="短信记录详情" :open.sync="editOpen" size="80%" wrapper-closable>
-      <el-form
-        ref="editForm"
-        :model="editForm"
-        label-width="140px"
-        size="mini"
-        label-position="left"
-        style="padding: 10px"
-      >
+      <el-form ref="editForm" :model="editForm" label-width="140px" size="mini" label-position="left" style="padding: 10px">
         <base-row-split2>
           <el-form-item label="记录编号：" prop="id">
             {{ editForm.id }}

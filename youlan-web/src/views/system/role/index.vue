@@ -36,24 +36,13 @@
         <base-add-button v-has-perm="['system:role:add']" plain @click="handleAdd" />
       </el-col>
       <el-col :span="1.5">
-        <base-update-button
-          v-has-perm="['system:role:update']"
-          plain
-          :disabled="!tableSelectOne"
-          @click="handleUpdate"
-        />
+        <base-update-button v-has-perm="['system:role:update']" plain :disabled="!tableSelectOne" @click="handleUpdate" />
       </el-col>
       <el-col :span="1.5">
-        <base-remove-button
-          v-has-perm="['system:role:remove']"
-          plain
-          :disabled="tableNoSelected"
-          @click="handleDelete"
-        />
+        <base-remove-button v-has-perm="['system:role:remove']" plain :disabled="tableNoSelected" @click="handleDelete" />
       </el-col>
       <el-col :span="1.5">
-        <base-download-button v-has-perm="['system:role:export']" plain @click="handleExport">导出
-        </base-download-button>
+        <base-download-button v-has-perm="['system:role:export']" plain @click="handleExport">导出</base-download-button>
       </el-col>
       <table-toolbar :query-show.sync="queryShow" @refresh="getList" />
     </el-row>

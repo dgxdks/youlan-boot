@@ -3,23 +3,27 @@ package com.youlan.plugin.pay.entity;
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.youlan.common.db.constant.DBConstant;
+import com.youlan.common.db.entity.dto.PageDTO;
 import com.youlan.common.db.handler.JSONObjectTypeHandler;
 import com.youlan.plugin.pay.enums.PayStatus;
 import com.youlan.plugin.pay.enums.TradeType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @Data
 @Accessors(chain = true)
 @TableName("t_pay_record")
-public class PayRecord {
+@EqualsAndHashCode(callSuper = true)
+public class PayRecord extends PageDTO {
 
     @Schema(description = DBConstant.DESC_ID)
-    @TableId(type = IdType.ASSIGN_ID)
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     @Schema(description = "外部交易订单号")
@@ -87,5 +91,13 @@ public class PayRecord {
     @Schema(description = DBConstant.DESC_UPDATE_TIME)
     @TableField(fill = FieldFill.UPDATE)
     private Date updateTime;
+
+    @Schema(description = DBConstant.DESC_CREATE_TIME)
+    @TableField(exist = false)
+    private List<Date> createTimeRange;
+
+    @Schema(description = "配置名称")
+    @TableField(exist = false)
+    private String configName;
 
 }

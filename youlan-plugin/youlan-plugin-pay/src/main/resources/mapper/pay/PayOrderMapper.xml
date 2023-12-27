@@ -5,16 +5,17 @@
 <mapper namespace="com.youlan.plugin.pay.mapper.PayOrderMapper">
 
     <select id="getPayOrderPageList" resultType="com.youlan.plugin.pay.entity.vo.PayOrderVO">
-        select pay_order.*, config.name as configName, channel.name as channelName, record.notify_raw_data
+        select pay_order.*, config.name as configName, channel.name as channelName, record.notify_raw_data,
+        record.raw_data
         from t_pay_order as pay_order
         left join t_pay_config as config on pay_order.config_id = config.id
         left join t_pay_channel as channel on pay_order.channel_id = channel.id
         left join t_pay_record as record on pay_order.record_id = record.id
         <where>
             <if test="dto.id != null">
-                and pay_order.id like concat(#{dto.id}, '%')
+                and pay_order.id = #{dto.id}
             </if>
-            <if test="dto.mchOrderId != null">
+            <if test="dto.mchOrderId != null and dto.mchOrderId != ''">
                 and pay_order.mch_order_id like concat(#{dto.mchOrderId}, '%')
             </if>
             <if test="dto.payStatus != null">

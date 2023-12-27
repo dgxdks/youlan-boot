@@ -22,11 +22,11 @@ import java.io.IOException;
 @Slf4j
 @AllArgsConstructor
 @NoArgsConstructor
-public class DecryptFiledJsonDeserialize extends JsonDeserializer<String> implements ContextualDeserializer {
+public class DecryptFiledDeserializer extends JsonDeserializer<String> implements ContextualDeserializer {
     private DecryptField decryptField;
 
     @Override
-    public String deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
+    public String deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
         String encryptText = p.getValueAsString();
         if (StrUtil.isBlank(encryptText)) {
             return encryptText;
@@ -52,6 +52,6 @@ public class DecryptFiledJsonDeserialize extends JsonDeserializer<String> implem
         if (ObjectUtil.notEqual(property.getType().getRawClass(), String.class) || ObjectUtil.isNull(decryptField)) {
             return ctxt.findContextualValueDeserializer(property.getType(), property);
         }
-        return new DecryptFiledJsonDeserialize(decryptField);
+        return new DecryptFiledDeserializer(decryptField);
     }
 }

@@ -19,5 +19,5 @@ public enum CodeType {
     /**
      * 四则运算类型
      */
-    MATH;
+    MATH
 }

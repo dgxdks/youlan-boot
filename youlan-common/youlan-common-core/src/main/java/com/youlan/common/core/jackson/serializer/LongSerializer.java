@@ -1,4 +1,4 @@
-package com.youlan.common.core.jackson;
+package com.youlan.common.core.jackson.serializer;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;

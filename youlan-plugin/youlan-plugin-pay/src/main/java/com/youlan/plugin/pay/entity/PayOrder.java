@@ -35,7 +35,7 @@ public class PayOrder extends PageDTO {
     @Schema(description = "支付状态(1-待支付 2-已支付 3-已关闭 4-已退款)")
     private PayStatus payStatus;
 
-    @Schema(description = "交易类型")
+    @Schema(description = "交易类型(数据字典[pay_trade_type])")
     private TradeType tradeType;
 
     @Schema(description = "支付金额")

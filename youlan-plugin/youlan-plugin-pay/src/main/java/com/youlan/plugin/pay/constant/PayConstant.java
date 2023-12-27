@@ -11,6 +11,10 @@ public class PayConstant {
      * 支付回调缓存前缀
      */
     public static final String REDIS_PREFIX_PAY_NOTIFY = "pay:notify";
+    /**
+     * 退款订单同步缓存前缀
+     */
+    public static final String REDIS_PREFIX_REFUND_ORDER_SYNC = "pay:refund_order_sync";
     // ******************** 参数键名 ********************
     public static final String PARAM_KEY_OPEN_ID = "openid";
     public static final String PARAM_KEY_AUTH_CODE = "auth_code";

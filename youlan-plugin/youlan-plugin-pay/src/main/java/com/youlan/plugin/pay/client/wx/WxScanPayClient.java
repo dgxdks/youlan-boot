@@ -57,7 +57,7 @@ public class WxScanPayClient extends AbstractWxPayClient {
                 .body(payRequest.getSubject())
                 .detail(payRequest.getDetail())
                 .totalFee(WxPayUtil.formatFee(payRequest.getAmount()))
-                .timeExpire(WxPayUtil.formatExpireTimeV2(expireTime))
+                .timeExpire(WxPayUtil.formatTimeV2(expireTime))
                 .spbillCreateIp(payRequest.getClientIp())
                 .authCode(authCode)
                 .build();
@@ -68,7 +68,7 @@ public class WxScanPayClient extends AbstractWxPayClient {
                 // 付款码支付结果
                 WxPayMicropayResult orderResult = wxPayService.micropay(orderRequest);
                 return PayClientUtil.createPaySuccessResponse(orderResult.getOutTradeNo(), orderResult.getTransactionId(),
-                        orderResult.getOpenid(), orderResult, PayShowType.BAR_CODE, WxPayUtil.parseExpireTimeV2(orderResult.getTimeEnd()));
+                        orderResult.getOpenid(), orderResult, PayShowType.BAR_CODE, WxPayUtil.parseTimeV2(orderResult.getTimeEnd()));
             } catch (WxPayException e) {
                 lastException = e;
                 // 非以下响应直接抛出异常

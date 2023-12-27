@@ -14,13 +14,13 @@ import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.core.helper.FileHelper;
 import com.youlan.plugin.pay.enums.PayStatus;
 import com.youlan.plugin.pay.enums.TradeType;
+import com.youlan.plugin.pay.enums.WxApiVersion;
 import com.youlan.plugin.pay.params.WxPayParams;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
-import static cn.hutool.core.date.DatePattern.PURE_DATETIME_PATTERN;
-import static cn.hutool.core.date.DatePattern.UTC_WITH_XXX_OFFSET_PATTERN;
+import static cn.hutool.core.date.DatePattern.*;
 import static com.youlan.plugin.pay.constant.PayConstant.CURRENCY_CNY;
 
 public class WxPayUtil {
@@ -112,6 +112,18 @@ public class WxPayUtil {
                 .setCurrency(CURRENCY_CNY);
     }
 
+    /**
+     * 解析退款成功时间
+     *
+     * @param refundSuccessTime 退款成功时间
+     * @return 解析时间
+     */
+    public static Date parseRefundSuccessTime(String refundSuccessTime) {
+        if (StrUtil.isBlank(refundSuccessTime)) {
+            return null;
+        }
+        return DateUtil.parse(refundSuccessTime, NORM_DATETIME_PATTERN);
+    }
 
     /**
      * 格式化过期时间V2
@@ -119,7 +131,7 @@ public class WxPayUtil {
      * @param expireTime 过期时间
      * @return 格式化时间
      */
-    public static String formatExpireTimeV2(Date expireTime) {
+    public static String formatTimeV2(Date expireTime) {
         return DateUtil.format(expireTime, PURE_DATETIME_PATTERN);
     }
 
@@ -129,7 +141,7 @@ public class WxPayUtil {
      * @param expireTime 过期时间
      * @return 解析时间
      */
-    public static Date parseExpireTimeV2(String expireTime) {
+    public static Date parseTimeV2(String expireTime) {
         if (StrUtil.isBlank(expireTime)) {
             return null;
         }
@@ -142,7 +154,7 @@ public class WxPayUtil {
      * @param expireTime 过期时间
      * @return 格式化时间
      */
-    public static String formatExpireTimeV3(Date expireTime) {
+    public static String formatTimeV3(Date expireTime) {
         return DateUtil.format(expireTime, UTC_WITH_XXX_OFFSET_PATTERN);
     }
 
@@ -152,7 +164,7 @@ public class WxPayUtil {
      * @param expireTime 过期时间
      * @return 解析时间
      */
-    public static Date parseExpireTimeV3(String expireTime) {
+    public static Date parseTimeV3(String expireTime) {
         if (StrUtil.isBlank(expireTime)) {
             return null;
         }
@@ -169,9 +181,14 @@ public class WxPayUtil {
         WxPayConfig wxPayConfig = new WxPayConfig();
         wxPayConfig.setAppId(wxPayParams.getAppId());
         wxPayConfig.setMchId(wxPayParams.getMchId());
-        wxPayConfig.setMchKey(wxPayParams.getMchKey());
         wxPayConfig.setSubAppId(wxPayParams.getSubAppId());
         wxPayConfig.setSubMchId(wxPayParams.getSubMchId());
+        if (wxPayParams.getApiVersion() == WxApiVersion.V2) {
+            wxPayConfig.setMchKey(wxPayParams.getMchKey());
+        }
+        if (wxPayParams.getApiVersion() == WxApiVersion.V3) {
+            wxPayConfig.setApiV3Key(wxPayParams.getMchKey());
+        }
         // apiclient_cert.p12证书存储格式为Base64
         String keyContent = wxPayParams.getKeyContent();
         if (StrUtil.isNotBlank(keyContent)) {

@@ -5,7 +5,8 @@ import com.youlan.plugin.pay.entity.request.PayQueryRequest;
 import com.youlan.plugin.pay.entity.request.PayRequest;
 import com.youlan.plugin.pay.entity.request.RefundQueryRequest;
 import com.youlan.plugin.pay.entity.request.RefundRequest;
-import com.youlan.plugin.pay.entity.response.*;
+import com.youlan.plugin.pay.entity.response.PayResponse;
+import com.youlan.plugin.pay.entity.response.RefundResponse;
 import com.youlan.plugin.pay.enums.TradeType;
 
 import java.util.Map;
@@ -24,9 +25,9 @@ public interface PayClient {
      * 支付查询
      *
      * @param payQueryRequest 支付查询请求
-     * @return 支付查询响应
+     * @return 支付响应
      */
-    PayQueryResponse payQuery(PayQueryRequest payQueryRequest);
+    PayResponse payQuery(PayQueryRequest payQueryRequest);
 
 
     /**
@@ -34,9 +35,9 @@ public interface PayClient {
      *
      * @param params 路径参数
      * @param body   请求体
-     * @return 支付回调响应
+     * @return 支付响应
      */
-    PayNotifyResponse payNotifyParse(Map<String, String> params, String body);
+    PayResponse payNotifyParse(Map<String, String> params, String body);
 
     /**
      * 退款
@@ -50,9 +51,9 @@ public interface PayClient {
      * 退款查询
      *
      * @param refundQueryRequest 退款查询请求
-     * @return 退款查询响应
+     * @return 退款响应
      */
-    RefundQueryResponse refundQuery(RefundQueryRequest refundQueryRequest);
+    RefundResponse refundQuery(RefundQueryRequest refundQueryRequest);
 
     /**
      * 退款回调解析
@@ -61,7 +62,7 @@ public interface PayClient {
      * @param body   请求体
      * @return 退款响应
      */
-    RefundNotifyResponse refundNotifyParse(Map<String, String> params, String body);
+    RefundResponse refundNotifyParse(Map<String, String> params, String body);
 
     /**
      * 启动客户端

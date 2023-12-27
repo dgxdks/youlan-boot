@@ -38,20 +38,10 @@
         </base-upload-button>
       </el-col>
       <el-col :span="1.5">
-        <base-update-button
-          v-has-perm="['tools:generator:update']"
-          :disabled="!tableSelectOne"
-          plain
-          @click="handleUpdate"
-        />
+        <base-update-button v-has-perm="['tools:generator:update']" :disabled="!tableSelectOne" plain @click="handleUpdate" />
       </el-col>
       <el-col :span="1.5">
-        <base-remove-button
-          v-has-perm="['tools:generator:remove']"
-          :disabled="tableNoSelected"
-          plain
-          @click="handleDelete"
-        />
+        <base-remove-button v-has-perm="['tools:generator:remove']" :disabled="tableNoSelected" plain @click="handleDelete" />
       </el-col>
       <table-toolbar :query-show.sync="queryShow" @refresh="getList" />
     </el-row>
@@ -118,14 +108,7 @@
       @pagination="getList"
     />
     <!-- 预览界面 -->
-    <el-dialog
-      :title="preview.title"
-      :visible.sync="preview.open"
-      append-to-body
-      class="scrollbar"
-      top="5vh"
-      width="80%"
-    >
+    <el-dialog :title="preview.title" :visible.sync="preview.open" append-to-body class="scrollbar" top="5vh" width="80%">
       <el-tabs v-model="preview.activeVm">
         <el-tab-pane
           v-for="item in preview.codes"

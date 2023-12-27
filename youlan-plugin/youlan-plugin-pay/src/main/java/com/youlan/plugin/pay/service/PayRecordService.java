@@ -1,11 +1,12 @@
 package com.youlan.plugin.pay.service;
 
-import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.db.service.BaseServiceImpl;
+import com.youlan.plugin.pay.config.PayProperties;
 import com.youlan.plugin.pay.entity.PayRecord;
 import com.youlan.plugin.pay.enums.PayStatus;
 import com.youlan.plugin.pay.mapper.PayRecordMapper;
@@ -14,72 +15,39 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
 @Service
 @AllArgsConstructor
 public class PayRecordService extends BaseServiceImpl<PayRecordMapper, PayRecord> {
+    private final PayProperties payProperties;
 
     /**
-     * 更新支付记录为已支付
+     * 获取可以同步的支付记录列表
      *
-     * @param id              支付记录ID
-     * @param updatePayRecord 支付记录更新值
+     * @return 支付记录列表
      */
-    public void updatePayStatusSuccess(Long id, PayRecord updatePayRecord) {
-        PayRecord payRecord = this.loadPayRecordNotNull(id);
-        PayStatus payStatus = payRecord.getPayStatus();
-        switch (payStatus) {
-            case SUCCESS:
-                log.info("支付记录是已支付状态，无需更新：{id: {}}", id);
-                return;
-            case WAITING:
-                break;
-            default:
-                throw new BizRuntimeException(ApiResultCode.E0016);
-        }
-        if (ObjectUtil.isNull(updatePayRecord)) {
-            updatePayRecord = new PayRecord();
-        }
-        updatePayRecord.setPayStatus(PayStatus.SUCCESS);
-        boolean update = this.updateByIdAndPayStatus(id, payRecord.getPayStatus(), updatePayRecord);
-        if (!update) {
-            throw new BizRuntimeException(ApiResultCode.E0016);
-        }
-        log.info("支付记录更新为已支付状态：{id: {}}", id);
+    public List<PayRecord> getPayRecordCanSync() {
+        return this.lambdaQuery()
+                .eq(PayRecord::getPayStatus, PayStatus.WAITING)
+                .ge(PayRecord::getCreateTime, DateUtil.offsetMinute(new Date(), -payProperties.getRecordSyncInMinutes()))
+                .list();
     }
 
     /**
-     * 更新支付记录为已关闭
+     * 根据订单ID列表删除支付记录
      *
-     * @param id              支付记录ID
-     * @param updatePayRecord 支付记录更新值
+     * @param orderIds 订单ID列表
      */
-    public void updatePayStatusClosed(Long id, PayRecord updatePayRecord) {
-        PayRecord payRecord = this.loadPayRecordNotNull(id);
-        PayStatus payStatus = payRecord.getPayStatus();
-        switch (payStatus) {
-            case CLOSED:
-                log.info("支付记录是已关闭状态，无需更新：{id: {}}", id);
-                return;
-            case SUCCESS:
-                log.info("支付记录是已成功状态，无需更新：{id: {}}", id);
-                return;
-            case WAITING:
-                break;
-            default:
-                throw new BizRuntimeException(ApiResultCode.E0016);
+    public void removePayRecordByOrderIds(List<Long> orderIds) {
+        if (CollectionUtil.isEmpty(orderIds)) {
+            return;
         }
-        if (ObjectUtil.isNull(updatePayRecord)) {
-            updatePayRecord = new PayRecord();
-        }
-        updatePayRecord.setPayStatus(PayStatus.CLOSED);
-        boolean update = this.updateByIdAndPayStatus(id, payRecord.getPayStatus(), updatePayRecord);
-        if (!update) {
-            throw new BizRuntimeException(ApiResultCode.E0016);
-        }
-        log.info("支付记录更新为已关闭状态：{id: {}}", id);
+        LambdaQueryWrapper<PayRecord> queryWrapper = Wrappers.<PayRecord>lambdaQuery()
+                .in(PayRecord::getOrderId, orderIds);
+        this.remove(queryWrapper);
     }
 
     /**
@@ -105,7 +73,7 @@ public class PayRecordService extends BaseServiceImpl<PayRecordMapper, PayRecord
      */
     public PayRecord loadPayRecordByOutTradeNoNotNull(String outTradeNo) {
         return this.loadOneOpt(PayRecord::getOutTradeNo, outTradeNo)
-                .orElseThrow(() -> new BizRuntimeException(ApiResultCode.E0015));
+                .orElseThrow(ApiResultCode.E0015::getException);
     }
 
     /**
@@ -116,11 +84,11 @@ public class PayRecordService extends BaseServiceImpl<PayRecordMapper, PayRecord
      */
     public PayRecord loadPayRecordNotNull(Serializable id) {
         return this.loadOneOpt(id)
-                .orElseThrow(() -> new BizRuntimeException(ApiResultCode.E0015));
+                .orElseThrow(ApiResultCode.E0015::getException);
     }
 
     /**
-     * 根据订单ID获取支付记录
+     * 根据订单ID获取支付记录列表
      *
      * @param orderId 支付订单ID
      * @return 支付记录列表
@@ -130,4 +98,5 @@ public class PayRecordService extends BaseServiceImpl<PayRecordMapper, PayRecord
                 .eq(PayRecord::getOrderId, orderId)
                 .list();
     }
+
 }

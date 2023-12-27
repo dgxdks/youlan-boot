@@ -15,7 +15,7 @@ public class PayNotifyJob {
 
     private final PayNotifyBizService payNotifyBizService;
 
-    @Scheduled(cron = "${youlan.pay.notify-schedule-cron}")
+    @Scheduled(cron = "${youlan.pay.notify-cron}")
     public void schedulePayNotify() {
         try {
             payNotifyBizService.schedulePayNotify();

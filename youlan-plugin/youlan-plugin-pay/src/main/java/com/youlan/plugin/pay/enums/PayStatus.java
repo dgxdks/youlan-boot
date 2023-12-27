@@ -3,11 +3,11 @@ package com.youlan.plugin.pay.enums;
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.youlan.common.core.helper.EnumHelper;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.Arrays;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
 
 import static com.youlan.plugin.pay.constant.PayConstant.*;
 
@@ -19,7 +19,7 @@ public enum PayStatus {
     CLOSED(PAY_STATUS_CLOSED, "已关闭"),
     REFUND(PAY_STATUS_REFUND, "已退款");
 
-    private static final ConcurrentHashMap<String, PayStatus> PAY_STATUS_CACHE = createPayStatusCache();
+    private static final Map<String, PayStatus> PAY_STATUS_CACHE = EnumHelper.getEnumMap(PayStatus.class, PayStatus::getCode);
     @EnumValue
     @JsonValue
     private final String code;
@@ -28,15 +28,6 @@ public enum PayStatus {
     @JsonCreator
     public static PayStatus getPayStatus(String code) {
         return PAY_STATUS_CACHE.get(code);
-    }
-
-    public static ConcurrentHashMap<String, PayStatus> createPayStatusCache() {
-        ConcurrentHashMap<String, PayStatus> payConfigTypeCache = new ConcurrentHashMap<>();
-        Arrays.stream(PayStatus.values())
-                .forEach(payStatus -> {
-                    payConfigTypeCache.put(payStatus.code, payStatus);
-                });
-        return payConfigTypeCache;
     }
 
     public boolean isSuccess() {
@@ -53,6 +44,10 @@ public enum PayStatus {
 
     public boolean isClosed() {
         return this == CLOSED;
+    }
+
+    public boolean isRefund() {
+        return this == REFUND;
     }
 
 }

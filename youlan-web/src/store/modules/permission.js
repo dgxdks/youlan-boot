@@ -1,6 +1,6 @@
 import router, { constantRoutes, dynamicRoutes } from '@/router'
 import { getMenuTreeList } from '@/api/system/login'
-import { ArrayUtil, AuthUtil, EnvUtil, StrUtil, UrlUtil } from '@/framework/tools'
+import { ArrayUtil, AuthUtil, EnvUtil, StrUtil } from '@/framework/tools'
 import Layout from '@/layout'
 import InnerLink from '@/layout/components/InnerLink/index.vue'
 import ParentView from '@/components/ParentView/index.vue'

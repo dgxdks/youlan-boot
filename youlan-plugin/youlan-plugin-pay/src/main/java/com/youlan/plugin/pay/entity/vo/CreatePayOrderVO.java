@@ -7,7 +7,7 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-public class CreatePayVO {
+public class CreatePayOrderVO {
 
     /**
      * {@link PayOrder#getId()}

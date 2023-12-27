@@ -31,20 +31,10 @@
         <base-add-button v-has-perm="['system:post:add']" plain @click="handleAdd" />
       </el-col>
       <el-col :span="1.5">
-        <base-update-button
-          v-has-perm="['system:post:update']"
-          :disabled="!tableSelectOne"
-          plain
-          @click="handleUpdate"
-        />
+        <base-update-button v-has-perm="['system:post:update']" :disabled="!tableSelectOne" plain @click="handleUpdate" />
       </el-col>
       <el-col :span="1.5">
-        <base-remove-button
-          v-has-perm="['system:post:remove']"
-          :disabled="tableNoSelected"
-          plain
-          @click="handleDelete"
-        />
+        <base-remove-button v-has-perm="['system:post:remove']" :disabled="tableNoSelected" plain @click="handleDelete" />
       </el-col>
       <el-col :span="1.5">
         <base-download-button v-has-perm="['system:post:export']" plain @click="handleExport">导出
@@ -82,13 +72,7 @@
     />
 
     <!-- 岗位编辑对话框 -->
-    <base-dialog
-      :title="editTitle"
-      :open.sync="editOpen"
-      width="500px"
-      @confirm="handleEditSubmit"
-      @cancel="handleEditCancel"
-    >
+    <base-dialog :title="editTitle" :open.sync="editOpen" width="500px" @confirm="handleEditSubmit" @cancel="handleEditCancel">
       <el-form ref="editForm" :model="editForm" :rules="editRules" label-width="80px">
         <el-form-item label="岗位名称" prop="postName">
           <el-input v-model="editForm.postName" placeholder="请输入岗位名称" />

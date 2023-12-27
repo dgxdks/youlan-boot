@@ -35,7 +35,7 @@ public class WxAppPayClient extends AbstractWxPayClient {
         // 创建V3请求
         WxPayUnifiedOrderV3Request orderRequest = initOrderRequestV3(payRequest);
         // 创建支付订单
-        WxPayUnifiedOrderV3Result orderResult = wxPayService.createOrderV3(TradeTypeEnum.APP, orderRequest);
+        WxPayUnifiedOrderV3Result.AppResult orderResult = wxPayService.createOrderV3(TradeTypeEnum.APP, orderRequest);
         // 返回支付响应
         return PayClientUtil.createPayWaitingResponse(payRequest.getOutTradeNo(), orderResult, PayShowType.CUSTOM, orderResult);
     }

@@ -1,5 +1,6 @@
 package com.youlan.plugin.pay.entity.response;
 
+import com.youlan.plugin.pay.enums.ResponseSource;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -9,6 +10,9 @@ import java.util.Date;
 @Data
 @Accessors(chain = true)
 public class BaseResponse {
+
+    @Schema(description = "响应类型")
+    private ResponseSource responseSource;
 
     @Schema(description = "原始数据")
     private Object rawData;

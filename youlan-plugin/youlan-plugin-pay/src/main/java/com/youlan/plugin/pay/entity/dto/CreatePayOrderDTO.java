@@ -13,7 +13,7 @@ import java.util.Date;
 
 @Data
 @Accessors(chain = true)
-public class CreatePayDTO {
+public class CreatePayOrderDTO {
 
     @NotNull(message = "支付通道ID不能为空")
     @Schema(description = "支付通道ID")

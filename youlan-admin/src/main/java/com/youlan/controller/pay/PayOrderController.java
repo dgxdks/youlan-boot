@@ -1,7 +1,6 @@
 package com.youlan.controller.pay;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
-import cn.dev33.satoken.annotation.SaIgnore;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -11,9 +10,9 @@ import com.youlan.common.core.servlet.helper.ServletHelper;
 import com.youlan.common.db.entity.dto.ListDTO;
 import com.youlan.controller.base.BaseController;
 import com.youlan.plugin.pay.entity.PayOrder;
-import com.youlan.plugin.pay.entity.dto.CreatePayDTO;
-import com.youlan.plugin.pay.entity.dto.PayOrderDTO;
-import com.youlan.plugin.pay.entity.dto.SubmitPayDTO;
+import com.youlan.plugin.pay.entity.dto.CreatePayOrderDTO;
+import com.youlan.plugin.pay.entity.dto.PayOrderPageDTO;
+import com.youlan.plugin.pay.entity.dto.SubmitPayOrderDTO;
 import com.youlan.plugin.pay.service.PayOrderService;
 import com.youlan.plugin.pay.service.biz.PayOrderBizService;
 import com.youlan.system.anno.OperationLog;
@@ -34,21 +33,30 @@ public class PayOrderController extends BaseController {
     private final PayOrderService payOrderService;
     private final PayOrderBizService payOrderBizService;
 
-    @SaIgnore
+    @SaCheckPermission("pay:payOrder:add")
     @Operation(summary = "支付订单创建")
-    @PostMapping("/createPay")
-    public ApiResult createPayOrder(@Validated @RequestBody CreatePayDTO dto) {
+    @PostMapping("/createPayOrder")
+    public ApiResult createPayOrder(@Validated @RequestBody CreatePayOrderDTO dto) {
         return toSuccess(payOrderBizService.createPayOrder(dto));
     }
 
-    @SaIgnore
+    @SaCheckPermission("pay:payOrder:update")
     @Operation(summary = "支付订单提交")
-    @PostMapping("/submitPay")
-    public ApiResult submitPayOrder(@RequestBody SubmitPayDTO dto) {
+    @PostMapping("/submitPayOrder")
+    public ApiResult submitPayOrder(@RequestBody SubmitPayOrderDTO dto) {
         if (StrUtil.isBlank(dto.getClientIp())) {
             dto.setClientIp(ServletHelper.getClientIp());
         }
         return toSuccess(payOrderBizService.submitPayOrder(dto));
+    }
+
+    @SaCheckPermission("pay:payOrder:update")
+    @Operation(summary = "支付订单同步")
+    @PostMapping("/syncPayOrder")
+    @OperationLog(name = "支付订单", type = OperationLogType.OPERATION_LOG_TYPE_UPDATE)
+    public ApiResult syncPayRefundOrder(@RequestParam Long id) {
+        payOrderBizService.syncPayOrder(id);
+        return toSuccess();
     }
 
     @SaCheckPermission("pay:payOrder:update")
@@ -70,7 +78,7 @@ public class PayOrderController extends BaseController {
         if (CollectionUtil.isEmpty(dto.getList())) {
             return toSuccess();
         }
-        payOrderService.removeByIds(dto.getList());
+        payOrderBizService.removePayOrder(dto.getList());
         return toSuccess();
     }
 
@@ -85,7 +93,7 @@ public class PayOrderController extends BaseController {
     @Operation(summary = "支付订单分页")
     @PostMapping("/getPayOrderPageList")
     @OperationLog(name = "支付订单", type = OperationLogType.OPERATION_LOG_TYPE_PAGE_LIST)
-    public ApiResult getPayOrderPageList(@RequestBody PayOrderDTO dto) {
+    public ApiResult getPayOrderPageList(@RequestBody PayOrderPageDTO dto) {
         return toSuccess(payOrderService.getPayOrderPageList(dto));
     }
 

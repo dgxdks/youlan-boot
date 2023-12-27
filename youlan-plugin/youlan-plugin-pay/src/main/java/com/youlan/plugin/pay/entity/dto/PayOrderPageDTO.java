@@ -12,7 +12,7 @@ import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class PayOrderDTO extends PageDTO {
+public class PayOrderPageDTO extends PageDTO {
 
     @Schema(description = "支付订单ID")
     private Long id;

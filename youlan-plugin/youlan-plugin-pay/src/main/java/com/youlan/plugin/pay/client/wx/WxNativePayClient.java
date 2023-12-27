@@ -3,7 +3,6 @@ package com.youlan.plugin.pay.client.wx;
 import com.github.binarywang.wxpay.bean.order.WxPayNativeOrderResult;
 import com.github.binarywang.wxpay.bean.request.WxPayUnifiedOrderRequest;
 import com.github.binarywang.wxpay.bean.request.WxPayUnifiedOrderV3Request;
-import com.github.binarywang.wxpay.bean.result.WxPayUnifiedOrderV3Result;
 import com.github.binarywang.wxpay.bean.result.enums.TradeTypeEnum;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.youlan.plugin.pay.entity.PayConfig;
@@ -28,15 +27,16 @@ public class WxNativePayClient extends AbstractWxPayClient {
         orderRequest.setProductId(payRequest.getOutTradeNo());
         // 创建支付订单
         WxPayNativeOrderResult orderResult = wxPayService.createOrder(orderRequest);
-        return PayClientUtil.createPayWaitingResponse(payRequest.getOutTradeNo(), orderResult, PayShowType.QR_CODE, orderResult);
+        // 支付信息强制只返回支付链接
+        return PayClientUtil.createPayWaitingResponse(payRequest.getOutTradeNo(), orderResult, PayShowType.QR_CODE, orderResult.getCodeUrl());
     }
 
     @Override
     protected PayResponse doPayV3(PayRequest payRequest) throws WxPayException {
         // 初始化V3请求
         WxPayUnifiedOrderV3Request orderRequest = initOrderRequestV3(payRequest);
-        // 创建支付订单
-        WxPayUnifiedOrderV3Result orderResult = wxPayService.createOrderV3(TradeTypeEnum.NATIVE, orderRequest);
+        // 创建支付订单(会直接返回支付链接)
+        String orderResult = wxPayService.createOrderV3(TradeTypeEnum.NATIVE, orderRequest);
         return PayClientUtil.createPayWaitingResponse(payRequest.getOutTradeNo(), orderResult, PayShowType.QR_CODE, orderResult);
     }
 

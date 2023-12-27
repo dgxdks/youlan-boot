@@ -91,7 +91,7 @@ youlan:
     restricted: false
   pay:
     # 支付回调地址
-    pay-notify-url: http://localhost/pay/payNotify/pay
+    pay-notify-url: http://localhost/pay/payNotify/order
     # 退款回调地址
     refund-notify-url: http://localhost/pay/payNotify/refund
     # 支付订单前缀
@@ -101,7 +101,24 @@ youlan:
     # 是否启用回调(只有接收回调的服务才需要开启)
     notify-enabled: true
     # 回调调度Cron表达式
-    notify-schedule-cron: '* * * * * ?'
+    notify-cron: '* * * * * ?'
+    # 回调超时时间(s)
+    notify-timeout: 120
+    # 是否启用支付记录同步(启用后将会定期向支付平台同步支付记录和支付订单状态)
+    record-sync-enabled: true
+    # 支付记录同步Cron表达式
+    record-sync-cron: '0 0/1 * * * ?'
+    # 支付订单同步多久时间内的订单(分钟)
+    record-sync-in-minutes: 10
+    # 是否启用支付订单过期(启用后将会定期关闭过期的支付订单)
+    order-expire-enabled: true
+    # 支付订单过期Cron表达式
+    order-expire-cron: '0 0/1 * * * ?'
+    # 是否启用退款订单同步(启用后将会定期向支付平台同步退款订单状态)
+    refund-order-sync-enabled: true
+    # 退款订单同步Cron表达式
+    refund-order-sync-cron: '0 0/1 * * * ?'
+
 
 # 服务配置
 server:
@@ -164,6 +181,7 @@ spring:
     deserialization:
       # json中有对象里不存在的属性是否失败
       fail-on-ignored-properties: false
+      accept-empty-string-as-null-object:
   arthas:
     # 是否开启arthas
     enabled: false
@@ -270,9 +288,6 @@ springdoc:
     - group: '3.支付管理'
       paths-to-match: '/**'
       packages-to-scan: 'com.youlan.controller.pay'
-    - group: '4.样例测试'
-      paths-to-match: '/**'
-      packages-to-scan: 'com.youlan.controller.demo'
 
 # Knife4j配置
 knife4j:

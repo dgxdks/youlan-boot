@@ -1,6 +1,7 @@
 package com.youlan.plugin.pay.utils;
 
-import com.youlan.plugin.pay.entity.response.*;
+import com.youlan.plugin.pay.entity.response.PayResponse;
+import com.youlan.plugin.pay.entity.response.RefundResponse;
 import com.youlan.plugin.pay.enums.PayShowType;
 import com.youlan.plugin.pay.enums.PayStatus;
 import com.youlan.plugin.pay.enums.RefundStatus;
@@ -8,18 +9,19 @@ import com.youlan.plugin.pay.enums.RefundStatus;
 import java.util.Date;
 
 public class PayClientUtil {
+
     /**
-     * 创建退款通知响应
+     * 创建退款响应
      *
      * @param refundStatus 退款状态
      * @param outRefundNo  外部退款订单号
      * @param refundNo     退款订单号
      * @param rawData      原始数据
      * @param successTime  成功时间
-     * @return 退款通知响应
+     * @return 退款响应
      */
-    public static RefundNotifyResponse createRefundNotifyResponse(RefundStatus refundStatus, String outRefundNo, String refundNo, Object rawData, Date successTime) {
-        return (RefundNotifyResponse) new RefundNotifyResponse()
+    public static RefundResponse createRefundResponse(RefundStatus refundStatus, String outRefundNo, String refundNo, Object rawData, Date successTime) {
+        return (RefundResponse) new RefundResponse()
                 .setRefundStatus(refundStatus)
                 .setOutRefundNo(outRefundNo)
                 .setRefundNo(refundNo)
@@ -28,26 +30,7 @@ public class PayClientUtil {
     }
 
     /**
-     * 创建退款查询响应
-     *
-     * @param refundStatus 退款状态
-     * @param outRefundNo  外部退款订单号
-     * @param refundNo     退款订单号
-     * @param rawData      原始数据
-     * @param successTime  成功时间
-     * @return 退款查询响应
-     */
-    public static RefundQueryResponse createRefundQueryResponse(RefundStatus refundStatus, String outRefundNo, String refundNo, Object rawData, Date successTime) {
-        return (RefundQueryResponse) new RefundQueryResponse()
-                .setRefundStatus(refundStatus)
-                .setOutRefundNo(outRefundNo)
-                .setRefundNo(refundNo)
-                .setRawData(rawData)
-                .setSuccessTime(successTime);
-    }
-
-    /**
-     * 创建支付通知响应
+     * 创建支付响应
      *
      * @param payStatus   支付状态
      * @param outTradeNo  外部交易订单号
@@ -55,31 +38,10 @@ public class PayClientUtil {
      * @param clientId    客户端ID
      * @param rawData     原始数据
      * @param successTime 成功时间
-     * @return 支付通知响应
+     * @return 支付响应
      */
-    public static PayNotifyResponse createPayNotifyResponse(PayStatus payStatus, String outTradeNo, String tradeNo, String clientId, Object rawData, Date successTime) {
-        return (PayNotifyResponse) new PayNotifyResponse()
-                .setPayStatus(payStatus)
-                .setOutTradeNo(outTradeNo)
-                .setTradeNo(tradeNo)
-                .setClientId(clientId)
-                .setRawData(rawData)
-                .setSuccessTime(successTime);
-    }
-
-    /**
-     * 创建支付查询响应
-     *
-     * @param payStatus   支付状态
-     * @param outTradeNo  外部交易订单号
-     * @param tradeNo     交易订单号
-     * @param clientId    客户端ID
-     * @param rawData     原始数据
-     * @param successTime 成功时间
-     * @return 支付查询响应
-     */
-    public static PayQueryResponse createPayQueryResponse(PayStatus payStatus, String outTradeNo, String tradeNo, String clientId, Object rawData, Date successTime) {
-        return (PayQueryResponse) new PayQueryResponse()
+    public static PayResponse createPayResponse(PayStatus payStatus, String outTradeNo, String tradeNo, String clientId, Object rawData, Date successTime) {
+        return (PayResponse) new PayResponse()
                 .setPayStatus(payStatus)
                 .setOutTradeNo(outTradeNo)
                 .setTradeNo(tradeNo)
@@ -197,23 +159,4 @@ public class PayClientUtil {
                 .setSuccessTime(successTime);
     }
 
-    /**
-     * 创建退款响应
-     *
-     * @param refundStatus 退款状态
-     * @param outRefundNo  外部退款订单号
-     * @param refundNo     退款订单号
-     * @param rawData      原始数据
-     * @param successTime  成功时间
-     * @return 退款响应
-     */
-    public static RefundResponse createRefundResponse(RefundStatus refundStatus, String outRefundNo, String refundNo,
-                                                      Object rawData, Date successTime) {
-        return (RefundResponse) new RefundResponse()
-                .setRefundStatus(refundStatus)
-                .setOutRefundNo(outRefundNo)
-                .setRefundNo(refundNo)
-                .setRawData(rawData)
-                .setSuccessTime(successTime);
-    }
 }

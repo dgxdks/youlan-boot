@@ -39,20 +39,10 @@
         <base-add-button v-has-perm="['system:dict:add']" plain @click="handleAdd" />
       </el-col>
       <el-col :span="1.5">
-        <base-update-button
-          v-has-perm="['system:dict:update']"
-          plain
-          :disabled="!tableSelectOne"
-          @click="handleUpdate"
-        />
+        <base-update-button v-has-perm="['system:dict:update']" plain :disabled="!tableSelectOne" @click="handleUpdate" />
       </el-col>
       <el-col :span="1.5">
-        <base-remove-button
-          v-has-perm="['system:dict:remove']"
-          plain
-          :disabled="tableNoSelected"
-          @click="handleDelete"
-        />
+        <base-remove-button v-has-perm="['system:dict:remove']" plain :disabled="tableNoSelected" @click="handleDelete" />
       </el-col>
       <el-col :span="1.5">
         <base-download-button v-has-perm="['system:dict:export']" plain @click="handleExport">导出
@@ -100,13 +90,7 @@
     />
 
     <!-- 字典值编辑对话框 -->
-    <base-dialog
-      :title="editTitle"
-      :open.sync="editOpen"
-      width="680px"
-      @confirm="handleEditSubmit"
-      @cancel="handleEditCancel"
-    >
+    <base-dialog :title="editTitle" :open.sync="editOpen" width="680px" @confirm="handleEditSubmit" @cancel="handleEditCancel">
       <el-form ref="editForm" :model="editForm" :rules="editRules" label-width="80px">
         <base-row-split2>
           <el-form-item label="字典类型">
