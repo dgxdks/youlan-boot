@@ -83,9 +83,6 @@
             <dict-radio v-model="editForm.status" dict-type="db_status" />
           </el-form-item>
         </base-row-split2>
-        <el-form-item label="通知内容" prop="content">
-          <editor v-model="editForm.content" :min-height="200" />
-        </el-form-item>
       </el-form>
     </base-dialog>
   </div>
@@ -170,7 +167,7 @@ export default {
     resetEditForm() {
       this.editForm = {
         title: null,
-        type: '1',
+        type: null,
         content: null,
         remark: null,
         status: '1'

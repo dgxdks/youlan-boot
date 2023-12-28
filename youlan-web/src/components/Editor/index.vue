@@ -1,18 +1,18 @@
 <template>
   <div>
     <el-upload
-      v-if="uploadImage"
+      v-if="type === 'url'"
       ref="upload"
-      :action="action"
+      :action="uploadUrl"
+      :before-upload="handleBeforeUpload"
       :headers="headers"
-      :before-upload="beforeUpload"
-      :on-error="onError"
-      :on-success="onSuccess"
-      :http-request="httpRequest"
+      :on-error="handleUploadError"
+      :on-success="handleUploadSuccess"
       :show-file-list="false"
+      name="file"
       style="display: none"
     />
-    <div ref="editor" :style="style" class="editor" />
+    <div ref="editor" :style="styles" class="editor" />
   </div>
 </template>
 
@@ -21,45 +21,47 @@ import Quill from 'quill'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
-import upload from '@/framework/mixin/upload'
 
 export default {
   name: 'Editor',
-  mixins: [upload],
   props: {
-    // 文本内容
+    /* 编辑器的内容 */
     value: {
       type: String,
       default: ''
     },
-    // 高度
+    /* 高度 */
     height: {
       type: Number,
       default: null
     },
-    // 最小高度
+    /* 最小高度 */
     minHeight: {
       type: Number,
       default: null
     },
-    // 是否只读
+    /* 只读 */
     readOnly: {
       type: Boolean,
       default: false
     },
-    // 文件大小限制(MB)
+    // 上传文件大小限制(MB)
     fileSize: {
       type: Number,
       default: 5
     },
-    // 是否上传图片(默认插入图片会转为Base64存储)
-    uploadImage: {
-      type: Boolean,
-      default: true
+    /* 类型（base64格式、url格式） */
+    type: {
+      type: String,
+      default: 'url'
     }
   },
   data() {
     return {
+      uploadUrl: process.env.VUE_APP_BASE_API + '/common/upload', // 上传的图片服务器地址
+      headers: {
+        ...this.$store.state.tokenHeaders
+      },
       Quill: null,
       currentValue: '',
       options: {
@@ -87,7 +89,7 @@ export default {
     }
   },
   computed: {
-    style() {
+    styles() {
       const style = {}
       if (this.minHeight) {
         style.minHeight = `${this.minHeight}px`
@@ -121,8 +123,8 @@ export default {
     init() {
       const editor = this.$refs.editor
       this.Quill = new Quill(editor, this.options)
-      // 如果允许上传图片则使用上传组件替代Base64存储
-      if (this.uploadImage) {
+      // 如果设置了上传地址则自定义图片上传事件
+      if (this.type === 'url') {
         const toolbar = this.Quill.getModule('toolbar')
         toolbar.addHandler('image', (value) => {
           this.uploadType = 'image'
@@ -152,21 +154,35 @@ export default {
         this.$emit('on-editor-change', eventName, ...args)
       })
     },
-    onSuccess(response, file, fileList) {
-      this.$modal.loadingClose()
+    // 上传前校检格式和大小
+    handleBeforeUpload(file) {
+      // 校检文件大小
+      if (this.fileSize) {
+        const isLt = file.size / 1024 / 1024 < this.fileSize
+        if (!isLt) {
+          this.$message.error(`上传文件大小不能超过 ${this.fileSize} MB!`)
+          return false
+        }
+      }
+      return true
+    },
+    handleUploadSuccess(res, file) {
       // 获取富文本组件实例
       const quill = this.Quill
-      // 获取光标所在位置
-      const length = quill.getSelection().index
-      // 插入图片  res.url为服务器返回的图片地址
-      quill.insertEmbed(length, 'image', response.data.url)
-      // 调整光标到最后
-      quill.setSelection(length + 1)
-      console.log(response)
+      // 如果上传成功
+      if (res.code === 200) {
+        // 获取光标所在位置
+        const length = quill.getSelection().index
+        // 插入图片  res.url为服务器返回的图片地址
+        quill.insertEmbed(length, 'image', process.env.VUE_APP_BASE_API + res.fileName)
+        // 调整光标到最后
+        quill.setSelection(length + 1)
+      } else {
+        this.$message.error('图片插入失败')
+      }
     },
-    onError() {
-      this.$modal.loadingClose()
-      this.$modal.error('图片插入失败')
+    handleUploadError() {
+      this.$message.error('图片插入失败')
     }
   }
 }
