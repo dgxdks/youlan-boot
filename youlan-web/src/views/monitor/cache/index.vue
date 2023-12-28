@@ -17,9 +17,15 @@
             <el-descriptions-item label="使用CPU">{{ cacheMonitorInfo.used_cpu_user_children }}</el-descriptions-item>
             <el-descriptions-item label="内存配置">{{ cacheMonitorInfo.maxmemory_human }}</el-descriptions-item>
             <el-descriptions-item label="AOF是否开启">{{ getAofEnabled(cacheMonitorInfo) }}</el-descriptions-item>
-            <el-descriptions-item label="RDB是否成功">{{ cacheMonitorInfo.rdb_last_bgsave_status }}</el-descriptions-item>
+            <el-descriptions-item label="RDB是否成功">{{
+              cacheMonitorInfo.rdb_last_bgsave_status
+            }}
+            </el-descriptions-item>
             <el-descriptions-item label="Key数量">{{ cacheMonitorInfo.dbSize }}</el-descriptions-item>
-            <el-descriptions-item label="网络入口/出口">{{ getInputOutputKbps(cacheMonitorInfo) }}</el-descriptions-item>
+            <el-descriptions-item label="网络入口/出口">{{
+              getInputOutputKbps(cacheMonitorInfo)
+            }}
+            </el-descriptions-item>
           </el-descriptions>
         </el-card>
       </el-col>
@@ -57,8 +63,7 @@ export default {
       // 使用内存
       usedMemory: null,
       // 缓存监控信息
-      cacheMonitorInfo: {
-      }
+      cacheMonitorInfo: {}
     }
   },
   created() {

@@ -63,7 +63,7 @@ public class DeptBizService {
             if (ObjectUtil.isNull(id)) {
                 continue;
             }
-            Dept dept = deptService.loadDeptIfExists(id);
+            Dept dept = deptService.loadDeptNotNull(id);
             //包含子机构则不允许删除;
             boolean childExists = orgService.exists(Wrappers.<Org>lambdaQuery().eq(Org::getParentOrgId, dept.getOrgId()));
             if (childExists) {

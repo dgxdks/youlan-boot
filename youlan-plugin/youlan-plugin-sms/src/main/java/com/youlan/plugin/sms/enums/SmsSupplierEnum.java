@@ -5,6 +5,7 @@ import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.json.JSONConfig;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.youlan.common.core.helper.EnumHelper;
 import com.youlan.plugin.sms.provider.config.YunJiConfig;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,8 +26,8 @@ import org.dromara.sms4j.zhutong.config.ZhutongConfig;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Getter
@@ -47,19 +48,10 @@ public enum SmsSupplierEnum {
     LIANLU(SupplierConstant.LIANLU, "联麓", LianLuConfig.class),
     YUNJI("yunji", "云极", YunJiConfig.class);
 
-    private static final ConcurrentHashMap<String, SmsSupplierEnum> SMS_SUPPLIER_CACHE = createSmsSupplierCache();
+    private static final Map<String, SmsSupplierEnum> SMS_SUPPLIER_CACHE = EnumHelper.getEnumMap(SmsSupplierEnum.class, SmsSupplierEnum::getCode);
     private final String code;
     private final String text;
     private final Class<? extends BaseConfig> configClass;
-
-    public static ConcurrentHashMap<String, SmsSupplierEnum> createSmsSupplierCache() {
-        ConcurrentHashMap<String, SmsSupplierEnum> smsSupplierCache = new ConcurrentHashMap<>();
-        Arrays.stream(SmsSupplierEnum.values())
-                .forEach(smsSupplierEnum -> {
-                    smsSupplierCache.put(smsSupplierEnum.code, smsSupplierEnum);
-                });
-        return smsSupplierCache;
-    }
 
     public static SmsSupplierEnum getSmsSupplierEnum(String supplier) {
         return SMS_SUPPLIER_CACHE.get(supplier);

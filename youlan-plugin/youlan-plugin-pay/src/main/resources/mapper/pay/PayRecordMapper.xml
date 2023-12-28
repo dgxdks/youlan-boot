@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.youlan.plugin.pay.mapper.PayRecordMapper">
+
+    <select id="getPayRecordPageList" resultType="com.youlan.plugin.pay.entity.PayRecord">
+        select pay_record.*, config.name as configName
+        from t_pay_record as pay_record
+        left join t_pay_config as config on pay_record.config_id = config.id
+        <where>
+            <if test="payRecord.orderId != null">
+                and pay_record.order_id = #{payRecord.orderId}
+            </if>
+            <if test="payRecord.outTradeNo != null and payRecord.outTradeNo != ''">
+                and pay_record.out_trade_no like concat(#{payRecord.outTradeNo}, '%')
+            </if>
+            <if test="payRecord.tradeNo != null and payRecord.tradeNo != ''">
+                and pay_record.trade_no like concat(#{payRecord.tradeNo}, '%')
+            </if>
+            <if test="payRecord.payStatus != null">
+                and pay_record.pay_status = #{payRecord.payStatus}
+            </if>
+            <if test="payRecord.tradeType != null">
+                and pay_record.trade_type = #{payRecord.tradeType}
+            </if>
+            <if test="payRecord.configId != null">
+                and pay_record.config_id = #{payRecord.configId}
+            </if>
+            <if test="payRecord.createTimeRange != null and payRecord.createTimeRange.size() > 1">
+                and pay_record.create_time between #{payRecord.createTimeRange[0]} and #{payRecord.createTimeRange[1]}
+            </if>
+        </where>
+    </select>
+
+</mapper>

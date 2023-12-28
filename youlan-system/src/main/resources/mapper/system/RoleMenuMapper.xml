@@ -24,6 +24,8 @@
                  left join t_sys_menu as menu on menu.id = role_menu.menu_id
         where menu.status = '1'
           and role.status = '1'
+          and menu.menu_perms is not null
+          and menu.menu_perms != ''
           and user.id = #{userId,jdbcType=BIGINT}
     </select>
 

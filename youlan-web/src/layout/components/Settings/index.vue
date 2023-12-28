@@ -167,7 +167,7 @@ export default {
     },
     saveSetting() {
       this.$modal.loading('正在保存到本地，请稍候...')
-      this.$cache.local.set(
+      this.$storage.setLocalStorage(
         'layout-setting',
         `{
             "topNav":${this.topNav},
@@ -179,12 +179,14 @@ export default {
             "theme":"${this.theme}"
           }`
       )
-      setTimeout(this.$modal.closeLoading(), 1000)
+      setTimeout(() => {
+        this.$modal.loadingClose()
+      }, 1000)
     },
     resetSetting() {
       this.$modal.loading('正在清除设置缓存并刷新，请稍候...')
-      this.$cache.local.remove('layout-setting')
-      setTimeout(() => 'window.location.reload()', 1000)
+      this.$storage.removeLocalStorage('layout-setting')
+      setTimeout(() => window.location.reload(), 1000)
     }
   }
 }

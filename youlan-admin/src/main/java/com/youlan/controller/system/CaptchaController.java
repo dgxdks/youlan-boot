@@ -11,6 +11,7 @@ import com.youlan.common.captcha.helper.CaptchaHelper;
 import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.redis.anno.RateLimiter;
 import com.youlan.controller.base.BaseController;
+import com.youlan.plugin.sms.entity.SmsRecord;
 import com.youlan.plugin.sms.service.biz.SmsBizService;
 import com.youlan.system.config.SystemProperties;
 import com.youlan.system.helper.SystemConfigHelper;
@@ -51,9 +52,10 @@ public class CaptchaController extends BaseController {
         int codeTimeout = smsCaptchaProperties.getCodeTimeout();
         CodeType codeType = smsCaptchaProperties.getCodeType();
         int codeLength = smsCaptchaProperties.getCodeLength();
-        SmsCaptcha smsCaptcha = CaptchaHelper.createSmsCaptcha(codeTimeout, codeType, codeLength, captchaCode -> {
-            smsBizService.sendMessage("system-captcha", dto.getMobile(), captchaCode);
-        });
+        SmsCaptcha smsCaptcha = CaptchaHelper.createSmsCaptcha(codeTimeout, codeType, codeLength);
+        String captchaCode = smsCaptcha.getCaptchaCode();
+        SmsRecord smsRecord = smsBizService.sendMessage("system-captcha", dto.getMobile(), captchaCode);
+        smsRecord.validateSendSuccess();
         return toSuccess(smsCaptcha);
     }
 }

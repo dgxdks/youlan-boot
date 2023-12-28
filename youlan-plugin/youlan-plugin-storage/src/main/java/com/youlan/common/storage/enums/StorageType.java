@@ -1,12 +1,7 @@
 package com.youlan.common.storage.enums;
 
-import cn.hutool.core.collection.CollectionUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @AllArgsConstructor
@@ -23,13 +18,4 @@ public enum StorageType {
     private final String code;
     private final String text;
 
-    public static StorageType getStorageType(String code) {
-        List<StorageType> storageTypes = Arrays.stream(StorageType.values())
-                .filter(type -> type.getCode().equals(code))
-                .collect(Collectors.toList());
-        if (CollectionUtil.isNotEmpty(storageTypes)) {
-            return CollectionUtil.getFirst(storageTypes);
-        }
-        return null;
-    }
 }

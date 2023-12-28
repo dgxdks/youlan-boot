@@ -7,12 +7,11 @@ import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.db.entity.dto.ListDTO;
 import com.youlan.common.db.helper.DBHelper;
+import com.youlan.controller.base.BaseController;
 import com.youlan.system.anno.OperationLog;
 import com.youlan.system.constant.OperationLogType;
-import com.youlan.controller.base.BaseController;
 import com.youlan.system.entity.Config;
 import com.youlan.system.service.ConfigService;
-import com.youlan.system.service.biz.ConfigBizService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -29,14 +28,13 @@ import java.util.List;
 @AllArgsConstructor
 public class ConfigController extends BaseController {
     private final ConfigService configService;
-    private final ConfigBizService configBizService;
 
     @SaCheckPermission("system:config:add")
     @Operation(summary = "系统配置新增")
     @OperationLog(name = "系统配置", type = OperationLogType.OPERATION_LOG_TYPE_ADD)
     @PostMapping("/addConfig")
     public ApiResult addConfig(@Validated @RequestBody Config config) {
-        configBizService.addConfig(config);
+        configService.addConfig(config);
         return toSuccess();
     }
 
@@ -48,7 +46,7 @@ public class ConfigController extends BaseController {
         if (ObjectUtil.isNull(config.getId())) {
             return toError(ApiResultCode.C0001);
         }
-        configBizService.updateConfig(config);
+        configService.updateConfig(config);
         return toSuccess();
     }
 
@@ -60,7 +58,7 @@ public class ConfigController extends BaseController {
         if (CollectionUtil.isEmpty(dto.getList())) {
             return toSuccess();
         }
-        configBizService.removeConfig(dto.getList());
+        configService.removeConfig(dto.getList());
         return toSuccess();
     }
 
@@ -100,7 +98,7 @@ public class ConfigController extends BaseController {
     @PostMapping("/refreshConfigCache")
     @OperationLog(name = "系统配置", type = OperationLogType.OPERATION_LOG_TYPE_REMOVE)
     public ApiResult refreshConfigCache() {
-        configBizService.refreshConfigCache();
+        configService.refreshConfigCache();
         return toSuccess();
     }
 }

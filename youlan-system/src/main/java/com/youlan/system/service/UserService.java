@@ -8,7 +8,6 @@ import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.core.servlet.helper.ServletHelper;
 import com.youlan.common.db.constant.DBConstant;
 import com.youlan.common.db.service.BaseServiceImpl;
-import com.youlan.system.constant.SystemConstant;
 import com.youlan.system.entity.User;
 import com.youlan.system.mapper.UserMapper;
 import lombok.AllArgsConstructor;
@@ -36,9 +35,9 @@ public class UserService extends BaseServiceImpl<UserMapper, User> {
     }
 
     /**
-     * 如果用户存在返回用户信息
+     * 获取用户信息且不为空
      */
-    public User loadUserIfExist(Long userId) {
+    public User loadUserNotNull(Long userId) {
         return this.loadOneOpt(userId).orElseThrow(() -> new BizRuntimeException(ApiResultCode.A0018));
     }
 

@@ -10,7 +10,13 @@
         />
       </el-form-item>
       <el-form-item label="状态" prop="status">
-        <dict-select v-model="queryForm.status" placeholder="菜单状态" clearable dict-type="db_status" style="width: 240px" />
+        <dict-select
+          v-model="queryForm.status"
+          placeholder="菜单状态"
+          clearable
+          dict-type="db_status"
+          style="width: 240px"
+        />
       </el-form-item>
       <el-form-item>
         <base-search-button @click="handleQuery" />
@@ -52,7 +58,8 @@
       <el-table-column align="center" label="创建时间" prop="createTime" />
       <el-table-column align="center" class-name="small-padding fixed-width" label="操作">
         <template slot-scope="scope">
-          <base-update-button v-has-perm="['system:menu:update']" type="text" @click="handleUpdate(scope.row)">修改</base-update-button>
+          <base-update-button v-has-perm="['system:menu:update']" type="text" @click="handleUpdate(scope.row)">修改
+          </base-update-button>
           <base-add-button v-has-perm="['system:menu:add']" type="text" @click="handleAdd(scope.row)" />
           <base-remove-button v-has-perm="['system:menu:remove']" type="text" @click="handleDelete(scope.row)" />
         </template>
@@ -100,23 +107,43 @@
             <dict-radio v-model="editForm.isFrame" dict-type="db_yes_no" />
           </el-form-item>
           <el-form-item v-if="!isBtn(editForm)" prop="routePath">
-            <base-form-label slot="label" content="访问的路由地址，如：`user`，如外网地址需内链访问则以`http(s)://`开头" label="路由地址" />
+            <base-form-label
+              slot="label"
+              content="访问的路由地址，如：`user`，如外网地址需内链访问则以`http(s)://`开头"
+              label="路由地址"
+            />
             <el-input v-model="editForm.routePath" placeholder="请输入路由地址" />
           </el-form-item>
           <el-form-item v-if="isMenu(editForm)" prop="componentPath">
-            <base-form-label slot="label" content="访问的组件路径，如：`system/user/index`，默认在`views`目录下" label="组件路径" />
+            <base-form-label
+              slot="label"
+              content="访问的组件路径，如：`system/user/index`，默认在`views`目录下"
+              label="组件路径"
+            />
             <el-input v-model="editForm.componentPath" placeholder="请输入组件路径" />
           </el-form-item>
-          <el-form-item v-if="isMenu(editForm)" prop="menuPerms">
-            <base-form-label slot="label" content="控制器中定义的权限字符，如：@PreAuthorize(`@ss.hasPermi('system:user:list')`)" label="权限字符" />
+          <el-form-item v-if="isBtn(editForm)" prop="menuPerms">
+            <base-form-label
+              slot="label"
+              content="控制器中定义的权限字符，如：@PreAuthorize(`@ss.hasPermi('system:user:list')`)"
+              label="权限字符"
+            />
             <el-input v-model="editForm.menuPerms" maxlength="100" placeholder="请输入权限标识" />
           </el-form-item>
           <el-form-item v-if="isMenu(editForm)" prop="routeQuery">
-            <base-form-label slot="label" content="访问路由的默认传递参数，如：`{&quot;id&quot;: 1, &quot;name&quot;: &quot;ry&quot;}`" label="路由参数" />
+            <base-form-label
+              slot="label"
+              content="访问路由的默认传递参数，如：`{&quot;id&quot;: 1, &quot;name&quot;: &quot;ry&quot;}`"
+              label="路由参数"
+            />
             <el-input v-model="editForm.routeQuery" maxlength="255" placeholder="请输入路由参数" />
           </el-form-item>
           <el-form-item v-if="isMenu(editForm)" prop="routeCache">
-            <base-form-label slot="label" content="选择是则会被`keep-alive`缓存，需要匹配组件的`name`和地址保持一致" label="是否缓存" />
+            <base-form-label
+              slot="label"
+              content="选择是则会被`keep-alive`缓存，需要匹配组件的`name`和地址保持一致"
+              label="是否缓存"
+            />
             <dict-radio v-model="editForm.routeCache" dict-type="db_yes_no" />
           </el-form-item>
           <el-form-item v-if="!isBtn(editForm)" prop="visible">

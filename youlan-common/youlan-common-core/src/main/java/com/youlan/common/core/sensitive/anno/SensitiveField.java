@@ -2,8 +2,8 @@ package com.youlan.common.core.sensitive.anno;
 
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.youlan.common.core.sensitive.jackson.SensitiveFiledJsonSerializer;
 import com.youlan.common.core.sensitive.enums.SensitiveType;
+import com.youlan.common.core.sensitive.jackson.SensitiveFiledJsonSerializer;
 
 import java.lang.annotation.*;
 

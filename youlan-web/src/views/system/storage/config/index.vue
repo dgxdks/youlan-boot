@@ -20,7 +20,13 @@
         />
       </el-form-item>
       <el-form-item label="存储类型" prop="type">
-        <dict-select v-model="queryForm.type" dict-type="sys_storage_type" style="width: 240px" placeholder="存储类型" clearable />
+        <dict-select
+          v-model="queryForm.type"
+          dict-type="storage_type"
+          style="width: 240px"
+          placeholder="存储类型"
+          clearable
+        />
       </el-form-item>
       <el-form-item>
         <base-search-button @click="handleQuery" />
@@ -42,7 +48,8 @@
         <base-download-button v-has-perm="['system:storageConfig:export']" plain @click="handleExport">导出</base-download-button>
       </el-col>
       <el-col :span="1.5">
-        <base-remove-button v-has-perm="['system:storageConfig:remove']" plain @click="handleRefreshCache">刷新缓存</base-remove-button>
+        <base-remove-button v-has-perm="['system:storageConfig:remove']" plain @click="handleRefreshCache">刷新缓存
+        </base-remove-button>
       </el-col>
       <table-toolbar :query-show.sync="queryShow" @refresh="getList" />
     </el-row>
@@ -54,7 +61,7 @@
       <el-table-column show-overflow-tooltip align="center" label="平台名称" prop="platform" />
       <el-table-column show-overflow-tooltip align="center" label="存储类型" prop="type">
         <template slot-scope="scope">
-          <dict-tag v-model="scope.row.type" dict-type="sys_storage_type" />
+          <dict-tag v-model="scope.row.type" dict-type="storage_type" />
         </template>
       </el-table-column>
       <el-table-column align="center" label="是否默认" prop="isDefault">
@@ -71,8 +78,16 @@
       <el-table-column align="center" label="创建时间" prop="createTime" width="160" />
       <el-table-column align="center" class-name="small-padding fixed-width" label="操作" width="160">
         <template slot-scope="scope">
-          <base-update-button v-has-perm="['system:storageConfig:update']" type="text" @click="handleUpdate(scope.row)" />
-          <base-remove-button v-has-perm="['system:storageConfig:remove']" type="text" @click="handleDelete(scope.row)" />
+          <base-update-button
+            v-has-perm="['system:storageConfig:update']"
+            type="text"
+            @click="handleUpdate(scope.row)"
+          />
+          <base-remove-button
+            v-has-perm="['system:storageConfig:remove']"
+            type="text"
+            @click="handleDelete(scope.row)"
+          />
         </template>
       </el-table-column>
     </el-table>
@@ -94,7 +109,7 @@
           </el-form-item>
           <el-form-item label="存储类型" prop="type">
             <base-form-label slot="label" content="支持本地存储、各家云存储、AmazonS3协议" label="存储类型" />
-            <dict-select v-model="editForm.type" placeholder="请选择存储类型" dict-type="sys_storage_type" />
+            <dict-select v-model="editForm.type" placeholder="请选择存储类型" dict-type="storage_type" />
           </el-form-item>
           <el-form-item v-if="!!editForm.id" label="平台名称" prop="platform">
             <base-form-label slot="label" content="新增时会自动生成唯一平台名称" label="平台名称" />
@@ -130,7 +145,7 @@
           </el-form-item>
           <el-form-item label="访问控制" prop="fileAcl">
             <base-form-label slot="label" content="云存储中对应的ACL" label="访问控制" />
-            <dict-select v-model="editForm.fileAcl" :disabled="isLocalType" dict-type="sys_storage_acl_type" />
+            <dict-select v-model="editForm.fileAcl" :disabled="isLocalType" dict-type="storage_acl_type" />
           </el-form-item>
           <el-form-item label="是否HTTPS" prop="isHttps">
             <dict-radio v-model="editForm.isHttps" dict-type="db_yes_no" />

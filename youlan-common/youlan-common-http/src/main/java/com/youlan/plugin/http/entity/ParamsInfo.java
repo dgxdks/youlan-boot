@@ -45,13 +45,10 @@ public class ParamsInfo extends HashMap<String, Object> {
         if (StrUtil.isBlank(params)) {
             return;
         }
-        if (!params.contains("&") || !params.contains("=")) {
+        if (!params.contains("&") && !params.contains("=")) {
             return;
         }
         String[] paramPair = params.split("&");
-        if (paramPair.length == 0) {
-            return;
-        }
         Arrays.stream(paramPair).forEach(pair -> {
             if (!pair.contains("=")) {
                 return;

@@ -13,7 +13,7 @@ public class YamPropertySourceFactory implements PropertySourceFactory {
     public PropertySource<?> createPropertySource(String name, EncodedResource resource) throws IOException {
         YamlPropertySourceLoader loader = new YamlPropertySourceLoader();
         List<PropertySource<?>> load = loader.load(name, resource.getResource());
-        if (load!=null && !load.isEmpty()) {
+        if (load != null && !load.isEmpty()) {
             return load.get(0);
         }
         return null;

@@ -36,7 +36,7 @@ public class YunJiUtil {
         JSONObject responseBodyJson = SmsHttpUtils.instance()
                 .postJson(URL, null, requestBodyJsonStr);
         JSONObject businessData = responseBodyJson.getJSONObject("BusinessData");
-        boolean success = ObjectUtil.isNotNull(businessData) && ObjectUtil.equal(businessData.getInt("code"), 100);
+        boolean success = ObjectUtil.isNotNull(businessData) && ObjectUtil.equal(businessData.getInt("code"), 10000);
         SmsResponse smsResponse = new SmsResponse();
         smsResponse.setSuccess(success);
         smsResponse.setData(responseBodyJson);

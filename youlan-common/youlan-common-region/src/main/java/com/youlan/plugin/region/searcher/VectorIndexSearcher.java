@@ -1,6 +1,5 @@
 package com.youlan.plugin.region.searcher;
 
-import cn.hutool.core.util.StrUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.lionsoul.ip2region.xdb.Searcher;

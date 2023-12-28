@@ -24,7 +24,14 @@
       </el-form-item>
     </el-form>
     <el-row>
-      <el-table ref="table" v-loading="tableLoading" :data="userList" height="260px" @row-click="handleRowClick" @selection-change="handleSelectionChange">
+      <el-table
+        ref="table"
+        v-loading="tableLoading"
+        :data="userList"
+        height="260px"
+        @row-click="handleRowClick"
+        @selection-change="handleSelectionChange"
+      >
         <el-table-column type="selection" width="55" :selectable="tableSelectEnabled" />
         <el-table-column label="用户名称" prop="userName" show-overflow-tooltip />
         <el-table-column label="用户昵称" prop="nickName" show-overflow-tooltip />
@@ -51,6 +58,7 @@
 <script>
 import { addAuthUser, getUnAuthUserPageList } from '@/api/system/role'
 import crud from '@/framework/mixin/crud'
+
 export default {
   mixins: [crud],
   props: {

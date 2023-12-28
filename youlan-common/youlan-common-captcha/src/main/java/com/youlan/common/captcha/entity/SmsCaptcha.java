@@ -1,5 +1,6 @@
 package com.youlan.common.captcha.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,4 +18,9 @@ public class SmsCaptcha {
 
     @Schema(description = "验证码超时时间")
     private int codeTimeout;
+
+    @JsonIgnore
+    @Schema(description = "验证码")
+    private String captchaCode;
+
 }

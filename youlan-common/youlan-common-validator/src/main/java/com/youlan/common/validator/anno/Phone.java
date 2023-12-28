@@ -19,7 +19,7 @@ public @interface Phone {
 
     Type type() default Type.MOBILE;
 
-    public enum Type {
+    enum Type {
         /**
          * 验证是否为手机号码（中国大陆）
          */

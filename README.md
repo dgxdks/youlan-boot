@@ -46,8 +46,7 @@
 
 ### 项目架构灵活
 
-秉持按需引用原则，拒绝集中化管理公共代码、SpringBoot配置、SpringBoot切面等，避免“引用就得引所有排除得排一堆”的尴尬，
-留给开发人员更大的自由度
+秉持按需引用原则，拒绝集中化管理公共代码、SpringBoot配置、SpringBoot切面等，避免“引用就得引所有排除得排一堆”的尴尬， 留给开发人员更大的自由度
 
 > 为了能搞好的说明差异，以RuoYi-Vue-Plus4.x项目里的 [framework](https://gitee.com/dromara/RuoYi-Vue-Plus/tree/4.X/ruoyi-framework/src/main/java/com/ruoyi/framework)
 > 模块为例，这里面包含了很多配置了@Configuration的类以及被公共引用的代码和注解，现在我需要二开一个小程序项目，创建了一个独立的app模块，这个模块需要独立向移动端提供接口服务，这时候可能就会遇到这样一个问题：预先定义在framework里面的有些配置和注解我想用，但是我app模块又有自己独立的数据库配置、权限框架配置等，就会很容易和framework内部已有的配置产生冲突。

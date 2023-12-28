@@ -127,6 +127,25 @@ export default {
       }
     })
   },
+  // 版本文件base64
+  saveFileAsBase64(file) {
+    return this.saveFileAsUrl(file).then(res => {
+      return res.split(',')[1]
+    })
+  },
+  // 保存文件内容
+  saveFileAsText(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.readAsText(file)
+      reader.onload = () => {
+        resolve(reader.result)
+      }
+      reader.onerror = (error) => {
+        reject(error)
+      }
+    })
+  },
   // 解析文件src路径
   parseSrcUrl(url) {
     if (StrUtil.isBlank(url)) {

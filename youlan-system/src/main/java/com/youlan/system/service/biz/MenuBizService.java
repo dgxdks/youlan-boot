@@ -2,6 +2,7 @@ package com.youlan.system.service.biz;
 
 import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.youlan.common.core.exception.BizRuntimeException;
@@ -64,6 +65,10 @@ public class MenuBizService {
      */
     public void beforeAddOrUpdateMenu(Menu menu) {
         checkMenuNameRepeat(menu);
+        // 如果权限字符为空则设置为null
+        if (StrUtil.isBlank(menu.getMenuPerms())) {
+            menu.setMenuPerms(null);
+        }
         // 自己不能创建在自己名下
         if (ObjectUtil.isNotNull(menu.getId()) && ObjectUtil.equal(menu.getId(), menu.getParentId())) {
             throw new BizRuntimeException("上级菜单不能选择自己");

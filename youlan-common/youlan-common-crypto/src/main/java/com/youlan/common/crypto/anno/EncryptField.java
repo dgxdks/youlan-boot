@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.youlan.common.crypto.enums.AlgorithmType;
 import com.youlan.common.crypto.enums.EncryptEncode;
-import com.youlan.common.crypto.jackson.EncryptFiledJsonSerializer;
+import com.youlan.common.crypto.jackson.EncryptFiledSerializer;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD})
 @JacksonAnnotationsInside
-@JsonSerialize(using = EncryptFiledJsonSerializer.class)
+@JsonSerialize(using = EncryptFiledSerializer.class)
 public @interface EncryptField {
     /**
      * 加密算法类型

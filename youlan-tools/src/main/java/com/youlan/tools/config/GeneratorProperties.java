@@ -21,9 +21,6 @@ public class GeneratorProperties {
     @Schema(description = "可匹配的表前缀列表")
     private List<String> tableMatchPrefix;
 
-    @Schema(description = "要排除的表名称")
-    private Set<String> tableExclude;
-
     @Schema(description = "编辑时要排除的列字段")
     private Set<String> editColumnExclude;
 

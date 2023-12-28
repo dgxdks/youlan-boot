@@ -55,7 +55,7 @@ public class RoleBizService {
      */
     @Transactional(rollbackFor = Exception.class)
     public boolean updateRole(Role role) {
-        Role oldRole = roleService.loadRoleIfExists(role.getId());
+        Role oldRole = roleService.loadRoleNotNull(role.getId());
         roleService.checkRoleNameRepeat(role);
         //角色字符不允许修改,否则会导致已缓存用户关联的角色字符失效
         role.setRoleStr(oldRole.getRoleStr());
@@ -187,7 +187,7 @@ public class RoleBizService {
      * 角色缓存刷新
      */
     public void refreshRoleCache(Long id) {
-        Role role = roleService.loadRoleIfExists(id);
+        Role role = roleService.loadRoleNotNull(id);
         SystemAuthHelper.setPermissionList(role.getRoleStr());
     }
 
@@ -196,7 +196,7 @@ public class RoleBizService {
      */
     @Transactional(rollbackFor = Exception.class)
     public void updateRoleStatus(Long id, String status) {
-        Role role = roleService.loadRoleIfExists(id);
+        Role role = roleService.loadRoleNotNull(id);
         roleService.updateStatus(id, status);
         SystemAuthHelper.setPermissionList(role.getRoleStr());
     }

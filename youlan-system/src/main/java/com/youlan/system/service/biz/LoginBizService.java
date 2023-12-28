@@ -147,7 +147,7 @@ public class LoginBizService {
      * 构建用户登录信息
      */
     public SystemAuthInfo createSystemAuthInfo(User user) {
-        Org org = orgService.loadOrgIfExist(user.getOrgId());
+        Org org = orgService.loadOrgNotNull(user.getOrgId());
         SystemAuthInfo systemAuthInfo = new SystemAuthInfo()
                 .setOrgId(org.getOrgId())
                 .setOrgType(org.getOrgType())

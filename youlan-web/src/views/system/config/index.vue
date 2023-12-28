@@ -20,7 +20,13 @@
         />
       </el-form-item>
       <el-form-item label="系统内置" prop="configType">
-        <dict-select v-model="queryForm.configType" dict-type="db_yes_no" clearable placeholder="系统内置" style="width: 240px" />
+        <dict-select
+          v-model="queryForm.configType"
+          dict-type="db_yes_no"
+          clearable
+          placeholder="系统内置"
+          style="width: 240px"
+        />
       </el-form-item>
       <el-form-item label="创建时间" prop="createTimeRange">
         <base-date-range-picker v-model="queryForm.createTimeRange" style="width: 240px" />
@@ -42,10 +48,12 @@
         <base-remove-button v-has-perm="['system:config:remove']" plain :disabled="tableNoSelected" @click="handleDelete" />
       </el-col>
       <el-col :span="1.5">
-        <base-download-button v-has-perm="['system:config:export']" plain @click="handleExport">导出</base-download-button>
+        <base-download-button v-has-perm="['system:config:export']" plain @click="handleExport">导出
+        </base-download-button>
       </el-col>
       <el-col :span="1.5">
-        <base-remove-button v-has-perm="['system:config:remove']" plain @click="handleRefreshCache">刷新缓存</base-remove-button>
+        <base-remove-button v-has-perm="['system:config:remove']" plain @click="handleRefreshCache">刷新缓存
+        </base-remove-button>
       </el-col>
       <table-toolbar :query-show.sync="queryShow" @refresh="getList" />
     </el-row>
@@ -106,7 +114,8 @@
 import {
   addConfig,
   getConfigPageList,
-  loadConfig, refreshConfigCache,
+  loadConfig,
+  refreshConfigCache,
   removeConfig,
   updateConfig
 } from '@/api/system/config'

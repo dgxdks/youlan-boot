@@ -4,7 +4,6 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
-import com.youlan.common.core.exception.BizRuntimeException;
 import lombok.Getter;
 import org.redisson.api.*;
 import org.springframework.data.redis.connection.RedisConnection;
@@ -14,6 +13,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.youlan.common.redis.constant.RedisConstant.*;
@@ -73,6 +73,9 @@ public class RedisHelper {
 
     /**
      * 如果不存在则设置缓存
+     *
+     * @param key   缓存键名
+     * @param value 缓存键值
      */
     public static void setCacheObjectIfAbsent(final String key, final Object value) {
         RBucket<Object> bucket = redissonClient.getBucket(key);
@@ -81,6 +84,10 @@ public class RedisHelper {
 
     /**
      * 如果不存在则设置缓存
+     *
+     * @param key      缓存键名
+     * @param value    缓存键值
+     * @param duration 超时时间
      */
     public static void setCacheObjectIfAbsent(final String key, final Object value, Duration duration) {
         RBucket<Object> bucket = redissonClient.getBucket(key);
@@ -374,27 +381,53 @@ public class RedisHelper {
     }
 
     /**
-     * 时间单位转换
+     * 锁下操作
+     *
+     * @param key      缓存键名
+     * @param runnable 业务逻辑
+     * @param duration 锁超时时间
      */
-    public static RateIntervalUnit toRateIntervalUnit(TimeUnit timeUnit) {
-        switch (timeUnit) {
-            case MILLISECONDS:
-                return RateIntervalUnit.MILLISECONDS;
-            case SECONDS:
-                return RateIntervalUnit.SECONDS;
-            case MINUTES:
-                return RateIntervalUnit.MINUTES;
-            case HOURS:
-                return RateIntervalUnit.HOURS;
-            case DAYS:
-                return RateIntervalUnit.DAYS;
-            default:
-                throw new BizRuntimeException("时间单位不支持");
+    public static void underLock(final String key, Runnable runnable, final Duration duration) {
+        RLock lock = getLock(key);
+        try {
+            lock.lock(duration.toMillis(), TimeUnit.MILLISECONDS);
+            runnable.run();
+        } finally {
+            lock.unlock();
         }
     }
 
     /**
+     * 锁下操作
+     *
+     * @param key      缓存键名
+     * @param supplier 业务逻辑
+     * @param duration 锁超时时间
+     */
+    public static <T> T underLock(final String key, Supplier<T> supplier, final Duration duration) {
+        RLock lock = getLock(key);
+        try {
+            lock.lock(duration.toMillis(), TimeUnit.MILLISECONDS);
+            return supplier.get();
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * 获取锁对象
+     *
+     * @param key 缓存键名
+     * @return 锁对象
+     */
+    public static RLock getLock(final String key) {
+        return redissonClient.getLock(key);
+    }
+
+    /**
      * 获取Redis监控信息
+     *
+     * @return Redis监控信息
      */
     public static Map<Object, Object> getRedisMonitorInfo() {
         RedisConnection connection = redisConnectionFactory.getConnection();

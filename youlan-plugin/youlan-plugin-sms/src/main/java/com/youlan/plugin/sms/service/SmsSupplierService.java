@@ -96,9 +96,9 @@ public class SmsSupplierService extends BaseServiceImpl<SmsSupplierMapper, SmsSu
     }
 
     /**
-     * 如果存在获取短信厂商
+     * 获取短信厂商且不为空
      */
-    public SmsSupplier loadSmsSupplierIfExists(Serializable id) {
+    public SmsSupplier loadSmsSupplierNotNull(Serializable id) {
         return Optional.ofNullable(getById(id)).orElseThrow(() -> new BizRuntimeException("短信厂商不存在"));
     }
 
@@ -125,7 +125,7 @@ public class SmsSupplierService extends BaseServiceImpl<SmsSupplierMapper, SmsSu
      */
     public void updateSmsSupplier(SmsSupplier smsSupplier) {
         // 不允许修改配置标识configId
-        SmsSupplier oldSmsSupplier = loadSmsSupplierIfExists(smsSupplier.getId());
+        SmsSupplier oldSmsSupplier = loadSmsSupplierNotNull(smsSupplier.getId());
         smsSupplier.setConfigId(oldSmsSupplier.getConfigId());
         beforeAddOrUpdateSmsSupplier(smsSupplier);
         this.updateById(smsSupplier);
@@ -136,7 +136,7 @@ public class SmsSupplierService extends BaseServiceImpl<SmsSupplierMapper, SmsSu
      * 修改短信厂商状态
      */
     public void updateSmsSupplierStatus(Long id, String status) {
-        SmsSupplier oldSmsSupplier = loadSmsSupplierIfExists(id);
+        SmsSupplier oldSmsSupplier = loadSmsSupplierNotNull(id);
         this.updateStatus(id, status);
         this.reloadSmsSupplierCacheByConfigId(oldSmsSupplier.getConfigId());
     }

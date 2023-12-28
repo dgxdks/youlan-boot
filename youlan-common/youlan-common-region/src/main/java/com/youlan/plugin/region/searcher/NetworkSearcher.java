@@ -32,13 +32,13 @@ public class NetworkSearcher extends AbstractSearcher {
         //{"ip":"1.1.1.1","pro":"","proCode":"999999","city":"","cityCode":"0","region":"","regionCode":"0","addr":"
         //美国APNIC&CloudFlare公共DNS服务器","regionNames":"","err":"noprovince"}
         String response = HttpUtil.get(SEARCHER_URL, new HashMap<>() {{
-            put("ip" , ip);
-            put("json" , "true");
+            put("ip", ip);
+            put("json", "true");
         }});
         JSONObject responseJson = JSONUtil.parseObj(response);
         String pro = responseJson.getStr("pro");
         String city = responseJson.getStr("city");
-        return StrUtil.format("{} {}" , pro, city);
+        return StrUtil.format("{} {}", pro, city);
     }
 
     @Override

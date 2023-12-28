@@ -2,6 +2,7 @@ package com.youlan.common.db.entity.dto;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.Getter;
@@ -28,15 +29,18 @@ public class PageDTO {
     private List<PageSortDTO> sortList;
 
     @Getter
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Schema(description = "是否降序", defaultValue = "false")
     @TableField(exist = false)
     private Boolean isDesc = false;
 
     @Getter
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Schema(description = "是否统计总数", defaultValue = "true")
     @TableField(exist = false)
     private Boolean isNeedTotal = true;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Schema(description = "扩展参数", type = "object")
     @TableField(exist = false)
     private Map<String, String> extParams;

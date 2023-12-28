@@ -6,7 +6,6 @@ import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.controller.base.BaseController;
-import com.youlan.system.constant.SystemConstant;
 import com.youlan.system.entity.dto.AccountRegistryDTO;
 import com.youlan.system.entity.dto.UserDTO;
 import com.youlan.system.helper.SystemConfigHelper;

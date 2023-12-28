@@ -130,10 +130,10 @@ export default {
       this.$modal.loadingClose()
       this.fileList = fileList.map(item => {
         // 取完整文件访问地址
-        const fullUrl = item.response && item.response.fullUrl
+        const url = item.response && this.$download.parseSrcUrl(item.response.url)
         return {
           ...item,
-          url: fullUrl || item.url
+          url: url || item.url
         }
       })
       this.updateValue()
@@ -154,6 +154,7 @@ export default {
       if (!this.autoUpload && !this.checkFile(file)) {
         this.removeFile(file)
       }
+      this.$emit('onChange', file, fileList)
     },
     beforeUpload(file) {
       if (!this.checkFile(file)) {

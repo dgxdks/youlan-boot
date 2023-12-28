@@ -20,7 +20,13 @@
         />
       </el-form-item>
       <el-form-item label="登录状态" prop="loginStatus">
-        <dict-select v-model="queryForm.loginStatus" dict-type="sys_login_log_status" style="width: 240px" placeholder="登录状态" clearable />
+        <dict-select
+          v-model="queryForm.loginStatus"
+          dict-type="sys_login_log_status"
+          style="width: 240px"
+          placeholder="登录状态"
+          clearable
+        />
       </el-form-item>
       <el-form-item label="登录时间">
         <base-date-time-range-picker v-model="queryForm.loginTimeRange" style="width: 340px" />
@@ -39,22 +45,22 @@
         <base-remove-button v-has-perm="['system:loginLog:remove']" plain @click="handleClean">清空</base-remove-button>
       </el-col>
       <el-col :span="1.5">
-        <base-add-button v-has-perm="['system:loginLog:unlockUser']" plain icon="el-icon-unlock" :disabled="!tableSelectOne" @click="handleUnlock">解锁</base-add-button>
+        <base-add-button
+          v-has-perm="['system:loginLog:unlockUser']"
+          plain
+          icon="el-icon-unlock"
+          :disabled="!tableSelectOne"
+          @click="handleUnlock"
+        >解锁</base-add-button>
       </el-col>
       <el-col :span="1.5">
-        <base-download-button v-has-perm="['system:loginLog:export']" plain @click="handleExport">导出</base-download-button>
+        <base-download-button v-has-perm="['system:loginLog:export']" plain @click="handleExport">导出
+        </base-download-button>
       </el-col>
       <table-toolbar :query-show.sync="queryShow" @refresh="getList" />
     </el-row>
 
-    <el-table
-      ref="table"
-      v-loading="tableLoading"
-      :data="logList"
-      :default-sort="defaultSort"
-      @selection-change="handleSelectionChange"
-      @sort-change="handleSortChange"
-    >
+    <el-table ref="table" v-loading="tableLoading" :data="logList" :default-sort="defaultSort" @selection-change="handleSelectionChange" @sort-change="handleSortChange">
       <el-table-column align="center" type="selection" width="55" />
       <el-table-column align="center" label="登录编号" prop="id" />
       <el-table-column show-overflow-tooltip align="center" label="用户名称" prop="userName" sortable="custom" />

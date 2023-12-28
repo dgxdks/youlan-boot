@@ -1,5 +1,6 @@
 package com.youlan.plugin.sms.entity;
 
+import cn.hutool.core.lang.Assert;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.alibaba.excel.annotation.write.style.HeadFontStyle;
@@ -7,6 +8,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.db.anno.Query;
 import com.youlan.common.db.entity.dto.PageDTO;
 import com.youlan.common.db.enums.QueryType;
@@ -14,7 +16,6 @@ import com.youlan.plugin.sms.constant.SmsConstant;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.dromara.sms4j.api.entity.SmsResponse;
 
 import java.util.Date;
 import java.util.List;
@@ -78,4 +79,26 @@ public class SmsRecord extends PageDTO {
     @Schema(description = "发送时间")
     @TableField(exist = false)
     private List<Date> sendTimeRange;
+
+    /**
+     * 校验是否发送成功
+     */
+    public void validateSendSuccess() {
+        Assert.isTrue(isSendSuccess(), ApiResultCode.B0020::getException);
+    }
+
+    /**
+     * 是否发送成功
+     */
+    public boolean isSendSuccess() {
+        return SmsConstant.SEND_STATUS_SUCCESS.equals(this.sendStatus);
+    }
+
+    /**
+     * 是否发送失败
+     */
+    public boolean isSendFail() {
+        return SmsConstant.SEND_STATUS_FAILED.equals(this.sendStatus);
+    }
+
 }

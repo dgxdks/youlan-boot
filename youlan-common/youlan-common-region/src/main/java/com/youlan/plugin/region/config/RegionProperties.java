@@ -5,7 +5,7 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
-@ConfigurationProperties(prefix = "youlan.region")
+@ConfigurationProperties(prefix = "youlan.common.region")
 public class RegionProperties {
     /**
      * ip2region xdb文件路径

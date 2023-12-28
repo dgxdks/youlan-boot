@@ -20,7 +20,12 @@
         />
       </el-form-item>
       <el-form-item label="日志类型" prop="logType">
-        <dict-select v-model="queryForm.logType" dict-type="sys_operation_log_type" placeholder="请选择日志类型" style="width: 240px" />
+        <dict-select
+          v-model="queryForm.logType"
+          dict-type="sys_operation_log_type"
+          placeholder="请选择日志类型"
+          style="width: 240px"
+        />
       </el-form-item>
       <el-form-item label="日志状态" prop="logStatus">
         <dict-select
@@ -45,15 +50,24 @@
         <base-remove-button v-has-perm="['system:operationLog:remove']" plain :disabled="tableNoSelected" @click="handleDelete" />
       </el-col>
       <el-col :span="1.5">
-        <base-remove-button v-has-perm="['system:operationLog:remove']" plain @click="handleClean">清空</base-remove-button>
+        <base-remove-button v-has-perm="['system:operationLog:remove']" plain @click="handleClean">清空
+        </base-remove-button>
       </el-col>
       <el-col :span="1.5">
-        <base-download-button v-has-perm="['system:operationLog:export']" plain @click="handleExport">导出</base-download-button>
+        <base-download-button v-has-perm="['system:operationLog:export']" plain @click="handleExport">导出
+        </base-download-button>
       </el-col>
       <table-toolbar :query-show.sync="queryShow" @refresh="getList" />
     </el-row>
 
-    <el-table ref="table" v-loading="tableLoading" :data="logList" :default-sort="defaultSort" @sort-change="handleSortChange" @selection-change="handleSelectionChange">
+    <el-table
+      ref="table"
+      v-loading="tableLoading"
+      :data="logList"
+      :default-sort="defaultSort"
+      @sort-change="handleSortChange"
+      @selection-change="handleSelectionChange"
+    >
       <el-table-column align="center" type="selection" width="50" />
       <el-table-column align="center" label="日志编号" prop="id" />
       <el-table-column show-overflow-tooltip align="center" label="日志名称" prop="logName" />

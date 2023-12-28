@@ -11,12 +11,7 @@
         />
       </el-form-item>
       <el-form-item label="表描述" prop="tableComment">
-        <el-input
-          v-model="queryForm.tableComment"
-          placeholder="请输入表描述"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
+        <el-input v-model="queryForm.tableComment" placeholder="请输入表描述" clearable @keyup.enter.native="handleQuery" />
       </el-form-item>
       <el-form-item>
         <base-search-button @click="handleQuery" />
@@ -45,6 +40,7 @@
 <script>
 import { getDbTablePageList, importDbTableList } from '@/api/tools/generator'
 import crud from '@/framework/mixin/crud'
+
 export default {
   mixins: [crud],
   data() {

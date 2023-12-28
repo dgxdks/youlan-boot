@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.youlan.plugin.pay.mapper.PayOrderMapper">
+
+    <select id="getPayOrderPageList" resultType="com.youlan.plugin.pay.entity.vo.PayOrderVO">
+        select pay_order.*, config.name as configName, channel.name as channelName, record.notify_raw_data,
+        record.raw_data
+        from t_pay_order as pay_order
+        left join t_pay_config as config on pay_order.config_id = config.id
+        left join t_pay_channel as channel on pay_order.channel_id = channel.id
+        left join t_pay_record as record on pay_order.record_id = record.id
+        <where>
+            <if test="dto.id != null">
+                and pay_order.id = #{dto.id}
+            </if>
+            <if test="dto.mchOrderId != null and dto.mchOrderId != ''">
+                and pay_order.mch_order_id like concat(#{dto.mchOrderId}, '%')
+            </if>
+            <if test="dto.payStatus != null">
+                and pay_order.pay_status = #{dto.payStatus}
+            </if>
+            <if test="dto.channelId != null">
+                and pay_order.channel_id = #{dto.channelId}
+            </if>
+            <if test="dto.configId != null">
+                and pay_order.config_id = #{dto.configId}
+            </if>
+            <if test="dto.createTimeRange != null and dto.createTimeRange.size() > 1">
+                and pay_order.create_time between #{dto.createTimeRange[0]} and #{dto.createTimeRange[1]}
+            </if>
+        </where>
+    </select>
+
+</mapper>
