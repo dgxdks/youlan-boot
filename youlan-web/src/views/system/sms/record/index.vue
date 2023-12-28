@@ -20,13 +20,31 @@
         />
       </el-form-item>
       <el-form-item label="短信类型" prop="smsType">
-        <dict-select v-model="queryForm.smsType" dict-type="sms_type" clearable placeholder="短信类型" style="width: 240px" />
+        <dict-select
+          v-model="queryForm.smsType"
+          dict-type="sms_type"
+          clearable
+          placeholder="短信类型"
+          style="width: 240px"
+        />
       </el-form-item>
       <el-form-item label="发送类型" prop="sendType">
-        <dict-select v-model="queryForm.sendType" dict-type="sms_send_type" clearable placeholder="发送类型" style="width: 240px" />
+        <dict-select
+          v-model="queryForm.sendType"
+          dict-type="sms_send_type"
+          clearable
+          placeholder="发送类型"
+          style="width: 240px"
+        />
       </el-form-item>
       <el-form-item label="发送状态" prop="sendStatus">
-        <dict-select v-model="queryForm.sendStatus" dict-type="sms_send_status" clearable placeholder="发送状态" style="width: 240px" />
+        <dict-select
+          v-model="queryForm.sendStatus"
+          dict-type="sms_send_status"
+          clearable
+          placeholder="发送状态"
+          style="width: 240px"
+        />
       </el-form-item>
       <el-form-item label="发送时间" prop="sendTimeRange">
         <base-date-time-range-picker v-model="queryForm.sendTimeRange" style="width: 340px" />
@@ -47,7 +65,14 @@
       <table-toolbar :query-show.sync="queryShow" @refresh="getList" />
     </el-row>
 
-    <el-table ref="table" v-loading="tableLoading" :data="recordList" :default-sort="defaultSort" @sort-change="handleSortChange" @selection-change="handleSelectionChange">
+    <el-table
+      ref="table"
+      v-loading="tableLoading"
+      :data="recordList"
+      :default-sort="defaultSort"
+      @sort-change="handleSortChange"
+      @selection-change="handleSelectionChange"
+    >
       <el-table-column align="center" type="selection" width="50" />
       <el-table-column show-overflow-tooltip align="center" label="手机号" prop="phone" />
       <el-table-column show-overflow-tooltip align="center" label="配置标识" prop="configId" />

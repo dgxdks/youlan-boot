@@ -5,7 +5,7 @@ import cn.hutool.crypto.asymmetric.KeyType;
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.youlan.common.crypto.enums.AlgorithmType;
-import com.youlan.common.crypto.jackson.DecryptFiledJsonDeserialize;
+import com.youlan.common.crypto.jackson.DecryptFiledDeserializer;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD})
 @JacksonAnnotationsInside
-@JsonDeserialize(using = DecryptFiledJsonDeserialize.class)
+@JsonDeserialize(using = DecryptFiledDeserializer.class)
 public @interface DecryptField {
     /**
      * 加密算法类型

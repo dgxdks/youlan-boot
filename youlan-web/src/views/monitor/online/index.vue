@@ -26,7 +26,9 @@
       <el-table-column align="center" label="登录时间" prop="loginTime" width="160" />
       <el-table-column align="center" class-name="small-padding fixed-width" label="操作">
         <template slot-scope="scope">
-          <base-remove-button v-has-perm="['monitor:onlineUser:kickout']" type="text" @click="handleKickout(scope.row)">强踢</base-remove-button>
+          <base-remove-button v-has-perm="['monitor:onlineUser:kickout']" type="text" @click="handleKickout(scope.row)">
+            强踢
+          </base-remove-button>
         </template>
       </el-table-column>
     </el-table>

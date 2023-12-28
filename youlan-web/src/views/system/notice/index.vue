@@ -11,7 +11,13 @@
         />
       </el-form-item>
       <el-form-item label="通知类型" prop="type">
-        <dict-select v-model="queryForm.type" dict-type="sys_notice_type" clearable placeholder="通知类型" style="width: 240px" />
+        <dict-select
+          v-model="queryForm.type"
+          dict-type="sys_notice_type"
+          clearable
+          placeholder="通知类型"
+          style="width: 240px"
+        />
       </el-form-item>
       <el-form-item>
         <base-search-button @click="handleQuery" />
@@ -24,10 +30,20 @@
         <base-add-button v-has-perm="['system:notice:add']" plain @click="handleAdd" />
       </el-col>
       <el-col :span="1.5">
-        <base-update-button v-has-perm="['system:notice:update']" plain :disabled="!tableSelectOne" @click="handleUpdate" />
+        <base-update-button
+          v-has-perm="['system:notice:update']"
+          plain
+          :disabled="!tableSelectOne"
+          @click="handleUpdate"
+        />
       </el-col>
       <el-col :span="1.5">
-        <base-remove-button v-has-perm="['system:notice:remove']" plain :disabled="tableNoSelected" @click="handleDelete" />
+        <base-remove-button
+          v-has-perm="['system:notice:remove']"
+          plain
+          :disabled="tableNoSelected"
+          @click="handleDelete"
+        />
       </el-col>
       <table-toolbar :query-show.sync="queryShow" @refresh="getList" />
     </el-row>

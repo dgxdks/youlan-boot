@@ -49,21 +49,24 @@
             icon="el-icon-cloudy"
             plain
             @click="goTarget('https://gitee.com/dromara/RuoYi-Vue-Plus')"
-          >访问码云</el-button>
+          >访问码云
+          </el-button>
           <el-button
             type="primary"
             size="mini"
             icon="el-icon-cloudy"
             plain
             @click="goTarget('https://github.com/dromara/RuoYi-Vue-Plus')"
-          >访问GitHub</el-button>
+          >访问GitHub
+          </el-button>
           <el-button
             type="primary"
             size="mini"
             icon="el-icon-cloudy"
             plain
             @click="goTarget('https://gitee.com/dromara/RuoYi-Vue-Plus/wikis/pages?sort_id=4106467&doc_id=1469725')"
-          >更新日志</el-button>
+          >更新日志
+          </el-button>
         </p>
       </el-col>
 
@@ -130,12 +133,14 @@ export default {
     font-size: 17.5px;
     border-left: 5px solid #eee;
   }
+
   hr {
     margin-top: 20px;
     margin-bottom: 20px;
     border: 0;
     border-top: 1px solid #eee;
   }
+
   .col-item {
     margin-bottom: 20px;
   }

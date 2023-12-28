@@ -47,13 +47,13 @@ public class ExceptionHandlerConfig {
 
     @ExceptionHandler(Exception.class)
     public ApiResult handleException(Exception exception, HttpServletRequest request) {
-        return handleBizExceptionIfExists(exception, request, () -> toApiResult(null, null, exception, request));
+        return handleTargetExceptionIfExists(exception, request, () -> toApiResult(null, null, exception, request));
 
     }
 
     @ExceptionHandler(RuntimeException.class)
     public ApiResult handleRuntimeException(RuntimeException exception, HttpServletRequest request) {
-        return handleBizExceptionIfExists(exception, request, () -> toApiResult(null, null, exception, request));
+        return handleTargetExceptionIfExists(exception, request, () -> toApiResult(null, null, exception, request));
 
     }
 
@@ -103,7 +103,7 @@ public class ExceptionHandlerConfig {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ApiResult handleHttpMessageNotReadableException(HttpMessageNotReadableException exception, HttpServletRequest request) {
-        return handleBizExceptionIfExists(exception, request, () -> toApiResult(null, "数据格式异常", exception, request));
+        return handleTargetExceptionIfExists(exception, request, () -> toApiResult(null, "数据格式异常", exception, request));
     }
 
     @ExceptionHandler(NotLoginException.class)
@@ -145,17 +145,24 @@ public class ExceptionHandlerConfig {
     }
 
     /**
-     * 如果存在{@link BizRuntimeException}则优先处理
+     * 如果存在目标异常则优先处理
      */
-    public ApiResult handleBizExceptionIfExists(Throwable throwable, HttpServletRequest request, Supplier<ApiResult> defaultSupplier) {
-        Throwable exception = ExceptionUtil.getCausedBy(throwable, BizRuntimeException.class);
+    public ApiResult handleTargetExceptionIfExists(Throwable throwable, HttpServletRequest request, Supplier<ApiResult> defaultSupplier) {
+        Throwable exception = ExceptionUtil.getCausedBy(throwable, BizException.class, BizRuntimeException.class, NotLoginException.class);
+        // 拦截业务异常
         if (exception instanceof BizException) {
             BizException bizException = (BizException) exception;
             return toApiResult(bizException.getStatus(), bizException.getErrorMsg(), bizException, request);
         }
+        // 拦截运行时业务异常
         if (exception instanceof BizRuntimeException) {
             BizRuntimeException bizRuntimeException = (BizRuntimeException) exception;
             return toApiResult(bizRuntimeException.getStatus(), bizRuntimeException.getErrorMsg(), bizRuntimeException, request);
+        }
+        // 拦截未登录异常
+        if (exception instanceof NotLoginException) {
+            NotLoginException notLoginException = (NotLoginException) exception;
+            return notLoginException(notLoginException, request);
         }
         return defaultSupplier.get();
     }

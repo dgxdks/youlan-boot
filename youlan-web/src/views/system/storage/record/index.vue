@@ -57,12 +57,20 @@
         <base-remove-button v-has-perm="['system:storageRecord:remove']" plain :disabled="tableNoSelected" @click="handleDelete" />
       </el-col>
       <el-col :span="1.5">
-        <base-remove-button v-has-perm="['system:storageRecord:remove']" plain @click="handleClean">清空</base-remove-button>
+        <base-remove-button v-has-perm="['system:storageRecord:remove']" plain @click="handleClean">清空
+        </base-remove-button>
       </el-col>
       <table-toolbar :query-show.sync="queryShow" @refresh="getList" />
     </el-row>
 
-    <el-table ref="table" v-loading="tableLoading" :data="recordList" :default-sort="defaultSort" @sort-change="handleSortChange" @selection-change="handleSelectionChange">
+    <el-table
+      ref="table"
+      v-loading="tableLoading"
+      :data="recordList"
+      :default-sort="defaultSort"
+      @sort-change="handleSortChange"
+      @selection-change="handleSelectionChange"
+    >
       <el-table-column align="center" type="selection" width="50" />
       <el-table-column show-overflow-tooltip align="center" label="平台名称" prop="platform" />
       <el-table-column show-overflow-tooltip align="center" label="对象ID" prop="objectId" />
@@ -77,8 +85,16 @@
       <el-table-column align="center" label="创建时间" prop="createTime" width="160px" sortable="custom" />
       <el-table-column align="center" class-name="small-padding fixed-width" label="操作" width="160">
         <template slot-scope="scope">
-          <base-download-button v-has-perm="['system:storageRecord:downloadFile']" type="text" @click="handleDownload(scope.row)" />
-          <base-remove-button v-has-perm="['system:storageRecord:remove']" type="text" @click="handleDelete(scope.row)" />
+          <base-download-button
+            v-has-perm="['system:storageRecord:load']"
+            type="text"
+            @click="handleDownload(scope.row)"
+          />
+          <base-remove-button
+            v-has-perm="['system:storageRecord:remove']"
+            type="text"
+            @click="handleDelete(scope.row)"
+          />
           <base-detail-button v-has-perm="['system:storageRecord:load']" type="text" @click="handleDetail(scope.row)" />
         </template>
       </el-table-column>
@@ -163,22 +179,23 @@
         </base-row-split2>
       </el-form>
     </base-drawer>
-    <base-dialog :title="fileUpload.title" :open.sync="fileUpload.open" width="400px" @confirm="handleUploadFileSubmit" @cancel="handleUploadFileCancel">
-      <file-upload-drag
-        ref="fileUpload"
-        :limit="1"
-        @onSuccess="handleFileUploadSuccess"
-        @onError="handleFileUploadError"
-      />
+    <base-dialog
+      :title="fileUpload.title"
+      :open.sync="fileUpload.open"
+      width="400px"
+      @confirm="handleUploadFileSubmit"
+      @cancel="handleUploadFileCancel"
+    >
+      <file-upload-drag ref="fileUpload" :limit="1" @onSuccess="handleFileUploadSuccess" @onError="handleFileUploadError" />
     </base-dialog>
-    <base-dialog :title="imageUpload.title" :open.sync="imageUpload.open" width="600px" @confirm="handleUploadImageSubmit" @cancel="handleUploadImageCancel">
-      <image-upload
-        ref="imageUpload"
-        :limit="3"
-        :file-size="5"
-        @onSuccess="handleImageUploadSuccess"
-        @onError="handleImageUploadError"
-      />
+    <base-dialog
+      :title="imageUpload.title"
+      :open.sync="imageUpload.open"
+      width="600px"
+      @confirm="handleUploadImageSubmit"
+      @cancel="handleUploadImageCancel"
+    >
+      <image-upload ref="imageUpload" :limit="3" :file-size="5" @onSuccess="handleImageUploadSuccess" @onError="handleImageUploadError" />
     </base-dialog>
   </div>
 </template>
@@ -281,7 +298,7 @@ export default {
     },
     // 下载文件
     handleDownload(row) {
-      this.$download.saveUrlAsFile(row.fullUrl).then(() => {
+      this.$download.saveUrlAsFile(row.url).then(() => {
       }).catch(() => {
         this.$modal.error('文件下载失败')
       })

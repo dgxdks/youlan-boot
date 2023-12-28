@@ -10,11 +10,9 @@ import cn.hutool.core.util.StrUtil;
 import com.youlan.common.core.exception.BizRuntimeException;
 import com.youlan.common.db.constant.DBConstant;
 import com.youlan.tools.constant.GeneratorConstant;
+import com.youlan.tools.entity.DBTableColumn;
 import com.youlan.tools.entity.GeneratorColumn;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.jsqlparser.JSQLParserException;
-import net.sf.jsqlparser.parser.CCJSqlParserUtil;
-import net.sf.jsqlparser.statement.Statement;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
@@ -51,6 +49,48 @@ public class GeneratorUtil {
         return "NO".equals(isNullable);
     }
 
+    /**
+     * 获取生成列
+     */
+    public static GeneratorColumn getGeneratorColumn(Long tableId, DBTableColumn dbTableColumn) {
+        String columnType = dbTableColumn.getColumnType();
+        String columnKey = dbTableColumn.getColumnKey();
+        String extra = dbTableColumn.getExtra();
+        String isNullable = dbTableColumn.getIsNullable();
+        GeneratorColumn generatorColumn = new GeneratorColumn();
+        generatorColumn.setTableId(tableId)
+                .setColumnName(dbTableColumn.getColumnName())
+                .setColumnComment(dbTableColumn.getColumnComment())
+                .setColumnType(columnType)
+                .setJavaField(StrUtil.toCamelCase(dbTableColumn.getColumnName()))
+                .setIsPk(DBConstant.boolean2YesNo(GeneratorUtil.columnIsPk(columnKey)))
+                .setIsIncrement(DBConstant.boolean2YesNo(GeneratorUtil.columnIsIncrement(extra)))
+                .setIsRequired(DBConstant.boolean2YesNo(GeneratorUtil.columnIsRequired(isNullable)))
+                .setIsEdit(DBConstant.VAL_YES)
+                .setIsTable(DBConstant.VAL_YES)
+                .setIsQuery(DBConstant.VAL_YES)
+                .setTypeKey(null);
+        setJavaTypeComponentType(generatorColumn);
+        return generatorColumn;
+    }
+
+    /**
+     * 同步生成列
+     */
+    public static GeneratorColumn syncGeneratorColumn(GeneratorColumn generatorColumn, DBTableColumn dbTableColumn) {
+        generatorColumn.setColumnComment(dbTableColumn.getColumnComment())
+                .setColumnType(dbTableColumn.getColumnType())
+                .setJavaField(StrUtil.toCamelCase(dbTableColumn.getColumnName()))
+                .setIsPk(DBConstant.boolean2YesNo(GeneratorUtil.columnIsPk(dbTableColumn.getColumnKey())))
+                .setIsIncrement(DBConstant.boolean2YesNo(GeneratorUtil.columnIsIncrement(dbTableColumn.getExtra())))
+                .setIsRequired(DBConstant.boolean2YesNo(GeneratorUtil.columnIsRequired(dbTableColumn.getIsNullable())));
+        setJavaTypeComponentType(generatorColumn);
+        return generatorColumn;
+    }
+
+    /**
+     * 设置Java类型和组件类型
+     */
     public static void setJavaTypeComponentType(GeneratorColumn column) {
         column.setJavaType(GeneratorConstant.JAVA_TYPE_STRING)
                 .setComponentType(GeneratorConstant.COMPONENT_TYPE_INPUT);
@@ -81,10 +121,11 @@ public class GeneratorUtil {
             String between = StrUtil.subBetween(columnType, "(", ")");
             if (StrUtil.isNotBlank(between)) {
                 String[] split = between.split(",");
+                // 2个长度按BigDecimal处理
                 if (split.length == 2) {
                     column.setJavaType(GeneratorConstant.JAVA_TYPE_BIG_DECIMAL);
-                }
-                if (split.length == 1 && Integer.parseInt(split[0]) <= 10) {
+                    // 1个长度按整数处理
+                } else if (split.length == 1 && Integer.parseInt(split[0]) <= 10) {
                     column.setJavaType(GeneratorConstant.JAVA_TYPE_INTEGER);
                 } else {
                     column.setJavaType(GeneratorConstant.JAVA_TYPE_LONG);
@@ -347,8 +388,8 @@ public class GeneratorUtil {
                 "import com.alibaba.excel.annotation.write.style.ColumnWidth;",
                 "import com.alibaba.excel.annotation.write.style.HeadFontStyle;",
                 "import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;",
-                "import com.youlan.system.anno.ExcelDictProperty;",
-                "import com.youlan.system.converter.DictConverter;"
+                "import com.youlan.common.excel.anno.ExcelDictProperty;",
+                "import com.youlan.common.excel.converter.DictConverter;"
         );
     }
 
@@ -367,12 +408,12 @@ public class GeneratorUtil {
 
     public static List<String> getEntityPackages() {
         return Arrays.asList(
-                "import com.youlan.common.validator.anno.*;"
+                "import com.youlan.common.validator.anno.*;",
+                "import com.baomidou.mybatisplus.annotation.FieldFill;",
+                "import com.baomidou.mybatisplus.annotation.TableField;",
+                "import com.baomidou.mybatisplus.annotation.TableId;",
+                "import com.baomidou.mybatisplus.annotation.TableName;"
         );
     }
 
-    public static void main(String[] args) throws JSQLParserException {
-        Statement parse = CCJSqlParserUtil.parse("select database()");
-
-    }
 }

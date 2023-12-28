@@ -55,7 +55,11 @@
       <el-table-column label="显示顺序" prop="sort" width="100" />
       <el-table-column align="center" label="状态" width="100">
         <template slot-scope="scope">
-          <base-switch v-model="scope.row.status" :disabled="$auth.isAdminRole(scope.row.id)" @change="handleStatusChange(scope.row)" />
+          <base-switch
+            v-model="scope.row.status"
+            :disabled="$auth.isAdminRole(scope.row.id)"
+            @change="handleStatusChange(scope.row)"
+          />
         </template>
       </el-table-column>
       <el-table-column align="center" label="创建时间" prop="createTime" width="160" />
@@ -69,19 +73,22 @@
               icon="el-icon-circle-check"
               color="#606266"
               @click="handleDataScope(scope.row)"
-            >数据权限</base-text-button>
+            >数据权限
+            </base-text-button>
             <base-text-button
               v-has-perm="['system:role:update']"
               icon="el-icon-user"
               color="#606266"
               @click="handleAuthUser(scope.row)"
-            >分配用户</base-text-button>
+            >分配用户
+            </base-text-button>
             <base-text-button
               v-has-perm="['system:role:remove']"
               icon="el-icon-delete"
               color="#606266"
               @click="handleRefreshRole(scope.row)"
-            >刷新缓存</base-text-button>
+            >刷新缓存
+            </base-text-button>
           </base-menu-button>
         </template>
       </el-table-column>
@@ -103,7 +110,11 @@
             <el-input v-model="editForm.roleName" placeholder="请输入角色名称" />
           </el-form-item>
           <el-form-item prop="roleStr">
-            <base-form-label slot="label" label="角色字符" content="控制器中定义的权限字符，如：@SaCheckRole('admin')，新增后不支持修改" />
+            <base-form-label
+              slot="label"
+              label="角色字符"
+              content="控制器中定义的权限字符，如：@SaCheckRole('admin')，新增后不支持修改"
+            />
             <el-input v-model="editForm.roleStr" placeholder="请输入权限字符" :disabled="$obj.isNotEmpty(editForm.id)" />
           </el-form-item>
           <el-form-item label="角色顺序" prop="sort">
@@ -131,7 +142,13 @@
     </base-dialog>
 
     <!-- 数据权限编辑对话框 -->
-    <base-dialog :title="dataScope.title" :open="dataScope.open" width="500px" @confirm="handleDataScopeConfirm" @cancel="handleDataScopeCancel">
+    <base-dialog
+      :title="dataScope.title"
+      :open.sync="dataScope.open"
+      width="500px"
+      @confirm="handleDataScopeConfirm"
+      @cancel="handleDataScopeCancel"
+    >
       <el-form :model="editForm" label-width="80px">
         <el-form-item label="角色名称">
           <el-input v-model="editForm.roleName" :disabled="true" />
@@ -140,7 +157,12 @@
           <el-input v-model="editForm.roleStr" :disabled="true" />
         </el-form-item>
         <el-form-item label="权限范围">
-          <dict-select v-model="editForm.roleScope" dict-type="sys_data_scope" style="width: 240px" @change="handleDataScopeChange" />
+          <dict-select
+            v-model="editForm.roleScope"
+            dict-type="sys_data_scope"
+            style="width: 240px"
+            @change="handleDataScopeChange"
+          />
         </el-form-item>
         <!--自定义数据权限展示-->
         <el-form-item v-show="editForm.roleScope === '2'" label="数据权限">
@@ -165,8 +187,13 @@
 <script>
 import {
   addRole,
-  getRolePageList, loadRole, refreshRoleCache, removeRole,
-  updateRole, updateRoleScope, updateRoleStatus
+  getRolePageList,
+  loadRole,
+  refreshRoleCache,
+  removeRole,
+  updateRole,
+  updateRoleScope,
+  updateRoleStatus
 } from '@/api/system/role'
 import crud from '@/framework/mixin/crud'
 import MenuTree from '@/views/components/MenuTree.vue'

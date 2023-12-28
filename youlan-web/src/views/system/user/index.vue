@@ -77,16 +77,15 @@
           <el-table-column v-if="columns.userMobile.show" key="userMobile" align="center" label="手机号码" prop="userMobile" width="120" />
           <el-table-column v-if="columns.status.show" key="status" align="center" label="状态">
             <template slot-scope="scope">
-              <base-switch v-model="scope.row.status" :disabled="$auth.isAdmin(scope.row.id)" @change="handleStatusChange(scope.row)" />
+              <base-switch
+                v-model="scope.row.status"
+                :disabled="$auth.isAdmin(scope.row.id)"
+                @change="handleStatusChange(scope.row)"
+              />
             </template>
           </el-table-column>
           <el-table-column v-if="columns.createTime.show" align="center" label="创建时间" prop="createTime" width="160" />
-          <el-table-column
-            align="center"
-            class-name="small-padding fixed-width"
-            label="操作"
-            width="160"
-          >
+          <el-table-column align="center" class-name="small-padding fixed-width" label="操作" width="160">
             <template v-if="!$auth.isAdmin(scope.row.id)" slot-scope="scope">
               <base-update-button v-has-perm="['system:user:update']" type="text" @click="handleUpdate(scope.row)" />
               <base-remove-button v-has-perm="['system:user:remove']" type="text" @click="handleDelete(scope.row)" />
@@ -96,13 +95,15 @@
                   icon="el-icon-key"
                   color="#606266"
                   @click="handleResetPwd(scope.row)"
-                >重置密码</base-text-button>
+                >重置密码
+                </base-text-button>
                 <base-text-button
                   v-has-perm="['system:user:update']"
                   icon="el-icon-circle-check"
                   color="#606266"
                   @click="handleAuthRole(scope.row)"
-                >分配角色</base-text-button>
+                >分配角色
+                </base-text-button>
               </base-menu-button>
             </template>
           </el-table-column>
@@ -188,8 +189,12 @@
 <script>
 import {
   addUser,
-  getUserPageList, loadUser, removeUser, resetUserPasswd,
-  updateUser, updateUserStatus
+  getUserPageList,
+  loadUser,
+  removeUser,
+  resetUserPasswd,
+  updateUser,
+  updateUserStatus
 } from '@/api/system/user'
 import crud from '@/framework/mixin/crud'
 

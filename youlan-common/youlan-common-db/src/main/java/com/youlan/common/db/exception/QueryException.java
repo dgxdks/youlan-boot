@@ -1,7 +1,7 @@
 package com.youlan.common.db.exception;
 
-import com.youlan.common.core.restful.enums.ApiResultCode;
 import com.youlan.common.core.exception.BizRuntimeException;
+import com.youlan.common.core.restful.enums.ApiResultCode;
 
 public class QueryException extends BizRuntimeException {
     public QueryException() {

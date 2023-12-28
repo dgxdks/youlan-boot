@@ -44,8 +44,7 @@ public class StorageConfig extends PageDTO {
     @ExcelProperty(value = "存储类型", converter = EnumConverter.class)
     @ExcelEnumProperty(StorageType.class)
     @NotNull(message = "存储类型不能为空")
-    @Schema(description = "存储类型(字典类型[sys_storage_type])")
-    @EnumValue
+    @Schema(description = "存储类型(字典类型[storage_type])")
     private StorageType type;
 
     @ExcelProperty(value = "平台名称")
@@ -88,7 +87,7 @@ public class StorageConfig extends PageDTO {
     private String isDefault;
 
     @ExcelProperty(value = "访问控制")
-    @Schema(description = "访问控制(数据字典[sys_storage_acl_type])")
+    @Schema(description = "访问控制(数据字典[storage_acl_type])")
     private String fileAcl;
 
     @ExcelProperty(value = "是否HTTPS(1-是 2-否)")

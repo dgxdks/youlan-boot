@@ -4,12 +4,12 @@
 drop table if exists t_sys_org;
 create table t_sys_org
 (
-    org_id        bigint      not null auto_increment comment '主键ID',
+    org_id        bigint(20)  not null auto_increment comment '主键ID',
     org_name      varchar(64) not null comment '机构名称',
     org_type      varchar(4)  not null comment '机构类型(字典类型[sys_org_type])',
     org_level     int(4)      not null comment '机构层级',
     org_ancestors varchar(64) not null comment '机构祖级',
-    parent_org_id bigint      not null comment '父级机构ID',
+    parent_org_id bigint(20)  not null comment '父级机构ID',
     org_sort      int(4)       default 0 comment '机构排序',
     org_remark    varchar(128) default '' comment '机构备注',
     org_status    varchar(4)   default '1' comment '机构状态(1-正常 2-停用)',
@@ -34,15 +34,15 @@ values (100, '幽兰科技', '0', 0, '0', 0, 0),
 drop table if exists t_sys_dept;
 create table t_sys_dept
 (
-    id          bigint not null auto_increment comment '主键ID',
-    org_id      bigint not null comment '机构ID',
+    id          bigint(20) not null auto_increment comment '主键ID',
+    org_id      bigint(20) not null comment '机构ID',
     leader      varchar(32) default '' comment '负责人',
     phone       varchar(32) default '' comment '联系电话',
     email       varchar(64) default '' comment '邮箱',
     status      varchar(4)  default '1' comment '状态(1-正常 2-停用)',
-    create_id   bigint      default 0 comment '创建用户ID',
+    create_id   bigint(20)  default 0 comment '创建用户ID',
     create_by   varchar(64) default '' comment '创建用户',
-    update_id   bigint      default 0 comment '修改用户ID',
+    update_id   bigint(20)  default 0 comment '修改用户ID',
     update_by   varchar(64) default '' comment '修改用户',
     create_time datetime comment '创建时间',
     update_time datetime comment '修改时间',
@@ -67,8 +67,8 @@ values (100, '幽兰', '18888888888', 'yl@youlan.com', 100, 'admin', sysdate()),
 drop table if exists t_sys_user;
 create table t_sys_user
 (
-    id            bigint       not null auto_increment comment '主键ID',
-    org_id        bigint       not null comment '机构ID',
+    id            bigint(20)   not null auto_increment comment '主键ID',
+    org_id        bigint(20)   not null comment '机构ID',
     user_name     varchar(64)  not null comment '用户账号',
     user_password varchar(128) not null comment '用户密码',
     user_mobile   varchar(32) default '' comment '用户手机',
@@ -80,9 +80,9 @@ create table t_sys_user
     login_ip      varchar(32) comment '最后登录IP',
     login_time    varchar(32) comment '最后登录时间',
     remark        varchar(128) comment '备注',
-    create_id     bigint      default 0 comment '创建用户ID',
+    create_id     bigint(20)  default 0 comment '创建用户ID',
     create_by     varchar(64) default '' comment '创建用户',
-    update_id     bigint      default 0 comment '修改用户ID',
+    update_id     bigint(20)  default 0 comment '修改用户ID',
     update_by     varchar(64) default '' comment '修改用户',
     create_time   datetime comment '创建时间',
     update_time   datetime comment '修改时间',
@@ -102,15 +102,15 @@ values (100, 100, 'admin', '$2a$10$a.PsU/F7gk0OMVj8NJsg3.aPBFrwtxc25T9t9lgMMnuRg
 drop table if exists t_sys_post;
 create table t_sys_post
 (
-    id          bigint      not null auto_increment comment '主键ID',
+    id          bigint(20)  not null auto_increment comment '主键ID',
     post_name   varchar(32) not null comment '岗位名称',
     post_code   varchar(32) not null comment '岗位编码',
     sort        int(4)       default 0 comment '排序',
     status      varchar(4)   default '1' comment '状态(1-正常 2-停用)',
     remark      varchar(128) default '' comment '备注',
-    create_id   bigint       default 0 comment '创建用户ID',
+    create_id   bigint(20)   default 0 comment '创建用户ID',
     create_by   varchar(64)  default '' comment '创建用户',
-    update_id   bigint       default 0 comment '修改用户ID',
+    update_id   bigint(20)   default 0 comment '修改用户ID',
     update_by   varchar(64)  default '' comment '修改用户',
     create_time datetime comment '创建时间',
     update_time datetime comment '修改时间',
@@ -129,9 +129,9 @@ values (100, '董事长', 'ceo', 100, 'admin', sysdate()),
 drop table if exists t_sys_user_post;
 create table t_sys_user_post
 (
-    id      bigint not null auto_increment comment '主键ID',
-    user_id bigint not null comment '用户ID',
-    post_id bigint not null comment '岗位ID',
+    id      bigint(20) not null auto_increment comment '主键ID',
+    user_id bigint(20) not null comment '用户ID',
+    post_id bigint(20) not null comment '岗位ID',
     primary key (id)
 ) auto_increment = 100 comment '用户关联岗位表';
 insert into t_sys_user_post(user_id, post_id)
@@ -143,16 +143,16 @@ values (100, 100);
 drop table if exists t_sys_role;
 create table t_sys_role
 (
-    id          bigint      not null auto_increment comment '主键ID',
+    id          bigint(20)  not null auto_increment comment '主键ID',
     role_name   varchar(32) not null comment '角色名称',
     role_str    varchar(64) not null comment '角色字符',
     role_scope  char(1)      default '1' comment '角色数据权限范围(1-全部数据权限 2-自定义数据权限 3-本机构数据权限 4-本机构及以下数据权限 5-仅本人数据权限)',
     sort        int(4)       default 0 comment '排序',
     status      varchar(4)   default '1' comment '状态(1-正常 2-停用)',
     remark      varchar(128) default '' comment '备注',
-    create_id   bigint       default 0 comment '创建用户ID',
+    create_id   bigint(20)   default 0 comment '创建用户ID',
     create_by   varchar(64)  default '' comment '创建用户',
-    update_id   bigint       default 0 comment '修改用户ID',
+    update_id   bigint(20)   default 0 comment '修改用户ID',
     update_by   varchar(64)  default '' comment '修改用户',
     create_time datetime comment '创建时间',
     update_time datetime comment '修改时间',
@@ -169,9 +169,9 @@ values (100, '超级管理员', 'admin', '1', '超级管理员', 100, 'admin', s
 drop table if exists t_sys_user_role;
 create table t_sys_user_role
 (
-    id      bigint not null auto_increment comment '主键ID',
-    user_id bigint not null comment '用户ID',
-    role_id bigint not null comment '角色ID',
+    id      bigint(20) not null auto_increment comment '主键ID',
+    user_id bigint(20) not null comment '用户ID',
+    role_id bigint(20) not null comment '角色ID',
     primary key (id)
 ) auto_increment = 100 comment '用户关联角色表';
 insert into t_sys_user_role (user_id, role_id)
@@ -184,9 +184,9 @@ values (100, 100),
 drop table if exists t_sys_role_org;
 create table t_sys_role_org
 (
-    id      bigint not null auto_increment comment '主键ID',
-    role_id bigint not null comment '角色ID',
-    org_id  bigint not null comment '机构ID',
+    id      bigint(20) not null auto_increment comment '主键ID',
+    role_id bigint(20) not null comment '角色ID',
+    org_id  bigint(20) not null comment '机构ID',
     primary key (id)
 ) auto_increment = 100 comment '角色关联机构表';
 
@@ -196,11 +196,11 @@ create table t_sys_role_org
 drop table if exists t_sys_menu;
 create table t_sys_menu
 (
-    id             bigint      not null auto_increment comment '主键ID',
+    id             bigint(20)  not null auto_increment comment '主键ID',
     menu_name      varchar(32) not null comment '菜单名称',
     menu_type      char(1)      default '1' comment '菜单类型(1-目录 2-菜单 3-按钮)',
     menu_perms     varchar(64)  default '' comment '菜单权限字符',
-    parent_id      bigint       default 0 comment '父级菜单ID',
+    parent_id      bigint(20)   default 0 comment '父级菜单ID',
     menu_icon      varchar(64)  default '' comment '菜单图标',
     route_path     varchar(255) default '' comment '路由路径',
     route_query    varchar(255) default '' comment '路由参数',
@@ -211,9 +211,9 @@ create table t_sys_menu
     visible        char(1)      default '1' comment '显示状态(1-显示 2-不显示)',
     status         varchar(4)   default '1' comment '状态(1-正常 2-停用)',
     remark         varchar(128) default '' comment '备注',
-    create_id      bigint       default 0 comment '创建用户ID',
+    create_id      bigint(20)   default 0 comment '创建用户ID',
     create_by      varchar(64)  default '' comment '创建用户',
-    update_id      bigint       default 0 comment '修改用户ID',
+    update_id      bigint(20)   default 0 comment '修改用户ID',
     update_by      varchar(64)  default '' comment '修改用户',
     create_time    datetime comment '创建时间',
     update_time    datetime comment '修改时间',
@@ -226,39 +226,51 @@ values (100, '系统管理', '1', 'system', 0, 'system', 'system', '', '1', '', 
        (200, '系统监控', '1', 'monitor', 0, 'monitor', 'monitor', '', '1', '', '2', 0, '1', '1', '', 100, 'admin', 0,
         '', sysdate(), null),
        (300, '系统工具', '1', 'tools', 0, 'tool', 'tools', '', '1', '', '2', 0, '1', '1', '', 100, 'admin', 0, '',
+        sysdate(), null),
+       (400, '支付管理', '1', 'pay', 0, 'pay', 'pay', '', '1', '', '2', 0, '1', '1', '', 100, 'admin', 0, '',
         sysdate(), null);
 -- 二级菜单(二级菜单ID从父级菜单ID开始递增)
 insert into t_sys_menu
-values (101, '用户管理', '2', 'system:user', 100, 'user', 'user', '', '1', 'system/user/index', '2', 0, '1',
+values (101, '用户管理', '2', 'system:user', 100, 'user', 'user', '', '1', 'system/user/index', '2', 0, '1', '1', '',
+        100, 'admin', 0, '', sysdate(), null),
+       (102, '角色管理', '2', 'system:role', 100, 'peoples', 'role', '', '1', 'system/role/index', '2', 0, '1', '1', '',
+        100, 'admin', 0, '', sysdate(), null),
+       (103, '菜单管理', '2', 'system:menu', 100, 'tree-table', 'menu', '', '1', 'system/menu/index', '2', 0, '1', '1',
+        '', 100, 'admin', 0, '', sysdate(), null),
+       (104, '部门管理', '2', 'system:dept', 100, 'tree', 'dept', '', '1', 'system/dept/index', '2', 0, '1', '1', '',
+        100, 'admin', 0, '', sysdate(), null),
+       (105, '岗位管理', '2', 'system:post', 100, 'post', 'post', '', '1', 'system/post/index', '2', 0, '1', '1', '',
+        100, 'admin', 0, '', sysdate(), null),
+       (106, '字典管理', '2', 'system:dict', 100, 'dict', 'dict', '', '1', 'system/dict/index', '2', 0, '1', '1', '',
+        100, 'admin', 0, '', sysdate(), null),
+       (107, '系统参数', '2', 'system:config', 100, 'config', 'config', '', '1', 'system/config/index', '2', 0, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (102, '角色管理', '2', 'system:role', 100, 'peoples', 'role', '', '1', 'system/role/index', '2', 0, '1',
+       (108, '通知公告', '2', 'system:notice', 100, 'message', 'notice', '', '1', 'system/notice/index', '2', 0, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (103, '菜单管理', '2', 'system:menu', 100, 'tree-table', 'menu', '', '1', 'system/menu/index', '2', 0,
-        '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (104, '部门管理', '2', 'system:dept', 100, 'tree', 'dept', '', '1', 'system/dept/index', '2', 0, '1',
-        '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (105, '岗位管理', '2', 'system:post', 100, 'post', 'post', '', '1', 'system/post/index', '2', 0, '1',
-        '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (106, '字典管理', '2', 'system:dict', 100, 'dict', 'dict', '', '1', 'system/dict/index', '2', 0, '1',
-        '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (107, '系统参数', '2', 'system:config', 100, 'config', 'config', '', '1', 'system/config/index', '2', 0,
-        '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (108, '通知公告', '2', 'system:notice', 100, 'message', 'notice', '', '1', 'system/notice/index', '2',
-        0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
        (109, '日志管理', '1', 'system:log', 100, 'log', 'log', '', '2', '', '2', 0, '1', '1', '', 100, 'admin', 0, '',
         sysdate(), null),
        (110, '存储管理', '1', 'system:storage', 100, 'storage', 'storage', '', '2', '', '2', 0, '1', '1', '', 100,
         'admin', 0, '', sysdate(), null),
        (111, '短信管理', '1', 'system:sms', 100, 'sms', 'sms', '', '2', '', '2', 0, '1', '1', '', 100, 'admin', 0, '',
         sysdate(), null),
-       (201, '在线用户', '2', 'monitor:onlineUser', 200, 'online', 'onlineUser' '', '', '1',
-        'monitor/online/index', '2', 0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (202, '缓存监控', '2', 'monitor:cacheMonitor', 200, 'redis', 'cacheMonitor' '', '', '1',
-        'monitor/cache/index', '2', 0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
-       (301, '系统接口', '2', 'tools:swagger', 300, 'swagger', 'http://localhost:4085/doc.html', '', '1', '', '1', 0,
+       (201, '在线用户', '2', 'monitor:onlineUser', 200, 'online', 'onlineUser' '', '', '1', 'monitor/online/index',
+        '2', 0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (202, '缓存监控', '2', 'monitor:cacheMonitor', 200, 'redis', 'cacheMonitor' '', '', '1', 'monitor/cache/index',
+        '2', 0, '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (301, '系统接口', '2', 'tools:swagger', 300, 'swagger', '/doc.html', '', '1', '', '1', 0,
         '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
        (302, '代码生成', '2', 'tools:generator', 300, 'code', 'generator', '', '1', 'tools/generator/index', '2', 0,
-        '1', '1', '', 100, 'admin', 0, '', sysdate(), null);
+        '1', '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (401, '支付配置', '2', 'pay:config', 400, 'config', 'config', '', '1', 'pay/config/index', '2', 0, '1', '1', '',
+        100, 'admin', 0, '', sysdate(), null),
+       (402, '支付通道', '2', 'pay:channel', 400, 'channel', 'channel', '', '1', 'pay/channel/index', '2', 0, '1', '1',
+        '', 100, 'admin', 0, '', sysdate(), null),
+       (403, '支付订单', '2', 'pay:order', 400, 'pay-order', 'order', '', '1', 'pay/order/index', '2', 0, '1', '1', '',
+        100, 'admin', 0, '', sysdate(), null),
+       (404, '退款订单', '2', 'pay:refund', 400, 'refund', 'refund', '', '1', 'pay/refund/index', '2', 0, '1', '1', '',
+        100, 'admin', 0, '', sysdate(), null),
+       (405, '支付回调', '2', 'pay:notify', 400, 'notify', 'notify', '', '1', 'pay/notify/index', '2', 0, '1', '1', '',
+        100, 'admin', 0, '', sysdate(), null);
 
 -- 三级菜单(三级菜单ID从10000开始)
 insert into t_sys_menu
@@ -481,15 +493,86 @@ values (20750, '记录新增', '3', 'system:smsRecord:add', 10005, '', '', '', '
         '1', '', 100, 'admin', 0, '', sysdate(), null),
        (20754, '记录列表', '3', 'system:smsRecord:list', 10005, '', '', '', '1', '', '2', 5, '1',
         '1', '', 100, 'admin', 0, '', sysdate(), null);
+-- 支付配置按钮
+insert into t_sys_menu
+values (20800, '配置新增', '3', 'pay:payConfig:add', 401, '', '', '', '1', '', '2', 1, '1', '1',
+        '', 100, 'admin', 0, '', sysdate(), null),
+       (20801, '配置修改', '3', 'pay:payConfig:update', 401, '', '', '', '1', '', '2', 2, '1', '1',
+        '', 100, 'admin', 0, '', sysdate(), null),
+       (20802, '配置删除', '3', 'pay:payConfig:remove', 401, '', '', '', '1', '', '2', 3, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (20803, '配置详情', '3', 'pay:payConfig:load', 401, '', '', '', '1', '', '2', 4, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (20804, '配置列表', '3', 'pay:payConfig:list', 401, '', '', '', '1', '', '2', 5, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (20805, '配置导出', '3', 'pay:payConfig:export', 401, '', '', '', '1', '', '2', 6, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null);
+-- 支付通道按钮
+insert into t_sys_menu
+values (20850, '通道新增', '3', 'pay:payChannel:add', 402, '', '', '', '1', '', '2', 1, '1', '1',
+        '', 100, 'admin', 0, '', sysdate(), null),
+       (20851, '通道修改', '3', 'pay:payChannel:update', 402, '', '', '', '1', '', '2', 2, '1', '1',
+        '', 100, 'admin', 0, '', sysdate(), null),
+       (20852, '通道删除', '3', 'pay:payChannel:remove', 402, '', '', '', '1', '', '2', 3, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (20853, '通道详情', '3', 'pay:payChannel:load', 402, '', '', '', '1', '', '2', 4, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (20854, '通道列表', '3', 'pay:payChannel:list', 402, '', '', '', '1', '', '2', 5, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (20855, '通道导出', '3', 'pay:payChannel:export', 402, '', '', '', '1', '', '2', 6, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null);
+-- 支付订单按钮
+insert into t_sys_menu
+values (20900, '订单新增', '3', 'pay:payOrder:add', 403, '', '', '', '1', '', '2', 1, '1', '1',
+        '', 100, 'admin', 0, '', sysdate(), null),
+       (20901, '订单修改', '3', 'pay:payOrder:update', 403, '', '', '', '1', '', '2', 2, '1', '1',
+        '', 100, 'admin', 0, '', sysdate(), null),
+       (20902, '订单删除', '3', 'pay:payOrder:remove', 403, '', '', '', '1', '', '2', 3, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (20903, '订单详情', '3', 'pay:payOrder:load', 403, '', '', '', '1', '', '2', 4, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (20904, '订单列表', '3', 'pay:payOrder:list', 403, '', '', '', '1', '', '2', 5, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (20905, '订单导出', '3', 'pay:payOrder:export', 403, '', '', '', '1', '', '2', 6, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null);
+-- 支付回调按钮
+insert into t_sys_menu
+values (20950, '回调新增', '3', 'pay:payNotify:add', 405, '', '', '', '1', '', '2', 1, '1', '1',
+        '', 100, 'admin', 0, '', sysdate(), null),
+       (20951, '回调修改', '3', 'pay:payNotify:update', 405, '', '', '', '1', '', '2', 2, '1', '1',
+        '', 100, 'admin', 0, '', sysdate(), null),
+       (20952, '回调删除', '3', 'pay:payNotify:remove', 405, '', '', '', '1', '', '2', 3, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (20953, '回调详情', '3', 'pay:payNotify:load', 405, '', '', '', '1', '', '2', 4, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (20954, '回调列表', '3', 'pay:payNotify:list', 405, '', '', '', '1', '', '2', 5, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (20955, '回调导出', '3', 'pay:payNotify:export', 405, '', '', '', '1', '', '2', 6, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null);
+-- 退款订单按钮
+insert into t_sys_menu
+values (21000, '订单新增', '3', 'pay:payRefundOrder:add', 404, '', '', '', '1', '', '2', 1, '1', '1',
+        '', 100, 'admin', 0, '', sysdate(), null),
+       (21001, '订单修改', '3', 'pay:payRefundOrder:update', 404, '', '', '', '1', '', '2', 2, '1', '1',
+        '', 100, 'admin', 0, '', sysdate(), null),
+       (21002, '订单删除', '3', 'pay:payRefundOrder:remove', 404, '', '', '', '1', '', '2', 3, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (21003, '订单详情', '3', 'pay:payRefundOrder:load', 404, '', '', '', '1', '', '2', 4, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (21004, '订单列表', '3', 'pay:payRefundOrder:list', 404, '', '', '', '1', '', '2', 5, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null),
+       (21005, '订单导出', '3', 'pay:payRefundOrder:export', 404, '', '', '', '1', '', '2', 6, '1',
+        '1', '', 100, 'admin', 0, '', sysdate(), null);
 
--- 角色关联菜单表(一对多)
+-- ----------------------------
+-- 角色关联菜单表
 -- ----------------------------
 drop table if exists t_sys_role_menu;
 create table t_sys_role_menu
 (
-    id      bigint not null auto_increment comment '主键ID',
-    role_id bigint not null comment '角色ID',
-    menu_id bigint not null comment '菜单ID',
+    id      bigint(20) not null auto_increment comment '主键ID',
+    role_id bigint(20) not null comment '角色ID',
+    menu_id bigint(20) not null comment '菜单ID',
     primary key (id)
 ) auto_increment = 100 comment '角色关联菜单表';
 insert t_sys_role_menu(role_id, menu_id)
@@ -602,25 +685,59 @@ values (101, 100),
        (101, 20751),
        (101, 20752),
        (101, 20753),
-       (101, 20754);
-
-
+       (101, 20754),
+       (101, 400),
+       (101, 401),
+       (101, 20800),
+       (101, 20801),
+       (101, 20802),
+       (101, 20803),
+       (101, 20804),
+       (101, 20805),
+       (101, 402),
+       (101, 20850),
+       (101, 20851),
+       (101, 20852),
+       (101, 20853),
+       (101, 20854),
+       (101, 20855),
+       (101, 403),
+       (101, 20900),
+       (101, 20901),
+       (101, 20902),
+       (101, 20903),
+       (101, 20904),
+       (101, 20905),
+       (101, 404),
+       (101, 405),
+       (101, 20950),
+       (101, 20951),
+       (101, 20952),
+       (101, 20953),
+       (101, 20954),
+       (101, 20955),
+       (101, 21000),
+       (101, 21001),
+       (101, 21002),
+       (101, 21003),
+       (101, 21004),
+       (101, 21005);
 -- ----------------------------
 -- 系统操作日志表
 -- ----------------------------
 drop table if exists t_sys_operation_log;
 create table t_sys_operation_log
 (
-    id              bigint not null auto_increment comment '主键ID',
+    id              bigint(20) not null auto_increment comment '主键ID',
     log_name        varchar(64)  default '' comment '日志名称',
     log_type        varchar(4)   default '99' comment '日志类型[sys_operation_log_type]',
-    log_user        bigint       default 100 comment '日志用户ID',
+    log_user        bigint(20)   default 100 comment '日志用户ID',
     log_by          varchar(64)  default '' comment '日志用户',
     log_time        datetime comment '日志时间',
     log_status      char(1)      default '1' comment '日志状态[sys_operation_log_status]',
     error_msg       varchar(255) default '' comment '错误信息',
     method          varchar(64)  default '' comment '调用方法',
-    cost_time       bigint       default -1 comment '消耗时间(ms)',
+    cost_time       bigint(20)   default -1 comment '消耗时间(ms)',
     source_ip       varchar(32)  default '' comment '来源IP',
     source_location varchar(32)  default '' comment '来源位置',
     http_method     varchar(16)  default '' comment 'HTTP请求方法',
@@ -637,7 +754,7 @@ create table t_sys_operation_log
 drop table if exists t_sys_login_log;
 create table t_sys_login_log
 (
-    id             bigint not null auto_increment comment '主键ID',
+    id             bigint(20) not null auto_increment comment '主键ID',
     user_name      varchar(64)  default '' comment '用户名',
     source_type    varchar(4)   default '99' comment '来源类型(1-后台端 2-移动端 99-其它)',
     login_ip       varchar(32)  default '' comment '登录IP',
@@ -656,15 +773,15 @@ create table t_sys_login_log
 drop table if exists t_sys_config;
 create table t_sys_config
 (
-    id           bigint not null auto_increment comment '主键ID',
+    id           bigint(20) not null auto_increment comment '主键ID',
     config_name  varchar(64)  default '' comment '配置名称',
     config_key   varchar(128) default '' comment '配置键名',
     config_value varchar(255) default '' comment '配置键值',
     config_type  varchar(4)   default '1' comment '配置类型(1-内置参数 2-外置参数)',
     remark       varchar(128) default '' comment '备注',
-    create_id    bigint       default 0 comment '创建用户ID',
+    create_id    bigint(20)   default 0 comment '创建用户ID',
     create_by    varchar(64)  default '' comment '创建用户',
-    update_id    bigint       default 0 comment '修改用户ID',
+    update_id    bigint(20)   default 0 comment '修改用户ID',
     update_by    varchar(64)  default '' comment '修改用户',
     create_time  datetime comment '创建时间',
     update_time  datetime comment '修改时间',
@@ -693,15 +810,15 @@ values ('用户初始密码', 'sys.user.initPassword', '123456', '1', '用户初
 drop table if exists t_sys_notice;
 create table t_sys_notice
 (
-    id          bigint not null auto_increment comment '主键ID',
+    id          bigint(20) not null auto_increment comment '主键ID',
     title       varchar(64)  default '' comment '通知标题',
     type        varchar(4)   default '1' comment '通知类型(数据字典[sys_notice_type])',
     content     longtext comment '通知内容',
     status      varchar(4)   default '1' comment '状态(1-正常 2-停用)',
     remark      varchar(128) default '' comment '备注',
-    create_id   bigint       default 0 comment '创建用户ID',
+    create_id   bigint(20)   default 0 comment '创建用户ID',
     create_by   varchar(64)  default '' comment '创建用户',
-    update_id   bigint       default 0 comment '修改用户ID',
+    update_id   bigint(20)   default 0 comment '修改用户ID',
     update_by   varchar(64)  default '' comment '修改用户',
     create_time datetime comment '创建时间',
     update_time datetime comment '修改时间',
@@ -717,7 +834,7 @@ values ('维护通知', '1', '通知内容', 100, 'admin', sysdate()),
 drop table if exists t_tools_generator_table;
 create table t_tools_generator_table
 (
-    id                 bigint      not null auto_increment comment '主键ID',
+    id                 bigint(20)  not null auto_increment comment '主键ID',
     table_name         varchar(64) not null comment '表名称',
     table_comment      varchar(128) default '' comment '表描述',
     feature_name       varchar(128) default '' comment '功能名称',
@@ -735,12 +852,12 @@ create table t_tools_generator_table
     column_name        varchar(32)  default null comment '树表列名',
     parent_column_name varchar(32)  default null comment '树表父列名',
     sort_column_name   varchar(32)  default null comment '树表排序列名',
-    parent_menu_id     bigint       default null comment '父级菜单ID',
+    parent_menu_id     bigint(20)   default null comment '父级菜单ID',
     menu_icon          varchar(32)  default null comment '菜单图标',
     remark             varchar(128) default '' comment '备注',
-    create_id          bigint       default 0 comment '创建用户ID',
+    create_id          bigint(20)   default 0 comment '创建用户ID',
     create_by          varchar(64)  default '' comment '创建用户',
-    update_id          bigint       default 0 comment '修改用户ID',
+    update_id          bigint(20)   default 0 comment '修改用户ID',
     update_by          varchar(64)  default '' comment '修改用户',
     create_time        datetime comment '创建时间',
     update_time        datetime comment '修改时间',
@@ -753,8 +870,8 @@ create table t_tools_generator_table
 drop table if exists t_tools_generator_column;
 create table t_tools_generator_column
 (
-    id             bigint      not null auto_increment comment '主键ID',
-    table_id       bigint      not null comment '生成表ID',
+    id             bigint(20)  not null auto_increment comment '主键ID',
+    table_id       bigint(20)  not null comment '生成表ID',
     column_name    varchar(64) not null comment '生成表列名称',
     column_comment varchar(128) default '' comment '生成表列描述',
     column_type    varchar(64) not null comment '生成表列类型',
@@ -769,9 +886,9 @@ create table t_tools_generator_column
     query_type     varchar(64)  default 'EQUAL' comment '查询类型(字典类型[tools_generator_query_type])',
     component_type varchar(64)  default 'INPUT' comment '组件类型(字典类型[tools_generator_component_type])',
     type_key       varchar(64)  default '' comment '字典类型键名',
-    create_id      bigint       default 0 comment '创建用户ID',
+    create_id      bigint(20)   default 0 comment '创建用户ID',
     create_by      varchar(64)  default '' comment '创建用户',
-    update_id      bigint       default 0 comment '修改用户ID',
+    update_id      bigint(20)   default 0 comment '修改用户ID',
     update_by      varchar(64)  default '' comment '修改用户',
     create_time    datetime comment '创建时间',
     update_time    datetime comment '修改时间',
@@ -784,9 +901,9 @@ create table t_tools_generator_column
 drop table if exists t_sys_storage_record;
 create table t_sys_storage_record
 (
-    id                 bigint       not null auto_increment comment '主键ID',
+    id                 bigint(20)   not null auto_increment comment '主键ID',
     url                varchar(512) not null comment '文件访问地址',
-    size               bigint       default 0 comment '文件大小',
+    size               bigint(20)   default 0 comment '文件大小',
     file_name          varchar(255) default '' comment '文件名称',
     original_file_name varchar(255) default '' comment '原始文件名称',
     base_path          varchar(255) default '' comment '基础存储路径',
@@ -796,14 +913,14 @@ create table t_sys_storage_record
     platform           varchar(32)  default '' comment '存储平台名称',
     th_url             varchar(512) default '' comment '缩略图访问路径',
     th_file_name       varchar(255) default '' comment '缩略图文件名称',
-    th_size            bigint       default 0 comment '缩略图大小',
+    th_size            bigint(20)   default 0 comment '缩略图大小',
     th_content_type    varchar(128) default '' comment '缩略图MIME类型',
     object_id          varchar(32)  default '' comment '文件所属对象ID',
     object_type        varchar(32)  default '' comment '文件所属对象类型',
     attr               varchar(512) default '' comment '附加属性',
     file_acl           varchar(32)  default '' comment 'fileAcl',
     th_file_acl        varchar(32)  default '' comment 'thFileAcl',
-    create_id          bigint       default 0 comment '创建用户ID',
+    create_id          bigint(20)   default 0 comment '创建用户ID',
     create_by          varchar(64)  default '' comment '创建用户',
     create_time        datetime comment '创建时间',
     primary key (id)
@@ -815,9 +932,9 @@ create table t_sys_storage_record
 drop table if exists t_sys_storage_config;
 create table t_sys_storage_config
 (
-    id          bigint      not null auto_increment comment '主键ID',
+    id          bigint(20)  not null auto_increment comment '主键ID',
     name        varchar(32) not null comment '存储配置名称',
-    type        varchar(32) not null comment '存储类型(字典类型[sys_storage_type])',
+    type        varchar(32) not null comment '存储类型(字典类型[storage_type])',
     platform    varchar(64) not null comment '存储平台名称',
     domain      varchar(255) default '' comment '存储域名',
     base_path   varchar(128) default '' comment '基础路径',
@@ -831,9 +948,9 @@ create table t_sys_storage_config
     is_https    varchar(4)   default '1' comment '是否HTTPS(1-是 2-否)',
     status      varchar(4)   default '1' comment '状态(1-正常 2-停用)',
     remark      varchar(128) default '' comment '备注',
-    create_id   bigint       default 0 comment '创建用户ID',
+    create_id   bigint(20)   default 0 comment '创建用户ID',
     create_by   varchar(64)  default '' comment '创建用户',
-    update_id   bigint       default 0 comment '修改用户ID',
+    update_id   bigint(20)   default 0 comment '修改用户ID',
     update_by   varchar(64)  default '' comment '修改用户',
     create_time datetime comment '创建时间',
     update_time datetime comment '修改时间',
@@ -851,7 +968,7 @@ values (100, '默认本地存储', 'LOCAL', 'LOCAL', '', 'youlan/upload/', '', '
 drop table if exists t_sms_supplier;
 create table t_sms_supplier
 (
-    id                bigint       not null auto_increment comment '主键ID',
+    id                bigint(20)   not null auto_increment comment '主键ID',
     config_id         varchar(64)  not null comment '配置标识',
     supplier          varchar(32)  not null comment '短信厂商(字典类型[sms_supplier])',
     access_key_id     varchar(128) not null comment '访问秘钥',
@@ -865,9 +982,9 @@ create table t_sms_supplier
     status            varchar(4)   default '1' comment '状态(1-正常 2-停用)',
     extra_params      longtext comment '额外参数',
     remark            varchar(128) default '' comment '备注',
-    create_id         bigint       default 0 comment '创建用户ID',
+    create_id         bigint(20)   default 0 comment '创建用户ID',
     create_by         varchar(64)  default '' comment '创建用户',
-    update_id         bigint       default 0 comment '修改用户ID',
+    update_id         bigint(20)   default 0 comment '修改用户ID',
     update_by         varchar(64)  default '' comment '修改用户',
     create_time       datetime comment '创建时间',
     update_time       datetime comment '修改时间',
@@ -880,7 +997,7 @@ create table t_sms_supplier
 drop table if exists t_sms_record;
 create table t_sms_record
 (
-    id            bigint not null auto_increment comment '主键ID',
+    id            bigint(20) not null auto_increment comment '主键ID',
     config_id     varchar(64)  default '' comment '配置标识',
     template_id   varchar(128) default '' comment '模版ID',
     sms_type      char(1)      default '1' comment '短信类型(1-标准短信 2-异步短信 3-延迟短信)',
@@ -890,11 +1007,210 @@ create table t_sms_record
     phone         varchar(16)  default '' comment '手机号',
     message       varchar(128) default '' comment '消息内容',
     response_data varchar(255) default '' comment '响应数据',
-    delayed_time  bigint       default 0 comment '延迟时间(ms)',
+    delayed_time  bigint(20)   default 0 comment '延迟时间(ms)',
     send_time     datetime comment '发送时间',
     response_time datetime comment '响应时间',
     primary key (id)
 ) auto_increment = 100 comment '短信记录表';
+
+-- ----------------------------
+-- 支付配置表
+-- ----------------------------
+drop table if exists t_pay_config;
+create table t_pay_config
+(
+    id          bigint(20)  not null auto_increment comment '主键ID',
+    name        varchar(32) not null comment '配置名称',
+    type        varchar(16) not null comment '支付类型(数据字典[pay_type])',
+    params      longtext    not null comment '配置参数(JSON格式)',
+    status      varchar(4)   default '1' comment '状态(1-正常 2-停用)',
+    remark      varchar(128) default '' comment '备注',
+    create_id   bigint(20)   default 0 comment '创建用户ID',
+    create_by   varchar(64)  default '' comment '创建用户',
+    update_id   bigint(20)   default 0 comment '修改用户ID',
+    update_by   varchar(64)  default '' comment '修改用户',
+    create_time datetime comment '创建时间',
+    update_time datetime comment '修改时间',
+    primary key (id)
+) auto_increment = 100 comment '支付配置表';
+
+-- ----------------------------
+-- 支付通道表
+-- ----------------------------
+drop table if exists t_pay_channel;
+create table t_pay_channel
+(
+    id                bigint(20)   not null auto_increment comment '主键ID',
+    name              varchar(32)  not null comment '通道名称',
+    pay_notify_url    varchar(256) not null comment '支付回调地址',
+    refund_notify_url varchar(256) not null comment '退款回调地址',
+    status            varchar(4)   default '1' comment '状态(1-正常 2-停用)',
+    remark            varchar(128) default '' comment '备注',
+    create_id         bigint(20)   default 0 comment '创建用户ID',
+    create_by         varchar(64)  default '' comment '创建用户',
+    update_id         bigint(20)   default 0 comment '修改用户ID',
+    update_by         varchar(64)  default '' comment '修改用户',
+    create_time       datetime comment '创建时间',
+    update_time       datetime comment '修改时间',
+    primary key (id)
+) auto_increment = 100 comment '支付通道表';
+
+-- ----------------------------
+-- 支付通道配置表
+-- ----------------------------
+drop table if exists t_pay_channel_config;
+create table t_pay_channel_config
+(
+    id         bigint(20)  not null auto_increment comment '主键ID',
+    channel_id bigint(20)  not null comment '支付通道ID',
+    config_id  bigint(20)  not null comment '支付配置ID',
+    trade_type varchar(16) not null comment '交易类型(数据字典[pay_trade_type])',
+    primary key (id)
+) auto_increment = 100 comment '支付通道配置表';
+
+-- ----------------------------
+-- 支付订单表
+-- ----------------------------
+drop table if exists t_pay_order;
+create table t_pay_order
+(
+    id            bigint(20)     not null comment '主键ID',
+    mch_order_id  varchar(64)    not null comment '商户订单号',
+    out_trade_no  varchar(64) comment '外部交易订单号',
+    trade_no      varchar(64) comment '交易订单号',
+    pay_status    varchar(4)     default '1' comment '支付状态(1-待支付 2-已支付 3-已关闭 4-已退款)',
+    trade_type    varchar(16) comment '交易类型(数据字典[pay_trade_type])',
+    pay_amount    decimal(18, 2) not null comment '支付金额',
+    expire_time   datetime       not null comment '过期时间',
+    success_time  datetime comment '成功时间',
+    refund_amount decimal(18, 2) default 0 comment '退款金额',
+    channel_id    bigint(20)     not null comment '支付通道ID',
+    config_id     bigint(20) comment '支付配置ID',
+    record_id     bigint(20) comment '支付记录ID',
+    subject       varchar(32)    default '' comment '商品标题',
+    detail        varchar(128)   default '' comment '商品详情',
+    notify_url    varchar(256)   default '' comment '回调地址',
+    client_ip     varchar(16)    default '' comment '客户端IP',
+    client_id     varchar(64) comment '客户端ID',
+    remark        varchar(128)   default '' comment '备注',
+    create_id     bigint(20)     default 0 comment '创建用户ID',
+    create_by     varchar(64)    default '' comment '创建用户',
+    update_id     bigint(20)     default 0 comment '修改用户ID',
+    update_by     varchar(64)    default '' comment '修改用户',
+    create_time   datetime comment '创建时间',
+    update_time   datetime comment '修改时间',
+    primary key (id)
+) auto_increment = 100 comment '支付订单表';
+
+-- ----------------------------
+-- 支付记录表
+-- ----------------------------
+drop table if exists t_pay_record;
+create table t_pay_record
+(
+    id              bigint(20)  not null auto_increment comment '主键ID',
+    out_trade_no    varchar(64) not null comment '外部交易订单号',
+    trade_no        varchar(64) comment '交易订单号',
+    order_id        bigint(20)  not null comment '支付订单ID',
+    config_id       bigint(20)  not null comment '支付配置ID',
+    trade_type      varchar(16) not null comment '交易类型',
+    client_ip       varchar(16)  default '' comment '客户端IP',
+    pay_status      varchar(4)   default '1' comment '支付状态(1-待支付 2-已支付 3-已关闭 4-已退款)',
+    extra_params    longtext comment '额外参数(JSON格式)',
+    error_code      varchar(32) comment '错误码',
+    error_msg       varchar(128) comment '错误信息',
+    raw_data        longtext comment '原始数据',
+    notify_url      varchar(256) default '' comment '回调地址',
+    notify_raw_data longtext comment '回调原始数据',
+    create_id       bigint(20)   default 0 comment '创建用户ID',
+    create_by       varchar(64)  default '' comment '创建用户',
+    update_id       bigint(20)   default 0 comment '修改用户ID',
+    update_by       varchar(64)  default '' comment '修改用户',
+    create_time     datetime comment '创建时间',
+    update_time     datetime comment '修改时间',
+    primary key (id)
+) auto_increment = 100 comment '支付记录表';
+
+-- ----------------------------
+-- 支付回调表
+-- ----------------------------
+drop table if exists t_pay_notify;
+create table t_pay_notify
+(
+    id               bigint(20)   not null auto_increment comment '主键ID',
+    notify_type      varchar(4)   not null comment '回调类型(1-支付回调 2-退款回调)',
+    notify_status    varchar(4)  default '1' comment '回调状态(1-等待回调 2-回调成功 3-回调失败 4-请求成功 5-请求失败)',
+    order_id         bigint(20)   not null comment '订单ID(支付回调时-支付订单ID 退款回调时-退款订单ID)',
+    notify_url       varchar(256) not null comment '回调地址',
+    notify_times     int(11)     default 0 comment '回调次数',
+    next_notify_time datetime comment '下次回调时间',
+    last_notify_time datetime comment '最后回调时间',
+    create_id        bigint(20)  default 0 comment '创建用户ID',
+    create_by        varchar(64) default '' comment '创建用户',
+    update_id        bigint(20)  default 0 comment '修改用户ID',
+    update_by        varchar(64) default '' comment '修改用户',
+    create_time      datetime comment '创建时间',
+    update_time      datetime comment '修改时间',
+    primary key (id)
+) auto_increment = 100 comment '支付回调表';
+
+-- ----------------------------
+-- 支付回调记录表
+-- ----------------------------
+drop table if exists t_pay_notify_record;
+create table t_pay_notify_record
+(
+    id            bigint(20) not null auto_increment comment '主键ID',
+    notify_id     bigint(20) not null comment '回调ID',
+    notify_times  int(11)     default 0 comment '回调次数',
+    request_body  longtext comment '请求体',
+    response_body longtext comment '响应体',
+    notify_status varchar(4)  default '1' comment '回调状态(1-等待回调 2-回调成功 3-回调失败 4-请求成功 5-请求失败)',
+    error_msg     longtext comment '错误信息',
+    create_id     bigint(20)  default 0 comment '创建用户ID',
+    create_by     varchar(64) default '' comment '创建用户',
+    update_id     bigint(20)  default 0 comment '修改用户ID',
+    update_by     varchar(64) default '' comment '修改用户',
+    create_time   datetime comment '创建时间',
+    update_time   datetime comment '修改时间',
+    primary key (id)
+) auto_increment = 100 comment '支付回调记录表';
+
+-- ----------------------------
+-- 支付退款订单表
+-- ----------------------------
+drop table if exists t_pay_refund_order;
+create table t_pay_refund_order
+(
+    id              bigint(20)     not null comment '主键ID',
+    mch_order_id    varchar(64)    not null comment '商户订单号',
+    mch_refund_id   varchar(64)    not null comment '商户退款号',
+    refund_amount   decimal(10, 2) not null comment '退款金额',
+    refund_status   varchar(4)     not null comment '退款状态(1-待退款 2-已退款 3-已失败)',
+    order_id        bigint(20)     not null comment '支付订单ID',
+    out_trade_no    varchar(64)    not null comment '外部交易订单号',
+    trade_no        varchar(64)    not null comment '交易订单号',
+    trade_type      varchar(16)    not null comment '交易类型(数据字典[pay_trade_type])',
+    out_refund_no   varchar(64)    not null comment '外部退款编号',
+    refund_no       varchar(64) comment '退款编号',
+    refund_reason   varchar(256)   not null comment '退款原因',
+    channel_id      bigint(20)     not null comment '支付通道ID',
+    config_id       bigint(20) comment '支付配置ID',
+    success_time    datetime comment '成功时间',
+    error_code      varchar(32) comment '错误码',
+    error_msg       varchar(128) comment '错误信息',
+    raw_data        longtext comment '原始数据',
+    notify_url      varchar(256) default '' comment '回调地址',
+    notify_raw_data longtext comment '回调原始数据',
+    remark          varchar(128) default '' comment '备注',
+    create_id       bigint(20)   default 0 comment '创建用户ID',
+    create_by       varchar(64)  default '' comment '创建用户',
+    update_id       bigint(20)   default 0 comment '修改用户ID',
+    update_by       varchar(64)  default '' comment '修改用户',
+    create_time     datetime comment '创建时间',
+    update_time     datetime comment '修改时间',
+    primary key (id)
+) auto_increment = 100 comment '支付退款订单表';
 
 -- ----------------------------
 -- 字典类型表
@@ -902,14 +1218,14 @@ create table t_sms_record
 drop table if exists t_sys_dict_type;
 create table t_sys_dict_type
 (
-    id          bigint      not null auto_increment comment '主键ID',
+    id          bigint(20)  not null auto_increment comment '主键ID',
     type_name   varchar(64) not null comment '字典类型名称',
     type_key    varchar(64) not null comment '字典类型键名',
     status      varchar(4)   default '1' comment '状态(1-正常 2-停用)',
     remark      varchar(128) default '' comment '备注',
-    create_id   bigint       default 0 comment '创建用户ID',
+    create_id   bigint(20)   default 0 comment '创建用户ID',
     create_by   varchar(64)  default '' comment '创建用户',
-    update_id   bigint       default 0 comment '修改用户ID',
+    update_id   bigint(20)   default 0 comment '修改用户ID',
     update_by   varchar(64)  default '' comment '修改用户',
     create_time datetime comment '创建时间',
     update_time datetime comment '修改时间',
@@ -931,9 +1247,18 @@ values ('机构类型', 'sys_org_type', '机构类型列表', 100, 'admin', sysd
        ('登录日志状态', 'sys_login_log_status', '登录日志状态列表', 100, 'admin', sysdate()),
        ('数据权限范围', 'sys_data_scope', '数据权限范围列表', 100, 'admin', sysdate()),
        ('用户性别', 'sys_user_sex', '用户性别列表', 100, 'admin', sysdate()),
-       ('存储类型', 'sys_storage_type', '存储类型列表', 100, 'admin', sysdate()),
-       ('存储访问控制', 'sys_storage_acl_type', '存储访问控制类型', 100, 'admin', sysdate()),
-       ('短信厂商', 'sms_supplier', '短信厂商列表', 100, 'admin', sysdate());
+       ('存储类型', 'storage_type', '存储类型列表', 100, 'admin', sysdate()),
+       ('存储访问控制', 'storage_acl_type', '存储访问控制类型', 100, 'admin', sysdate()),
+       ('短信厂商', 'sms_supplier', '短信厂商列表', 100, 'admin', sysdate()),
+       ('短信类型', 'sms_type', '短信类型列表', 100, 'admin', sysdate()),
+       ('短信发送类型', 'sms_send_type', '短信发送类型', 100, 'admin', sysdate()),
+       ('短信发送状态', 'sms_send_status', '短信发送类型列表', 100, 'admin', sysdate()),
+       ('支付类型', 'pay_type', '支付类型列表', 100, 'admin', sysdate()),
+       ('支付状态', 'pay_status', '支付状态列表', 100, 'admin', sysdate()),
+       ('支付交易类型', 'pay_trade_type', '支付交易类型列表', 100, 'admin', sysdate()),
+       ('支付回调类型', 'pay_notify_type', '支付回调类型列表', 100, 'admin', sysdate()),
+       ('支付回调状态', 'pay_notify_status', '支付回调状态列表', 100, 'admin', sysdate()),
+       ('支付退款状态', 'pay_refund_status', '支付退款状态列表', 100, 'admin', sysdate());
 
 -- ----------------------------
 -- 字典值表
@@ -941,7 +1266,7 @@ values ('机构类型', 'sys_org_type', '机构类型列表', 100, 'admin', sysd
 drop table if exists t_sys_dict_data;
 create table t_sys_dict_data
 (
-    id          bigint       not null auto_increment comment '主键ID',
+    id          bigint(20)   not null auto_increment comment '主键ID',
     type_key    varchar(64)  not null comment '字典类型键名',
     data_name   varchar(64)  not null comment '字典值名称',
     data_value  varchar(128) not null comment '字典值键值',
@@ -951,9 +1276,9 @@ create table t_sys_dict_data
     sort        int(4)       default 0 comment '排序',
     status      varchar(4)   default '1' comment '状态(1-正常 2-停用)',
     remark      varchar(128) default '' comment '备注',
-    create_id   bigint       default 0 comment '创建用户ID',
+    create_id   bigint(20)   default 0 comment '创建用户ID',
     create_by   varchar(64)  default '' comment '创建用户',
-    update_id   bigint       default 0 comment '修改用户ID',
+    update_id   bigint(20)   default 0 comment '修改用户ID',
     update_by   varchar(64)  default '' comment '修改用户',
     create_time datetime comment '创建时间',
     update_time datetime comment '修改时间',
@@ -1033,18 +1358,18 @@ values ('sys_org_type', '平台', '0', '', '', '2', 100, 'admin', sysdate()),
        ('sys_user_sex', '男', '1', '', '', '1', 100, 'admin', sysdate()),
        ('sys_user_sex', '女', '2', '', '', '2', 100, 'admin', sysdate()),
        ('sys_user_sex', '未知', '3', '', '', '2', 100, 'admin', sysdate()),
-       ('sys_storage_type', '本地存储', 'LOCAL', '', '', '1', 100, 'admin', sysdate()),
-       ('sys_storage_type', '华为OBS', 'HUAWEI_OBS', '', '', '2', 100, 'admin', sysdate()),
-       ('sys_storage_type', '阿里云OSS', 'ALIYUN_OSS', '', '', '2', 100, 'admin', sysdate()),
-       ('sys_storage_type', '七牛KODO', 'QINIU_KODO', '', '', '2', 100, 'admin', sysdate()),
-       ('sys_storage_type', '腾讯COS', 'TENCENT_COS', '', '', '2', 100, 'admin', sysdate()),
-       ('sys_storage_type', '百度BOS', 'BAIDU_BOS', '', '', '2', 100, 'admin', sysdate()),
-       ('sys_storage_type', 'MINIO', 'MINIO', '', '', '2', 100, 'admin', sysdate()),
-       ('sys_storage_type', 'AmazonS3', 'AMAZON_S3', '', '', '2', 100, 'admin', sysdate()),
-       ('sys_storage_acl_type', '默认', 'default', '', '', '1', 100, 'admin', sysdate()),
-       ('sys_storage_acl_type', '私有', 'private', '', '', '2', 100, 'admin', sysdate()),
-       ('sys_storage_acl_type', '公共读', 'public-read', '', '', '2', 100, 'admin', sysdate()),
-       ('sys_storage_acl_type', '公共读写', 'public-read-write', '', '', '2', 100, 'admin', sysdate()),
+       ('storage_type', '本地存储', 'LOCAL', '', '', '1', 100, 'admin', sysdate()),
+       ('storage_type', '华为OBS', 'HUAWEI_OBS', '', '', '2', 100, 'admin', sysdate()),
+       ('storage_type', '阿里云OSS', 'ALIYUN_OSS', '', '', '2', 100, 'admin', sysdate()),
+       ('storage_type', '七牛KODO', 'QINIU_KODO', '', '', '2', 100, 'admin', sysdate()),
+       ('storage_type', '腾讯COS', 'TENCENT_COS', '', '', '2', 100, 'admin', sysdate()),
+       ('storage_type', '百度BOS', 'BAIDU_BOS', '', '', '2', 100, 'admin', sysdate()),
+       ('storage_type', 'MINIO', 'MINIO', '', '', '2', 100, 'admin', sysdate()),
+       ('storage_type', 'AmazonS3', 'AMAZON_S3', '', '', '2', 100, 'admin', sysdate()),
+       ('storage_acl_type', '默认', 'default', '', '', '1', 100, 'admin', sysdate()),
+       ('storage_acl_type', '私有', 'private', '', '', '2', 100, 'admin', sysdate()),
+       ('storage_acl_type', '公共读', 'public-read', '', '', '2', 100, 'admin', sysdate()),
+       ('storage_acl_type', '公共读写', 'public-read-write', '', '', '2', 100, 'admin', sysdate()),
        ('sms_supplier', '阿里', 'alibaba', '', '', '1', 100, 'admin', sysdate()),
        ('sms_supplier', '容连云', 'cloopen', '', '', '2', 100, 'admin', sysdate()),
        ('sms_supplier', '天翼云', 'ctyun', '', '', '2', 100, 'admin', sysdate()),
@@ -1057,4 +1382,33 @@ values ('sys_org_type', '平台', '0', '', '', '2', 100, 'admin', sysdate()),
        ('sms_supplier', '云片', 'yunpian', '', '', '2', 100, 'admin', sysdate()),
        ('sms_supplier', '助通', 'zhutong', '', '', '2', 100, 'admin', sysdate()),
        ('sms_supplier', '联麓', 'lianlu', '', '', '2', 100, 'admin', sysdate()),
-       ('sms_supplier', '云极', 'yunji', '', '', '2', 100, 'admin', sysdate());
+       ('sms_supplier', '云极', 'yunji', '', '', '2', 100, 'admin', sysdate()),
+       ('sms_type', '标准短信', '1', 'primary', '', '1', 100, 'admin', sysdate()),
+       ('sms_type', '异步短信', '2', 'info', '', '2', 100, 'admin', sysdate()),
+       ('sms_type', '延迟短信', '3', 'warning', '', '2', 100, 'admin', sysdate()),
+       ('sms_send_type', '单个发送', '1', 'primary', '', '1', 100, 'admin', sysdate()),
+       ('sms_send_type', '多个发送', '1', 'danger', '', '2', 100, 'admin', sysdate()),
+       ('sms_send_status', '成功', '1', 'success', '', '2', 100, 'admin', sysdate()),
+       ('sms_send_status', '失败', '2', 'danger', '', '2', 100, 'admin', sysdate()),
+       ('pay_type', '微信', 'WECHAT', '', '', '1', 100, 'admin', sysdate()),
+       ('pay_type', '支付宝', 'ALIPAY', '', '', '2', 100, 'admin', sysdate()),
+       ('pay_status', '待支付', '1', 'warning', '', '1', 100, 'admin', sysdate()),
+       ('pay_status', '已支付', '2', 'success', '', '2', 100, 'admin', sysdate()),
+       ('pay_status', '已关闭', '3', 'info', '', '2', 100, 'admin', sysdate()),
+       ('pay_status', '已退款', '4', 'danger', '', '2', 100, 'admin', sysdate()),
+       ('pay_trade_type', '微信JSAPI支付', 'WX_JSAPI', 'primary', '', '1', 100, 'admin', sysdate()),
+       ('pay_trade_type', '微信APP支付', 'WX_APP', 'primary', '', '2', 100, 'admin', sysdate()),
+       ('pay_trade_type', '微信H5支付', 'WX_H5', 'primary', '', '2', 100, 'admin', sysdate()),
+       ('pay_trade_type', '微信Native支付', 'WX_NATIVE', 'primary', '', '2', 100, 'admin', sysdate()),
+       ('pay_trade_type', '微信小程序支付', 'WX_MINI', 'primary', '', '2', 100, 'admin', sysdate()),
+       ('pay_trade_type', '微信付款码支付', 'WX_SCAN', 'primary', '', '2', 100, 'admin', sysdate()),
+       ('pay_notify_type', '支付回调', '1', 'primary', '', '1', 100, 'admin', sysdate()),
+       ('pay_notify_type', '退款回调', '2', 'danger', '', '2', 100, 'admin', sysdate()),
+       ('pay_notify_status', '等待回调', '1', 'primary', '', '1', 100, 'admin', sysdate()),
+       ('pay_notify_status', '回调成功', '2', 'success', '', '2', 100, 'admin', sysdate()),
+       ('pay_notify_status', '回调失败', '3', 'danger', '', '2', 100, 'admin', sysdate()),
+       ('pay_notify_status', '请求成功', '4', 'warning', '', '2', 100, 'admin', sysdate()),
+       ('pay_notify_status', '请求失败', '5', 'info', '', '2', 100, 'admin', sysdate()),
+       ('pay_refund_status', '待退款', '1', 'primary', '', '1', 100, 'admin', sysdate()),
+       ('pay_refund_status', '已退款', '2', 'success', '', '2', 100, 'admin', sysdate()),
+       ('pay_refund_status', '已失败', '3', 'danger', '', '2', 100, 'admin', sysdate());

@@ -39,5 +39,5 @@ public enum LimitType {
     /**
      * 请求URI限流
      */
-    REQUEST_URI;
+    REQUEST_URI
 }

@@ -78,7 +78,7 @@ public class UserBizService {
      */
     public User buildAddOrUpdateUser(UserDTO dto) {
         Long orgId = dto.getOrgId();
-        Org org = orgService.loadOrgIfExist(orgId);
+        Org org = orgService.loadOrgNotNull(orgId);
         if (VAL_STATUS_DISABLED.equals(org.getOrgStatus())) {
             throw new BizRuntimeException(ApiResultCode.D0002);
         }
@@ -122,7 +122,7 @@ public class UserBizService {
      * 用户详情
      */
     public UserVO loadUser(Long id) {
-        User user = userService.loadUserIfExist(id);
+        User user = userService.loadUserNotNull(id);
         UserVO userVO = BeanUtil.copyProperties(user, UserVO.class);
         List<Long> roleIdList = userRoleService.getRoleIdListByUserId(id);
         List<Long> postIdList = userPostService.getPostIdListByUserId(id);
@@ -160,7 +160,7 @@ public class UserBizService {
      */
     public UserVO loadUserProfile() {
         Long userId = SystemAuthHelper.getUserId();
-        User user = userService.loadUserIfExist(userId);
+        User user = userService.loadUserNotNull(userId);
         UserVO userVO = BeanUtil.copyProperties(user, UserVO.class);
         List<String> roleNameList = userRoleService.getBaseMapper().getRoleNameListByUserId(userId);
         List<String> postNameList = userPostService.getBaseMapper().getPostNameListByUserId(userId);
@@ -200,7 +200,7 @@ public class UserBizService {
             throw new BizRuntimeException(ApiResultCode.A0023);
         }
         Long userId = SystemAuthHelper.getUserId();
-        User user = userService.loadUserIfExist(userId);
+        User user = userService.loadUserNotNull(userId);
         boolean validUserPassword = userService.validUserPassword(oldPasswd, user.getUserPassword());
         if (!validUserPassword) {
             throw new BizRuntimeException(ApiResultCode.A0024);
@@ -216,7 +216,7 @@ public class UserBizService {
      */
     @Transactional(rollbackFor = Exception.class)
     public void updateAuthRole(Long userId, List<Long> roleIds) {
-        userService.loadUserIfExist(userId);
+        userService.loadUserNotNull(userId);
         List<String> roleStrList = roleService.getRoleStrList(roleIds);
         userRoleService.updateUserRoleBatch(userId, roleIds);
         // 重新设置用户角色权限

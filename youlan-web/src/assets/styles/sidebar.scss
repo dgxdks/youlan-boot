@@ -76,6 +76,17 @@
       white-space: nowrap !important;
     }
 
+    /* 可解决菜单文字溢出后隐藏问题
+    & .el-submenu .el-menu-item {
+      min-width: $base-sidebar-width !important;
+      //鼠标悬浮菜单向左移：margin-left: -20px
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.06) !important;
+        margin-left: -20px;
+      }
+    }
+    */
+
     // menu hover
     .submenu-title-noDropdown,
     .el-submenu__title {

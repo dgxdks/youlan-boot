@@ -28,13 +28,7 @@
       <table-toolbar :query-show.sync="queryShow" @refresh="getList" />
     </el-row>
 
-    <el-table
-      ref="queryTable"
-      v-loading="tableLoading"
-      :data="deptList"
-      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
-      row-key="id"
-    >
+    <el-table ref="queryTable" v-loading="tableLoading" :data="deptList" :tree-props="{children: 'children', hasChildren: 'hasChildren'}" row-key="id">
       <el-table-column label="部门名称" prop="orgName" width="260" />
       <el-table-column label="机构编码" prop="orgId" />
       <el-table-column label="机构类型" prop="orgType">
@@ -100,13 +94,7 @@
 </template>
 
 <script>
-import {
-  addDept,
-  getDeptTreeList,
-  loadDept,
-  removeDept,
-  updateDept
-} from '@/api/system/dept'
+import { addDept, getDeptTreeList, loadDept, removeDept, updateDept } from '@/api/system/dept'
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import crud from '@/framework/mixin/crud'

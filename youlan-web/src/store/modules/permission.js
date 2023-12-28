@@ -106,7 +106,7 @@ function menuListConvertToRoutes(menuList, parentMenu) {
     }
     // iframe处理逻辑
     if (isFrame(menu.isFrame)) {
-      // 如果菜单是菜单类型被指定为iframe则需要走内部链接打开
+      route.component = InnerLink
       if (isRouteMenu(menuType)) {
         let path = routePath.replace(/http:\/\//g, '')
         path = path.replace(/https:\/\//g, '')

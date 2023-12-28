@@ -95,7 +95,7 @@ public class StorageRecord extends PageDTO {
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 
-    @Query(column = "create_time", type = QueryType.BETWEEN)
+    @Query(type = QueryType.BETWEEN, column = "create_time")
     @Schema(description = DBConstant.DESC_CREATE_TIME)
     @TableField(exist = false)
     private List<Date> createTimeRange;

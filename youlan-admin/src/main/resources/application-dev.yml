@@ -4,66 +4,41 @@ spring:
     # redis地址
     host: localhost
     # redis端口
-    port: 16379
+    port: 6379
     # redis逻辑数据库
-    database: 10
+    database: 0
     # redis密码
-    password: Lechou@123
-    # 连接超时时间
-    timeout: 10s
-    # 是否开启ssl
-    ssl: false
-
---- # Redisson配置(https://github.com/redisson/redisson/wiki/2.-Configuration)
-redisson:
-  # 线程池数量
-  threads: 16
-  # netty线程池数量
-  netty-thread: 32
+    password: youlan@123
 
 --- # 数据库配置
 spring:
   # 数据库配置
   datasource:
-    # 数据源类型
-    type: com.zaxxer.hikari.HikariDataSource
-    # 数据源驱动
-    driver-class-name: com.mysql.cj.jdbc.Driver
     # 动态数据源配置
     dynamic:
-      # 设置默认的数据源或者数据源组，默认值master
-      primary: master
-      # 严格模式，匹配不到数据源则报错
-      strict: true
       # 数据源
       datasource:
         # 主库数据源
         master:
           type: ${spring.datasource.type}
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://localhost:13306/youlan-boot?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true
+          url: jdbc:mysql://localhost:3306/youlan-boot?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true}youlan-boot?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true
           username: root
-          password: Lechou@123
-    # hikari配置
-    hikari:
-      # 最大连接池数
-      maximum-pool-size: 20
-      # 最小空闲线程数
-      minimum-idle: 10
-      # 连接超时时间
-      connection-timeout: 30000
-      # 校验超时时间
-      validation-timeout: 5000
-      # 空闲连接最大存活时间，默认10分钟
-      idle-timeout: 600000
-      # 连接池中连接最长生命周期，0为无限生命周期，默认30分钟
-      max-lifetime: 1800000
-      # 连接测试语句
-      connection-test-query: SELECT 1
-      # 多久检查一次连接的活性
-      keepalive-time: 30000
+          password: youlan@123
 
 # MyBatisPlus配置
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+--- # 插件模块
+youlan:
+  pay:
+    # 是否启用回调(只有接收回调的服务才需要开启)
+    notify-enabled: false
+    # 是否启用支付记录同步(启用后将会定期向支付平台同步支付记录和支付订单状态)
+    record-sync-enabled: false
+    # 是否启用支付订单过期(启用后将会定期关闭过期的支付订单)
+    order-expire-enabled: false
+    # 是否启用退款订单同步(启用后将会定期向支付平台同步退款订单状态)
+    refund-order-sync-enabled: false

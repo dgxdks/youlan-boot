@@ -37,7 +37,8 @@
         <base-remove-button v-has-perm="['system:post:remove']" :disabled="tableNoSelected" plain @click="handleDelete" />
       </el-col>
       <el-col :span="1.5">
-        <base-download-button v-has-perm="['system:post:export']" plain @click="handleExport">导出</base-download-button>
+        <base-download-button v-has-perm="['system:post:export']" plain @click="handleExport">导出
+        </base-download-button>
       </el-col>
       <table-toolbar :query-show.sync="queryShow" @refresh="getList" />
     </el-row>

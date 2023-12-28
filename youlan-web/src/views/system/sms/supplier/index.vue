@@ -11,7 +11,13 @@
         />
       </el-form-item>
       <el-form-item label="短信厂商" prop="supplier">
-        <dict-select v-model="queryForm.supplier" dict-type="sms_supplier" style="width: 240px" placeholder="择短信厂商" clearable />
+        <dict-select
+          v-model="queryForm.supplier"
+          dict-type="sms_supplier"
+          style="width: 240px"
+          placeholder="择短信厂商"
+          clearable
+        />
       </el-form-item>
       <el-form-item label="短信签名" prop="signature">
         <el-input
@@ -66,10 +72,12 @@
         <base-remove-button v-has-perm="['system:smsSupplier:remove']" plain :disabled="tableNoSelected" @click="handleDelete" />
       </el-col>
       <el-col :span="1.5">
-        <base-download-button v-has-perm="['system:smsSupplier:export']" plain @click="handleExport">导出</base-download-button>
+        <base-download-button v-has-perm="['system:smsSupplier:export']" plain @click="handleExport">导出
+        </base-download-button>
       </el-col>
       <el-col :span="1.5">
-        <base-remove-button v-has-perm="['system:smsSupplier:remove']" plain @click="handleRefreshCache">刷新缓存</base-remove-button>
+        <base-remove-button v-has-perm="['system:smsSupplier:remove']" plain @click="handleRefreshCache">刷新缓存
+        </base-remove-button>
       </el-col>
       <table-toolbar :query-show.sync="queryShow" @refresh="getList" />
     </el-row>
@@ -113,15 +121,28 @@
       <el-form ref="editForm" :model="editForm" :rules="editRules" label-width="100px">
         <base-row-split2>
           <el-form-item label="配置标识" prop="configId">
-            <base-form-label slot="label" content="短信厂商全局唯一配置标识，创建后不可修改（建议使用英文）" label="配置标识" />
+            <base-form-label
+              slot="label"
+              content="短信厂商全局唯一配置标识，创建后不可修改（建议使用英文）"
+              label="配置标识"
+            />
             <el-input v-model="editForm.configId" :disabled="!!editForm.id" placeholder="请输入配置标识" />
           </el-form-item>
           <el-form-item label="短信厂商" prop="supplier">
             <base-form-label slot="label" content="指定此配置是哪个厂商" label="短信厂商" />
-            <dict-select v-model="editForm.supplier" placeholder="请选择短信厂商" dict-type="sms_supplier" @change="handleSupplierChange" />
+            <dict-select
+              v-model="editForm.supplier"
+              placeholder="请选择短信厂商"
+              dict-type="sms_supplier"
+              @change="handleSupplierChange"
+            />
           </el-form-item>
           <el-form-item label="访问秘钥" prop="accessKeyId">
-            <base-form-label slot="label" content="不同厂商名称不一样，例如：accessKey、apiKey、sdkKey、appId" label="访问秘钥" />
+            <base-form-label
+              slot="label"
+              content="不同厂商名称不一样，例如：accessKey、apiKey、sdkKey、appId"
+              label="访问秘钥"
+            />
             <el-input v-model="editForm.accessKeyId" placeholder="请输入访问秘钥" />
           </el-form-item>
           <el-form-item label="私密秘钥" prop="accessKeySecret">
@@ -141,7 +162,11 @@
             <el-input v-model="editForm.sdkAppId" placeholder="请输入应用ID" />
           </el-form-item>
           <el-form-item label="随机权重" prop="weight">
-            <base-form-label slot="label" content="负载均衡的权重值依赖于此，如不需要负载均衡可不进行配置" label="随机权重" />
+            <base-form-label
+              slot="label"
+              content="负载均衡的权重值依赖于此，如不需要负载均衡可不进行配置"
+              label="随机权重"
+            />
             <el-input-number v-model="editForm.weight" placeholder="随机权重" />
           </el-form-item>
           <el-form-item label="重试间隔" prop="retryInterval">
@@ -174,9 +199,12 @@ import VueJsonEditor from 'vue-json-editor'
 import {
   addSmsSupplier,
   getSmsSupplierExtraParams,
-  getSmsSupplierPageList, loadSmsSupplier,
-  refreshSmsSupplierCache, removeSmsSupplier,
-  updateSmsSupplier, updateSmsSupplierStatus
+  getSmsSupplierPageList,
+  loadSmsSupplier,
+  refreshSmsSupplierCache,
+  removeSmsSupplier,
+  updateSmsSupplier,
+  updateSmsSupplierStatus
 } from '@/api/system/sms/supplier'
 
 export default {

@@ -47,7 +47,7 @@ module.exports = {
   css: {
     loaderOptions: {
       sass: {
-        sassOptions: { outputStyle: 'expanded' }
+        sassOptions: {outputStyle: 'expanded'}
       }
     }
   },
@@ -89,6 +89,10 @@ module.exports = {
       .end()
       .use('svg-sprite-loader')
       .loader('svg-sprite-loader')
+      .tap((options) => ({
+        ...options,
+        plugins: [{removeAttrs: {attrs: 'fill'}}]
+      }))
       .options({
         symbolId: 'icon-[name]'
       })
@@ -136,10 +140,10 @@ module.exports = {
       })
 
       config.optimization.runtimeChunk('single'),
-      {
-        from: path.resolve(__dirname, './public/robots.txt'), // 防爬虫文件
-        to: './' // 到根目录下
-      }
+        {
+          from: path.resolve(__dirname, './public/robots.txt'), // 防爬虫文件
+          to: './' // 到根目录下
+        }
     })
   }
 }

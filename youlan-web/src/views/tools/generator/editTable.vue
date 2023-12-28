@@ -77,12 +77,7 @@
           <el-table-column label="字典类型" min-width="12%">
             <template slot-scope="scope">
               <el-select v-model="scope.row.typeKey" clearable>
-                <el-option
-                  v-for="item in typeList"
-                  :key="item.id"
-                  :label="item.typeKey"
-                  :value="item.typeKey"
-                />
+                <el-option v-for="item in typeList" :key="item.id" :label="item.typeKey" :value="item.typeKey" />
               </el-select>
             </template>
           </el-table-column>
@@ -103,15 +98,27 @@
               <el-input v-model="generatorTable.packageName" />
             </el-form-item>
             <el-form-item prop="moduleName">
-              <base-form-label slot="label" content="英文的模块名称，例如 system，包路径为com.youlan，则最终代码会生成在com.youlan.system下" label="模块名称" />
+              <base-form-label
+                slot="label"
+                content="英文的模块名称，例如 system，包路径为com.youlan，则最终代码会生成在com.youlan.system下"
+                label="模块名称"
+              />
               <el-input v-model="generatorTable.moduleName" />
             </el-form-item>
             <el-form-item prop="bizName">
-              <base-form-label slot="label" content="英文的业务名称, 例如 user，则方法和接口路径的命名都会包含此名称，例如 getUserList" label="业务名称" />
+              <base-form-label
+                slot="label"
+                content="英文的业务名称, 例如 user，则方法和接口路径的命名都会包含此名称，例如 getUserList"
+                label="业务名称"
+              />
               <el-input v-model="generatorTable.bizName" />
             </el-form-item>
             <el-form-item prop="featureName">
-              <base-form-label slot="label" content="中英文的功能名称，例如 用户，则方法注释等文字性描述都会包含此名称" label="生成功能名" />
+              <base-form-label
+                slot="label"
+                content="中英文的功能名称，例如 用户，则方法注释等文字性描述都会包含此名称"
+                label="生成功能名"
+              />
               <el-input v-model="generatorTable.featureName" />
             </el-form-item>
             <el-form-item prop="parentMenuId">
@@ -142,15 +149,27 @@
               </el-popover>
             </el-form-item>
             <el-form-item prop="entityDto">
-              <base-form-label slot="label" content="实体类DTO只包含参与页面新增修改的字段，例如 数据新增、数据编辑，数据库实体类字段较多时建议使用" label="实体类DTO" />
+              <base-form-label
+                slot="label"
+                content="实体类DTO只包含参与页面新增修改的字段，例如 数据新增、数据编辑，数据库实体类字段较多时建议使用"
+                label="实体类DTO"
+              />
               <dict-radio v-model="generatorTable.entityDto" dict-type="db_yes_no" />
             </el-form-item>
             <el-form-item prop="entityPageDto">
-              <base-form-label slot="label" content="实体类分页DTO只包含参与页面列表相关查询的字段，例如 分页查询、列表查询、列表导出，数据库实体类字段较多时建议使用" label="实体类PageDTO" />
+              <base-form-label
+                slot="label"
+                content="实体类分页DTO只包含参与页面列表相关查询的字段，例如 分页查询、列表查询、列表导出，数据库实体类字段较多时建议使用"
+                label="实体类PageDTO"
+              />
               <dict-radio v-model="generatorTable.entityPageDto" dict-type="db_yes_no" />
             </el-form-item>
             <el-form-item prop="entityVo">
-              <base-form-label slot="label" content="实体类VO只包含参与接口返回数据的字段，例如 各种查询返回的数据、Excel表格导出，数据库实体类字段较多时建议使用" label="实体类VO" />
+              <base-form-label
+                slot="label"
+                content="实体类VO只包含参与接口返回数据的字段，例如 各种查询返回的数据、Excel表格导出，数据库实体类字段较多时建议使用"
+                label="实体类VO"
+              />
               <dict-radio v-model="generatorTable.entityVo" dict-type="db_yes_no" />
             </el-form-item>
             <el-form-item prop="generatorType">
@@ -160,7 +179,11 @@
             </el-form-item>
           </base-row-split2>
           <el-form-item v-if="generatorTable.generatorType === '2'" prop="generatorType">
-            <base-form-label slot="label" content="建议填写磁盘绝对路径，若不填写，则会生成到当前项目下" label="自定义路径" />
+            <base-form-label
+              slot="label"
+              content="建议填写磁盘绝对路径，若不填写，则会生成到当前项目下"
+              label="自定义路径"
+            />
             <el-input v-model="generatorTable.generatorPath">
               <el-dropdown slot="append">
                 <el-button type="primary">
@@ -168,7 +191,8 @@
                   <i class="el-icon-arrow-down el-icon--right" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item @click.native="generatorTable.genPath = '/'">恢复默认的生成基础路径</el-dropdown-item>
+                  <el-dropdown-item @click.native="generatorTable.genPath = '/'">恢复默认的生成基础路径
+                  </el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </el-input>

@@ -42,10 +42,12 @@
         <base-remove-button v-has-perm="['system:dict:remove']" plain :disabled="tableNoSelected" @click="handleDelete" />
       </el-col>
       <el-col :span="1.5">
-        <base-download-button v-has-perm="['system:dict:export']" plain @click="handleExport">导出</base-download-button>
+        <base-download-button v-has-perm="['system:dict:export']" plain @click="handleExport">导出
+        </base-download-button>
       </el-col>
       <el-col :span="1.5">
-        <base-remove-button v-has-perm="['system:dict:remove']" plain @click="handleRefreshCache">刷新缓存</base-remove-button>
+        <base-remove-button v-has-perm="['system:dict:remove']" plain @click="handleRefreshCache">刷新缓存
+        </base-remove-button>
       </el-col>
       <table-toolbar :query-show.sync="queryShow" @refresh="getList" />
     </el-row>
@@ -176,7 +178,7 @@ export default {
       const id = row.id || this.tableIds[0]
       loadDictType({ id }).then(res => {
         this.openEdit('修改字典类型')
-        this.editForm = res
+        this.editForm = res.data
       })
     },
     // 表单重置

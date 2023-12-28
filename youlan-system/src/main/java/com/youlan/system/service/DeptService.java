@@ -15,9 +15,9 @@ import java.util.stream.Collectors;
 @Service
 public class DeptService extends BaseServiceImpl<DeptMapper, Dept> {
     /**
-     * 如果存在返回部门信息
+     * 获取部门信息且不为空
      */
-    public Dept loadDeptIfExists(Serializable id) {
+    public Dept loadDeptNotNull(Serializable id) {
         return this.loadOneOpt(id)
                 .orElseThrow(ApiResultCode.D0009::getException);
     }

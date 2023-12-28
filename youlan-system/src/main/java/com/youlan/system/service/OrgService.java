@@ -128,9 +128,9 @@ public class OrgService extends BaseServiceImpl<OrgMapper, Org> {
     }
 
     /**
-     * 查询机构详情
+     * 获取机构详情且不为空
      */
-    public Org loadOrgIfExist(Long orgId) {
+    public Org loadOrgNotNull(Long orgId) {
         return this.loadOneOpt(orgId)
                 .orElseThrow(ApiResultCode.D0001::getException);
     }
