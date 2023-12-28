@@ -24,9 +24,9 @@ public class RoleService extends BaseServiceImpl<RoleMapper, Role> {
 
 
     /**
-     * 获取角色信息且不为空
+     * 如果存在获取角色信息
      */
-    public Role loadRoleNotNull(Long id) {
+    public Role loadRoleIfExists(Long id) {
         return this.loadOneOpt(id)
                 .orElseThrow(ApiResultCode.A0017::getException);
     }

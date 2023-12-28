@@ -64,11 +64,5 @@ export default {
       return str
     }
     return md5(str)
-  },
-  randomUUID() {
-    return crypto.randomUUID()
-  },
-  simpleUUID() {
-    return this.randomUUID().replace(/-/g, '')
   }
 }

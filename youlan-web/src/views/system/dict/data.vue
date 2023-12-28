@@ -20,13 +20,7 @@
         />
       </el-form-item>
       <el-form-item label="状态" prop="status">
-        <dict-select
-          v-model="queryForm.status"
-          placeholder="数据状态"
-          dict-type="db_status"
-          clearable
-          style="width: 240px"
-        />
+        <dict-select v-model="queryForm.status" placeholder="数据状态" dict-type="db_status" clearable style="width: 240px" />
       </el-form-item>
       <el-form-item>
         <base-search-button @click="handleQuery" />
@@ -45,8 +39,7 @@
         <base-remove-button v-has-perm="['system:dict:remove']" plain :disabled="tableNoSelected" @click="handleDelete" />
       </el-col>
       <el-col :span="1.5">
-        <base-download-button v-has-perm="['system:dict:export']" plain @click="handleExport">导出
-        </base-download-button>
+        <base-download-button v-has-perm="['system:dict:export']" plain @click="handleExport">导出</base-download-button>
       </el-col>
       <el-col :span="1.5">
         <base-close-button plain @click="handleClose" />
@@ -127,7 +120,13 @@
 </template>
 
 <script>
-import { addDictData, getDictDataPageList, loadDictData, removeDictData, updateDictData } from '@/api/system/dict/data'
+import {
+  addDictData,
+  getDictDataPageList,
+  loadDictData,
+  removeDictData,
+  updateDictData
+} from '@/api/system/dict/data'
 import { getDictTypeList } from '@/api/system/dict/type'
 import crud from '@/framework/mixin/crud'
 

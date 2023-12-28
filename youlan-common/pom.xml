@@ -22,7 +22,6 @@
         <module>youlan-common-crypto</module>
         <module>youlan-common-region</module>
         <module>youlan-common-http</module>
-        <module>youlan-common-api</module>
     </modules>
 
     <properties>
