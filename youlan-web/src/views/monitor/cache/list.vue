@@ -117,8 +117,7 @@
               type="text"
               icon="el-icon-refresh-right"
               @click="handleClearCacheAll()"
-            >清理全部
-            </el-button>
+            >清理全部</el-button>
           </div>
           <el-form :model="cacheForm">
             <el-row :gutter="32">
@@ -151,14 +150,7 @@
 </template>
 
 <script>
-import {
-  clearCacheAll,
-  clearCacheKey,
-  clearCacheName,
-  getCacheValue,
-  listCacheKey,
-  listCacheName
-} from '@/api/monitor/cache'
+import { listCacheName, listCacheKey, getCacheValue, clearCacheName, clearCacheKey, clearCacheAll } from '@/api/monitor/cache'
 
 export default {
   name: 'CacheList',

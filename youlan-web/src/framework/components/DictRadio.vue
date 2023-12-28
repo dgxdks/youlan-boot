@@ -5,6 +5,7 @@
         {{ item.name }}
       </el-radio>
     </template>
+
   </el-radio-group>
 </template>
 

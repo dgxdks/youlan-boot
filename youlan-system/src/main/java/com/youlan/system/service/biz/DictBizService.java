@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -37,6 +38,32 @@ public class DictBizService {
     public List<DictData> getDict(String typeKey) {
         return dictDataService.loadMore(DictData::getTypeKey, typeKey);
     }
+
+
+    /**
+     * 获取数据字典值键值和名称的映射
+     */
+    public Map<String, String> getDictDataValueMap(String typeKey) {
+        List<DictData> dictDataList = getDict(typeKey);
+        if (CollectionUtil.isEmpty(dictDataList)) {
+            return new HashMap<>();
+        }
+        return dictDataList.stream()
+                .collect(Collectors.toMap(DictData::getDataValue, DictData::getDataName));
+    }
+
+    /**
+     * 获取数据字典值名称和键值的映射
+     */
+    public Map<String, String> getDictDataNameMap(String typeKey) {
+        List<DictData> dictDataList = getDict(typeKey);
+        if (CollectionUtil.isEmpty(dictDataList)) {
+            return new HashMap<>();
+        }
+        return dictDataList.stream()
+                .collect(Collectors.toMap(DictData::getDataName, DictData::getDataValue));
+    }
+
 
     /**
      * 新增字典值
@@ -87,7 +114,7 @@ public class DictBizService {
      */
     public void beforeAddOrgUpdateDictData(DictData dictData) {
         // 必须指定字典类型键名
-        DictType dictType = dictTypeService.loadDictTypeByTypeKeyNotNull(dictData.getTypeKey());
+        DictType dictType = dictTypeService.loadDictTypeByTypeKeyIfExists(dictData.getTypeKey());
         // 新增时字典类型不能被禁用
         if (ObjectUtil.isNull(dictData.getId()) && DBConstant.VAL_STATUS_DISABLED.equals(dictType.getStatus())) {
             throw new BizRuntimeException(ApiResultCode.B0015);
@@ -131,7 +158,7 @@ public class DictBizService {
     @Transactional(rollbackFor = Exception.class)
     public void updateDictType(DictType dictType) {
         beforeAddOrgUpdateDictType(dictType);
-        DictType oldDictType = dictTypeService.loadDictTypeNotNull(dictType.getId());
+        DictType oldDictType = dictTypeService.loadDictTypeIfExists(dictType.getId());
         // 如果前后typeKey不一致则字典值表也需要同步
         if (ObjectUtil.notEqual(oldDictType.getTypeKey(), dictType.getTypeKey())) {
             // 更新字典值中的typeKey
@@ -155,7 +182,7 @@ public class DictBizService {
     public void removeDictType(List<Long> ids) {
         List<String> typeKeyList = new ArrayList<>();
         for (Long id : ids) {
-            DictType dictType = dictTypeService.loadDictTypeNotNull(id);
+            DictType dictType = dictTypeService.loadDictTypeIfExists(id);
             boolean dictTypeExists = dictDataService.lambdaQuery()
                     .eq(DictData::getTypeKey, dictType.getTypeKey())
                     .exists();
@@ -189,7 +216,7 @@ public class DictBizService {
      * 设置所有字典缓存
      */
     public void setDictCache() {
-        List<DictData> cacheList = dictDataService.getBaseMapper().getDictList();
+        List<DictData> cacheList = dictDataService.getBaseMapper().getCacheList();
         Map<String, List<DictData>> dictDataGroup = cacheList.stream()
                 .collect(Collectors.groupingBy(DictData::getTypeKey));
         dictDataGroup.forEach(this::setDictCache);

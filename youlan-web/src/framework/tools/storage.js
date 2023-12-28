@@ -4,9 +4,6 @@ export default {
   setLocalStorage(key, value) {
     localStorage.setItem(key, value)
   },
-  removeLocalStorage(key) {
-    localStorage.removeItem(key)
-  },
   getLocalStorage(key) {
     return localStorage.getItem(key)
   },

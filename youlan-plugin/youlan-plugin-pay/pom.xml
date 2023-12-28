@@ -22,10 +22,6 @@
             <artifactId>youlan-common-db</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.youlan</groupId>
-            <artifactId>youlan-common-redis</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>

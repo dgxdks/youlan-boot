@@ -22,10 +22,6 @@
             <artifactId>youlan-common-validator</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.youlan</groupId>
-            <artifactId>youlan-common-api</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>easyexcel</artifactId>
         </dependency>

@@ -1,6 +1,4 @@
 # Auto Configure
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
     cn.hutool.extra.spring.SpringUtil,\
-    com.youlan.common.core.jackson.config.JacksonConfig,\
-    com.youlan.common.core.config.AsyncConfig,\
-    com.youlan.common.core.config.ScheduleConfig
+    com.youlan.common.core.config.JacksonConfig

@@ -1,6 +1,5 @@
 package com.youlan.common.core.helper;
 
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.youlan.common.core.restful.enums.ApiResultCode;
 import org.springframework.context.MessageSource;
@@ -15,11 +14,7 @@ public class MessageHelper {
      * 获取国际化消息
      */
     public static String message(String code, Object[] args, Locale local, String defaultValue) {
-        String message = MESSAGE_SOURCE.getMessage(code, args, defaultValue, local);
-        if (StrUtil.equals(message, code)) {
-            return StrUtil.format(message, args);
-        }
-        return message;
+        return MESSAGE_SOURCE.getMessage(code, args, defaultValue, local);
     }
 
     /**
@@ -40,7 +35,7 @@ public class MessageHelper {
      * 获取国际化消息
      */
     public static String message(String code, Object[] args, String defaultValue) {
-        return message(code, args, LocaleContextHolder.getLocale(), defaultValue);
+        return MESSAGE_SOURCE.getMessage(code, args, defaultValue, LocaleContextHolder.getLocale());
     }
 
     /**

@@ -10,6 +10,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.youlan.common.core.exception.BizRuntimeException;
@@ -38,9 +39,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.zip.ZipOutputStream;
@@ -73,6 +72,7 @@ public class GeneratorBizService {
      * 查询数据库表分页
      */
     public IPage<DBTable> getDbTablePageList(DBTable dbTable) {
+        dbTable.setTableExclude(generatorProperties().getTableExclude());
         return generatorTableService.getBaseMapper()
                 .getDbTablePageList(DBHelper.getPage(dbTable), dbTable);
     }
@@ -111,9 +111,28 @@ public class GeneratorBizService {
     @Transactional(rollbackFor = Exception.class)
     public void importDBColumnList(GeneratorTable generatorTable, List<DBTableColumn> dbTableColumnList) {
         Long tableId = generatorTable.getId();
-        List<GeneratorColumn> generatorColumnList = dbTableColumnList.stream()
-                .map(dbTableColumn -> GeneratorUtil.getGeneratorColumn(tableId, dbTableColumn))
-                .collect(Collectors.toList());
+        List<GeneratorColumn> generatorColumnList = dbTableColumnList.stream().map(dbTableColumn -> {
+                    String columnType = dbTableColumn.getColumnType();
+                    String columnKey = dbTableColumn.getColumnKey();
+                    String extra = dbTableColumn.getExtra();
+                    String isNullable = dbTableColumn.getIsNullable();
+                    GeneratorColumn generatorColumn = new GeneratorColumn()
+                            .setTableId(tableId)
+                            .setColumnName(dbTableColumn.getColumnName())
+                            .setColumnComment(dbTableColumn.getColumnComment())
+                            .setColumnType(columnType)
+                            .setJavaField(StrUtil.toCamelCase(dbTableColumn.getColumnName()))
+                            .setIsPk(DBConstant.boolean2YesNo(GeneratorUtil.columnIsPk(columnKey)))
+                            .setIsIncrement(DBConstant.boolean2YesNo(GeneratorUtil.columnIsIncrement(extra)))
+                            .setIsRequired(DBConstant.boolean2YesNo(GeneratorUtil.columnIsRequired(isNullable)))
+                            .setIsEdit(DBConstant.VAL_YES)
+                            .setIsTable(DBConstant.VAL_YES)
+                            .setIsQuery(DBConstant.VAL_YES)
+                            .setTypeKey(null);
+                    GeneratorUtil.setJavaTypeComponentType(generatorColumn);
+                    return generatorColumn;
+                }
+        ).collect(Collectors.toList());
         generatorColumnService.saveBatch(generatorColumnList);
     }
 
@@ -144,13 +163,18 @@ public class GeneratorBizService {
         List<GeneratorColumn> newGeneratorColumns = dbTableColumnList.stream()
                 .map(dbColumn -> {
                     GeneratorColumn generatorColumn = generatorColumnMap.get(dbColumn.getColumnName());
-                    // 旧数据中不存在此列则需要创建
-                    if (ObjectUtil.isNull(generatorColumn)) {
-                        return GeneratorUtil.getGeneratorColumn(generatorTable.getId(), dbColumn);
+                    if (generatorColumn == null) {
+                        return null;
                     }
-                    // 如果旧数据中存在此列仅更新部分字段
-                    return GeneratorUtil.syncGeneratorColumn(generatorColumn, dbColumn);
+                    return generatorColumn.setColumnComment(dbColumn.getColumnComment())
+                            .setColumnType(dbColumn.getColumnType())
+                            .setJavaType(GeneratorConstant.JAVA_TYPE_STRING)
+                            .setJavaField(StrUtil.toCamelCase(dbColumn.getColumnName()))
+                            .setIsPk(DBConstant.boolean2YesNo(GeneratorUtil.columnIsPk(dbColumn.getColumnKey())))
+                            .setIsIncrement(DBConstant.boolean2YesNo(GeneratorUtil.columnIsIncrement(dbColumn.getExtra())))
+                            .setIsRequired(DBConstant.boolean2YesNo(GeneratorUtil.columnIsRequired(dbColumn.getIsNullable())));
                 })
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
         generatorColumnService.remove(Wrappers.<GeneratorColumn>lambdaQuery().eq(GeneratorColumn::getTableId, generatorTable.getId()));
         return generatorColumnService.saveBatch(newGeneratorColumns);

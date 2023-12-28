@@ -103,17 +103,6 @@ public class SystemAuthHelper {
     }
 
     /**
-     * 如果存在获取用户名称
-     */
-    public static String getUserNameIfExists() {
-        try {
-            return getUserName();
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    /**
      * 获取用户机构ID
      */
     public static Long getOrgId() {
@@ -132,17 +121,6 @@ public class SystemAuthHelper {
      */
     public static Long getUserId() {
         return StpUtil.getLoginIdAsLong();
-    }
-
-    /**
-     * 如果存在获取用户ID
-     */
-    public static Long getUserIdIfExists() {
-        try {
-            return getUserId();
-        } catch (Exception e) {
-            return null;
-        }
     }
 
     /**

@@ -104,9 +104,9 @@ public class StorageConfigService extends BaseServiceImpl<StorageConfigMapper, S
     }
 
     /**
-     * 获取存储配置且不为空
+     * 如果存在返回存储配置
      */
-    public StorageConfig loadStorageConfigNotNull(Serializable id) {
+    public StorageConfig loadStorageConfigIfExists(Serializable id) {
         return this.loadOneOpt(id)
                 .orElseThrow(() -> new BizRuntimeException("存储配置不存在"));
     }
@@ -177,7 +177,7 @@ public class StorageConfigService extends BaseServiceImpl<StorageConfigMapper, S
      * 存储配置状态修改
      */
     public void updateStorageConfigStatus(Long id, String status) {
-        StorageConfig storageConfig = this.loadStorageConfigNotNull(id);
+        StorageConfig storageConfig = this.loadStorageConfigIfExists(id);
         StorageConfig updateStorageConfig = new StorageConfig();
         updateStorageConfig.setId(id);
         updateStorageConfig.setStatus(status);
@@ -194,7 +194,7 @@ public class StorageConfigService extends BaseServiceImpl<StorageConfigMapper, S
      */
     @Transactional(rollbackFor = Exception.class)
     public void updateStorageConfigIsDefault(Long id, String isDefault) {
-        StorageConfig storageConfig = this.loadStorageConfigNotNull(id);
+        StorageConfig storageConfig = this.loadStorageConfigIfExists(id);
         this.resetDefaultStorageConfig();
         storageConfig.setIsDefault(isDefault);
         boolean update = this.updateById(storageConfig);
