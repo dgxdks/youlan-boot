@@ -10,6 +10,7 @@ import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
 import com.youlan.common.core.exception.BizRuntimeException;
+import com.youlan.common.core.jackson.helper.JacksonHelper;
 import com.youlan.common.core.restful.ApiResult;
 import com.youlan.common.redis.helper.RedisHelper;
 import com.youlan.plugin.pay.config.PayProperties;
@@ -159,8 +160,8 @@ public class PayNotifyBizService {
         Exception notifyException = null;
         // 响应体
         String responseBody = null;
-        // 创建请求体
-        String requestBody = JSONUtil.toJsonStr(notifyDTO);
+        // 创建请求体,此处必须使用jackson序列化
+        String requestBody = JacksonHelper.toJsonStr(notifyDTO);
         try {
             // 发起支付回调请求
             httpResponse = HttpUtil.createPost(payNotify.getNotifyUrl())

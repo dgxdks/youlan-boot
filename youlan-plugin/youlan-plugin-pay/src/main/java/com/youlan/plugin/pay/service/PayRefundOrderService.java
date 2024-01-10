@@ -100,7 +100,7 @@ public class PayRefundOrderService extends BaseServiceImpl<PayRefundOrderMapper,
      * @param outRefundNo 外部退款订单号
      * @return 退款订单
      */
-    public PayRefundOrder loadRefundOrderByOuRefundNoNotNull(String outRefundNo) {
+    public PayRefundOrder loadRefundOrderByOutRefundNoNotNull(String outRefundNo) {
         return this.loadOneOpt(PayRefundOrder::getOutRefundNo, outRefundNo)
                 .orElseThrow(ApiResultCode.E0029::getException);
     }

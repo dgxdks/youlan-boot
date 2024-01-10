@@ -17,7 +17,7 @@
     </modules>
 
     <properties>
-        <revision>1.0.0</revision>
+        <revision>1.1.0</revision>
         <springboot.version>2.7.10</springboot.version>
         <mybatisplus.version>3.5.3.1</mybatisplus.version>
         <dynamic.datasource.version>3.5.2</dynamic.datasource.version>

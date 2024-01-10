@@ -265,7 +265,7 @@ public class PayRefundOrderBizService {
     @Transactional(rollbackFor = Exception.class)
     public void doRefundOrderWaiting(RefundResponse refundResponse) {
         // 获取退款订单
-        PayRefundOrder payRefundOrder = payRefundOrderService.loadRefundOrderByOuRefundNoNotNull(refundResponse.getOutRefundNo());
+        PayRefundOrder payRefundOrder = payRefundOrderService.loadRefundOrderByOutRefundNoNotNull(refundResponse.getOutRefundNo());
         RefundStatus refundStatus = payRefundOrder.getRefundStatus();
         switch (refundStatus) {
             case FAILED:
@@ -287,6 +287,7 @@ public class PayRefundOrderBizService {
                     updatePayRefundOrder.setRawData(refundResponse);
                 }
                 payRefundOrderService.updateByIdAndRefundStatus(payRefundOrder.getId(), RefundStatus.WAITING, updatePayRefundOrder);
+                break;
             default:
                 throw new BizRuntimeException(ApiResultCode.E0030);
         }
@@ -300,7 +301,7 @@ public class PayRefundOrderBizService {
     @Transactional(rollbackFor = Exception.class)
     public void doRefundOrderSuccess(RefundResponse refundResponse) {
         // 获取退款订单
-        PayRefundOrder payRefundOrder = payRefundOrderService.loadRefundOrderByOuRefundNoNotNull(refundResponse.getOutRefundNo());
+        PayRefundOrder payRefundOrder = payRefundOrderService.loadRefundOrderByOutRefundNoNotNull(refundResponse.getOutRefundNo());
         RefundStatus refundStatus = payRefundOrder.getRefundStatus();
         // 待退款需要更新退款订单，已成功不需要，其他状态中断执行
         switch (refundStatus) {
@@ -342,12 +343,13 @@ public class PayRefundOrderBizService {
     @Transactional(rollbackFor = Exception.class)
     public void doRefundOrderFailed(RefundResponse refundResponse) {
         // 获取退款订单ID
-        PayRefundOrder payRefundOrder = payRefundOrderService.loadRefundOrderByOuRefundNoNotNull(refundResponse.getRefundNo());
+        PayRefundOrder payRefundOrder = payRefundOrderService.loadRefundOrderByOutRefundNoNotNull(refundResponse.getOutRefundNo());
         RefundStatus refundStatus = payRefundOrder.getRefundStatus();
         // 待退款需要更新退款订单，已失败需要处理，其他状态中断执行
         switch (refundStatus) {
             case FAILED:
                 log.info("退款订单是已失败状态，无需更新：{id: {}}", payRefundOrder.getId());
+                break;
             case WAITING:
                 // 创建更新退款订单
                 PayRefundOrder updatePayRefundOrder = new PayRefundOrder()
