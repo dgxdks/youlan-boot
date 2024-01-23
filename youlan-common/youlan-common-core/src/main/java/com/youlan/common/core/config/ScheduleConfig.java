@@ -30,7 +30,7 @@ public class ScheduleConfig implements SchedulingConfigurer {
         threadPoolTaskScheduler.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
         // 等待所有任务完成关闭线程池
         threadPoolTaskScheduler.setWaitForTasksToCompleteOnShutdown(true);
-        // 初始化线城市
+        // 初始化线程池
         threadPoolTaskScheduler.initialize();
         return threadPoolTaskScheduler;
     }

@@ -122,7 +122,7 @@ public class EncryptorHelper {
     /**
      * 创建或获取加密配置上下文
      */
-    public static EncryptorContext createOrGetEncryptorContext(DecryptField decryptField) {
+    private static EncryptorContext createOrGetEncryptorContext(DecryptField decryptField) {
         return DECRYPT_FIELD_CACHE.computeIfAbsent(decryptField, anno -> new EncryptorContext()
                 .setAlgorithmType(anno.algorithm())
                 .setKey(resolveAnnoKey(anno.algorithm(), anno.key()))
@@ -135,7 +135,7 @@ public class EncryptorHelper {
     /**
      * 解析秘钥内容(明文秘钥/绝对路径文件/类路径文件/EL表达式)
      */
-    public static String resolveKey(String key) {
+    private static String resolveKey(String key) {
         Assert.notBlank(key);
         //如果是明文直接返回
         if (HexUtil.isHexNumber(key) || Base64.isBase64(key)) {
@@ -156,7 +156,7 @@ public class EncryptorHelper {
     /**
      * 解析注解秘钥配置
      */
-    public static String resolveAnnoKey(AlgorithmType algorithmType, String annoKey) {
+    private static String resolveAnnoKey(AlgorithmType algorithmType, String annoKey) {
         if (StrUtil.isNotBlank(annoKey)) {
             return resolveKey(EnvironmentHelper.resolvePlaceHolders(annoKey));
         }
@@ -173,7 +173,7 @@ public class EncryptorHelper {
     /**
      * 解析注解公钥配置
      */
-    public static String resolveAnnoPublicKey(AlgorithmType algorithmType, String annoPublicKey) {
+    private static String resolveAnnoPublicKey(AlgorithmType algorithmType, String annoPublicKey) {
         if (StrUtil.isNotBlank(annoPublicKey)) {
             return resolveKey(annoPublicKey);
         }
@@ -190,7 +190,7 @@ public class EncryptorHelper {
     /**
      * 解析注解私钥配置
      */
-    public static String resolveAnnoPrivateKey(AlgorithmType algorithmType, String annoPrivateKey) {
+    private static String resolveAnnoPrivateKey(AlgorithmType algorithmType, String annoPrivateKey) {
         if (StrUtil.isNotBlank(annoPrivateKey)) {
             return resolveKey(annoPrivateKey);
         }
@@ -208,7 +208,7 @@ public class EncryptorHelper {
     /**
      * 获取加密配置
      */
-    public static CryptoProperties getCryptProperties() {
+    private static CryptoProperties getCryptProperties() {
         return SpringUtil.getBean(CryptoProperties.class);
     }
 }

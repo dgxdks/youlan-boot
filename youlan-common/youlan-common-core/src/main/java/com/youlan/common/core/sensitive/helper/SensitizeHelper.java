@@ -89,8 +89,8 @@ public class SensitizeHelper {
             case IPV6:
                 newStr = ipv6(String.valueOf(str));
                 break;
-            case FIRST_MASK:
-                newStr = firstMask(String.valueOf(str));
+            case FIRST_ONLY:
+                newStr = firstOnly(String.valueOf(str));
                 break;
             default:
         }
@@ -113,7 +113,7 @@ public class SensitizeHelper {
      * @param str 字符串
      * @return 脱敏后的字符串
      */
-    public static String firstMask(String str) {
+    public static String firstOnly(String str) {
         if (StrUtil.isBlank(str)) {
             return StrUtil.EMPTY;
         }
@@ -127,7 +127,7 @@ public class SensitizeHelper {
      * @return 脱敏后的姓名
      */
     public static String chineseName(String fullName) {
-        return firstMask(fullName);
+        return firstOnly(fullName);
     }
 
     /**

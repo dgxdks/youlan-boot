@@ -41,7 +41,7 @@ public class RegistryController extends BaseController {
         if (!accountRegistryEnabled) {
             throw new BizRuntimeException(ApiResultCode.A0022);
         }
-        loginBizService.doImageCaptchaCheck(null, dto.getCaptchaId(), dto.getCaptchaCode());
+        loginBizService.doImageCaptchaCheck(dto.getCaptchaId(), dto.getCaptchaCode());
         UserDTO userDTO = new UserDTO();
         userDTO.setUserName(dto.getUserName());
         userDTO.setNickName(dto.getUserName());

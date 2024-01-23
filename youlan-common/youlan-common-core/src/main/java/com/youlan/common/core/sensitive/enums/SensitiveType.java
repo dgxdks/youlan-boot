@@ -58,7 +58,7 @@ public enum SensitiveType {
     /**
      * 定义了一个first_mask的规则，只显示第一个字符。
      */
-    FIRST_MASK,
+    FIRST_ONLY,
     /**
      * 自定义脱敏类型
      */

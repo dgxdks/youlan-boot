@@ -59,14 +59,14 @@ stop_app() {
     exit 1
   fi
   pid="$(cat pid)"
-  pid=$(ps -ef | grep java | grep "$pid" | grep -v grep | awk '{print $2}')
+  find_pid=$(ps -ef | grep java | grep "$pid" | grep -v grep | awk '{print $2}')
   # 判断进程ID是否真的存在
   if [[ -n $pid ]]; then
     log_info "找到服务进程ID[$pid]"
-    kill -9 "$(find_pid)"
+    kill -9 "$find_pid"
+    rm pid
+    log_info "服务停止成功"
   fi
-  rm pid
-  log_info "服务停止成功"
 }
 
 case $1 in

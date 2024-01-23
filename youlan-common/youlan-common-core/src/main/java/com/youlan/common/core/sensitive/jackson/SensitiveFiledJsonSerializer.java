@@ -65,8 +65,8 @@ public class SensitiveFiledJsonSerializer extends JsonSerializer<String> impleme
             case IPV6:
                 gen.writeString(SensitizeHelper.ipv6(value));
                 break;
-            case FIRST_MASK:
-                gen.writeString(SensitizeHelper.firstMask(value));
+            case FIRST_ONLY:
+                gen.writeString(SensitizeHelper.firstOnly(value));
                 break;
             case CUSTOM_MASK:
                 gen.writeString(SensitizeHelper.customMask(value, sensitiveField.prefixNoMaskLen(), sensitiveField.suffixNoMaskLen(), sensitiveField.maskStr()));

@@ -9,8 +9,8 @@ import com.youlan.common.crypto.entity.EncryptorContext;
 import com.youlan.common.crypto.enums.EncryptEncode;
 import lombok.Getter;
 
+@Getter
 public abstract class AbstractEncryptor implements Encryptor {
-    @Getter
     private final EncryptorContext context;
 
     public AbstractEncryptor(EncryptorContext context) {

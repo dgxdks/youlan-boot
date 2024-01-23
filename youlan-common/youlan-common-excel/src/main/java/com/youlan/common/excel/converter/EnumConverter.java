@@ -46,16 +46,18 @@ public class EnumConverter extends AbstractConverter {
             return emptyWriteCellData();
         }
         final ExcelEnumProperty excelEnumProperty = getFieldAnnotation(contentProperty, ExcelEnumProperty.class);
+        Class<? extends Enum<?>> enumClass = excelEnumProperty.value();
         Map<String, String> mappingMap = CONVERT_TO_EXCEL_CACHE.computeIfAbsent(excelEnumProperty, key -> {
-            Class<? extends Enum<?>> enumClass = excelEnumProperty.value();
             Enum<?>[] enumConstants = enumClass.getEnumConstants();
             // excel转java映射关系为 code -> text
             return Arrays.stream(enumConstants)
                     .collect(Collectors.toMap(anEnum -> getEnumFieldValue(anEnum, key.codeField()), anEnum -> getEnumFieldValue(anEnum, key.textField())));
         });
-        String mappingData = mappingMap.get(value.toString());
-        if (StrUtil.isBlank(mappingData)) {
-            return emptyWriteCellData();
+        if (value.getClass().equals(enumClass)) {
+            value = ReflectUtil.getFieldValue(value, excelEnumProperty.codeField());
+            if (ObjectUtil.isNull(value)) {
+                return emptyWriteCellData();
+            }
         }
         String convertDataStr = convertToMappingData(mappingMap, value.toString(), excelEnumProperty.separator());
         return new WriteCellData<>(concatPrefixSuffix(convertDataStr, excelEnumProperty.prefixStr(), excelEnumProperty.suffixStr()));

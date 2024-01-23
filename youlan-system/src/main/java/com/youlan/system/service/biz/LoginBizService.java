@@ -57,13 +57,14 @@ public class LoginBizService {
      * 用户登录
      */
     public SaTokenInfo accountLogin(AccountLoginDTO dto) {
-        doImageCaptchaCheck(dto.getUserName(), dto.getCaptchaId(), dto.getCaptchaCode());
+        doImageCaptchaCheck(dto.getCaptchaId(), dto.getCaptchaCode());
         String userName = dto.getUserName();
         String plainTextPassword = dto.getUserPassword();
         User user = userService.loadUserByUserNameOpt(userName)
                 .orElseThrow(() -> new BizRuntimeException(ApiResultCode.A0001));
         //判断用户是否被禁用
         if (userService.userIsDisabled(user)) {
+            loginLogService.addAsync(userName, LoginStatus.FAILED, ApiResultCode.A0009.getErrorMsg());
             throw new BizRuntimeException(ApiResultCode.A0009);
         }
         Supplier<Boolean> passwordMatch = () -> userService.validUserPassword(plainTextPassword, user.getUserPassword());
@@ -75,13 +76,14 @@ public class LoginBizService {
         SystemAuthInfo systemAuthInfo = createSystemAuthInfo(user);
         SystemAuthHelper.login(user.getId());
         SystemAuthHelper.setSystemAuthInfo(systemAuthInfo);
+        loginLogService.addAsync(userName, LoginStatus.SUCCESS, LoginStatus.SUCCESS.getText());
         return SystemAuthHelper.getTokenInfo();
     }
 
     /**
      * 图片验证码校验
      */
-    public void doImageCaptchaCheck(String userName, String captchaId, String captchaCode) {
+    public void doImageCaptchaCheck(String captchaId, String captchaCode) {
         //只有系统开启验证码功能才校验
         boolean captchaEnabled = SystemConfigHelper.captchaImageEnabled();
         if (!captchaEnabled) {
@@ -91,8 +93,7 @@ public class LoginBizService {
             throw new BizRuntimeException(ApiResultCode.A0010);
         }
         boolean matchCaptcha = CaptchaHelper.match(captchaId, captchaCode);
-        if (!matchCaptcha && StrUtil.isNotBlank(userName)) {
-            loginLogService.addAsync(userName, LoginStatus.FAILED, ApiResultCode.A0007.getErrorMsg());
+        if (!matchCaptcha) {
             throw new BizRuntimeException(ApiResultCode.A0007);
         }
     }
