@@ -74,4 +74,14 @@ public class LoginLogController extends BaseController {
         loginBizService.unlockLoginUser(userName);
         return toSuccess();
     }
+
+    @SaCheckPermission("system:loginLog:remove")
+    @Operation(summary = "登录日志清空")
+    @PostMapping("/cleanLoginLogList")
+    @OperationLog(name = "登录日志", type = OperationLogType.OPERATION_LOG_TYPE_REMOVE)
+    public ApiResult cleanLoginLogList() {
+        loginLogService.getBaseMapper().cleanLoginLogList();
+        return toSuccess();
+    }
+
 }

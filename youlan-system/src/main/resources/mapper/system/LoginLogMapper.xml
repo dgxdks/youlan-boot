@@ -4,4 +4,8 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.youlan.system.mapper.LoginLogMapper">
 
+    <delete id="cleanLoginLogList">
+        truncate table t_sys_login_log;
+    </delete>
+
 </mapper>
