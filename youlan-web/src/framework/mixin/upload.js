@@ -91,7 +91,7 @@ export default {
       if (this.$str.isBlank(urls)) {
         return
       }
-      urls.split(',').map(url => {
+      this.fileList = urls.split(',').map(url => {
         const file = this.fileList.some(file => file.url === url)
         if (file) {
           return file
@@ -130,7 +130,7 @@ export default {
       this.$modal.loadingClose()
       this.fileList = fileList.map(item => {
         // 取完整文件访问地址
-        const url = item.response && this.$download.parseSrcUrl(item.response.url)
+        const url = item.response && this.$download.parseSrcUrl(item.response.data.url)
         return {
           ...item,
           url: url || item.url
