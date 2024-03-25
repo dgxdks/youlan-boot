@@ -6,6 +6,7 @@ import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
@@ -232,6 +233,6 @@ public class PayNotifyBizService {
      * 获取自身
      */
     public PayNotifyBizService getSelf() {
-        return this;
+        return SpringUtil.getBean(PayNotifyBizService.class);
     }
 }
